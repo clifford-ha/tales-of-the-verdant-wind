@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:simple_block",
+  "config": {
+    "to_place": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "minecraft:fern"
+          },
+          "weight": 7
+        },
+        {
+          "data": {
+            "Name": "tales-of-the-verdant-wind:verdant_spruce_leaves",
+            "Properties": {
+              "distance": "7",
+              "persistent": "true",
+              "waterlogged": "false"
+            }
+          },
+          "weight": 6
+        },
+        {
+          "data": {
+            "Name": "minecraft:bush"
+          },
+          "weight": 3
+        },
+        {
+          "data": {
+            "Name": "minecraft:sweet_berry_bush",
+            "Properties": {
+              "age": "3"
+            }
+          },
+          "weight": 1
+        }
+      ]
+    }
+  }
+}

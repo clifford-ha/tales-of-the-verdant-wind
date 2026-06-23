@@ -1,0 +1,19 @@
+{
+  "feature": "tales-of-the-verdant-wind:verdant_river_seagrass",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 48
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "OCEAN_FLOOR"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "tales-of-the-verdant-wind:item/verixium_horse_armor"
+  }
+}

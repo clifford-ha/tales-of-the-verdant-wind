@@ -1,0 +1,42 @@
+package cliffordha.totvw.mixin;
+
+import cliffordha.totvw.registry.ModAttachments;
+import cliffordha.totvw.registry.ModColors;
+import cliffordha.totvw.registry.ModEffects;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import static cliffordha.totvw.entity.TConstants.*;
+import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromWolf;
+
+@Mixin(Wolf.class)
+public abstract class WolfUndyingMixin {
+    @Inject(method = "die", at = @At("HEAD"))
+    private void totvw$reviveWolf(DamageSource source, CallbackInfo ci) {
+        Wolf wolf = (Wolf) (Object) this;
+        int ACTIVE_BENEDICTION = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_BENEDICTION, 0);
+
+        if (ACTIVE_BENEDICTION == 0) return;
+        wolf.setHealth(40.0f);
+        wolf.removeAllEffects();
+
+        rewriteEffect(wolf, MobEffects.RESISTANCE, sec(3), 255);
+        rewriteEffect(wolf, ModEffects.BLESSING_OF_THE_VERDANT_WIND, sec(30), 2);
+        rewriteEffect(wolf, MobEffects.ABSORPTION, sec(30), 2);
+        rewriteEffect(wolf, MobEffects.STRENGTH, sec(30), 2);
+
+        notifyFromWolf(wolf, ModColors.VERDANT_WIND_MUTED, true, ACTIVE_BENEDICTION - 1 + " Benediction stack remaining");
+
+        if (wolf.level() instanceof ServerLevel) {
+            wolf.level().broadcastEntityEvent(wolf, (byte) 35);
+        }
+        wolf.setAttached(ModAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION - 1);
+    }
+}

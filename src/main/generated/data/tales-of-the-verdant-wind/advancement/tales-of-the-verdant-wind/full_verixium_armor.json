@@ -1,0 +1,44 @@
+{
+  "parent": "tales-of-the-verdant-wind:tales-of-the-verdant-wind/root",
+  "criteria": {
+    "full_verixium_armor_set": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tales-of-the-verdant-wind:verixium_helmet"
+          },
+          {
+            "items": "tales-of-the-verdant-wind:verixium_chestplate"
+          },
+          {
+            "items": "tales-of-the-verdant-wind:verixium_leggings"
+          },
+          {
+            "items": "tales-of-the-verdant-wind:verixium_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "color": "#247D66",
+      "text": "Equip a full set of Verixium armor"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "tales-of-the-verdant-wind:verixium_chestplate"
+    },
+    "title": {
+      "color": "#00FFD0",
+      "text": "Light As The Wind"
+    }
+  },
+  "requirements": [
+    [
+      "full_verixium_armor_set"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

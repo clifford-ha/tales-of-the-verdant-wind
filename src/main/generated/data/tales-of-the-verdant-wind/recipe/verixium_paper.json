@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "verixium_materials",
+  "key": {
+    "P": "minecraft:paper",
+    "X": "tales-of-the-verdant-wind:verixium_powder"
+  },
+  "pattern": [
+    "X",
+    "P"
+  ],
+  "result": {
+    "id": "tales-of-the-verdant-wind:verixium_paper"
+  }
+}

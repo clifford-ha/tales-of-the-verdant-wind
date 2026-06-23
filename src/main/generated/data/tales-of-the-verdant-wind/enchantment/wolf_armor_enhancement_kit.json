@@ -1,0 +1,55 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "translate": "enchantment.tales-of-the-verdant-wind.wolf_armor_enhancement_kit"
+  },
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": 8.0,
+        "attribute": "minecraft:max_health",
+        "id": "tales-of-the-verdant-wind:wolf_armor_enhancement_kit",
+        "operation": "add_value"
+      },
+      {
+        "amount": 1.0,
+        "attribute": "minecraft:attack_speed",
+        "id": "tales-of-the-verdant-wind:wolf_armor_enhancement_kit",
+        "operation": "add_value"
+      },
+      {
+        "amount": 0.2,
+        "attribute": "minecraft:knockback_resistance",
+        "id": "tales-of-the-verdant-wind:wolf_armor_enhancement_kit",
+        "operation": "add_value"
+      },
+      {
+        "amount": 0.15,
+        "attribute": "minecraft:movement_speed",
+        "id": "tales-of-the-verdant-wind:wolf_armor_enhancement_kit",
+        "operation": "add_value"
+      },
+      {
+        "amount": 0.15,
+        "attribute": "minecraft:water_movement_efficiency",
+        "id": "tales-of-the-verdant-wind:wolf_armor_enhancement_kit",
+        "operation": "add_value"
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 50,
+    "per_level_above_first": 0
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 50,
+    "per_level_above_first": 0
+  },
+  "primary_items": "#tales-of-the-verdant-wind:wolf_armor_enchantable",
+  "slots": [
+    "body"
+  ],
+  "supported_items": "#tales-of-the-verdant-wind:wolf_armor_enchantable",
+  "weight": 4
+}

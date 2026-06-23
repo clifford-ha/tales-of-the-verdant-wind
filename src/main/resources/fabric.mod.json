@@ -1,0 +1,47 @@
+{
+	"schemaVersion": 1,
+	"id": "tales-of-the-verdant-wind",
+	"version": "1.0-BETA",
+	"name": "Tales of the Verdant Wind",
+	"description": "The verdant mountains—a humble home of the missing wind.",
+	"authors": [
+		"Clifford HA"
+	],
+	"contact": {
+		"homepage": "https://tiktok.com/@clifford.ha",
+		"sources": "https://github.com/clifford-ha/tales-of-the-verdant-wind"
+	},
+	"license": "All rights reserved",
+	"icon": "assets/tales-of-the-verdant-wind/pack.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"cliffordha.totvw.TalesOfTheVerdantWind"
+		],
+		"client": [
+          "cliffordha.totvw.TOTVWClient"
+		],
+		"fabric-datagen": [
+			"cliffordha.totvw.datagen.TOTVWDataGenerator"
+		],
+		"terrablender": [
+			"cliffordha.totvw.TalesOfTheVerdantWind"
+		],
+		"modmenu": [
+			"cliffordha.totvw.config.TOTVWModMenuIntegration"
+		]
+	},
+	"accessWidener": "totvw.classtweaker",
+	"mixins": [
+		"tales-of-the-verdant-wind.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*",
+		"terrablender": "*",
+		"modmenu": "*",
+		"cloth-config": "*"
+	}
+}

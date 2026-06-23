@@ -1,0 +1,28 @@
+{
+  "parent": "tales-of-the-verdant-wind:tales-of-the-verdant-wind/root",
+  "criteria": {
+    "verixium_fluid_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tales-of-the-verdant-wind:verixium_fluid_bucket"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": "Fill a bucked with Verixium fluid",
+    "icon": {
+      "id": "tales-of-the-verdant-wind:verixium_fluid_bucket"
+    },
+    "title": "Is It Drinkable?"
+  },
+  "requirements": [
+    [
+      "verixium_fluid_bucket"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

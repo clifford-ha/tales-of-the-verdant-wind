@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_iridescent_glass_pane": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tales-of-the-verdant-wind:iridescent_glass_pane"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tales-of-the-verdant-wind:lime_dye_from_iridescent_glass_pane_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_iridescent_glass_pane"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tales-of-the-verdant-wind:lime_dye_from_iridescent_glass_pane_stonecutting"
+    ]
+  }
+}

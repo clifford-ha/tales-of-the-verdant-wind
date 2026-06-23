@@ -1,0 +1,36 @@
+{
+  "criteria": {
+    "has_verdant_spruce_log": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tales-of-the-verdant-wind:verdant_spruce_log"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "tales-of-the-verdant-wind:block/verdant_moss_block",
+    "description": {
+      "color": "#247D66",
+      "text": "Explore the verdant place\nwith your companions"
+    },
+    "icon": {
+      "id": "tales-of-the-verdant-wind:verixium_pickaxe"
+    },
+    "show_toast": false,
+    "title": {
+      "color": "#00FFD0",
+      "text": "Tales of the Verdant Wind"
+    }
+  },
+  "requirements": [
+    [
+      "has_verdant_spruce_log"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

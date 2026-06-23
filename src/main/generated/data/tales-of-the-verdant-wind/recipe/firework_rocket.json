@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "verixium_materials",
+  "key": {
+    "P": "minecraft:gunpowder",
+    "X": "tales-of-the-verdant-wind:verixium_paper"
+  },
+  "pattern": [
+    "XP"
+  ],
+  "result": {
+    "count": 8,
+    "id": "minecraft:firework_rocket"
+  }
+}

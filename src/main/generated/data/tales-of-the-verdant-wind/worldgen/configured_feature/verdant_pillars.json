@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:spike",
+  "config": {
+    "can_place_on": {
+      "type": "minecraft:matching_blocks",
+      "blocks": "minecraft:grass_block"
+    },
+    "can_replace": {
+      "type": "minecraft:matching_blocks",
+      "blocks": [
+        "minecraft:air",
+        "minecraft:short_grass",
+        "minecraft:fern",
+        "minecraft:snow"
+      ]
+    },
+    "state": {
+      "Name": "tales-of-the-verdant-wind:verdant_moss_block"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "tales-of-the-verdant-wind:iridescent_glass"
+  },
+  "pattern": [
+    "XXX",
+    "XXX"
+  ],
+  "result": {
+    "count": 16,
+    "id": "tales-of-the-verdant-wind:iridescent_glass_pane"
+  }
+}

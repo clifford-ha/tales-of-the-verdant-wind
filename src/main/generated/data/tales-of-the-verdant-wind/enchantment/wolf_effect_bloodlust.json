@@ -1,0 +1,57 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.tales-of-the-verdant-wind.wolf_effect_bloodlust"
+  },
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 1.0,
+          "per_level_above_first": 1.0
+        },
+        "attribute": "minecraft:attack_damage",
+        "id": "tales-of-the-verdant-wind:wolf_effect_bloodlust",
+        "operation": "add_value"
+      },
+      {
+        "amount": 2.0,
+        "attribute": "minecraft:attack_knockback",
+        "id": "tales-of-the-verdant-wind:wolf_effect_bloodlust",
+        "operation": "add_value"
+      },
+      {
+        "amount": 0.2,
+        "attribute": "minecraft:knockback_resistance",
+        "id": "tales-of-the-verdant-wind:wolf_effect_bloodlust",
+        "operation": "add_value"
+      },
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": -0.1,
+          "per_level_above_first": -0.05
+        },
+        "attribute": "minecraft:fall_damage_multiplier",
+        "id": "tales-of-the-verdant-wind:wolf_effect_bloodlust",
+        "operation": "add_multiplied_total"
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 64,
+    "per_level_above_first": 7
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 33,
+    "per_level_above_first": 0
+  },
+  "primary_items": "#tales-of-the-verdant-wind:wolf_armor_enchantable",
+  "slots": [
+    "body"
+  ],
+  "supported_items": "#tales-of-the-verdant-wind:wolf_armor_enchantable",
+  "weight": 2
+}

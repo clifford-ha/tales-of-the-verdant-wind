@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "cliffordha.totvw.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "ExampleMixin",
+    "ModColorizeEnchantmentName",
+    "ModColorizeMobEffectName",
+    "WolfAttackableTargets",
+    "WolfInteract",
+    "WolfUndyingMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+	}
+}

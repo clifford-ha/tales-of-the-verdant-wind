@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "verixium_raw_materials",
+  "key": {
+    "D": "minecraft:diamond",
+    "X": "tales-of-the-verdant-wind:verixium_ingot"
+  },
+  "pattern": [
+    "XXX",
+    "XDX",
+    "XXX"
+  ],
+  "result": {
+    "id": "tales-of-the-verdant-wind:verixium_ingot"
+  }
+}

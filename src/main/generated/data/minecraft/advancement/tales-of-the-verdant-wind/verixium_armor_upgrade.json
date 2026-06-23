@@ -1,0 +1,36 @@
+{
+  "parent": "tales-of-the-verdant-wind:tales-of-the-verdant-wind/root",
+  "criteria": {
+    "verixium_armor_upgrade": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tales-of-the-verdant-wind:verixium_armor_upgrade_template"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "color": "#247D66",
+      "text": "Obtain a Verixium Armor Upgrade Template"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "tales-of-the-verdant-wind:verixium_armor_upgrade_template"
+    },
+    "title": {
+      "color": "#00FFD0",
+      "text": "Condensed Wind"
+    }
+  },
+  "requirements": [
+    [
+      "verixium_armor_upgrade"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
