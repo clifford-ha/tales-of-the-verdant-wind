@@ -6,6 +6,7 @@
     "ExampleMixin",
     "ModColorizeEnchantmentName",
     "ModColorizeMobEffectName",
+    "WolfArmors",
     "WolfAttackableTargets",
     "WolfInteract",
     "WolfUndyingMixin"
