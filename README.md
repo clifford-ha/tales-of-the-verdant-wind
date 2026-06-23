@@ -8,7 +8,7 @@ This mod introduces a new enchantment system for wolf armor, giving the wolves m
 Players also gain buffs when they meet certain conditions, such as additional damage points, temporary immunity, status effects from items when you a specific enchantment, and more.
 
 ## Dependencies
-This mod requires [Terrablender](https://modrinth.com/mod/terrablender) to work.
+This mod requires [Terrablender](https://modrinth.com/mod/terrablender) and [ClothConfig API](https://modrinth.com/mod/cloth-config) to work.
 
 
 ## Credits Section
