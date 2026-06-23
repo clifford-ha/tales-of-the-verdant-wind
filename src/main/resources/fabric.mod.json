@@ -12,7 +12,7 @@
 		"sources": "https://github.com/clifford-ha/tales-of-the-verdant-wind"
 	},
 	"license": "All rights reserved",
-	"icon": "assets/tales-of-the-verdant-wind/pack.png",
+	"icon": "assets/tales-of-the-verdant-wind/tales-of-the-verdant-wind.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
