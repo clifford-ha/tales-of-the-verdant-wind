@@ -55,6 +55,10 @@ public class TOTVWClient implements ClientModInitializer {
                 ModColors.VERDANT_WIND
         );
         ModTextColors.register(
+                "item.minecraft.tipped_arrow.effect.sacred_verdant_potion",
+                ModColors.VERDANT_WIND
+        );
+        ModTextColors.register(
                 "effect.tales-of-the-verdant-wind.bloodlust",
                 ModColors.BLOODLUST_EFFECT
         );

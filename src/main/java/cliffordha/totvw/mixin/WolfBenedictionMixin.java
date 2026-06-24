@@ -17,7 +17,7 @@ import static cliffordha.totvw.entity.TConstants.*;
 import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromWolf;
 
 @Mixin(Wolf.class)
-public abstract class WolfUndyingMixin {
+public abstract class WolfBenedictionMixin {
     @Inject(method = "die", at = @At("HEAD"))
     private void totvw$reviveWolf(DamageSource source, CallbackInfo ci) {
         Wolf wolf = (Wolf) (Object) this;
@@ -32,7 +32,12 @@ public abstract class WolfUndyingMixin {
         rewriteEffect(wolf, MobEffects.ABSORPTION, sec(30), 2);
         rewriteEffect(wolf, MobEffects.STRENGTH, sec(30), 2);
 
-        notifyFromWolf(wolf, ModColors.VERDANT_WIND_MUTED, true, ACTIVE_BENEDICTION - 1 + " Benediction stack remaining");
+
+        if (ACTIVE_BENEDICTION - 1 == 0) {
+            notifyFromWolf(wolf, ModColors.BLOODLUST_EFFECT_MUTED,ACTIVE_BENEDICTION - 1 + " Benediction stack remaining for " + wolf.getName().getString());
+        } else {
+            notifyFromWolf(wolf, ModColors.VERDANT_WIND_MUTED,ACTIVE_BENEDICTION - 1 + " Benediction stack remaining for " + wolf.getName().getString());
+        }
 
         if (wolf.level() instanceof ServerLevel) {
             wolf.level().broadcastEntityEvent(wolf, (byte) 35);

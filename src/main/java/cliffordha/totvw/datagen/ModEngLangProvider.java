@@ -114,6 +114,10 @@ public class ModEngLangProvider extends FabricLanguageProvider {
         text.add("item.minecraft.splash_potion.effect.baleful_strength_potion", "Baleful Strength Splash Potion");
         text.add("item.minecraft.lingering_potion.effect.baleful_strength_potion", "Baleful Strength Lingering Potion");
 
+        text.add("item.minecraft.tipped_arrow.effect.sacred_verdant_potion", "Arrow infused with Verdant Wind");
+        text.add("item.minecraft.tipped_arrow.effect.might_amplifier_potion", "Arrow of Amplified Might");
+        text.add("item.minecraft.tipped_arrow.effect.baleful_strength_potion", "Arrow of Baleful Strength");
+
 
         // death msg
         text.add("death.attack.bloodlust", "%1$s died from the agonizing effects of §cBloodlust§r");

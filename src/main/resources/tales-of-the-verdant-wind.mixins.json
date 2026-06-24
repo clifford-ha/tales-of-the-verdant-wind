@@ -3,13 +3,16 @@
   "package": "cliffordha.totvw.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "ArrowNameColorMixin",
+    "EnchantmentNameColorMixin",
     "ExampleMixin",
-    "ModColorizeEnchantmentName",
-    "ModColorizeMobEffectName",
-    "WolfArmors",
-    "WolfAttackableTargets",
-    "WolfInteract",
-    "WolfUndyingMixin"
+    "MobEffectNameColorMixin",
+    "TamableAnimalOnDeathMixin",
+    "WolfActuallyHurtMixin",
+    "WolfArmorDamageAbsorbMixin",
+    "WolfAttackableTargetsMixin",
+    "WolfBenedictionMixin",
+    "WolfInteractMixin"
   ],
   "injectors": {
     "defaultRequire": 1

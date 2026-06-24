@@ -3,7 +3,6 @@ package cliffordha.totvw.mixin;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.ModItemTags;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -17,14 +16,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.function.Predicate;
-
 import static cliffordha.totvw.entity.TConstants.*;
 import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromWolf;
 import static cliffordha.totvw.entity.skill.ConfigTools.playSound;
 
 @Mixin(Wolf.class)
-public class WolfInteract {
+public class WolfInteractMixin {
     @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
     private void totvw$reviveWolf(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         Wolf wolf = (Wolf) (Object) this;
@@ -37,7 +34,7 @@ public class WolfInteract {
 
         if (itemStack.is(Items.TOTEM_OF_UNDYING) && wolf.isWearingBodyArmor()) {
             if (ACTIVE_BENEDICTION_ENCHANTMENT == 0) return;
-            if (ACTIVE_BENEDICTION >= 3) { notifyFromWolf(wolf, ModColors.DEFAULT_MUTED, true, name + ": Max Benediction stack reached"); }
+            if (ACTIVE_BENEDICTION >= 3) { notifyFromWolf(wolf, ModColors.DEFAULT_MUTED, true, "Max Benediction stack reached!"); }
             if (ACTIVE_BENEDICTION >= 3) return;
 
             wolf.setAttached(ModAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION + 1);

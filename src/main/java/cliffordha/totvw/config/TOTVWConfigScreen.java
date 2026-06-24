@@ -50,6 +50,15 @@ public class TOTVWConfigScreen {
         );
         general.addEntry(
                 entryBuilder.startBooleanToggle(
+                                Component.literal("Wolf Armor Damage Distribution"),
+                                TOTVWConfig.get().wolfArmorDamageDistribution)
+                        .setDefaultValue(true)
+                        .setTooltip(text("Allow distributing damage to both the armor and the wolf"))
+                        .setSaveConsumer(value -> TOTVWConfig.get().wolfArmorDamageDistribution = value)
+                        .build()
+        );
+        general.addEntry(
+                entryBuilder.startBooleanToggle(
                                 Component.literal("Use New Sounds"),
                                 TOTVWConfig.get().newSounds)
                         .setDefaultValue(true)
@@ -93,7 +102,7 @@ public class TOTVWConfigScreen {
                         .setSaveConsumer(value -> TOTVWConfig.get().bloodlustScreenOverlay = value)
                         .build()
         );
-        /*
+
         general.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("SEND LOGS"),
@@ -101,7 +110,7 @@ public class TOTVWConfigScreen {
                         .setDefaultValue(false)
                         .setSaveConsumer(value -> TOTVWConfig.get().sendLog = value)
                         .build()
-        );*/
+        );
         return builder.build();
     }
     private static Component text(String text) {

@@ -19,6 +19,7 @@ public class TOTVWConfig {
 
     public boolean useNewLanguageSet = false;
     public int maxWolfPlayerDistance = 16;
+    public boolean wolfArmorDamageDistribution = true;
     public int lowHealthThreshold = 30;
     public boolean useNotifiers = true;
     public boolean attachmentSkillCD = true;
