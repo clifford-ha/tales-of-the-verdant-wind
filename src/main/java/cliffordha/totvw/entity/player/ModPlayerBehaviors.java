@@ -259,7 +259,7 @@ public class ModPlayerBehaviors {
         });
 
         // Debugging
-
+        /*
         ServerTickEvents.START_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
                 serverLevel.getEntities(
@@ -276,7 +276,7 @@ public class ModPlayerBehaviors {
                     }
                 });
             }
-        });
+        });*/
     }
     private ModPlayerBehaviors() {}
 }

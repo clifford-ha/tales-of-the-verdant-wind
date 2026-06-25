@@ -1,14 +1,13 @@
 {
 	"schemaVersion": 1,
 	"id": "tales-of-the-verdant-wind",
-	"version": "1.0-BETA",
+	"version": "1.0.1-BETA",
 	"name": "Tales of the Verdant Wind",
 	"description": "The verdant mountains—a humble home of the missing wind.",
 	"authors": [
 		"Clifford HA"
 	],
 	"contact": {
-		"homepage": "https://tiktok.com/@clifford.ha",
 		"sources": "https://github.com/clifford-ha/tales-of-the-verdant-wind"
 	},
 	"license": "All rights reserved",
