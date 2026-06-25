@@ -22,6 +22,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -50,18 +51,16 @@ public final class ModTooltipsClient {
         if (stack.tags().noneMatch(Predicate.isEqual(ModItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS))) return;
         if (getBenedictionLevel(mc) <= 0) return;
 
-        addEffectHeader(out, ModColors.VERDANT_WIND, "effect.tales-of-the-verdant-wind.blessing_of_the_verdant_wind");
-
         String desc = resolveToolEffect(stack);
-        if (desc != null) addMutedItalic(out, desc);
+        if (desc != null) addVWItem(mc, out, desc);
     }
 
     private static String resolveToolEffect(ItemStack stack) {
-        if (stack.tags().anyMatch(t -> t.location().getPath().equals("swords")))   return "+Strength";
-        if (stack.tags().anyMatch(t -> t.location().getPath().equals("axes")))     return "+Strength II";
-        if (stack.tags().anyMatch(t -> t.location().getPath().equals("pickaxes"))) return "+Haste";
-        if (stack.tags().anyMatch(t -> t.location().getPath().equals("hoes")))     return "+Absorption";
-        if (stack.tags().anyMatch(t -> t.location().getPath().equals("shovels")))  return "+Speed";
+        if (stack.tags().anyMatch(t -> t.location().getPath().equals("swords")))   return "VW Strength";
+        if (stack.tags().anyMatch(t -> t.location().getPath().equals("axes")))     return "VW Strength II";
+        if (stack.tags().anyMatch(t -> t.location().getPath().equals("pickaxes"))) return "VW Haste";
+        if (stack.tags().anyMatch(t -> t.location().getPath().equals("hoes")))     return "VW Absorption";
+        if (stack.tags().anyMatch(t -> t.location().getPath().equals("shovels")))  return "VW Speed";
         return null;
     }
 
@@ -70,12 +69,10 @@ public final class ModTooltipsClient {
         if (stack.tags().noneMatch(Predicate.isEqual(ModItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS))) return;
         if (getBenedictionLevel(mc) <= 0) return;
 
-        addEffectHeader(out, ModColors.VERDANT_WIND, "effect.tales-of-the-verdant-wind.blessing_of_the_verdant_wind");
-
         if (stack.is(ModItems.VERIXIUM_POWDER)) {
-            addMutedItalic(out, "+Slow Falling");
+            addVWItem(mc, out, "VW Slow Falling");
         } else {
-            addMutedItalic(out, "+Night Vision");
+            addVWItem(mc, out, "VW Night Vision");
         }
     }
     private static void handleLoreLines(ItemStack stack, List<Component> out) {
@@ -112,52 +109,47 @@ public final class ModTooltipsClient {
         }
         
         if (stack.is(ModItems.VERIXIUM_CHUNK)) {
-            addLoreShiftGated(out, LORE_verixiumChunk);
+            addLoreShiftGated(out, 1, LORE_verixiumChunk);
 
         } else if (stack.is(ModItems.CONDENSED_VERIXIUM)) {
-            addLoreShiftGated(out, LORE_condensedVerixium0, LORE_condensedVerixium1);
+            addLoreShiftGated(out, 1, LORE_condensedVerixium0, LORE_condensedVerixium1);
 
         } else if (stack.is(ModItems.VERIXIUM_SHARD)) {
-            addLoreShiftGated(out, LORE_verixiumShard);
+            addLoreShiftGated(out, 1,  LORE_verixiumShard);
 
         } else if (stack.is(ModItems.VERIXIUM_POWDER)) {
-            addLoreShiftGated(out, LORE_verixiumPowder);
+            addLoreShiftGated(out, 1, LORE_verixiumPowder);
 
         } else if (stack.is(ModItems.VERIXIUM_INGOT)) {
-            addLoreShiftGated(out, LORE_verixiumIngot);
+            addLoreShiftGated(out, 1, LORE_verixiumIngot);
             
         } else if (stack.is(ModItems.VERIXIUM_PAPER)
                 || stack.is(ModItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE)) {
-            addMutedItalic(out, Component.translatable(itemVerixium).getString());
+            addMutedItalic(mc, out, itemVerixium);
             
         } else if (stack.is(ModItems.VERIXIUM_HELMET)
                 || stack.is(ModItems.VERIXIUM_LEGGINGS)
                 || stack.is(ModItems.VERIXIUM_BOOTS)) {
-            addMutedItalic(out, Component.translatable(itemVerixiumArmor).getString());
+            addMutedItalic(mc, out, itemVerixiumArmor);
 
         } else if (stack.is(ModItems.VERIXIUM_CHESTPLATE)) {
-            addMutedItalic(out, Component.translatable(itemVerixiumArmor).getString());
-            addEffectHeader(out, ModColors.VERDANT_WIND, "effect.tales-of-the-verdant-wind.blessing_of_the_verdant_wind");
-            addMutedItalicIfBenediction(out, mc, "Grants an effect when certain item(s) are used");
+            addMutedItalic(mc, out, itemVerixiumArmor);
+            if (getBenedictionLevel(mc) <= 0) return;
+            addLoreShiftGated(out, 1001, "Grants effect when an item with blessing mark [VW] is used");
             
         } else if (stack.is(ModItems.VERIXIUM_WOLF_ARMOR)) {
-            addMutedItalic(out, Component.translatable(itemVerixiumArmor).getString());
-            addEffectHeader(out, ModColors.VERDANT_WIND, "effect.tales-of-the-verdant-wind.blessing_of_the_verdant_wind");
-            addWolfArmorBenedictionLore(out, mc);
+            addMutedItalic(mc, out, itemVerixiumArmor);
+            addWolfArmorBenedictionLore(mc, out);
         }
     }
 
-    private static void addWolfArmorBenedictionLore(List<Component> out, Minecraft mc) {
-        int benediction = getBenedictionLevel(mc);
-        String l_verixiumWolfArmor = "\"The breezy mountains once favored the call of a certain howl...\"";
-        String l_verixiumWolfArmorE = "\"The breezy mountains once favored the call of a certain howl. Although subtle, he too does his part to protect the verdant mountains... a place he calls home.\"";
+    private static void addWolfArmorBenedictionLore(Minecraft mc, List<Component> out) {
+        String LORE_verixiumWolfArmor = "\"The breezy mountains once favored the call of a certain howl...\"";
+        String LORE_verixiumWolfArmorE = "\"The breezy mountains once favored the call of a certain howl. Although subtle, he too does his part to protect the verdant mountains... a place he calls home.\"";
 
-        String loreKey = (benediction == 0)
-                ? l_verixiumWolfArmor
-                : l_verixiumWolfArmorE;
-        addLoreShiftTitle(out, "Armor Engraving:", loreKey);
+        String loreKey = (getBenedictionLevel(mc) == 0) ? LORE_verixiumWolfArmor : LORE_verixiumWolfArmorE;
+        addLoreShiftGated(out, 1, "Armor Engraving:", loreKey);
     }
-
 
     private static int getBenedictionLevel(Minecraft mc) {
         if (mc.player == null || mc.level == null) return 0;
@@ -167,46 +159,28 @@ public final class ModTooltipsClient {
         return chest.getEnchantments().getLevel(reg.getOrThrow(ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS));
     }
 
-
-    private static void addEffectHeader(List<Component> out, int color, String translationKey) {
-        out.add(Component.empty());
-        out.add(Component.translatable(translationKey).withColor(color));
-    }
-
-
-    private static void addMutedItalic(List<Component> out, String text) {
-        out.add(Component.literal(text)
-                .withColor(ModColors.VERDANT_WIND_MUTED)
-                .withStyle(ChatFormatting.ITALIC));
-    }
-
-
-    private static void addMutedItalicIfBenediction(List<Component> out, Minecraft mc, String text) {
+    private static void addVWItem(Minecraft mc, List<Component> out, String... text) {
         if (getBenedictionLevel(mc) <= 0) return;
-        addMutedItalic(out, text);
-    }
-
-
-    private static void addLoreShiftGated(List<Component> out, String... keys) {
-        Minecraft mc = Minecraft.getInstance();
         if (mc.hasShiftDown()) {
-            for (String key : keys) {
-                List<FormattedText> wrapped = mc.font.getSplitter()
-                        .splitLines(Component.translatable(key), 200, Style.EMPTY);
-                for (FormattedText line : wrapped) {
-                    out.add(Component.literal(line.getString())
-                            .withColor(ModColors.VERDANT_WIND_MUTED)
-                            .withStyle(ChatFormatting.ITALIC));
-                }
-            }
+            out.add(Component.literal(Arrays.toString(text)).withColor(ModColors.VERDANT_WIND));
         } else {
-            out.add(Component.literal("Hold §nShift§r key to see more details").withStyle(ChatFormatting.DARK_GRAY));
+            out.add(Component.literal("[VW] Active"));
         }
     }
-    private static void addLoreShiftTitle(List<Component> out, String title, String... keys) {
+
+    private static void addMutedItalic(Minecraft mc, List<Component> out, String text) {
+        if (!mc.hasShiftDown()) {
+            out.add(Component.literal(text)
+                    .withColor(ModColors.GRAY)
+                    .withStyle(ChatFormatting.ITALIC));
+        }
+    }
+
+    /** 0 = for none | 1 = for 'expand' | 1001 = reserved for chestplate **/
+    private static void addLoreShiftGated(List<Component> out, int type, String... keys) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.hasShiftDown()) {
-            out.add(Component.translatable(title).withColor(ModColors.VERDANT_WIND));
+            if (type == 1001) {out.add(Component.literal("Verdant Wind's Blessing").withColor(ModColors.VERDANT_WIND));}
             for (String key : keys) {
                 List<FormattedText> wrapped = mc.font.getSplitter()
                         .splitLines(Component.translatable(key), 200, Style.EMPTY);
@@ -216,8 +190,16 @@ public final class ModTooltipsClient {
                             .withStyle(ChatFormatting.ITALIC));
                 }
             }
+            if (type == 1001) {out.add(Component.literal(""));}
         } else {
-            out.add(Component.literal("Hold §nShift§r key to see more details").withStyle(ChatFormatting.DARK_GRAY));
+            if (type == 0) return;
+            if (type == 1) {
+                out.add(Component.literal("Read lore...").withColor(ModColors.GRAY));
+            } else if (type == 1001) {
+                out.add(Component.literal("[VW] Blessing Active"));
+            } else {
+                out.add(Component.literal("Invalid INT value").withColor(ModColors.BLOODLUST_EFFECT));
+            }
         }
     }
 }

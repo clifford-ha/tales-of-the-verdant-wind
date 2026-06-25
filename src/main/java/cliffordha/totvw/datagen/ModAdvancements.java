@@ -16,6 +16,7 @@ import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.List;
 import java.util.Optional;
@@ -76,6 +77,20 @@ public class ModAdvancements extends AdvancementProvider {
                                     ItemPredicate.Builder.item().of(items, ModItems.VERIXIUM_WOLF_ARMOR),
                                     Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(entityTypes, EntityType.WOLF)))))
                     .save(output, TOTVW.MOD_ID + ":tales-of-the-verdant-wind/wolf_verixium_armor");
+
+            Advancement.Builder.advancement()
+                    .parent(root)
+                    .display(ModItems.VERIXIUM_POWDER,
+                            Component.literal("We Stand And Stick Together"),
+                            Component.literal("Try to trust inanimate objects"),
+                            null,
+                            AdvancementType.CHALLENGE,
+                            true, true, true)
+                    .addCriterion("trust_inanimate_object",
+                            PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
+                                    ItemPredicate.Builder.item().of(items, ModItems.VERIXIUM_POWDER),
+                                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(entityTypes, EntityType.ARMOR_STAND)))))
+                    .save(output, TOTVW.MOD_ID + ":tales-of-the-verdant-wind/trust_inanimate_object");
 
             AdvancementHolder verixiumFluidBucket = Advancement.Builder.advancement()
                     .parent(root)

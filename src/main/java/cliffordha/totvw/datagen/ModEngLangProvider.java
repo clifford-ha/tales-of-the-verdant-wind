@@ -119,7 +119,6 @@ public class ModEngLangProvider extends FabricLanguageProvider {
         text.add("item.minecraft.tipped_arrow.effect.baleful_strength_potion", "Arrow of Baleful Strength");
 
 
-        // death msg
         text.add("death.attack.bloodlust", "%1$s died from the agonizing effects of §cBloodlust§r");
         text.add("death.attack.bloodlust.player", "%1$s died from the agonizing effects of §cBloodlust§r while fighting %1$s");
 

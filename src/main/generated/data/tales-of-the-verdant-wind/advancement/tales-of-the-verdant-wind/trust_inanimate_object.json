@@ -1,0 +1,37 @@
+{
+  "parent": "tales-of-the-verdant-wind:tales-of-the-verdant-wind/root",
+  "criteria": {
+    "trust_inanimate_object": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:armor_stand"
+            }
+          }
+        ],
+        "item": {
+          "items": "tales-of-the-verdant-wind:verixium_powder"
+        }
+      },
+      "trigger": "minecraft:player_interacted_with_entity"
+    }
+  },
+  "display": {
+    "description": "Try to trust inanimate objects",
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "tales-of-the-verdant-wind:verixium_powder"
+    },
+    "title": "We Stand And Stick Together"
+  },
+  "requirements": [
+    [
+      "trust_inanimate_object"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

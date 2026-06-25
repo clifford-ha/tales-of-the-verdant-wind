@@ -17,10 +17,9 @@ public class ModDyeSynthesizerRecipeProvider extends ModRecipeProvider {
         super(output, registriesFuture);
     }
 
-    //@Override
     protected RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput exporter) {
         return new RecipeProvider(registryLookup, exporter) {
-            //@Override
+
             public void buildRecipes() {
                 HolderLookup.RegistryLookup<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
 

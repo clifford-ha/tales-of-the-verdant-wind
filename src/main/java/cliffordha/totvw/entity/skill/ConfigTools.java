@@ -45,6 +45,7 @@ public class ConfigTools {
     public static void setPlayerConfiguration(Player player, int config) {
         String name = player.getName().getString();
         int CD_VERDANT_BLESSING = player.getAttachedOrElse(ModAttachments.Player.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+
         if (config == 0) {
             if (CD_VERDANT_BLESSING > 0) {
                 notifyFromPlayer(player, ModColors.DEFAULT_MUTED, name + ": VerdantBlessingCD: " + CD_VERDANT_BLESSING / 20 + " sec");
@@ -94,7 +95,7 @@ public class ConfigTools {
         var posY = entity.getY();
         var posZ = entity.getZ();
         var random = level.getRandom().nextFloat();
-        level.playSound(null, posX, posY, posZ, sound, source, 0.7f + random, 0.7f + random);
+        level.playSound(null, posX, posY, posZ, sound, source, 0.5f + random, 0.5f + random);
     }
 
 

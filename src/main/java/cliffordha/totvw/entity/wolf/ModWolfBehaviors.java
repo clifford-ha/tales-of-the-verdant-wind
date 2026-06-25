@@ -19,7 +19,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,7 +29,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.entity.monster.creaking.Creaking;
 import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.biome.Biomes;
@@ -75,7 +73,7 @@ public final class ModWolfBehaviors {
         ));
         TICK_RULES.add(WolfBehaviorRule.forTamed(
                 WolfCondition.companionIsCritical(
-                        () -> (float) (TOTVWConfig.get().lowHealthThreshold * 0.01),
+                        () -> TOTVWConfig.get().lowHealthThreshold * 0.01f,
                         () -> TOTVWConfig.get().maxWolfPlayerDistance)
                         .and(WolfCondition.hasBodyArmor())
                         .and(WolfCondition.checkNoAttached(ModAttachments.Wolf.CD_BLESSING_OF_THE_VERDANT_WIND)),
@@ -296,10 +294,6 @@ public final class ModWolfBehaviors {
             wolf.stabAttack(EquipmentSlot.BODY, victim, ACTIVE_MIGHT, true, true, true);
             if (ACTIVE_MIGHT >= 3) {
                 removeEffect(victim, MobEffects.STRENGTH);
-
-                if (victim instanceof Creaking creaking) {
-                    creaking.setInvulnerable(false);
-                }
 
                 if (victimHealth <= victimMaxHealth * 0.5f && getRuptureCD <= 0) {
                     if (player != null && wolf.distanceTo(player) < 4) {

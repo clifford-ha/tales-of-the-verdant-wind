@@ -23,32 +23,36 @@ import static cliffordha.totvw.entity.skill.ConfigTools.playSound;
 @Mixin(Wolf.class)
 public class WolfInteractMixin {
     @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
-    private void totvw$reviveWolf(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    private void totvw$wolfInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         Wolf wolf = (Wolf) (Object) this;
         String name = wolf.getName().getString();
-        ItemStack playerHand = player.getItemInHand(hand);
 
         int ACTIVE_BENEDICTION = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_BENEDICTION, 0);
         int ACTIVE_BENEDICTION_ENCHANTMENT = wolfEnchantmentLVL(wolf, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
         ItemStack itemStack = player.getItemInHand(hand);
 
-        if (itemStack.is(Items.TOTEM_OF_UNDYING) && wolf.isWearingBodyArmor()) {
-            if (ACTIVE_BENEDICTION_ENCHANTMENT == 0) return;
-            if (ACTIVE_BENEDICTION >= 3) { notifyFromWolf(wolf, ModColors.DEFAULT_MUTED, true, "Max Benediction stack reached!"); }
-            if (ACTIVE_BENEDICTION >= 3) return;
+        if (wolf.isTame()) {
+            if (itemStack.is(Items.TOTEM_OF_UNDYING) && wolf.isWearingBodyArmor()) {
+                if (ACTIVE_BENEDICTION_ENCHANTMENT == 0) return;
+                if (ACTIVE_BENEDICTION >= 3) {
+                    notifyFromWolf(wolf, ModColors.DEFAULT_MUTED, true, "Max Benediction stack reached!");
+                }
+                if (ACTIVE_BENEDICTION >= 3) return;
 
-            wolf.setAttached(ModAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION + 1);
-            itemStack.shrink(1);
-            playSound(wolf, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
+                wolf.setAttached(ModAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION + 1);
+                if (player.isCreative() || player.isSpectator())  { itemStack.shrink(1); }
+                playSound(wolf, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
 
-            addParticle(wolf.level(), wolf.blockPosition(), ModParticles.BENEDICTION_TRIGGER_PARTICLE, 0);
-            notifyFromWolf(wolf, ModColors.VERDANT_WIND, true, name + " Benediction stack: " + wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_BENEDICTION, 0));
-            cir.setReturnValue(InteractionResult.SUCCESS);
-
-        } else if (itemStack.is(ModItemTags.WOLF_ARMOR_ENCHANTABLE) && !wolf.isTame() && !wolf.isWearingBodyArmor()) {
-            if (wolf.level() instanceof ServerLevel serverLevel) {
-                wolf.equipItemIfPossible(serverLevel, playerHand);
+                addParticle(wolf.level(), wolf.blockPosition(), ModParticles.BENEDICTION_TRIGGER_PARTICLE, 1);
+                notifyFromWolf(wolf, ModColors.VERDANT_WIND, name + " Benediction stack: " + wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_BENEDICTION, 0));
                 cir.setReturnValue(InteractionResult.SUCCESS);
+            }
+        } else {
+            if (itemStack.is(ModItemTags.WOLF_ARMOR_ENCHANTABLE) && !wolf.isWearingBodyArmor()) {
+                if (wolf.level() instanceof ServerLevel serverLevel) {
+                    wolf.equipItemIfPossible(serverLevel, itemStack);
+                    cir.setReturnValue(InteractionResult.SUCCESS);
+                }
             }
         }
     }

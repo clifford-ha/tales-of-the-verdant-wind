@@ -3,7 +3,6 @@ package cliffordha.totvw.config;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.ModColors;
 import me.shedaniel.clothconfig2.api.*;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -19,6 +18,7 @@ public class TOTVWConfigScreen {
 
         ConfigCategory general = builder.getOrCreateCategory(
                 Component.literal("General"));
+
 
         /*
         general.addEntry(
@@ -102,7 +102,6 @@ public class TOTVWConfigScreen {
                         .setSaveConsumer(value -> TOTVWConfig.get().bloodlustScreenOverlay = value)
                         .build()
         );
-
         general.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("SEND LOGS"),

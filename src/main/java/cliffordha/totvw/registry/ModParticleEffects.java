@@ -1,12 +1,7 @@
 package cliffordha.totvw.registry;
 
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.core.particles.*;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 
 public class ModParticleEffects {
@@ -41,14 +36,14 @@ public class ModParticleEffects {
                 ModParticles.MIGHT_PARALYZE_PARTICLE,
                 frequency);
     }
-    public static void benedictionEnvironmentParticleEntity(LivingEntity entity, int frequency) {
+    public static void benedictionEnvironmentParticleEntity(LivingEntity entity) {
         if (!(entity.level() instanceof ServerLevel serverLevel)) return;
         serverLevel.sendParticles(
                 ModParticles.BENEDICTION_TRIGGER_PARTICLE,
                 entity.getX(),
                 entity.getY(),
                 entity.getZ(),
-                256 * frequency,
+                16,
                 1,
                 1,
                 1,

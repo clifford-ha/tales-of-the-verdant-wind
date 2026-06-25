@@ -1,12 +1,21 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.entity.player.InteractionData;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.resources.Identifier;
 
 public class ModAttachments {
+    public static final AttachmentType<InteractionData> INTERACTION_DATA = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "interaction_data"),
+            builder -> builder.persistent(InteractionData.CODEC).initializer(InteractionData::create)
+    );
+
+    public static final AttachmentType<Integer> TRUST_POINTS = registerInt("betrayal_strikes");
+    public static final AttachmentType<Integer> TRUST_COOLDOWN = registerInt("trust_cooldown");
+
     public static class Player {
         public static final AttachmentType<Integer> CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("cd_player_blessing_of_the_verdant_wind");
         public static final AttachmentType<Integer> NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("notify_player_blessing_of_the_verdant_wind");

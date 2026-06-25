@@ -18,7 +18,7 @@ import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromWolf;
 
 @Mixin(Wolf.class)
 public abstract class WolfBenedictionMixin {
-    @Inject(method = "die", at = @At("HEAD"))
+    @Inject(method = "die", at = @At("HEAD"), cancellable = true)
     private void totvw$reviveWolf(DamageSource source, CallbackInfo ci) {
         Wolf wolf = (Wolf) (Object) this;
         int ACTIVE_BENEDICTION = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_BENEDICTION, 0);
@@ -28,13 +28,15 @@ public abstract class WolfBenedictionMixin {
         wolf.removeAllEffects();
 
         rewriteEffect(wolf, MobEffects.RESISTANCE, sec(3), 255);
-        rewriteEffect(wolf, ModEffects.BLESSING_OF_THE_VERDANT_WIND, sec(30), 2);
-        rewriteEffect(wolf, MobEffects.ABSORPTION, sec(30), 2);
-        rewriteEffect(wolf, MobEffects.STRENGTH, sec(30), 2);
+        rewriteEffect(wolf, ModEffects.BLESSING_OF_THE_VERDANT_WIND, sec(10), 2);
+        rewriteEffect(wolf, MobEffects.ABSORPTION, sec(10), 2);
+        rewriteEffect(wolf, MobEffects.STRENGTH, sec(10), 2);
 
+        wolf.setAttached(ModAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION - 1);
 
         if (ACTIVE_BENEDICTION - 1 == 0) {
             notifyFromWolf(wolf, ModColors.BLOODLUST_EFFECT_MUTED,ACTIVE_BENEDICTION - 1 + " Benediction stack remaining for " + wolf.getName().getString());
+            wolf.removeAttached(ModAttachments.Wolf.WOLF_BENEDICTION);
         } else {
             notifyFromWolf(wolf, ModColors.VERDANT_WIND_MUTED,ACTIVE_BENEDICTION - 1 + " Benediction stack remaining for " + wolf.getName().getString());
         }
@@ -42,6 +44,6 @@ public abstract class WolfBenedictionMixin {
         if (wolf.level() instanceof ServerLevel) {
             wolf.level().broadcastEntityEvent(wolf, (byte) 35);
         }
-        wolf.setAttached(ModAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION - 1);
+        ci.cancel();
     }
 }

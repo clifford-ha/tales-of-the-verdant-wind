@@ -1,5 +1,7 @@
 package cliffordha.totvw.mixin;
 
+import cliffordha.totvw.entity.player.InteractionData;
+import cliffordha.totvw.registry.ModAttachments;
 import cliffordha.totvw.registry.ModEnchantments;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -28,6 +30,18 @@ public class WolfAttackableTargetsMixin {
             int encBenediction = wolfEnchantmentLVL(wolf, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
             if (!(encGnawing > 0 && (encProtection >= 3 || encBlastProtection >= 3 || encMight > 2 || encBenediction > 0))) return;
             cir.setReturnValue(true);
+        }
+        if (wolf.isTame() && wolf.getOwner() != null) {
+            LivingEntity player = wolf.getOwner();
+            String dash = "-";
+            String truster = player.getName().getString() + player.getStringUUID();
+            String trustee = dash + target.getName().getString() + target.getStringUUID();
+            InteractionData data = target.getAttached(ModAttachments.INTERACTION_DATA);
+            if (data == null) return;
+            if (data.player().equals(truster) && data.trustee().equals(trustee)) {
+                wolf.stopBeingAngry();
+                cir.setReturnValue(false);
+            }
         }
     }
 }

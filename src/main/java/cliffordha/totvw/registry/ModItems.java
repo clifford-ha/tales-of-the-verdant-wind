@@ -44,15 +44,6 @@ public class ModItems {
                     .attributes(
                             ModArmorMaterial.VERIXIUM_ARMOR_MATERIAL.createAttributes(ArmorType.CHESTPLATE)
                                     .withModifierAdded(
-                                            Attributes.BURNING_TIME,
-                                            new AttributeModifier(
-                                                    VERIXIUM_ARMOR_EQUIPPED,
-                                                    -0.2F,
-                                                    AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
-                                            ),
-                                            EquipmentSlotGroup.CHEST
-                                    )
-                                    .withModifierAdded(
                                             Attributes.KNOCKBACK_RESISTANCE,
                                             new AttributeModifier(
                                                     VERIXIUM_ARMOR_EQUIPPED,
@@ -114,6 +105,15 @@ public class ModItems {
                     .fireResistant()
                     .attributes(
                             ModArmorMaterial.VERIXIUM_ARMOR_MATERIAL.createAttributes(ArmorType.BOOTS)
+                                    .withModifierAdded(
+                                            Attributes.MOVEMENT_EFFICIENCY,
+                                            new AttributeModifier(
+                                                    VERIXIUM_ARMOR_EQUIPPED,
+                                                    0.3F,
+                                                    AttributeModifier.Operation.ADD_VALUE
+                                            ),
+                                            EquipmentSlotGroup.FEET
+                                    )
                                     .withModifierAdded(
                                             Attributes.KNOCKBACK_RESISTANCE,
                                             new AttributeModifier(
@@ -260,7 +260,6 @@ public class ModItems {
             properties -> new SignItem(VerdantBlocks.VERDANT_SPRUCE_SIGN, VerdantBlocks.VERDANT_SPRUCE_WALL_SIGN, properties
                     .stacksTo(16)
             ));
-
     public static final Item VERDANT_SPRUCE_HANGING_SIGN = TOTVW.registerItem("verdant_spruce_hanging_sign",
             properties -> new HangingSignItem(VerdantBlocks.VERDANT_SPRUCE_HANGING_SIGN, VerdantBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN, properties
                     .stacksTo(16)

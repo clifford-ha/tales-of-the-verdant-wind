@@ -1,22 +1,20 @@
 package cliffordha.totvw.entity.player;
 
+import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.TConstants;
 import cliffordha.totvw.entity.skill.ConfigTools;
 import cliffordha.totvw.entity.skill.PlayerSkillDefinition;
 import cliffordha.totvw.entity.skill.SkillUtil;
-import cliffordha.totvw.registry.ModEffects;
-import cliffordha.totvw.registry.ModEnchantments;
+import cliffordha.totvw.registry.*;
 import cliffordha.totvw.item.events.BlessingOfTheVerdantWind;
 import cliffordha.totvw.item.ItemInstance;
-import cliffordha.totvw.registry.ModAttachments;
-import cliffordha.totvw.registry.ModParticleEffects;
 import cliffordha.totvw.tag.ModBiomeTags;
 import cliffordha.totvw.tag.ModItemTags;
-import cliffordha.totvw.registry.ModColors;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -31,7 +29,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -39,6 +39,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import static cliffordha.totvw.entity.TConstants.*;
@@ -82,6 +83,7 @@ public class ModPlayerBehaviors {
                     if (TOTVWConfig.get().sendLog) { ConfigTools.setPlayerConfiguration(player, 0); }
                     if (TOTVWConfig.get().attachmentSkillCD) {
                         ConfigTools.depleteCooldown(player, ModAttachments.Player.CD_BLESSING_OF_THE_VERDANT_WIND);
+                        ConfigTools.depleteCooldown(player, ModAttachments.TRUST_COOLDOWN);
                     } else {
                         ConfigTools.setPlayerConfiguration(player, 1);
                     }
@@ -103,7 +105,7 @@ public class ModPlayerBehaviors {
         int blessingCD = verdantBlessingCD(level);
 
         double distance = TOTVWConfig.get().maxWolfPlayerDistance;
-        float health = (float) (TOTVWConfig.get().lowHealthThreshold * 0.01);
+        float health = TOTVWConfig.get().lowHealthThreshold * 0.01f;
 
         List<Wolf> wolves = serverLevel.getEntities(
                 EntityType.WOLF,

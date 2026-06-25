@@ -6,15 +6,17 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.TippedArrowItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(MobEffect.class)
-public class MobEffectNameColorMixin {
+@Mixin(TippedArrowItem.class)
+public class ArrowNameColorMixin {
 
-    @Inject(method = "getDisplayName", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getName", at = @At("RETURN"), cancellable = true)
     private void totvw$colorizeEffectName(CallbackInfoReturnable<Component> cir) {
 
         Component description = cir.getReturnValue();

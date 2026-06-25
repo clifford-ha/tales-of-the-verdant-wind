@@ -117,9 +117,9 @@ public final class BlessingOfTheVerdantWind {
         }
         player.addEffect(new MobEffectInstance(effect, targetDuration, targetAmp));
         if (withinBiome) {
-            notifyFromPlayer(player, ModColors.VERDANT_WIND, "Granted: §nVerdant Wind's Blessing§r (§eEnhanced§r) for §e" + targetDurationSec + "§r sec");
+            notifyFromPlayer(player, ModColors.VERDANT_WIND, "Granted: §n" + effect.getRegisteredName().replaceAll("^[^:]*:", "").toUpperCase() + "§r (§eEnhanced§r) for §e" + targetDurationSec + "§r sec");
         } else {
-            notifyFromPlayer(player, ModColors.VERDANT_WIND, "Granted: §nVerdant Wind's Blessing§r for §e" + targetDurationSec + "§r sec");}
+            notifyFromPlayer(player, ModColors.VERDANT_WIND, "Granted: §n" + effect.getRegisteredName().replaceAll("^[^:]*:", "").toUpperCase() + "§r for §e" + targetDurationSec + "§r sec");}
         ModParticleEffects.spawnBlessingParticlesEntity(player, 2);
         playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
 

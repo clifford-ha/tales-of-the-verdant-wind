@@ -4,9 +4,10 @@
   "compatibilityLevel": "JAVA_25",
   "mixins": [
     "ArrowNameColorMixin",
+    "EffectNameColorMixin",
     "EnchantmentNameColorMixin",
     "ExampleMixin",
-    "MobEffectNameColorMixin",
+    "PlayerTrustMixin",
     "TamableAnimalOnDeathMixin",
     "WolfActuallyHurtMixin",
     "WolfArmorDamageAbsorbMixin",
