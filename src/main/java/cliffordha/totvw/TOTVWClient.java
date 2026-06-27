@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.TrapDoorBlock;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class TOTVWClient implements ClientModInitializer {
                         new Material(Identifier.withDefaultNamespace("block/water_still")),
                         new Material(Identifier.withDefaultNamespace("block/water_flow")),
                         new Material(Identifier.withDefaultNamespace("block/water_overlay")),
-                        BlockTintSources.constant(setColor(0x0B9973))
+                        BlockTintSources.constant(setColor(0x13e1a8))
                 )
         );
         BlockColorRegistry.register(

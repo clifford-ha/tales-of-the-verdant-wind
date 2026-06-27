@@ -1,11 +1,18 @@
 package cliffordha.totvw.registry;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.StringRepresentableArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -13,6 +20,16 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class ModCommands {
     private static final int MIN_Y = -64;
@@ -27,14 +44,86 @@ public class ModCommands {
     public static void registerModCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(
-                    Commands.literal("repopulate-verixium")
+                    Commands.literal("totvw")
+                            .then(Commands.literal("repopulate-verixium")
                             .then(Commands.argument("chunkRadius", IntegerArgumentType.integer(0, 32))
                                     .executes(context -> {
                                         int radius = IntegerArgumentType.getInteger(context, "chunkRadius");
                                         return repopulateVerixium(context.getSource(), radius);
                                     }))
-            );
+            ));
+            dispatcher.register(
+                    Commands.literal("totvw")
+                            .then(Commands.literal("place-taiga-village-pools")
+                                    .then(Commands.argument("folder", StringArgumentType.string())
+                                    .executes(
+                                            context -> {
+                                                String folder = StringArgumentType.getString(context, "folder");
+                                                return placeTaigaVillagePools(context.getSource(), folder);
+                                            }
+            ))));
         });
+    }
+
+    private static int placeTaigaVillagePools(CommandSourceStack source, String folder) {
+        ServerPlayer player;
+        try {
+            player = source.getPlayerOrException();
+        } catch (Exception e) {
+            source.sendFailure(Component.literal("This command must be run by a player."));
+            return 0;
+        }
+
+        ServerLevel level = player.level();
+        StructureTemplateManager templateManager = source.getServer().getStructureManager();
+        Registry<StructureTemplatePool> poolRegistry = level.registryAccess().lookupOrThrow(Registries.TEMPLATE_POOL);
+        BlockPos origin = player.blockPosition().above(1);
+
+        final int TEMPLATE_SPACING = 8;
+        final int POOL_SPACING = 8;
+
+        List<Map.Entry<ResourceKey<StructureTemplatePool>, StructureTemplatePool>> taigaPools = poolRegistry.entrySet()
+                .stream()
+                .filter(e -> e.getKey().identifier().getNamespace().equals("minecraft")
+                        && e.getKey().identifier().getPath().startsWith("village/taiga/" + folder))
+                .sorted(Comparator.comparing(e -> e.getKey().identifier().getPath()))
+                .toList();
+
+        int totalPlaced = 0;
+        int zCursor = 0;
+
+        for (Map.Entry<ResourceKey<StructureTemplatePool>, StructureTemplatePool> entry : taigaPools) {
+            List<StructurePoolElement> poolTemplates = entry.getValue().templates;
+            int xCursor = 0;
+            boolean placedAny = false;
+
+            for (StructurePoolElement element : poolTemplates) {
+                if (!(element instanceof SinglePoolElement single)) continue;
+
+                StructureTemplate template = single.getTemplate(templateManager);
+                BlockPos pos = origin.offset(xCursor, -1, zCursor);
+                StructurePlaceSettings settings = new StructurePlaceSettings();
+                template.placeInWorld(level, pos, pos, settings, level.getRandom(), 2);
+
+                Vec3i size = template.getSize();
+                xCursor += Math.max(size.getX(), size.getZ()) + TEMPLATE_SPACING;
+                totalPlaced++;
+                placedAny = true;
+            }
+
+            if (placedAny) {
+                source.sendSuccess(() -> Component.literal(
+                        "  " + entry.getKey().identifier().getPath() + " — " + poolTemplates.size() + " piece(s)"
+                ), false);
+                zCursor += POOL_SPACING;
+            }
+        }
+
+        final int finalPlaced = totalPlaced;
+        source.sendSuccess(() -> Component.literal(
+                "Placed " + finalPlaced + " structure(s) from " + taigaPools.size() + " taiga village template pool(s)."
+        ), true);
+        return totalPlaced;
     }
 
     private static int repopulateVerixium(CommandSourceStack source, int chunkRadius) {

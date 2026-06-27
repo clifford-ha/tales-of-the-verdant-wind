@@ -78,7 +78,7 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
     @Override
     public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity entity, int amplifier) {
         if (serverLevel.getRandom().nextInt(20 * 6) == 0) {
-            entity.heal(entity.getArmorValue() * 0.40f);
+            entity.heal(3.0f + (amplifier * 2.0f));
             ModParticleEffects.benedictionEnvironmentParticleEntity(entity);
         }
         return super.applyEffectTick(serverLevel, entity, amplifier);

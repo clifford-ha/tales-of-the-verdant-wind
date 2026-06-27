@@ -26,9 +26,9 @@ public class VerdantSpruceLeavesBlock extends UntintedParticleLeavesBlock {
         double glowY = (double)pos.getY() + random.nextDouble() * 9.0;
         double glowZ = (double)pos.getZ() + random.nextDouble() * 13.0 - 5.0;
 
-        if (darkness && randomChance <= 0.09 && inVerdantMountains) {
+        if (darkness && randomChance <= 0.05 && inVerdantMountains) {
             level.addParticle(ModParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, glowX, glowY, glowZ, 9D, 13D, 9D );
-        } else if (darkness && randomChance <= 0.1 && inVerdantForest) {
+        } else if (darkness && randomChance <= 0.01 && inVerdantForest) {
             level.addParticle(ModParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, glowX, glowY, glowZ, 13D, 15D, 13D );
         }
         super.animateTick(state, level, pos, random);

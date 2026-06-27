@@ -1,10 +1,8 @@
 package cliffordha.totvw.world;
 
 
-import cliffordha.totvw.registry.ModParticles;
 import cliffordha.totvw.worldgen.ModPlacedFeatures;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 
 import net.minecraft.data.worldgen.Carvers;
@@ -19,8 +17,6 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-
-import java.awt.*;
 
 
 public class ModOverworldBiomes {
@@ -58,7 +54,7 @@ public class ModOverworldBiomes {
             biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_MOSS_PATCH_HIGH_KEY);
             biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_RIVER_SEAGRASS_KEY);
 
-            biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_SPRUCE_TREE_KEY);
+            biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_SPRUCE_TREE_LOWER_KEY);
 
 
             return new Biome.BiomeBuilder()

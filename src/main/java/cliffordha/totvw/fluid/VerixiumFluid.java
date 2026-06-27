@@ -17,7 +17,9 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -195,7 +197,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
                     evaluateSlowness(warden);
                 }
             }
-            case ServerPlayer player -> {
+            case Player player -> {
                 player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, playerTime, playerAmp, false, false));
                 if (!player.isCreative() || !player.isSpectator()) { evaluateSlowness(player); }
             }

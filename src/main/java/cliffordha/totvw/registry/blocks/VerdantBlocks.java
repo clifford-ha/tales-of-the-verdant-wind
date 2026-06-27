@@ -107,7 +107,7 @@ public class VerdantBlocks extends Blocks {
     public final static Block VERDANT_SPRUCE_PRESSURE_PLATE = TOTVW.registerBlock("verdant_spruce_pressure_plate",
             properties -> new PressurePlateBlock(VERDANT_SPRUCE_SET, properties
                     .sound(SoundType.WOOD)
-                    .strength(wood)
+                    .strength(0.5f)
                     .noCollision()
                     .pushReaction(PushReaction.DESTROY)),
             BlockBehaviour.Properties.of(),
@@ -132,7 +132,9 @@ public class VerdantBlocks extends Blocks {
     public final static Block VERDANT_SPRUCE_TRAPDOOR = TOTVW.registerBlock("verdant_spruce_trapdoor",
             properties -> new TrapDoorBlock(VERDANT_SPRUCE_SET, properties
                     .sound(SoundType.WOOD)
-                    .strength(wood)
+                    .strength(3.0f)
+                    .noOcclusion()
+                    .isValidSpawn(Blocks::never)
             ),
             BlockBehaviour.Properties.of(),
             true);

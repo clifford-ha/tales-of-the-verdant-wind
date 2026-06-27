@@ -1,0 +1,18 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 13631006,
+    "separation": 8,
+    "spacing": 34
+  },
+  "structures": [
+    {
+      "structure": "tales-of-the-verdant-wind:village_verdant_forest",
+      "weight": 1
+    },
+    {
+      "structure": "tales-of-the-verdant-wind:village_verdant_mountains",
+      "weight": 1
+    }
+  ]
+}

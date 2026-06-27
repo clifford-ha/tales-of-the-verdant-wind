@@ -31,8 +31,14 @@ public class ModBiomeTags extends FabricTagsProvider<Biome> {
                 .add(TagEntry.element(ModBiomes.VERDANT_MOUNTAINS.identifier()))
                 .add(TagEntry.element(ModBiomes.VERDANT_FOREST.identifier()));
 
+        getOrCreateRawBuilder(ModBiomeTags.HAS_VERDANT_FOREST_VILLAGE)
+                .add(TagEntry.element(ModBiomes.VERDANT_FOREST.identifier()));
+
+        getOrCreateRawBuilder(ModBiomeTags.HAS_VERDANT_MOUNTAINS_VILLAGE)
+                .add(TagEntry.element(ModBiomes.VERDANT_MOUNTAINS.identifier()));
+
         getOrCreateRawBuilder(BiomeTags.IS_MOUNTAIN)
-                .addTag(ModBiomeTags.IS_VERDANT_BIOMES.location());
+                .add(TagEntry.element(ModBiomes.VERDANT_MOUNTAINS.identifier()));
 
         getOrCreateRawBuilder(BiomeTags.HAS_ANCIENT_CITY)
                 .addTag(ModBiomeTags.IS_VERDANT_BIOMES.location());
@@ -41,7 +47,7 @@ public class ModBiomeTags extends FabricTagsProvider<Biome> {
                 .addTag(ModBiomeTags.IS_VERDANT_BIOMES.location());
 
         getOrCreateRawBuilder(BiomeTags.HAS_JUNGLE_TEMPLE)
-                .addTag(ModBiomeTags.IS_VERDANT_BIOMES.location());
+                .add(TagEntry.element(ModBiomes.VERDANT_FOREST.identifier()));
 
         getOrCreateRawBuilder(BiomeTags.HAS_MINESHAFT)
                 .addTag(ModBiomeTags.IS_VERDANT_BIOMES.location());
@@ -67,11 +73,10 @@ public class ModBiomeTags extends FabricTagsProvider<Biome> {
         getOrCreateRawBuilder(BiomeTags.HAS_TRIAL_CHAMBERS)
                 .addTag(ModBiomeTags.IS_VERDANT_BIOMES.location());
 
-        getOrCreateRawBuilder(BiomeTags.HAS_VILLAGE_TAIGA)
-                .addTag(ModBiomeTags.IS_VERDANT_BIOMES.location());
-
         getOrCreateRawBuilder(BiomeTags.HAS_WOODLAND_MANSION)
                 .addTag(ModBiomeTags.IS_VERDANT_BIOMES.location());
     }
     public static final TagKey<Biome> IS_VERDANT_BIOMES = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "is_verdant_biomes"));
+    public static final TagKey<Biome> HAS_VERDANT_FOREST_VILLAGE = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "has_verdant_forest_village"));
+    public static final TagKey<Biome> HAS_VERDANT_MOUNTAINS_VILLAGE = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "has_verdant_mountains_village"));
 }

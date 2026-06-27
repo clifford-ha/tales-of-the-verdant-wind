@@ -13,6 +13,18 @@
       "type": "minecraft:in_square"
     },
     {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "absolute": 84
+        },
+        "min_inclusive": {
+          "absolute": 0
+        }
+      }
+    },
+    {
       "type": "minecraft:surface_water_depth_filter",
       "max_water_depth": 0
     },

@@ -1,7 +1,6 @@
 package cliffordha.totvw;
 
 import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.datagen.ModAdvancements;
 import cliffordha.totvw.registry.ModBlocks;
 import cliffordha.totvw.registry.ModEffects;
 import cliffordha.totvw.registry.ModEnchantments;
@@ -46,9 +45,10 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		ModAttachments.registerModAttachments();
 
 		TOTVWConfig.load();
+		TOTVWConfig.save();
 
 		// Debugging
-		//ModCommands.registerModCommands();
+		ModCommands.registerModCommands();
 		LootTableEvents.MODIFY.register(ModLootTableModifier::modifyLootTables);
 
 

@@ -35,7 +35,8 @@ public class ModPlacedFeatures {
 
     //TREES
     public static final ResourceKey<PlacedFeature> VERDANT_SPRUCE_BUSH_TREE_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce_bush_tree"));
-    public static final ResourceKey<PlacedFeature> VERDANT_SPRUCE_TREE_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce_tree"));
+    public static final ResourceKey<PlacedFeature> VERDANT_SPRUCE_TREE_LOWER_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce_tree_lower"));
+    public static final ResourceKey<PlacedFeature> VERDANT_SPRUCE_TREE_HIGHER_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce_tree_higher"));
     public static final ResourceKey<PlacedFeature> ANCIENT_VERDANT_SPRUCE_TREE_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "ancient_verdant_spruce_tree"));
 
     // VEGETATION
@@ -93,10 +94,22 @@ public class ModPlacedFeatures {
                         BiomeFilter.biome()
                 ))
         );
-        context.register(VERDANT_SPRUCE_TREE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(ModConfiguredFeatures.VERDANT_SPRUCE_TREE_CONFIGURED_KEY),
+        context.register(VERDANT_SPRUCE_TREE_LOWER_KEY, new PlacedFeature(configuredFeatures.getOrThrow(ModConfiguredFeatures.VERDANT_SPRUCE_TREE_CONFIGURED_KEY),
                 List.of(
                         CountPlacement.of(UniformInt.of(0, 7)),
                         InSquarePlacement.spread(),
+                        HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(84)),
+                        SurfaceWaterDepthFilter.forMaxDepth(0),
+                        PlacementUtils.HEIGHTMAP_TOP_SOLID,
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.AIR)),
+                        BiomeFilter.biome()
+                ))
+        );
+        context.register(VERDANT_SPRUCE_TREE_HIGHER_KEY, new PlacedFeature(configuredFeatures.getOrThrow(ModConfiguredFeatures.VERDANT_SPRUCE_TREE_CONFIGURED_KEY),
+                List.of(
+                        CountPlacement.of(UniformInt.of(0, 2)),
+                        InSquarePlacement.spread(),
+                        HeightRangePlacement.uniform(VerticalAnchor.absolute(90), VerticalAnchor.absolute(256)),
                         SurfaceWaterDepthFilter.forMaxDepth(0),
                         PlacementUtils.HEIGHTMAP_TOP_SOLID,
                         BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.AIR)),

@@ -15,6 +15,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -132,11 +133,13 @@ public final class ModTooltipsClient {
                 || stack.is(ModItems.VERIXIUM_BOOTS)) {
             addMutedItalic(mc, out, itemVerixiumArmor);
 
-        } else if (stack.is(ModItems.VERIXIUM_CHESTPLATE)) {
-            addMutedItalic(mc, out, itemVerixiumArmor);
+        } else if (stack.is(ItemTags.CHEST_ARMOR)) {
+            if (stack.is(ModItems.VERIXIUM_CHESTPLATE)) {
+                addMutedItalic(mc, out, itemVerixiumArmor);
+            }
             if (getBenedictionLevel(mc) <= 0) return;
             addLoreShiftGated(out, 1001, "Grants effect when an item with blessing mark [VW] is used");
-            
+
         } else if (stack.is(ModItems.VERIXIUM_WOLF_ARMOR)) {
             addMutedItalic(mc, out, itemVerixiumArmor);
             addWolfArmorBenedictionLore(mc, out);
