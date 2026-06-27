@@ -101,8 +101,8 @@ public class ModPlacedFeatures {
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(84)),
                         SurfaceWaterDepthFilter.forMaxDepth(0),
                         PlacementUtils.HEIGHTMAP_TOP_SOLID,
-                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.AIR)),
-                        BiomeFilter.biome()
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.AIR))
+                        //BiomeFilter.biome()
                 ))
         );
         context.register(VERDANT_SPRUCE_TREE_HIGHER_KEY, new PlacedFeature(configuredFeatures.getOrThrow(ModConfiguredFeatures.VERDANT_SPRUCE_TREE_CONFIGURED_KEY),
@@ -122,8 +122,8 @@ public class ModPlacedFeatures {
                         InSquarePlacement.spread(),
                         SurfaceWaterDepthFilter.forMaxDepth(0),
                         PlacementUtils.HEIGHTMAP_TOP_SOLID,
-                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(List.of(Blocks.AIR))),
-                        BiomeFilter.biome()
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(List.of(Blocks.AIR)))
+                        //BiomeFilter.biome()
                 ))
         );
         context.register(VERDANT_HOLLOWS_KEY, new PlacedFeature(configuredFeatures.getOrThrow(ModConfiguredFeatures.VERDANT_HOLLOWS_CONFIGURED_KEY),
