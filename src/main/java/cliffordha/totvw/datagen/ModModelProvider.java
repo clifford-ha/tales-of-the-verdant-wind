@@ -1,20 +1,45 @@
 package cliffordha.totvw.datagen;
 
+import cliffordha.totvw.block.ModStorageBlock;
 import cliffordha.totvw.registry.blocks.VerdantBlocks;
 import cliffordha.totvw.registry.ModBlocks;
 import cliffordha.totvw.registry.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ItemModelOutput;
+import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
 
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.client.renderer.block.dispatch.VariantMutator;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class ModModelProvider extends FabricModelProvider {
     public ModModelProvider(FabricPackOutput output) {
         super(output);
+    }
+
+    private static final PropertyDispatch<VariantMutator> FACING = PropertyDispatch.modify(BlockStateProperties.FACING)
+            .select(Direction.EAST, BlockModelGenerators.X_ROT_90.then(BlockModelGenerators.X_ROT_90))
+            .select(Direction.SOUTH, BlockModelGenerators.X_ROT_90.then(BlockModelGenerators.Y_ROT_180))
+            .select(Direction.WEST, BlockModelGenerators.Y_ROT_90.then(BlockModelGenerators.X_ROT_270))
+            .select(Direction.NORTH, BlockModelGenerators.X_ROT_90)
+            .select(Direction.UP, BlockModelGenerators.NOP)
+            .select(Direction.DOWN, BlockModelGenerators.X_ROT_180);
+
+    private static TextureMapping storageBoxTextureMapping(Block block, String topSuffix) {
+        return new TextureMapping()
+                .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
+                .put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(block, "_bottom"))
+                .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, topSuffix));
     }
 
     @Override
@@ -36,6 +61,15 @@ public class ModModelProvider extends FabricModelProvider {
         block.createShelf(VerdantBlocks.VERDANT_SPRUCE_SHELF, VerdantBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
         block.woodProvider(VerdantBlocks.VERDANT_SPRUCE_LOG).log(VerdantBlocks.VERDANT_SPRUCE_LOG).wood(VerdantBlocks.VERDANT_SPRUCE_WOOD);
         block.woodProvider(VerdantBlocks.STRIPPED_VERDANT_SPRUCE_LOG).log(VerdantBlocks.STRIPPED_VERDANT_SPRUCE_LOG).wood(VerdantBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
+
+        MultiVariant OPEN = BlockModelGenerators.plainVariant(
+                TexturedModel.CUBE_TOP_BOTTOM.createWithSuffix(VerdantBlocks.VERDANT_STORAGE_BOX, "_open", block.modelOutput)
+        );
+        MultiVariant CLOSED = BlockModelGenerators.plainVariant(
+                TexturedModel.CUBE_TOP_BOTTOM.create(VerdantBlocks.VERDANT_STORAGE_BOX, block.modelOutput));
+
+        block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VerdantBlocks.VERDANT_STORAGE_BOX)
+                .with(BlockModelGenerators.createBooleanModelDispatch(ModStorageBlock.OPEN, OPEN, CLOSED)).with(FACING));
     }
 
     @Override

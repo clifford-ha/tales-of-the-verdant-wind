@@ -25,8 +25,8 @@ import org.jspecify.annotations.Nullable;
 
 public class ModStorageBlock extends BaseEntityBlock {
     public static final MapCodec<ModStorageBlock> CODEC = simpleCodec(ModStorageBlock::new);
-    public static final EnumProperty<Direction> FACING;
-    public static BooleanProperty OPEN;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
+    public static BooleanProperty OPEN = BlockStateProperties.OPEN;
     public ModStorageBlock(Properties properties) {
         super(properties);
     }
@@ -93,11 +93,6 @@ public class ModStorageBlock extends BaseEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
-    }
-
-    static {
-        FACING = BlockStateProperties.FACING;
-        OPEN = BlockStateProperties.OPEN;
+        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite()).setValue(OPEN, false);
     }
 }

@@ -117,7 +117,6 @@ public class ModStorageBlockEntity extends RandomizableContainerBlockEntity {
         if (!this.remove) {
             this.openersCounter.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
-
     }
 
     private void updateBlockState(BlockState state, boolean isOpen) {
