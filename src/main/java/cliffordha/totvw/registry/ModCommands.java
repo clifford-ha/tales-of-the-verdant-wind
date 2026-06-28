@@ -128,7 +128,7 @@ public class ModCommands {
 
                 Vec3i size = template.getSize();
                 xCursor += Math.max(size.getX(), size.getZ()) + TEMPLATE_SPACING;
-                totalPlaced++;
+                //totalPlaced++;
                 placedAny = true;
             }
 

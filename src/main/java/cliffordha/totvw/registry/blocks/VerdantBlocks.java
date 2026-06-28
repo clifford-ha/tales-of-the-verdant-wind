@@ -221,8 +221,8 @@ public class VerdantBlocks extends Blocks {
             true
     );
     public static final Block VERDANT_STORAGE_BOX = TOTVW.registerBlock("verdant_storage_box",
-            ModStorageBlock::new,
-            BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
+            VerdantSpruceStorageBox::new,
+            BlockBehaviour.Properties.of()
                     .sound(SoundType.WOOD)
                     .strength(wood),
             true

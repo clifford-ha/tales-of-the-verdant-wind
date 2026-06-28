@@ -10,11 +10,13 @@
     },
     "facing=east,open=false": {
       "model": "tales-of-the-verdant-wind:block/verdant_storage_box",
-      "x": 90
+      "x": 90,
+      "y": 90
     },
     "facing=east,open=true": {
       "model": "tales-of-the-verdant-wind:block/verdant_storage_box_open",
-      "x": 90
+      "x": 90,
+      "y": 90
     },
     "facing=north,open=false": {
       "model": "tales-of-the-verdant-wind:block/verdant_storage_box",
@@ -42,13 +44,13 @@
     },
     "facing=west,open=false": {
       "model": "tales-of-the-verdant-wind:block/verdant_storage_box",
-      "x": 270,
-      "y": 90
+      "x": 90,
+      "y": 270
     },
     "facing=west,open=true": {
       "model": "tales-of-the-verdant-wind:block/verdant_storage_box_open",
-      "x": 270,
-      "y": 90
+      "x": 90,
+      "y": 270
     }
   }
 }

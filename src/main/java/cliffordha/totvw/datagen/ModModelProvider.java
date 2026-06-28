@@ -27,14 +27,6 @@ public class ModModelProvider extends FabricModelProvider {
         super(output);
     }
 
-    private static final PropertyDispatch<VariantMutator> FACING = PropertyDispatch.modify(BlockStateProperties.FACING)
-            .select(Direction.EAST, BlockModelGenerators.X_ROT_90.then(BlockModelGenerators.X_ROT_90))
-            .select(Direction.SOUTH, BlockModelGenerators.X_ROT_90.then(BlockModelGenerators.Y_ROT_180))
-            .select(Direction.WEST, BlockModelGenerators.Y_ROT_90.then(BlockModelGenerators.X_ROT_270))
-            .select(Direction.NORTH, BlockModelGenerators.X_ROT_90)
-            .select(Direction.UP, BlockModelGenerators.NOP)
-            .select(Direction.DOWN, BlockModelGenerators.X_ROT_180);
-
     private static TextureMapping storageBoxTextureMapping(Block block, String topSuffix) {
         return new TextureMapping()
                 .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
@@ -63,13 +55,24 @@ public class ModModelProvider extends FabricModelProvider {
         block.woodProvider(VerdantBlocks.STRIPPED_VERDANT_SPRUCE_LOG).log(VerdantBlocks.STRIPPED_VERDANT_SPRUCE_LOG).wood(VerdantBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
 
         MultiVariant OPEN = BlockModelGenerators.plainVariant(
-                TexturedModel.CUBE_TOP_BOTTOM.createWithSuffix(VerdantBlocks.VERDANT_STORAGE_BOX, "_open", block.modelOutput)
+                ModelTemplates.CUBE_BOTTOM_TOP.createWithSuffix(VerdantBlocks.VERDANT_STORAGE_BOX, "_open",
+                        storageBoxTextureMapping(VerdantBlocks.VERDANT_STORAGE_BOX, "_top_open"), block.modelOutput)
         );
         MultiVariant CLOSED = BlockModelGenerators.plainVariant(
-                TexturedModel.CUBE_TOP_BOTTOM.create(VerdantBlocks.VERDANT_STORAGE_BOX, block.modelOutput));
+                ModelTemplates.CUBE_BOTTOM_TOP.create(VerdantBlocks.VERDANT_STORAGE_BOX,
+                        storageBoxTextureMapping(VerdantBlocks.VERDANT_STORAGE_BOX, "_top"), block.modelOutput)
+        );
 
         block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VerdantBlocks.VERDANT_STORAGE_BOX)
-                .with(BlockModelGenerators.createBooleanModelDispatch(ModStorageBlock.OPEN, OPEN, CLOSED)).with(FACING));
+                .with(BlockModelGenerators.createBooleanModelDispatch(ModStorageBlock.OPEN, OPEN, CLOSED))
+                .with(PropertyDispatch.modify(BlockStateProperties.FACING)
+                        .select(Direction.DOWN,  BlockModelGenerators.X_ROT_180)
+                        .select(Direction.UP,    BlockModelGenerators.NOP)
+                        .select(Direction.NORTH, BlockModelGenerators.X_ROT_90)
+                        .select(Direction.SOUTH, BlockModelGenerators.X_ROT_90.then(BlockModelGenerators.Y_ROT_180))
+                        .select(Direction.WEST,  BlockModelGenerators.X_ROT_90.then(BlockModelGenerators.Y_ROT_270))
+                        .select(Direction.EAST,  BlockModelGenerators.X_ROT_90.then(BlockModelGenerators.Y_ROT_90))
+                ));
     }
 
     @Override
@@ -95,6 +98,7 @@ public class ModModelProvider extends FabricModelProvider {
         item.generateFlatItem(ModItems.VERIXIUM_PICKAXE, ModelTemplates.FLAT_HANDHELD_ITEM);
         item.generateFlatItem(ModItems.VERIXIUM_SHOVEL, ModelTemplates.FLAT_HANDHELD_ITEM);
         item.generateFlatItem(ModItems.VERIXIUM_HOE, ModelTemplates.FLAT_HANDHELD_ITEM);
+        item.generateSpear(ModItems.VERIXIUM_SPEAR);
 
         item.generateFlatItem(ModItems.VERIXIUM_FLUID_BUCKET, ModelTemplates.FLAT_ITEM);
 

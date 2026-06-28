@@ -3,6 +3,6 @@
   "textures": {
     "bottom": "tales-of-the-verdant-wind:block/verdant_storage_box_bottom",
     "side": "tales-of-the-verdant-wind:block/verdant_storage_box_side",
-    "top": "tales-of-the-verdant-wind:block/verdant_storage_box_top"
+    "top": "tales-of-the-verdant-wind:block/verdant_storage_box_top_open"
   }
 }

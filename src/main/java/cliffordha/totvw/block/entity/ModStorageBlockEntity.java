@@ -28,6 +28,7 @@ import java.util.List;
 public class ModStorageBlockEntity extends RandomizableContainerBlockEntity {
     private NonNullList<ItemStack> items;
     private final ContainerOpenersCounter openersCounter;
+    private int rows;
 
     public ModStorageBlockEntity(BlockPos worldPosition, BlockState blockState) {
         super(ModBlockEntityTypes.STORAGE_BOX, worldPosition, blockState);

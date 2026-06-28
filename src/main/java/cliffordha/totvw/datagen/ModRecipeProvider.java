@@ -240,7 +240,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         .pattern("XPX")
                         .pattern("XCX")
                         .pattern("XPX")
-                        .define('X', VerdantBlocks.VERDANT_SPRUCE_PLANKS)
+                        .define('X', VerdantBlocks.VERDANT_SPRUCE_LOG)
                         .define('P', VerdantBlocks.VERDANT_SPRUCE_SLAB)
                         .define('C', Items.CHEST)
                         .unlockedBy(getHasName(VerdantBlocks.VERDANT_SPRUCE_PLANKS), has(VerdantBlocks.VERDANT_SPRUCE_PLANKS))

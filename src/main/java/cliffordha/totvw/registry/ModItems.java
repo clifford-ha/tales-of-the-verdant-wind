@@ -146,11 +146,11 @@ public class ModItems {
                     .attributes(
                             ModArmorMaterial.VERIXIUM_ENTITY_ARMOR.createAttributes(ArmorType.BODY)
                                     .withModifierAdded(
-                                            Attributes.BURNING_TIME,
+                                            Attributes.MOVEMENT_SPEED,
                                             new AttributeModifier(
                                                     VERIXIUM_WOLF_ARMOR_EQUIPPED,
-                                                    -0.2F,
-                                                    AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                                                    0.3,
+                                                    AttributeModifier.Operation.ADD_VALUE
                                             ),
                                             EquipmentSlotGroup.BODY
                                     )
@@ -220,7 +220,7 @@ public class ModItems {
     public static final float V = 0.5f;
     public static final Item VERIXIUM_SPEAR = TOTVW.registerItem("verixium_spear",
             properties -> new Item(properties
-                    .spear(ModToolMaterial.VERIXIUM_TOOL_MATERIAL, 1.10f, 1.1f, 0.5f, 1.5f, 9.0f, 6.0f, 5.1f, 9.10f, 4.6f)
+                    .spear(ModToolMaterial.VERIXIUM_TOOL_MATERIAL, 1.10f, 1.1f, 0.5f, 1.3f, 9.0f, 6.0f, 5.1f, 9.10f, 4.6f)
                     .fireResistant()
             ));
     public static final Item VERIXIUM_SWORD = TOTVW.registerItem("verixium_sword",
