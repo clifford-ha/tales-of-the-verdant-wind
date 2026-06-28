@@ -27,19 +27,15 @@ public class VerixiumPowderBlock extends SandBlock {
     }
 
     @Override
-    protected boolean isPathfindable(BlockState state, PathComputationType type) {
-        return false;
-    }
-
-    @Override
     protected int getLightDampening(BlockState state) {
         return 0;
     }
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (level.getGameTime() % 10 * ( 1+ level.getRandom().nextFloat()) == 0) {
-            if (level.isRaining() || level.isThundering()) {
+        var isRaining = level.isRaining() || level.isThundering();
+        if (isRaining) {
+            if (level.getGameTime() % 10 * ( 1+ level.getRandom().nextFloat()) == 0) {
                 for (int i = 0; i < (4 * (1 + level.getRandom().nextFloat())); i++) {
                     level.addParticle(ModParticles.VERIXIUM_POWDER_RAIN_PARTICLE, pos.getX() + level.getRandom().nextFloat(), pos.getY() + 1, pos.getZ() + level.getRandom().nextFloat(), 0.0D, 0.0D, 0.0D);
                 }

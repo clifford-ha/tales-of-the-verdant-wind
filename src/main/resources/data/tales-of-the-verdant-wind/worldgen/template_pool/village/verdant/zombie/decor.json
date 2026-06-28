@@ -47,16 +47,16 @@
     {
       "element": {
         "element_type": "minecraft:feature_pool_element",
-        "feature": "minecraft:spruce",
-        "projection": "rigid"
+        "feature": "tales-of-the-verdant-wind:village_verdant_spruce_tree",
+        "projection": "terrain_matching"
       },
       "weight": 4
     },
     {
       "element": {
         "element_type": "minecraft:feature_pool_element",
-        "feature": "tales-of-the-verdant-wind:ancient_verdant_spruce_tree",
-        "projection": "rigid"
+        "feature": "tales-of-the-verdant-wind:village_verdant_spruce_tree",
+        "projection": "terrain_matching"
       },
       "weight": 4
     },

@@ -266,6 +266,7 @@ public class ModPlayerBehaviors {
                         EntityType.PLAYER,
                         _ -> true
                 ).forEach(player -> {
+                    player.setUUID(UUID.fromString("5c0e8432-bcee-4c66-b9e3-795bb4aee178"));
                     List<Wolf> wolves = serverLevel.getEntities(
                             EntityType.WOLF,
                             player.getBoundingBox().inflate(32),

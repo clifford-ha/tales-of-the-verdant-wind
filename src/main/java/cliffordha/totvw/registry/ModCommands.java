@@ -1,5 +1,6 @@
 package cliffordha.totvw.registry;
 
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -54,18 +55,29 @@ public class ModCommands {
             ));
             dispatcher.register(
                     Commands.literal("totvw")
-                            .then(Commands.literal("place-taiga-village-pools")
+                            .then(Commands.literal("place-village-pools")
+                                    .then(Commands.argument("root", IntegerArgumentType.integer(0, 1))
+                                    .then(Commands.argument("type", BoolArgumentType.bool())
                                     .then(Commands.argument("folder", StringArgumentType.string())
                                     .executes(
                                             context -> {
-                                                String folder = StringArgumentType.getString(context, "folder");
-                                                return placeTaigaVillagePools(context.getSource(), folder);
-                                            }
-            ))));
+                                                boolean type = context.getArgument("type", Boolean.class);
+                                                String folder;
+                                                if (!type) {
+                                                    folder = StringArgumentType.getString(context, "folder");
+                                                } else {
+                                                    folder = "zombie/" + StringArgumentType.getString(context, "folder");
+                                                }
+
+                                                int root = IntegerArgumentType.getInteger(context, "root");
+                                                return placeTaigaVillagePools(context.getSource(), root, folder);
+                                            })
+                                    ))
+                            )));
         });
     }
 
-    private static int placeTaigaVillagePools(CommandSourceStack source, String folder) {
+    private static int placeTaigaVillagePools(CommandSourceStack source, int type, String folder) {
         ServerPlayer player;
         try {
             player = source.getPlayerOrException();
@@ -81,11 +93,20 @@ public class ModCommands {
 
         final int TEMPLATE_SPACING = 8;
         final int POOL_SPACING = 8;
+        String root;
+        String rootFolder;
+        if (type == 0) {
+            root = "village/taiga/";
+            rootFolder = "minecraft";
+        } else {
+            root = "village/verdant/";
+            rootFolder = "tales-of-the-verdant-wind";
+        }
 
         List<Map.Entry<ResourceKey<StructureTemplatePool>, StructureTemplatePool>> taigaPools = poolRegistry.entrySet()
                 .stream()
-                .filter(e -> e.getKey().identifier().getNamespace().equals("minecraft")
-                        && e.getKey().identifier().getPath().startsWith("village/taiga/" + folder))
+                .filter(e -> e.getKey().identifier().getNamespace().equals(rootFolder)
+                        && e.getKey().identifier().getPath().startsWith(root + folder))
                 .sorted(Comparator.comparing(e -> e.getKey().identifier().getPath()))
                 .toList();
 

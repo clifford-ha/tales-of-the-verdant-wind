@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "tales-of-the-verdant-wind:block/verdant_storage_bottom",
+    "side": "tales-of-the-verdant-wind:block/verdant_storage_side",
+    "top": "tales-of-the-verdant-wind:block/verdant_storage_open"
+  }
+}

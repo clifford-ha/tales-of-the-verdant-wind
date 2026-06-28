@@ -9,17 +9,17 @@ import cliffordha.totvw.registry.ModItems;
 import cliffordha.totvw.registry.ModParticles;
 import cliffordha.totvw.tag.ModBiomeTags;
 import cliffordha.totvw.tag.ModFluidTags;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.sniffer.Sniffer;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.properties.Property;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -47,6 +47,8 @@ import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+
+import static cliffordha.totvw.entity.TConstants.addHiddenEffect;
 
 @SuppressWarnings("NullableProblems")
 public abstract class VerixiumFluid extends FlowingFluid {
@@ -79,10 +81,9 @@ public abstract class VerixiumFluid extends FlowingFluid {
         } else if (random.nextInt(10) == 0) {
             level.addParticle(ParticleTypes.UNDERWATER, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + random.nextDouble(), (double)pos.getZ() + random.nextDouble(), 0.0F, 0.0F, 0.0F);
         }
-        if (random.nextDouble() <= 0.08) {
+        if (random.nextDouble() <= 0.1) {
             level.addParticle(ModParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, glowX, glowY, glowZ, 3D, 1D, 3D);
         }
-
     }
 
     @Override
@@ -98,9 +99,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
     }
 
     @Override
-    protected boolean isRandomlyTicking() {
-        return true;
-    }
+    protected boolean isRandomlyTicking() {return true;}
 
     private static void convertToDeepslate(ServerLevel level, BlockPos pos) {
         double xx = pos.getX();
@@ -177,64 +176,74 @@ public abstract class VerixiumFluid extends FlowingFluid {
     private static void whoIsThis(LivingEntity entity) {
         int bossTime;
         int bossAmp;
-        int playerTime;
-        int playerAmp;
+        int time;
+        int amplifier;
         if (entity.level().getBiome(entity.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES)) {
             bossTime = TOTVW.setTime(1, 30);
             bossAmp = 1;
-            playerTime = TOTVW.setTime(0, 12);
-            playerAmp = 0;
+            time = TOTVW.setTime(0, 12);
+            amplifier = 0;
         } else {
             bossTime = TOTVW.setTime(0, 40);
             bossAmp = 0;
-            playerTime = TOTVW.setTime(0, 3);
-            playerAmp = -1;
+            time = TOTVW.setTime(0, 3);
+            amplifier = -1;
         }
         switch (entity) {
             case Warden warden -> {
-                warden.addEffect(new MobEffectInstance(MobEffects.WITHER, bossTime, bossAmp, false, false));
-                if (!(warden.level().getDifficulty() == Difficulty.HARD)) {
-                    evaluateSlowness(warden);
-                }
+                addHiddenEffect(warden, MobEffects.WITHER, bossTime, bossAmp);
+                if ((warden.level().getDifficulty() == Difficulty.HARD)) return;
+                evaluateSlowness(warden);
             }
             case Player player -> {
-                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, playerTime, playerAmp, false, false));
-                if (!player.isCreative() || !player.isSpectator()) { evaluateSlowness(player); }
+                addHiddenEffect(player, MobEffects.REGENERATION, time, amplifier);
+                if (player.isCreative() || player.isSpectator()) return;
+                evaluateSlowness(player);
             }
             case Wolf wolf -> {
-                wolf.addEffect(new MobEffectInstance(MobEffects.REGENERATION, (int) (playerTime * 1.25), playerAmp, false, false));
-                if (!wolf.isBaby()) { evaluateSlowness(wolf); }
+                addHiddenEffect(wolf, MobEffects.REGENERATION, Mth.ceil(time * 1.4), amplifier);
+                if (wolf.isBaby()) return;
+                evaluateSlowness(wolf);
+            }
+            case Sniffer sniffer -> {
+                addHiddenEffect(sniffer, MobEffects.REGENERATION, time, amplifier);
             }
             case Villager villager -> {
-                villager.addEffect(new MobEffectInstance(MobEffects.REGENERATION, playerTime, playerAmp, false, false));
-                if (!villager.isBaby()) { evaluateSlowness(villager); }
+                addHiddenEffect(villager, MobEffects.REGENERATION, Mth.ceil(time * 1.2), amplifier);
+                if (villager.isBaby()) return;
+                evaluateSlowness(villager);
             }
             case WanderingTrader wanderingTrader -> {
-                wanderingTrader.addEffect(new MobEffectInstance(MobEffects.REGENERATION, playerTime, playerAmp, false, false));
-                if (!wanderingTrader.isBaby()) { evaluateSlowness(wanderingTrader); }
+                addHiddenEffect(wanderingTrader, MobEffects.REGENERATION, Mth.ceil(time * 1.2), amplifier);
+                if (wanderingTrader.isBaby()) return;
+                evaluateSlowness(wanderingTrader);
             }
             default -> {
-                entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, playerTime, playerAmp, false, false));
+                addHiddenEffect(entity, MobEffects.REGENERATION, time, amplifier);
+                evaluateSlowness(entity);
             }
         }
     }
     private static void evaluateSlowness(LivingEntity livingEntity) {
         int defaultDuration;
         int defaultAmp;
-        if (livingEntity.level().getBiome(livingEntity.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES)) {
+        boolean inVerdantBiome = livingEntity.level().getBiome(livingEntity.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES);
+        boolean inForest = livingEntity.level().getBiome(livingEntity.blockPosition()).is(BiomeTags.IS_FOREST);
+        boolean inEnd = livingEntity.level().getBiome(livingEntity.blockPosition()).is(BiomeTags.IS_END);
+        if (inVerdantBiome) {
             defaultDuration = TOTVW.setTime(0, 3);
             defaultAmp = 0;
-        } else if (livingEntity.level().getBiome(livingEntity.blockPosition()).is(BiomeTags.IS_FOREST)) {
+        } else if (inForest) {
             defaultDuration = TOTVW.setTime(0, 30);
             defaultAmp = 0;
-        } else if (livingEntity.level().getBiome(livingEntity.blockPosition()).is(BiomeTags.IS_END)) {
+        } else if (inEnd) {
             defaultDuration = TOTVW.setTime(0, 12);
             defaultAmp = 1;
         } else {
             defaultDuration = TOTVW.setTime(0, 45);
             defaultAmp = 2;
         }
-        livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, defaultDuration, defaultAmp, false, false));
+        addHiddenEffect(livingEntity, MobEffects.SLOWNESS, defaultDuration, defaultAmp);
     }
 
     @Override

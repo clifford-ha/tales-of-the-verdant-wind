@@ -1,6 +1,7 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.block.entity.ModStorageBlockEntity;
 import cliffordha.totvw.registry.blocks.VerdantBlocks;
 import cliffordha.totvw.block.entity.ModHangingSignBlockEntity;
 import cliffordha.totvw.block.entity.ModShelfBlockEntity;
@@ -36,5 +37,8 @@ public class ModBlockEntityTypes {
     ));
     public static final BlockEntityType<ModShelfBlockEntity> SHELF = createBlockEntityType("shelf", new BlockEntityType<>(ModShelfBlockEntity::new,
             Set.of(VerdantBlocks.VERDANT_SPRUCE_SHELF)
+    ));
+    public static final BlockEntityType<ModStorageBlockEntity> STORAGE_BOX = createBlockEntityType("storage_box", new BlockEntityType<>(ModStorageBlockEntity::new,
+            Set.of(VerdantBlocks.VERDANT_STORAGE_BOX)
     ));
 }

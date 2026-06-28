@@ -48,10 +48,10 @@ public class VerdantBlocks extends Blocks {
                     .noCollision()
                     .randomTicks()
                     .instabreak()
+                    .ignitedByLava()
                     .sound(SoundType.GRASS)
-                    .pushReaction(PushReaction.DESTROY),
-                    Blocks.GRASS_BLOCK),
-            BlockBehaviour.Properties.ofFullCopy(Blocks.MOSS_BLOCK),
+                    .pushReaction(PushReaction.DESTROY)),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_SAPLING),
             true);
 
     public static final Block POTTED_VERDANT_SPRUCE_SAPLING = TOTVW.registerBlock( "potted_verdant_spruce_sapling",
@@ -59,7 +59,7 @@ public class VerdantBlocks extends Blocks {
                     .noOcclusion()
                     .strength(0.75F, 0.5F)
                     .pushReaction(PushReaction.DESTROY)),
-            BlockBehaviour.Properties.of(),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_SPRUCE_SAPLING),
             false);
 
     public final static Block VERDANT_MOSS_BLOCK = TOTVW.registerBlock("verdant_moss_block",
@@ -76,6 +76,7 @@ public class VerdantBlocks extends Blocks {
             properties -> new Block(properties
                     .sound(SoundType.WOOD)
                     .strength(wood)
+                    .ignitedByLava()
             ),
             BlockBehaviour.Properties.of(),
             true);
@@ -84,6 +85,7 @@ public class VerdantBlocks extends Blocks {
             properties -> new SlabBlock(properties
                     .sound(SoundType.WOOD)
                     .strength(wood)
+                    .ignitedByLava()
             ),
             BlockBehaviour.Properties.of(),
             true);
@@ -92,6 +94,7 @@ public class VerdantBlocks extends Blocks {
             properties -> new StairBlock(VERDANT_SPRUCE_PLANKS.defaultBlockState(), properties
                     .sound(SoundType.WOOD)
                     .strength(wood)
+                    .ignitedByLava()
             ),
             BlockBehaviour.Properties.of(),
             true);
@@ -117,6 +120,7 @@ public class VerdantBlocks extends Blocks {
             properties -> new FenceBlock(properties
                     .sound(SoundType.WOOD)
                     .strength(wood)
+                    .ignitedByLava()
             ),
             BlockBehaviour.Properties.of(),
             true);
@@ -125,6 +129,7 @@ public class VerdantBlocks extends Blocks {
             properties -> new FenceGateBlock(VERDANT_SPRUCE_WOOD_TYPE, properties
                     .sound(SoundType.WOOD)
                     .strength(wood)
+                    .ignitedByLava()
             ),
             BlockBehaviour.Properties.of(),
             true);
@@ -134,6 +139,7 @@ public class VerdantBlocks extends Blocks {
                     .sound(SoundType.WOOD)
                     .strength(3.0f)
                     .noOcclusion()
+                    .ignitedByLava()
                     .isValidSpawn(Blocks::never)
             ),
             BlockBehaviour.Properties.of(),
@@ -143,6 +149,7 @@ public class VerdantBlocks extends Blocks {
             properties -> new DoorBlock(VERDANT_SPRUCE_SET, properties
                     .sound(SoundType.WOOD)
                     .strength(wood)
+                    .ignitedByLava()
             ),
             BlockBehaviour.Properties.of(),
             true);
@@ -151,6 +158,7 @@ public class VerdantBlocks extends Blocks {
             properties -> new RotatedPillarBlock(properties
                     .sound(SoundType.WOOD)
                     .strength(wood)
+                    .ignitedByLava()
             ),
             BlockBehaviour.Properties.of(),
             true);
@@ -159,6 +167,7 @@ public class VerdantBlocks extends Blocks {
             properties -> new RotatedPillarBlock(properties
                     .sound(SoundType.WOOD)
                     .strength(wood)
+                    .ignitedByLava()
             ),
             BlockBehaviour.Properties.of(),
             true);
@@ -167,16 +176,17 @@ public class VerdantBlocks extends Blocks {
             properties -> new RotatedPillarBlock(properties
                     .sound(SoundType.WOOD)
                     .strength(wood)
+                    .ignitedByLava()
             ),
             BlockBehaviour.Properties.of(),
             true
     );
     public final static Block STRIPPED_VERDANT_SPRUCE_WOOD = TOTVW.registerBlock("stripped_verdant_spruce_wood",
             properties -> new RotatedPillarBlock(properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
+                    //.sound(SoundType.WOOD)
+                    //.strength(wood)
             ),
-            BlockBehaviour.Properties.of(),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.STRIPPED_SPRUCE_WOOD),
             true
     );
     public static final Block VERDANT_SPRUCE_SIGN = TOTVW.registerBlock("verdant_spruce_sign",
@@ -206,6 +216,13 @@ public class VerdantBlocks extends Blocks {
     public static final Block VERDANT_SPRUCE_SHELF = TOTVW.registerBlock("verdant_spruce_shelf",
             ModShelfBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_SHELF)
+                    .sound(SoundType.WOOD)
+                    .strength(wood),
+            true
+    );
+    public static final Block VERDANT_STORAGE_BOX = TOTVW.registerBlock("verdant_storage_box",
+            ModStorageBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .sound(SoundType.WOOD)
                     .strength(wood),
             true

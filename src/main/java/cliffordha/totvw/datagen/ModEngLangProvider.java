@@ -48,8 +48,10 @@ public class ModEngLangProvider extends FabricLanguageProvider {
         text.add(ModItems.VERDANT_SPRUCE_SIGN, "Verdant Spruce Sign");
         text.add(ModItems.VERDANT_SPRUCE_HANGING_SIGN, "Verdant Spruce Hanging Sign");
         text.add(VerdantBlocks.VERDANT_SPRUCE_SHELF, "Verdant Spruce Shelf");
+        text.add(VerdantBlocks.VERDANT_STORAGE_BOX, "Verdant Spruce Storage Box");
 
-        text.add("container.blast_synthesizing_furnace", "Blast Synthesizing Furnace");
+        text.add("container.tales-of-the-verdant-wind.verdant_spruce_storage_box", "Verdant Spruce Storage Box");
+        text.add("container.tales-of-the-verdant-wind.storage_box", "Storage Box");
 
         text.add(ModItems.VERDANT_SPRUCE_BOAT, "Verdant Spruce Boat");
         text.add(ModItems.VERDANT_SPRUCE_CHEST_BOAT, "Verdant Spruce Chest Boat");

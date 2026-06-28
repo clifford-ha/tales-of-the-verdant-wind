@@ -2,26 +2,14 @@
   "feature": "tales-of-the-verdant-wind:verdant_spruce_tree",
   "placement": [
     {
-      "type": "minecraft:count",
-      "count": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 7,
-        "min_inclusive": 0
-      }
-    },
-    {
       "type": "minecraft:in_square"
     },
     {
-      "type": "minecraft:height_range",
-      "height": {
+      "type": "minecraft:count",
+      "count": {
         "type": "minecraft:uniform",
-        "max_inclusive": {
-          "absolute": 84
-        },
-        "min_inclusive": {
-          "absolute": 0
-        }
+        "max_inclusive": 2,
+        "min_inclusive": 0
       }
     },
     {
@@ -36,11 +24,11 @@
       "type": "minecraft:block_predicate_filter",
       "predicate": {
         "type": "minecraft:matching_blocks",
-        "blocks": "minecraft:air"
+        "blocks": [
+          "minecraft:short_grass",
+          "minecraft:fern"
+        ]
       }
-    },
-    {
-      "type": "minecraft:biome"
     }
   ]
 }
