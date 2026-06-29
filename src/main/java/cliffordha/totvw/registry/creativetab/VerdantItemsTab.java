@@ -38,7 +38,7 @@ public class VerdantItemsTab extends Item {
                 output.accept(VerdantBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
                 output.accept(VerdantBlocks.VERDANT_SPRUCE_PLANKS);
                 output.accept(VerdantBlocks.VERDANT_SPRUCE_SHELF);
-                output.accept(VerdantBlocks.VERDANT_STORAGE_BOX);
+                output.accept(VerdantBlocks.VERDANT_SPRUCE_STORAGE_BOX);
                 output.accept(VerdantBlocks.VERDANT_SPRUCE_TRAPDOOR);
                 output.accept(VerdantBlocks.VERDANT_SPRUCE_DOOR);
                 output.accept(VerdantBlocks.VERDANT_SPRUCE_SLAB);

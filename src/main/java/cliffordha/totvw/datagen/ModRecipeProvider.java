@@ -236,7 +236,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 hangingSign(ModItems.VERDANT_SPRUCE_HANGING_SIGN, VerdantBlocks.VERDANT_SPRUCE_PLANKS);
                 shelf(VerdantBlocks.VERDANT_SPRUCE_SHELF, VerdantBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
 
-                shaped(RecipeCategory.REDSTONE, VerdantBlocks.VERDANT_STORAGE_BOX, 1)
+                shaped(RecipeCategory.REDSTONE, VerdantBlocks.VERDANT_SPRUCE_STORAGE_BOX, 1)
                         .pattern("XPX")
                         .pattern("XCX")
                         .pattern("XPX")

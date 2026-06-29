@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "tales-of-the-verdant-wind:verdant_storage_box"
+        "recipe": "tales-of-the-verdant-wind:verdant_spruce_storage_box"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "tales-of-the-verdant-wind:verdant_storage_box"
+      "tales-of-the-verdant-wind:verdant_spruce_storage_box"
     ]
   }
 }

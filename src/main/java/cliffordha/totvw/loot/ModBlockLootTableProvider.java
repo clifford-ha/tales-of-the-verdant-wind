@@ -73,7 +73,7 @@ public class ModBlockLootTableProvider extends FabricBlockLootSubProvider {
         dropSelf(VerdantBlocks.VERDANT_SPRUCE_SIGN);
         dropSelf(VerdantBlocks.VERDANT_SPRUCE_HANGING_SIGN);
         dropSelf(VerdantBlocks.VERDANT_SPRUCE_SHELF);
-        dropSelf(VerdantBlocks.VERDANT_STORAGE_BOX);
+        dropSelf(VerdantBlocks.VERDANT_SPRUCE_STORAGE_BOX);
 
         dropSelf(ModBlocks.IRIDESCENT_GLASS);
         dropSelf(ModBlocks.IRIDESCENT_GLASS_PANE);

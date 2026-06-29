@@ -6,7 +6,6 @@ import cliffordha.totvw.registry.ModBlocks;
 import cliffordha.totvw.registry.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.ItemModelOutput;
 import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
@@ -17,7 +16,6 @@ import net.minecraft.client.data.models.model.TexturedModel;
 
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
-import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -55,15 +53,15 @@ public class ModModelProvider extends FabricModelProvider {
         block.woodProvider(VerdantBlocks.STRIPPED_VERDANT_SPRUCE_LOG).log(VerdantBlocks.STRIPPED_VERDANT_SPRUCE_LOG).wood(VerdantBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
 
         MultiVariant OPEN = BlockModelGenerators.plainVariant(
-                ModelTemplates.CUBE_BOTTOM_TOP.createWithSuffix(VerdantBlocks.VERDANT_STORAGE_BOX, "_open",
-                        storageBoxTextureMapping(VerdantBlocks.VERDANT_STORAGE_BOX, "_top_open"), block.modelOutput)
+                ModelTemplates.CUBE_BOTTOM_TOP.createWithSuffix(VerdantBlocks.VERDANT_SPRUCE_STORAGE_BOX, "_open",
+                        storageBoxTextureMapping(VerdantBlocks.VERDANT_SPRUCE_STORAGE_BOX, "_top_open"), block.modelOutput)
         );
         MultiVariant CLOSED = BlockModelGenerators.plainVariant(
-                ModelTemplates.CUBE_BOTTOM_TOP.create(VerdantBlocks.VERDANT_STORAGE_BOX,
-                        storageBoxTextureMapping(VerdantBlocks.VERDANT_STORAGE_BOX, "_top"), block.modelOutput)
+                ModelTemplates.CUBE_BOTTOM_TOP.create(VerdantBlocks.VERDANT_SPRUCE_STORAGE_BOX,
+                        storageBoxTextureMapping(VerdantBlocks.VERDANT_SPRUCE_STORAGE_BOX, "_top"), block.modelOutput)
         );
 
-        block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VerdantBlocks.VERDANT_STORAGE_BOX)
+        block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VerdantBlocks.VERDANT_SPRUCE_STORAGE_BOX)
                 .with(BlockModelGenerators.createBooleanModelDispatch(ModStorageBlock.OPEN, OPEN, CLOSED))
                 .with(PropertyDispatch.modify(BlockStateProperties.FACING)
                         .select(Direction.DOWN,  BlockModelGenerators.X_ROT_180)

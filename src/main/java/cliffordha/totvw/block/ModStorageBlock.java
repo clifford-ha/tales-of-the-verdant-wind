@@ -24,12 +24,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
 public class ModStorageBlock extends BaseEntityBlock {
-    public static final MapCodec<ModStorageBlock> CODEC = simpleCodec(ModStorageBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static BooleanProperty OPEN = BlockStateProperties.OPEN;
+
     public ModStorageBlock(Properties properties) {
         super(properties);
     }
+
+    public static final MapCodec<? extends BaseEntityBlock> CODEC = simpleCodec(ModStorageBlock::new);
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {

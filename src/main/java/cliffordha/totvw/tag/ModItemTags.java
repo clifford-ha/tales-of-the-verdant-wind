@@ -125,6 +125,12 @@ public class ModItemTags extends FabricTagsProvider.ItemTagsProvider {
 
         valueLookupBuilder(ItemTags.REPAIRS_DIAMOND_ARMOR)
                 .add(ModItems.VERIXIUM_POWDER);
+
+        valueLookupBuilder(ItemTags.LUNGE_ENCHANTABLE)
+                .add(ModItems.VERIXIUM_SPEAR);
+
+        valueLookupBuilder(ItemTags.DOORS)
+                .add(VerdantBlocks.VERDANT_SPRUCE_DOOR.asItem());
     }
 
     public static final TagKey<Item> VERDANT_ITEMS = TagKey.create(Registries.ITEM,
