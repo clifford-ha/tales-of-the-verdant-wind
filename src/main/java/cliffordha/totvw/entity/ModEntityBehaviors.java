@@ -4,6 +4,8 @@ import cliffordha.totvw.entity.player.InteractionData;
 import cliffordha.totvw.registry.ModAttachments;
 import cliffordha.totvw.registry.ModColors;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -16,6 +18,10 @@ import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromPlayer;
 
 public final class ModEntityBehaviors {
     public static void register() {
+        initializeTrust();
+    }
+
+    private static void initializeTrust() {
         ServerLivingEntityEvents.AFTER_DAMAGE.register((victim, damageSource, _, _, _) -> {
             Entity attacker = damageSource.getEntity();
             if (attacker == null) return;

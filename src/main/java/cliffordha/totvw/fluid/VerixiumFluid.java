@@ -52,8 +52,6 @@ import static cliffordha.totvw.entity.TConstants.addHiddenEffect;
 
 @SuppressWarnings("NullableProblems")
 public abstract class VerixiumFluid extends FlowingFluid {
-    private static final int TICK_SECONDS = 20;
-    private static final int TICK_MINUTES = TICK_SECONDS * 60;
     private static final Direction[] ALL_DIRECTIONS = { Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP};
 
     @Override
@@ -162,7 +160,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
 
         if (!(world instanceof ServerLevel) || !(entity instanceof LivingEntity livingEntity)) return;
 
-        if (world.getGameTime() % (TICK_SECONDS * 3) == 0) {
+        if (world.getGameTime() % (60 * 3) == 0) {
             if (entity.level().getBiome(entity.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES)) {
                 if (livingEntity.hasEffect(MobEffects.WITHER)) {
                     livingEntity.removeEffect(MobEffects.POISON);

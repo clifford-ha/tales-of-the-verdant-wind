@@ -19,7 +19,6 @@ import java.util.Arrays;
 import static cliffordha.totvw.entity.TConstants.*;
 
 public class ConfigTools {
-
     public static void depleteCooldown(LivingEntity entity, AttachmentType<Integer> skillCD) {
         int current = entity.getAttachedOrElse(skillCD, 0);
         if (current <= 0) return;

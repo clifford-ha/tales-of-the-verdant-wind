@@ -1,4 +1,4 @@
-package cliffordha.totvw.mixin;
+package cliffordha.totvw.mixin.wolf;
 
 import cliffordha.totvw.tag.ModItemTags;
 import net.minecraft.tags.DamageTypeTags;

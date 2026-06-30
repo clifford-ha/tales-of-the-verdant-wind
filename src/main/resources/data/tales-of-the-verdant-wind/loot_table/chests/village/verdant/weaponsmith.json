@@ -104,13 +104,13 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 1,
+                "max": 4,
                 "min": 1
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "tales-of-the-verdant-wind:verixium_fluid_bucket",
+          "name": "tales-of-the-verdant-wind:verixium_powder",
           "weight": 2
         },
         {
@@ -178,5 +178,5 @@
       "rolls": 1
     }
   ],
-  "random_sequence": "tales-of-the-verdant-wind:chests/village/verdant/default_loot"
+  "random_sequence": "tales-of-the-verdant-wind:chests/village/verdant/weaponsmith"
 }

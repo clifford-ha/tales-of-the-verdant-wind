@@ -1,4 +1,4 @@
-package cliffordha.totvw.mixin;
+package cliffordha.totvw.mixin.wolf;
 
 import cliffordha.totvw.entity.player.InteractionData;
 import cliffordha.totvw.registry.ModAttachments;
@@ -18,7 +18,7 @@ import static cliffordha.totvw.entity.TConstants.wolfEnchantmentLVL;
 public class WolfAttackableTargetsMixin {
 
     @Inject(method = "wantsToAttack", at = @At("HEAD"), cancellable = true)
-    private void wantsToAttack(LivingEntity target, LivingEntity owner, CallbackInfoReturnable<Boolean> cir) {
+    private void totvw$wantsToAttack(LivingEntity target, LivingEntity owner, CallbackInfoReturnable<Boolean> cir) {
         Wolf wolf = (Wolf) (Object) this;
         if (target instanceof Creeper) {
             if (wolf.getHealth() < wolf.getMaxHealth() * 0.5f) return;

@@ -133,7 +133,7 @@ public final class ModWolfBehaviors {
         TICK_RULES.add(WolfBehaviorRule.forAny(WolfCondition.tick(0, 1), (wolf, _) -> {
             if (TOTVWConfig.get().sendLog) {ConfigTools.setWolfConfiguration(wolf, 0);}
             if (TOTVWConfig.get().otherAttachmentCD) {
-                ConfigTools.depleteCooldown(wolf, ModAttachments.Wolf.TIMER_AIR_SUPPLY);
+                ConfigTools.depleteCooldown(wolf,  ModAttachments.Wolf.TIMER_AIR_SUPPLY);
             }
             if (TOTVWConfig.get().attachmentSkillCD) {
                 ConfigTools.depleteCooldown(wolf, ModAttachments.Wolf.CD_BLESSING_OF_THE_VERDANT_WIND);

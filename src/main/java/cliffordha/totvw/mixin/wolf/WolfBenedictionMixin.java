@@ -1,4 +1,4 @@
-package cliffordha.totvw.mixin;
+package cliffordha.totvw.mixin.wolf;
 
 import cliffordha.totvw.registry.ModAttachments;
 import cliffordha.totvw.registry.ModColors;

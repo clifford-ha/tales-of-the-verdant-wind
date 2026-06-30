@@ -24,14 +24,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
 public class ModStorageBlock extends BaseEntityBlock {
+    public static final MapCodec<? extends BaseEntityBlock> CODEC = simpleCodec(ModStorageBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static BooleanProperty OPEN = BlockStateProperties.OPEN;
 
     public ModStorageBlock(Properties properties) {
         super(properties);
     }
-
-    public static final MapCodec<? extends BaseEntityBlock> CODEC = simpleCodec(ModStorageBlock::new);
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
@@ -56,12 +55,12 @@ public class ModStorageBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected void affectNeighborsAfterRemoval(final BlockState state, final ServerLevel level, final BlockPos pos, final boolean movedByPiston) {
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
         Containers.updateNeighboursAfterDestroy(state, level, pos);
     }
 
     @Override
-    protected void tick(final BlockState state, final ServerLevel level, final BlockPos pos, final RandomSource random) {
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof ModStorageBlockEntity) {
             ((ModStorageBlockEntity) blockEntity).recheckOpen();
@@ -69,32 +68,32 @@ public class ModStorageBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected boolean hasAnalogOutputSignal(final BlockState state) {
+    protected boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
 
     @Override
-    protected int getAnalogOutputSignal(final BlockState state, final Level level, final BlockPos pos, final Direction direction) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
         return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
     }
 
     @Override
-    protected BlockState rotate(final BlockState state, final Rotation rotation) {
+    protected BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(final BlockState state, final Mirror mirror) {
+    protected BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, OPEN);
+        builder.add(OPEN, FACING);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite()).setValue(OPEN, false);
+        return this.defaultBlockState().setValue(OPEN, false).setValue(FACING, context.getNearestLookingDirection().getOpposite());
     }
 }

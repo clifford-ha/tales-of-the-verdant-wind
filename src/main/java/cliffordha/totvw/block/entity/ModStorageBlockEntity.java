@@ -9,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.ContainerUser;
@@ -20,7 +19,6 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -32,10 +30,12 @@ public class ModStorageBlockEntity extends RandomizableContainerBlockEntity {
     private NonNullList<ItemStack> items;
     private final ContainerOpenersCounter openersCounter;
 
+    private final int CONTAINER_SIZE = 9 * 6;
+
     public ModStorageBlockEntity(BlockPos worldPosition, BlockState blockState) {
         super(ModBlockEntityTypes.STORAGE_BOX, worldPosition, blockState);
 
-        this.items = NonNullList.withSize(5 * 9, ItemStack.EMPTY);
+        this.items = NonNullList.withSize(CONTAINER_SIZE, ItemStack.EMPTY);
         this.openersCounter = new ContainerOpenersCounter() {
             protected void onOpen(Level level, BlockPos pos, BlockState state) {
                 ModStorageBlockEntity.this.playSound(state, SoundEvents.BARREL_OPEN);
@@ -88,12 +88,31 @@ public class ModStorageBlockEntity extends RandomizableContainerBlockEntity {
 
     @Override
     protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
-        return ChestMenu.fiveRows(containerId, inventory);
+        return new ChestMenu(MenuType.GENERIC_9x6, containerId, inventory, this, 6);
+    }
+
+    @Override
+    protected void loadAdditional(final ValueInput input) {
+        super.loadAdditional(input);
+        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        if (!this.tryLoadLootTable(input)) {
+            ContainerHelper.loadAllItems(input, this.items);
+        }
+
+    }
+
+    @Override
+    protected void saveAdditional(final ValueOutput output) {
+        super.saveAdditional(output);
+        if (!this.trySaveLootTable(output)) {
+            ContainerHelper.saveAllItems(output, this.items);
+        }
+
     }
 
     @Override
     public int getContainerSize() {
-        return 5 * 9;
+        return CONTAINER_SIZE;
     }
 
     @Override
@@ -109,25 +128,6 @@ public class ModStorageBlockEntity extends RandomizableContainerBlockEntity {
         if (!this.remove && !containerUser.getLivingEntity().isSpectator()) {
             this.openersCounter.decrementOpeners(containerUser.getLivingEntity(), this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
-    }
-
-    @Override
-    protected void saveAdditional(final ValueOutput output) {
-        super.saveAdditional(output);
-        if (!this.trySaveLootTable(output)) {
-            ContainerHelper.saveAllItems(output, this.items);
-        }
-
-    }
-
-    @Override
-    protected void loadAdditional(final ValueInput input) {
-        super.loadAdditional(input);
-        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (!this.tryLoadLootTable(input)) {
-            ContainerHelper.loadAllItems(input, this.items);
-        }
-
     }
 
     @Override

@@ -9,7 +9,7 @@ accessible method net/minecraft/world/entity/LivingEntity actuallyHurt (Lnet/min
 accessible field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool templates Lit/unimi/dsi/fastutil/objects/ObjectArrayList;
 accessible method net/minecraft/world/level/levelgen/structure/pools/SinglePoolElement getTemplate (Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager;)Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate;
 
-accessible class net/minecraft/world/inventory/ChestMenu
+accessible field net/minecraft/world/entity/ai/village/poi/PoiTypes TYPE_BY_STATE Ljava/util/Map;
 
 
 
