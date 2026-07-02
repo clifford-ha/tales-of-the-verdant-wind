@@ -20,4 +20,8 @@ public final class ModColors {
 
     public static final int DEFAULT = 0xDCFAFA;
     public static final int DEFAULT_MUTED = 0x90A4AE;
+
+    public static final int BLOCK_VERDANT_WOOD = 0x19281B;
+    public static final int BLOCK_VERDANT_LEAVES = 0x0B604B;
+    public static final int BLOCK_VERDANT_LOG = 0x517360;
 }

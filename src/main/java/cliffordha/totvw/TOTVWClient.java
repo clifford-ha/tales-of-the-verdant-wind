@@ -26,7 +26,6 @@ import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.block.TrapDoorBlock;
 
 import java.util.List;
 
@@ -81,7 +80,7 @@ public class TOTVWClient implements ClientModInitializer {
     }
     private static int getRainbowColor() {
         float hue = (System.currentTimeMillis() % 4000) / 1000.0f;
-        return java.awt.Color.HSBtoRGB(hue, 0.25f, 1.0f);
+        return java.awt.Color.HSBtoRGB(hue, 0.75f, 1.0f);
     }
     private static int setColor(int color) {
         return (0xff << 24) | color;

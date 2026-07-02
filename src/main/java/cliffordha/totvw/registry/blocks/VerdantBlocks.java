@@ -15,11 +15,9 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraft.world.level.material.PushReaction;
 
 public class VerdantBlocks extends Blocks {
     public VerdantBlocks() {}
-
 
     public static final BlockSetType VERDANT_SPRUCE_SET = BlockSetTypeBuilder.copyOf(BlockSetType.SPRUCE)
             .register(Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce"));
@@ -27,166 +25,89 @@ public class VerdantBlocks extends Blocks {
     public static final WoodType VERDANT_SPRUCE_WOOD_TYPE = WoodTypeBuilder.copyOf(WoodType.SPRUCE)
             .register(Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce"), VERDANT_SPRUCE_SET);
 
-    public static final float wood = 2.0f;
-
     public static final Block VERDANT_SPRUCE_LEAVES = TOTVW.registerBlock("verdant_spruce_leaves",
-            properties -> new VerdantSpruceLeavesBlock( 0.00f, ParticleTypes.ASH, properties
-                    .strength(0.2F, 0.5F)
-                    .sound(SoundType.GRASS)
-                    .requiresCorrectToolForDrops()
-                    .noOcclusion().isValidSpawn(Blocks::ocelotOrParrot)
-                    .isSuffocating(Blocks::never)
-                    .isViewBlocking(Blocks::never)
-                    .ignitedByLava()
-                    .pushReaction(PushReaction.DESTROY)
-                    .isRedstoneConductor(Blocks::never)),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            properties -> new VerdantSpruceLeavesBlock( 0.00f, ParticleTypes.ASH, properties),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_LEAVES),
+            true
+    );
     public static final Block VERDANT_SPRUCE_SAPLING = TOTVW.registerBlock("verdant_spruce_sapling",
-            properties -> new ModSaplingBlock(ModTreeGrowers.VERDANT, properties
-                    .noCollision()
-                    .randomTicks()
-                    .instabreak()
-                    .ignitedByLava()
-                    .sound(SoundType.GRASS)
-                    .pushReaction(PushReaction.DESTROY)),
+            properties -> new ModSaplingBlock(ModTreeGrowers.VERDANT, properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_SAPLING),
-            true);
-
+            true
+    );
     public static final Block POTTED_VERDANT_SPRUCE_SAPLING = TOTVW.registerBlock( "potted_verdant_spruce_sapling",
-            properties -> new FlowerPotBlock(VERDANT_SPRUCE_SAPLING, properties
-                    .noOcclusion()
-                    .strength(0.75F, 0.5F)
-                    .pushReaction(PushReaction.DESTROY)),
+            properties -> new FlowerPotBlock(VERDANT_SPRUCE_SAPLING, properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_SPRUCE_SAPLING),
-            false);
-
+            false
+    );
     public final static Block VERDANT_MOSS_BLOCK = TOTVW.registerBlock("verdant_moss_block",
-            properties -> new Block( properties
-                    .sound(SoundType.MOSS)
-                    .ignitedByLava()
-                    .strength(0.1F)
-                    .isValidSpawn((_, _, _, entityType) -> entityType.getCategory().isFriendly())
-                    .explosionResistance(5F) ),
+            Block::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.MOSS_BLOCK),
-            true);
-
+            true
+    );
     public final static Block VERDANT_SPRUCE_PLANKS = TOTVW.registerBlock("verdant_spruce_planks",
-            properties -> new Block(properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
-                    .ignitedByLava()
-            ),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            Block::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_PLANKS),
+            true
+    );
     public final static Block VERDANT_SPRUCE_SLAB = TOTVW.registerBlock("verdant_spruce_slab",
-            properties -> new SlabBlock(properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
-                    .ignitedByLava()
-            ),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            SlabBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(VERDANT_SPRUCE_PLANKS),
+            true
+    );
     public final static Block VERDANT_SPRUCE_STAIRS = TOTVW.registerBlock("verdant_spruce_stairs",
-            properties -> new StairBlock(VERDANT_SPRUCE_PLANKS.defaultBlockState(), properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
-                    .ignitedByLava()
-            ),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            properties -> new StairBlock(VERDANT_SPRUCE_PLANKS.defaultBlockState(), properties),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_STAIRS),
+            true
+    );
     public final static Block VERDANT_SPRUCE_BUTTON = TOTVW.registerBlock("verdant_spruce_button",
-            properties -> new ButtonBlock(VERDANT_SPRUCE_SET, 10, properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
-            ),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            properties -> new ButtonBlock(VERDANT_SPRUCE_SET, 10, properties),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_BUTTON),
+            true
+    );
     public final static Block VERDANT_SPRUCE_PRESSURE_PLATE = TOTVW.registerBlock("verdant_spruce_pressure_plate",
-            properties -> new PressurePlateBlock(VERDANT_SPRUCE_SET, properties
-                    .sound(SoundType.WOOD)
-                    .strength(0.5f)
-                    .noCollision()
-                    .pushReaction(PushReaction.DESTROY)),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            properties -> new PressurePlateBlock(VERDANT_SPRUCE_SET, properties),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_PRESSURE_PLATE),
+            true
+    );
     public final static Block VERDANT_SPRUCE_FENCE = TOTVW.registerBlock("verdant_spruce_fence",
-            properties -> new FenceBlock(properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
-                    .ignitedByLava()
-            ),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            FenceBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_FENCE),
+            true
+    );
     public final static Block VERDANT_SPRUCE_FENCE_GATE = TOTVW.registerBlock("verdant_spruce_fence_gate",
-            properties -> new FenceGateBlock(VERDANT_SPRUCE_WOOD_TYPE, properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
-                    .ignitedByLava()
-            ),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            properties -> new FenceGateBlock(VERDANT_SPRUCE_WOOD_TYPE, properties),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_FENCE_GATE),
+            true
+    );
     public final static Block VERDANT_SPRUCE_TRAPDOOR = TOTVW.registerBlock("verdant_spruce_trapdoor",
-            properties -> new TrapDoorBlock(VERDANT_SPRUCE_SET, properties
-                    .sound(SoundType.WOOD)
-                    .strength(3.0f)
-                    .noOcclusion()
-                    .ignitedByLava()
-                    .isValidSpawn(Blocks::never)
-            ),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            properties -> new TrapDoorBlock(VERDANT_SPRUCE_SET, properties),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_TRAPDOOR),
+            true
+    );
     public final static Block VERDANT_SPRUCE_DOOR = TOTVW.registerBlock("verdant_spruce_door",
-            properties -> new DoorBlock(VERDANT_SPRUCE_SET, properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
-                    .ignitedByLava()
-            ),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            properties -> new DoorBlock(VERDANT_SPRUCE_SET, properties),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_DOOR),
+            true
+    );
     public final static Block VERDANT_SPRUCE_LOG = TOTVW.registerBlock("verdant_spruce_log",
-            properties -> new RotatedPillarBlock(properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
-                    .ignitedByLava()
-            ),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            RotatedPillarBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_LOG),
+            true
+    );
     public final static Block VERDANT_SPRUCE_WOOD = TOTVW.registerBlock("verdant_spruce_wood",
-            properties -> new RotatedPillarBlock(properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
-                    .ignitedByLava()
-            ),
-            BlockBehaviour.Properties.of(),
-            true);
-
+            RotatedPillarBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_WOOD),
+            true
+    );
     public final static Block STRIPPED_VERDANT_SPRUCE_LOG = TOTVW.registerBlock("stripped_verdant_spruce_log",
-            properties -> new RotatedPillarBlock(properties
-                    .sound(SoundType.WOOD)
-                    .strength(wood)
-                    .ignitedByLava()
-            ),
-            BlockBehaviour.Properties.of(),
+            RotatedPillarBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(VERDANT_SPRUCE_LOG),
             true
     );
     public final static Block STRIPPED_VERDANT_SPRUCE_WOOD = TOTVW.registerBlock("stripped_verdant_spruce_wood",
-            properties -> new RotatedPillarBlock(properties
-                    //.sound(SoundType.WOOD)
-                    //.strength(wood)
-            ),
-            BlockBehaviour.Properties.ofFullCopy(Blocks.STRIPPED_SPRUCE_WOOD),
+            RotatedPillarBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(VERDANT_SPRUCE_WOOD),
             true
     );
     public static final Block VERDANT_SPRUCE_SIGN = TOTVW.registerBlock("verdant_spruce_sign",
@@ -215,16 +136,12 @@ public class VerdantBlocks extends Blocks {
     );
     public static final Block VERDANT_SPRUCE_SHELF = TOTVW.registerBlock("verdant_spruce_shelf",
             ModShelfBlock::new,
-            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_SHELF)
-                    .sound(SoundType.WOOD)
-                    .strength(wood),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_SHELF),
             true
     );
     public static final Block VERDANT_SPRUCE_STORAGE_BOX = TOTVW.registerBlock("verdant_spruce_storage_box",
             ModStorageBlock::new,
-            BlockBehaviour.Properties.of()
-                    .sound(SoundType.WOOD)
-                    .strength(wood),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL),
             true
     );
 
@@ -242,5 +159,5 @@ public class VerdantBlocks extends Blocks {
             .recipeUnlockedBy("has_planks")
             .getFamily();
 
-    public static void registerModBlocks() {}
+    public static void registerVerdantBlocks() {}
 }

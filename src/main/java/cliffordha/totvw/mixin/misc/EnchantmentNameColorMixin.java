@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class EnchantmentNameColorMixin {
 
     @Inject(method = "getFullname", at = @At("RETURN"), cancellable = true)
-    private static void totvw$colorizeEnchantmentName(Holder<Enchantment> enchantment, int level, CallbackInfoReturnable<Component> cir) {
+    private static void colorizeEnchantmentName(Holder<Enchantment> enchantment, int level, CallbackInfoReturnable<Component> cir) {
 
         Component description = enchantment.value().description();
         if (!(description.getContents() instanceof TranslatableContents tc)) return;

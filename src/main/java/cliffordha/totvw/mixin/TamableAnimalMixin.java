@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TamableAnimal.class)
-public class TamableAnimalOnDeathMixin {
+public class TamableAnimalMixin {
     @Inject(method = "die", at = @At("HEAD"), cancellable = true)
-    private void totvw$onDeath(CallbackInfo ci) {
+    private void onDeath(CallbackInfo ci) {
         if ((Object) this instanceof Wolf wolf) {
             boolean ACTIVE_BENEDICTION = wolf.hasAttached(ModAttachments.Wolf.WOLF_BENEDICTION);
 

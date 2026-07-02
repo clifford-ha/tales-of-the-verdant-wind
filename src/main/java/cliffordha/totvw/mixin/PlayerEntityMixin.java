@@ -25,10 +25,10 @@ import java.util.Objects;
 import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromPlayer;
 
 @Mixin(Player.class)
-public class PlayerTrustMixin {
+public class PlayerEntityMixin {
 
     @Inject(method = "interactOn", at = @At("HEAD"), cancellable = true)
-    private void totvw$trust(Entity entity, InteractionHand hand, Vec3 location, CallbackInfoReturnable<InteractionResult> cir) {
+    private void trustInteract(Entity entity, InteractionHand hand, Vec3 location, CallbackInfoReturnable<InteractionResult> cir) {
         Player player = (Player) (Object) this;
         ItemStack itemStack = player.getItemInHand(hand);
         String dash = "-";

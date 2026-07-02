@@ -2,6 +2,7 @@ package cliffordha.totvw.entity.wolf;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.util.ModUtil;
 import cliffordha.totvw.entity.skill.ConfigTools;
 import cliffordha.totvw.entity.skill.WolfSkillDefinition;
 import cliffordha.totvw.entity.skill.SkillUtil;
@@ -37,9 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static cliffordha.totvw.entity.TConstants.*;
+import static cliffordha.totvw.util.ModUtil.*;
 import static cliffordha.totvw.entity.skill.ConfigTools.*;
-import static cliffordha.totvw.entity.skill.SkillUtil.*;
 
 public final class ModWolfBehaviors {
     private static final SoundEvent[] DISTANT_HOWL_SOUNDS = {
@@ -175,7 +175,6 @@ public final class ModWolfBehaviors {
         LivingEntity player = wolf.getOwner();
         if (player == null) return;
         if (wolfEnchantmentLVL(wolf, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) == 0) return;
-        int blessingCD = verdantBlessingCD(level);
         
         rewriteEffect(player, MobEffects.RESISTANCE, sec(10), 254);
         if (playerEnchantmentLVL(wolf, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0) {
@@ -188,15 +187,7 @@ public final class ModWolfBehaviors {
         notifyFromWolf(wolf, ModColors.VERDANT_WIND, true, "Granted §nVerdant Wind's Blessing§r to " + playerName(wolf));
 
         ModParticleEffects.triggerBenedictionParticles(wolf, 1);
-
-        if (!TOTVWConfig.get().attachmentSkillCD) return;
-        if (isHealthHalf(wolf)) {
-            addHiddenEffect(wolf, MobEffects.WEAKNESS, min(1), 0);
-        } else {
-            addHiddenEffect(wolf, MobEffects.WEAKNESS, min(1), 1);
-        }
-        SkillUtil.startCooldown(wolf, VERDANT_BLESSING, blessingCD);
-        notifyFromWolf(wolf, ModColors.VERDANT_WIND_MUTED, "Cooldown: " + blessingCD / min(1) + " minutes");
+        verdantBlessingAfterEffects(level, wolf);
     }
     private static void runEnchantmentsOnDamage(Wolf wolf, ServerLevel level) {
         var victim = CURRENT_VICTIM.get();
@@ -270,9 +261,10 @@ public final class ModWolfBehaviors {
                 addHiddenEffect(victim, ModEffects.PARALYZE, paralyzeTime, 0);
 
                 notifyFromWolf(wolf, ModColors.MIGHT_EFFECT, wolfName(wolf) + " | " + victim.getName().getString() + " has been paralyzed for " + (paralyzeTime / sec(1)) + " seconds.");
-                SkillUtil.startCooldown(wolf, PARALYZER, evaluateDifficulty(level, min(1), min(12), min(18), min(24)));
+                SkillUtil.startCooldown(wolf, PARALYZER,
+                        setDifficultyBasedValue(level, min(1), min(12), min(18), min(24)));
 
-                ConfigTools.playSound(victim, ModSounds.WOLF_SKILL_PARALYZE, SoundSource.HOSTILE);
+                ModUtil.playSound(victim, ModSounds.WOLF_SKILL_PARALYZE, SoundSource.HOSTILE);
                 ModParticleEffects.triggerMightParalyzeParticles(victim, 4);
             }
         }
@@ -301,7 +293,8 @@ public final class ModWolfBehaviors {
                     } else {
                         addHiddenEffect(victim, MobEffects.INSTANT_DAMAGE, 1, 1);
                     }
-                    SkillUtil.startCooldown(wolf, RUPTURE, evaluateDifficulty(level, sec(7), sec(14), sec(21), sec(28)));
+                    SkillUtil.startCooldown(wolf, RUPTURE,
+                            setDifficultyBasedValue(level, sec(7), sec(14), sec(21), sec(28)));
                 }
             }
         }
@@ -349,7 +342,7 @@ public final class ModWolfBehaviors {
 
 
 
-    private static final WolfSkillDefinition VERDANT_BLESSING =
+    public static final WolfSkillDefinition VERDANT_BLESSING =
             new WolfSkillDefinition(
                     ModAttachments.Wolf.CD_BLESSING_OF_THE_VERDANT_WIND,
                     ModAttachments.Wolf.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,

@@ -2,7 +2,6 @@ package cliffordha.totvw.entity.skill;
 
 import cliffordha.totvw.config.TOTVWConfig;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
@@ -44,17 +43,6 @@ public final class SkillUtil {
             notifyFromPlayer(player, skill.notifierColor(), true, name(player) + skill.skillName() + " is ready!");
         }
     }
-
-
-    public static int evaluateDifficulty(ServerLevel level, int peaceful, int easy, int normal, int hard) {
-        return switch (level.getDifficulty()) {
-            case PEACEFUL -> peaceful;
-            case EASY -> easy;
-            case NORMAL -> normal;
-            default -> hard;
-        };
-    }
-
 
     private static String name(LivingEntity entity) {
         if (entity instanceof Player player) {

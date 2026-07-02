@@ -21,40 +21,40 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 public class ModOverworldBiomes {
         public static Biome verdantMountains(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-            MobSpawnSettings.Builder spawnBuilder = new MobSpawnSettings.Builder();
-            BiomeGenerationSettings.Builder biomeBuilder = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
+            MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
+            BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-            spawnBuilder.addSpawn(MobCategory.CREATURE, 90, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2));
-            spawnBuilder.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 3));
-            BiomeDefaultFeatures.commonSpawns(spawnBuilder, 30);
+            spawner.addSpawn(MobCategory.CREATURE, 90, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2));
+            spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 3));
+            BiomeDefaultFeatures.commonSpawns(spawner, 30);
 
-            biomeBuilder.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
+            biome.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
 
-            biomeBuilder.addFeature(GenerationStep.Decoration.FLUID_SPRINGS, ModPlacedFeatures.VERIXIUM_FLUID_POND_KEY);
-            BiomeDefaultFeatures.addDefaultCarversAndLakes(biomeBuilder);
-            BiomeDefaultFeatures.addDefaultCrystalFormations(biomeBuilder);
-            BiomeDefaultFeatures.addDefaultMonsterRoom(biomeBuilder);
-            BiomeDefaultFeatures.addDefaultUndergroundVariety(biomeBuilder);
-            BiomeDefaultFeatures.addDefaultOres(biomeBuilder);
+            biome.addFeature(GenerationStep.Decoration.FLUID_SPRINGS, ModPlacedFeatures.VERIXIUM_FLUID_POND_KEY);
+            BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+            BiomeDefaultFeatures.addDefaultCrystalFormations(biome);
+            BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+            BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+            BiomeDefaultFeatures.addDefaultOres(biome);
 
-            biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, ModPlacedFeatures.VERDANT_HOLLOWS_KEY);
+            biome.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, ModPlacedFeatures.VERDANT_HOLLOWS_KEY);
 
-            biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_LARGE_KEY);
-            biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_SMALL_KEY);
-            biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_BURIED_KEY);
+            biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_LARGE_KEY);
+            biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_SMALL_KEY);
+            biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_BURIED_KEY);
 
-            biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_PILLARS_KEY);
+            biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_PILLARS_KEY);
 
-            BiomeDefaultFeatures.addDefaultMushrooms(biomeBuilder);
-            BiomeDefaultFeatures.addJungleVines(biomeBuilder);
-            biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_GRASS_PATCH_KEY);
-            biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_FERN_PATCH_KEY);
-            biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_TORCHFLOWER_PATCH_KEY);
-            biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_MOSS_PATCH_KEY);
-            biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_MOSS_PATCH_HIGH_KEY);
-            biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_RIVER_SEAGRASS_KEY);
+            BiomeDefaultFeatures.addDefaultMushrooms(biome);
+            BiomeDefaultFeatures.addJungleVines(biome);
+            biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_GRASS_PATCH_KEY);
+            biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_FERN_PATCH_KEY);
+            biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_TORCHFLOWER_PATCH_KEY);
+            biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_MOSS_PATCH_KEY);
+            biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_MOSS_PATCH_HIGH_KEY);
+            biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_RIVER_SEAGRASS_KEY);
 
-            biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_SPRUCE_TREE_LOWER_KEY);
+            biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_SPRUCE_TREE_LOWER_KEY);
 
 
             return new Biome.BiomeBuilder()
@@ -68,7 +68,7 @@ public class ModOverworldBiomes {
                             .foliageColorOverride(0x0b9c78)
                             .dryFoliageColorOverride(0x0b9c78)
                             ).build())
-                    .mobSpawnSettings(spawnBuilder.build()).generationSettings(biomeBuilder.build())
+                    .mobSpawnSettings(spawner.build()).generationSettings(biome.build())
                     .setAttribute(EnvironmentAttributes.INCREASED_FIRE_BURNOUT, true)
                     .setAttribute(EnvironmentAttributes.FOG_END_DISTANCE, 1024f)
                     .setAttribute(EnvironmentAttributes.FOG_COLOR, 0xbdffdc)
@@ -79,40 +79,40 @@ public class ModOverworldBiomes {
         }
 
     public static Biome verdantForest(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-        MobSpawnSettings.Builder spawnBuilder = new MobSpawnSettings.Builder();
-        BiomeGenerationSettings.Builder biomeBuilder = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
+        MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
+        BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-        spawnBuilder.addSpawn(MobCategory.CREATURE, 90, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 2, 4));
-        spawnBuilder.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 1));
+        spawner.addSpawn(MobCategory.CREATURE, 90, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 2, 4));
+        spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 1));
 
-        BiomeDefaultFeatures.commonSpawns(spawnBuilder, 30);
+        BiomeDefaultFeatures.commonSpawns(spawner, 30);
 
-        biomeBuilder.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
+        biome.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
 
-        biomeBuilder.addFeature(GenerationStep.Decoration.FLUID_SPRINGS, ModPlacedFeatures.VERIXIUM_FLUID_POND_KEY);
-        BiomeDefaultFeatures.addDefaultCarversAndLakes(biomeBuilder);
-        BiomeDefaultFeatures.addDefaultCrystalFormations(biomeBuilder);
-        BiomeDefaultFeatures.addDefaultMonsterRoom(biomeBuilder);
-        BiomeDefaultFeatures.addDefaultUndergroundVariety(biomeBuilder);
-        BiomeDefaultFeatures.addDefaultOres(biomeBuilder);
+        biome.addFeature(GenerationStep.Decoration.FLUID_SPRINGS, ModPlacedFeatures.VERIXIUM_FLUID_POND_KEY);
+        BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+        BiomeDefaultFeatures.addDefaultCrystalFormations(biome);
+        BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+        BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+        BiomeDefaultFeatures.addDefaultOres(biome);
 
-        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, ModPlacedFeatures.VERDANT_HOLLOWS_KEY);
+        biome.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, ModPlacedFeatures.VERDANT_HOLLOWS_KEY);
 
-        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_LARGE_KEY);
-        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_SMALL_KEY);
-        biomeBuilder.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_BURIED_KEY);
+        biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_LARGE_KEY);
+        biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_SMALL_KEY);
+        biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, ModPlacedFeatures.VERIXIUM_ORE_BURIED_KEY);
 
-        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_PILLARS_KEY);
-        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_SPRUCE_BUSH_TREE_KEY);
-        BiomeDefaultFeatures.addDefaultMushrooms(biomeBuilder);
-        BiomeDefaultFeatures.addJungleVines(biomeBuilder);
-        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_GRASS_PATCH_KEY);
-        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_FERN_PATCH_KEY);
-        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_TORCHFLOWER_PATCH_KEY);
-        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_MOSS_PATCH_KEY);
-        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_RIVER_SEAGRASS_KEY);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_PILLARS_KEY);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_SPRUCE_BUSH_TREE_KEY);
+        BiomeDefaultFeatures.addDefaultMushrooms(biome);
+        BiomeDefaultFeatures.addJungleVines(biome);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_GRASS_PATCH_KEY);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_FERN_PATCH_KEY);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_TORCHFLOWER_PATCH_KEY);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_MOSS_PATCH_KEY);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.VERDANT_RIVER_SEAGRASS_KEY);
 
-        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.ANCIENT_VERDANT_SPRUCE_TREE_KEY);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, ModPlacedFeatures.ANCIENT_VERDANT_SPRUCE_TREE_KEY);
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(true)
@@ -125,7 +125,7 @@ public class ModOverworldBiomes {
                         .foliageColorOverride(0x0b9c78)
                         .dryFoliageColorOverride(0x0b9c78)
                 ).build())
-                .mobSpawnSettings(spawnBuilder.build()).generationSettings(biomeBuilder.build())
+                .mobSpawnSettings(spawner.build()).generationSettings(biome.build())
                 .setAttribute(EnvironmentAttributes.INCREASED_FIRE_BURNOUT, true)
                 .setAttribute(EnvironmentAttributes.FOG_END_DISTANCE, 128f)
                 .setAttribute(EnvironmentAttributes.FOG_COLOR, 0x90e1d5)

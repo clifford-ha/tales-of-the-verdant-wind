@@ -1,8 +1,7 @@
 package cliffordha.totvw.entity.player;
 
-import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.entity.TConstants;
+import cliffordha.totvw.util.ModUtil;
 import cliffordha.totvw.entity.skill.ConfigTools;
 import cliffordha.totvw.entity.skill.PlayerSkillDefinition;
 import cliffordha.totvw.entity.skill.SkillUtil;
@@ -14,7 +13,6 @@ import cliffordha.totvw.tag.ModItemTags;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -29,9 +27,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -39,10 +35,9 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Predicate;
 
-import static cliffordha.totvw.entity.TConstants.*;
+import static cliffordha.totvw.util.ModUtil.*;
 import static cliffordha.totvw.entity.skill.ConfigTools.*;
 
 public class ModPlayerBehaviors {
@@ -102,8 +97,6 @@ public class ModPlayerBehaviors {
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (playerEnchantmentLVL(player, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) <= 0) return;
 
-        int blessingCD = verdantBlessingCD(level);
-
         double distance = TOTVWConfig.get().maxWolfPlayerDistance;
         float health = TOTVWConfig.get().lowHealthThreshold * 0.01f;
 
@@ -118,7 +111,7 @@ public class ModPlayerBehaviors {
 
         for (Wolf wolf : wolves) {
             if (!wolf.isAlive()) return;
-            int wolfBenedictionEnchantment = TConstants.wolfEnchantmentLVL(wolf, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
+            int wolfBenedictionEnchantment = ModUtil.wolfEnchantmentLVL(wolf, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
             int wolfBenediction = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_BENEDICTION, 0);
             if (wolfBenediction > 0) return;
 
@@ -140,15 +133,7 @@ public class ModPlayerBehaviors {
             wolf.heal(triggerHeal);
         }
         ModParticleEffects.triggerBenedictionParticles(player, 1);
-
-        if (!TOTVWConfig.get().attachmentSkillCD) return;
-        if (isHealthHalf(player)) {
-            addHiddenEffect(player, MobEffects.WEAKNESS, min(1), 0);
-        } else {
-            addHiddenEffect(player, MobEffects.WEAKNESS, min(1), 1);
-        }
-        SkillUtil.startCooldown(player, VERDANT_BLESSING, blessingCD);
-        notifyFromPlayer(player, ModColors.VERDANT_WIND_MUTED, "Cooldown: " + blessingCD / min(1) + " minutes");
+        verdantBlessingAfterEffects(level, player);
     }
 
     private static void runEnchantmentsOnDamage(Player player, ServerLevel level) {
@@ -170,7 +155,7 @@ public class ModPlayerBehaviors {
         }
     }
 
-    private static final PlayerSkillDefinition VERDANT_BLESSING = new PlayerSkillDefinition(
+    public static final PlayerSkillDefinition VERDANT_BLESSING = new PlayerSkillDefinition(
             ModAttachments.Player.CD_BLESSING_OF_THE_VERDANT_WIND,
             ModAttachments.Player.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
             ModColors.VERDANT_WIND_MUTED,

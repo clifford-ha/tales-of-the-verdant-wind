@@ -8,7 +8,6 @@ import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
 import static cliffordha.totvw.TOTVW.sendLog;
@@ -46,7 +45,7 @@ public class ModBlocks {
     public static final Block VERIXIUM_FLUID = TOTVW.registerBlock("verixium_fluid",
             (props) -> new LiquidBlock(ModFluids.VERIXIUM_FLUID, props),
             BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
-                    .mapColor(MapColor.TERRACOTTA_GREEN)
+                    .mapColor(DyeColor.CYAN)
                     .lightLevel(_ -> 14)
                     .noLootTable()
                     .liquid(),
@@ -54,9 +53,6 @@ public class ModBlocks {
     );
     public final static Block IRIDESCENT_GLASS = TOTVW.registerBlock("iridescent_glass",
             properties -> new TransparentBlock(properties
-                    .sound(SoundType.GLASS)
-                    .strength(1.0F)
-                    .noOcclusion()
                     .lightLevel(_ -> 9)
             ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS),
@@ -64,9 +60,6 @@ public class ModBlocks {
     );
     public final static Block IRIDESCENT_GLASS_PANE = TOTVW.registerBlock("iridescent_glass_pane",
             properties -> new StainedGlassPaneBlock(DyeColor.CYAN, properties
-                    .sound(SoundType.GLASS)
-                    .strength(1.0F)
-                    .noOcclusion()
                     .lightLevel(_ -> 9)
             ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE),
@@ -75,9 +68,9 @@ public class ModBlocks {
 
 
     // separate blocks of the same family when >= 10 items
-    // my forgetfull ahh will remeber better that way
+    // my forgetfull ahh will remember better that way
     public static void registerModBlocks() {
-        VerdantBlocks.registerModBlocks();
+        VerdantBlocks.registerVerdantBlocks();
         sendLog("Blocks");
     }
 }

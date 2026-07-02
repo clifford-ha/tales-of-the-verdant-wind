@@ -17,12 +17,19 @@ import cliffordha.totvw.world.ModBiomeModifications;
 import cliffordha.totvw.world.ModBiomes;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import terrablender.api.TerraBlenderApi;
+
+import java.util.Optional;
 
 import static cliffordha.totvw.TOTVW.MOD_NAME;
 
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
-	public TalesOfTheVerdantWind(){}
+	public TalesOfTheVerdantWind() {
+	}
 
 	@Override
 	public void onInitialize() {
@@ -54,6 +61,7 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 
 		TOTVW.LOGGER.info(MOD_NAME + " has been initialized!");
 	}
+
 	@Override
 	public void onTerraBlenderInitialized() {
 		ModBiomes.registerBiomes();

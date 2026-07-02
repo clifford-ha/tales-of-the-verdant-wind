@@ -7,7 +7,6 @@ import cliffordha.totvw.tag.ModBiomeTags;
 import cliffordha.totvw.tag.ModItemTags;
 import cliffordha.totvw.registry.ModColors;
 import net.minecraft.core.Holder;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
@@ -26,9 +25,8 @@ import net.minecraft.world.level.biome.Biome;
 
 import java.util.function.Predicate;
 
-import static cliffordha.totvw.entity.TConstants.*;
+import static cliffordha.totvw.util.ModUtil.*;
 import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromPlayer;
-import static cliffordha.totvw.entity.skill.ConfigTools.playSound;
 
 public final class BlessingOfTheVerdantWind {
     private static final int TICK_SECONDS = 20;

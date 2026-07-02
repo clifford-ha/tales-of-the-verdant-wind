@@ -34,8 +34,6 @@ public class TOTVW {
 
 
     public static int setTime(int min,  int sec) {return ((min * minTick) + (sec * secTick));}
-    public static int setSec(int sec) {return (sec * secTick);}
-    public static int setMin(int sec) {return (sec * minTick);}
     public static boolean getGameTime(ServerLevel world, int min, int sec) {
         long gameTime = world.getGameTime();
         int finalTotal = ((min * minTick) + (sec * secTick));

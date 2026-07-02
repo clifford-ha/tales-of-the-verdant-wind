@@ -21,6 +21,8 @@ public class ModAttachments {
         public static final AttachmentType<Integer> NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("notify_player_blessing_of_the_verdant_wind");
     }
     public static class Wolf {
+        public static final AttachmentType<Boolean> IS_VERDANT_TYPE = registerBool("is_verdant_type");
+
         public static final AttachmentType<Integer> TIMER_AIR_SUPPLY = registerInt("timer_wolf_air_supply");
         public static final AttachmentType<Integer> NOTIFY_AIR_SUPPLY = registerInt("air_supply_notify");
 
@@ -40,6 +42,8 @@ public class ModAttachments {
 
     public static class Villager {
         public static final AttachmentType<Boolean> IS_VERDANT_TYPE = registerBool("is_verdant_type");
+        public static final AttachmentType<Integer> CD_DISCOUNT_REROLL = registerInt("cd_discount_reroll");
+        public static final AttachmentType<Float> DISCOUNT_MODIFIER = registerFloat("discount_modifier");
     }
 
     private static AttachmentType<Integer> registerInt(String name) {
@@ -54,8 +58,38 @@ public class ModAttachments {
                 builder -> builder.persistent(Codec.BOOL).initializer(() -> false)
         );
     }
+    private static AttachmentType<Float> registerFloat(String name) {
+        return AttachmentRegistry.create(
+                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
+                builder -> builder.persistent(Codec.FLOAT).initializer(() -> 0.0f)
+        );
+    }
 
     public static void registerModAttachments() {
-        TOTVW.sendLog("Custom Attachments");
+        AttachmentType<?>[] attachmentTypes = {
+                INTERACTION_DATA,
+                TRUST_POINTS,
+                TRUST_COOLDOWN,
+
+                Player.CD_BLESSING_OF_THE_VERDANT_WIND,
+                Player.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+
+                Wolf.IS_VERDANT_TYPE,
+                Wolf.TIMER_AIR_SUPPLY,
+                Wolf.NOTIFY_AIR_SUPPLY,
+                Wolf.CD_BLESSING_OF_THE_VERDANT_WIND,
+                Wolf.CD_BLOODLUST_SKILL_PARALYZE,
+                Wolf.CD_MIGHT_SKILL_RUPTURE,
+                Wolf.NOTIFY_MIGHT_SKILL_RUPTURE,
+                Wolf.NOTIFY_BLOODLUST_SKILL_PARALYZE,
+                Wolf.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+                Wolf.WOLF_BENEDICTION,
+                Wolf.VERDANT_BIOME_PERMANENT_BLESSING,
+
+                Villager.IS_VERDANT_TYPE,
+                Villager.CD_DISCOUNT_REROLL,
+                Villager.DISCOUNT_MODIFIER
+        };
+        TOTVW.sendLog("Custom Attachments: " + attachmentTypes.length);
     }
 }

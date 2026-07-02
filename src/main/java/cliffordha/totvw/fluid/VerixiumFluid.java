@@ -10,6 +10,7 @@ import cliffordha.totvw.registry.ModParticles;
 import cliffordha.totvw.tag.ModBiomeTags;
 import cliffordha.totvw.tag.ModFluidTags;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.*;
@@ -31,7 +32,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
@@ -48,7 +48,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
-import static cliffordha.totvw.entity.TConstants.addHiddenEffect;
+import static cliffordha.totvw.util.ModUtil.addHiddenEffect;
 
 @SuppressWarnings("NullableProblems")
 public abstract class VerixiumFluid extends FlowingFluid {
@@ -160,8 +160,9 @@ public abstract class VerixiumFluid extends FlowingFluid {
 
         if (!(world instanceof ServerLevel) || !(entity instanceof LivingEntity livingEntity)) return;
 
-        if (world.getGameTime() % (60 * 3) == 0) {
+        if (world.getGameTime() % 60 == 0) {
             if (entity.level().getBiome(entity.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES)) {
+                if (livingEntity.is(EntityTypeTags.UNDEAD) || livingEntity.is(EntityTypeTags.ILLAGER)) return;
                 if (livingEntity.hasEffect(MobEffects.WITHER)) {
                     livingEntity.removeEffect(MobEffects.POISON);
                     livingEntity.removeEffect(MobEffects.WITHER);
@@ -217,8 +218,9 @@ public abstract class VerixiumFluid extends FlowingFluid {
                 evaluateSlowness(wanderingTrader);
             }
             default -> {
-                addHiddenEffect(entity, MobEffects.REGENERATION, time, amplifier);
                 evaluateSlowness(entity);
+                if (entity.is(EntityTypeTags.UNDEAD)) return;
+                addHiddenEffect(entity, MobEffects.REGENERATION, time, amplifier);
             }
         }
     }

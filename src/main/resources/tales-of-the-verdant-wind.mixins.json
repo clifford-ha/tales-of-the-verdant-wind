@@ -3,20 +3,13 @@
   "package": "cliffordha.totvw.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "ExampleMixin",
-    "PlayerTrustMixin",
-    "TamableAnimalOnDeathMixin",
+    "PlayerEntityMixin",
+    "TamableAnimalMixin",
     "misc.ArrowNameColorMixin",
     "misc.EffectNameColorMixin",
     "misc.EnchantmentNameColorMixin",
-    "villager.VillagerInteractionMixin",
-    "villager.VillagerSpawnDataMixin",
-    "villager.VillagerVerdantTradesMixin",
-    "wolf.WolfActuallyHurtMixin",
-    "wolf.WolfArmorDamageAbsorbMixin",
-    "wolf.WolfAttackableTargetsMixin",
-    "wolf.WolfBenedictionMixin",
-    "wolf.WolfInteractMixin"
+    "VillagerEntityMixin",
+    "WolfEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

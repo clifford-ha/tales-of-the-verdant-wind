@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ArrowNameColorMixin {
 
     @Inject(method = "getName", at = @At("RETURN"), cancellable = true)
-    private void totvw$colorizeEffectName(CallbackInfoReturnable<Component> cir) {
+    private void colorizeEffectName(CallbackInfoReturnable<Component> cir) {
 
         Component description = cir.getReturnValue();
         if (!(description.getContents() instanceof TranslatableContents tc)) return;

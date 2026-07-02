@@ -6,17 +6,14 @@ import cliffordha.totvw.registry.ModColors;
 import cliffordha.totvw.registry.ModSounds;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 
 import java.util.Arrays;
 
-import static cliffordha.totvw.entity.TConstants.*;
+import static cliffordha.totvw.util.ModUtil.*;
 
 public class ConfigTools {
     public static void depleteCooldown(LivingEntity entity, AttachmentType<Integer> skillCD) {
@@ -86,18 +83,6 @@ public class ConfigTools {
             }
         } else throw new IllegalArgumentException("Invalid config value");
     }
-
-
-    public static void playSound(LivingEntity entity, SoundEvent sound, SoundSource source) {
-        if (!(entity.level() instanceof ServerLevel level)) return;
-        var posX = entity.getX();
-        var posY = entity.getY();
-        var posZ = entity.getZ();
-        var random = level.getRandom().nextFloat();
-        level.playSound(null, posX, posY, posZ, sound, source, 0.5f + random, 0.5f + random);
-    }
-
-
 
 
     public static void notifyFromPlayer(Player player, int color, String... msg) {

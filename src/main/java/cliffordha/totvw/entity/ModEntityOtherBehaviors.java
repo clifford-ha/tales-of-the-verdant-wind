@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -16,12 +17,26 @@ import java.util.Objects;
 
 import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromPlayer;
 
-public final class ModEntityBehaviors {
+public final class ModEntityOtherBehaviors {
     public static void register() {
-        initializeTrust();
+        trust();
+        verdantTrades();
     }
 
-    private static void initializeTrust() {
+    private static void verdantTrades() {
+        ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
+            for (var serverLevel : server.getAllLevels()) {
+                serverLevel.getEntities(EntityType.VILLAGER, _ -> true).forEach(villager -> {
+                    if (serverLevel.getGameTime() % 20 == 0) {
+                        int cd = villager.getAttachedOrElse(ModAttachments.Villager.CD_DISCOUNT_REROLL, 0);
+                        if (cd > 0) villager.setAttached(ModAttachments.Villager.CD_DISCOUNT_REROLL, cd - 20);
+                    }
+                });
+            }
+        });
+    }
+
+    private static void trust() {
         ServerLivingEntityEvents.AFTER_DAMAGE.register((victim, damageSource, _, _, _) -> {
             Entity attacker = damageSource.getEntity();
             if (attacker == null) return;
@@ -74,5 +89,5 @@ public final class ModEntityBehaviors {
         }
     }
 
-    private ModEntityBehaviors() {}
+    private ModEntityOtherBehaviors() {}
 }

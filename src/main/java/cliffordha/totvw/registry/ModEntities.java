@@ -1,7 +1,7 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.entity.ModEntityBehaviors;
+import cliffordha.totvw.entity.ModEntityOtherBehaviors;
 import cliffordha.totvw.entity.player.ModPlayerBehaviors;
 import cliffordha.totvw.entity.wolf.ModWolfBehaviors;
 import net.minecraft.core.Registry;
@@ -37,7 +37,7 @@ public class ModEntities {
     public static void registerModEntities() {
         ModPlayerBehaviors.registerModPlayerBehaviors();
         ModWolfBehaviors.registerModWolfBehaviors();
-        ModEntityBehaviors.register();
+        ModEntityOtherBehaviors.register();
 
         sendLog("Entities and Entity Behaviors");
     }
