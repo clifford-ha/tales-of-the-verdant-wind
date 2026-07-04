@@ -1,6 +1,8 @@
 package cliffordha.totvw.entity.player;
 
 import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.item.ScatteredPage;
+import cliffordha.totvw.item.events.ReadScatteredPages;
 import cliffordha.totvw.util.ModUtil;
 import cliffordha.totvw.entity.skill.ConfigTools;
 import cliffordha.totvw.entity.skill.PlayerSkillDefinition;
@@ -176,24 +178,39 @@ public class ModPlayerBehaviors {
 
     private static void wireItemUseEvent() {
         UseItemCallback.EVENT.register((player, level, _) -> {
-            if (level.isClientSide()) return InteractionResult.PASS;
-            if (!player.isShiftKeyDown()) return InteractionResult.PASS;
-            if (player.isSpectator()) return InteractionResult.PASS;
-            if (playerEnchantmentLVL(player, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) <= 0) return InteractionResult.PASS;
-
             ItemStack mainHand = player.getItemBySlot(EquipmentSlot.MAINHAND);
+            if (!level.isClientSide()) {
+                if (!player.isShiftKeyDown()) return InteractionResult.PASS;
+                if (player.isSpectator()) return InteractionResult.PASS;
+                if (playerEnchantmentLVL(player, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) <= 0)
+                    return InteractionResult.PASS;
 
-            boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS))
-                    || mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)))
-                    && !(mainHand.getItem() instanceof ItemInstance);
+                boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS))
+                        || mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)))
+                        && !(mainHand.getItem() instanceof ItemInstance);
 
-            if (!isItem) return InteractionResult.PASS;
+                if (!isItem) return InteractionResult.PASS;
 
-            if (player.getCooldowns().isOnCooldown(mainHand)) return InteractionResult.PASS;
+                if (player.getCooldowns().isOnCooldown(mainHand)) return InteractionResult.PASS;
 
-            boolean applied = BlessingOfTheVerdantWind.tryApply(level, player);
-            if (applied) { return InteractionResult.SUCCESS;
-            } else {return InteractionResult.PASS;}
+                boolean applied = BlessingOfTheVerdantWind.tryApply(level, player);
+                if (applied) {
+                    return InteractionResult.SUCCESS;
+                } else {
+                    return InteractionResult.PASS;
+                }
+            } else {
+                boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.SCATTERED_PAGES)))
+                        && !(mainHand.getItem() instanceof ScatteredPage);
+
+                if (!isItem) return InteractionResult.PASS;
+
+                boolean applied = ReadScatteredPages.tryApply(level, player);
+                if (applied) { return InteractionResult.SUCCESS;
+                } else {
+                    return InteractionResult.PASS;
+                }
+            }
         });
     }
 

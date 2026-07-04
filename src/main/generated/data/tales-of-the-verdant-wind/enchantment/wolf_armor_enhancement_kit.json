@@ -25,12 +25,6 @@
       },
       {
         "amount": 0.15,
-        "attribute": "minecraft:movement_speed",
-        "id": "tales-of-the-verdant-wind:wolf_armor_enhancement_kit",
-        "operation": "add_value"
-      },
-      {
-        "amount": 0.15,
         "attribute": "minecraft:water_movement_efficiency",
         "id": "tales-of-the-verdant-wind:wolf_armor_enhancement_kit",
         "operation": "add_value"

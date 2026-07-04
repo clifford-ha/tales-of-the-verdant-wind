@@ -84,6 +84,10 @@ public class ModItemTags extends FabricTagsProvider.ItemTagsProvider {
                 .add(Items.GLOWSTONE_DUST)
                 .add(ModItems.VERIXIUM_POWDER);
 
+        valueLookupBuilder(ModItemTags.SCATTERED_PAGES)
+                .add(Items.PAPER)
+                .add(ModItems.VERIXIUM_PAPER);
+
 
 
         valueLookupBuilder(ItemTags.ARMOR_ENCHANTABLE)
@@ -160,5 +164,8 @@ public class ModItemTags extends FabricTagsProvider.ItemTagsProvider {
     );
     public static final TagKey<Item> BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS = TagKey.create(Registries.ITEM,
             Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "benediction_enchantment_use_qualified_tools")
+    );
+    public static final TagKey<Item> SCATTERED_PAGES = TagKey.create(Registries.ITEM,
+            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "scattered_pages")
     );
 }

@@ -1,12 +1,17 @@
 package cliffordha.totvw.item.events;
 
+import cliffordha.totvw.client.screen.ModTestScreen;
 import cliffordha.totvw.registry.ModEffects;
 import cliffordha.totvw.registry.ModItems;
 import cliffordha.totvw.registry.ModParticleEffects;
 import cliffordha.totvw.tag.ModBiomeTags;
 import cliffordha.totvw.tag.ModItemTags;
 import cliffordha.totvw.registry.ModColors;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
@@ -126,17 +131,17 @@ public final class BlessingOfTheVerdantWind {
     }
     
     private static void hasSword(Player player) {
-        ItemStack mainHandItem = player.getItemBySlot(EquipmentSlot.MAINHAND);
-        boolean swordTier0 = mainHandItem.is(Items.WOODEN_SWORD)
-                || mainHandItem.is(Items.STONE_SWORD)
-                || mainHandItem.is(Items.COPPER_SWORD);
+        ItemStack itemStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
+        boolean swordTier0 = itemStack.is(Items.WOODEN_SWORD)
+                || itemStack.is(Items.STONE_SWORD)
+                || itemStack.is(Items.COPPER_SWORD);
 
-        boolean swordTier1 = mainHandItem.is(Items.IRON_SWORD)
-                || mainHandItem.is(Items.GOLDEN_SWORD);
+        boolean swordTier1 = itemStack.is(Items.IRON_SWORD)
+                || itemStack.is(Items.GOLDEN_SWORD);
 
-        boolean swordTier2 = mainHandItem.is(Items.DIAMOND_SWORD)
-                || mainHandItem.is(ModItems.VERIXIUM_SWORD)
-                || mainHandItem.is(Items.NETHERITE_SWORD);
+        boolean swordTier2 = itemStack.is(Items.DIAMOND_SWORD)
+                || itemStack.is(ModItems.VERIXIUM_SWORD)
+                || itemStack.is(Items.NETHERITE_SWORD);
 
         grantEffectTierBased(player,
                 swordTier0, swordTier1, swordTier2,
@@ -148,16 +153,16 @@ public final class BlessingOfTheVerdantWind {
         );
     }
     private static void hasAxe(Player player) {
-        ItemStack mainHandItem = player.getItemBySlot(EquipmentSlot.MAINHAND);
-        boolean axeTier0 = mainHandItem.is(Items.WOODEN_AXE)
-                || mainHandItem.is(Items.STONE_AXE)
-                || mainHandItem.is(Items.COPPER_AXE);
+        ItemStack itemStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
+        boolean axeTier0 = itemStack.is(Items.WOODEN_AXE)
+                || itemStack.is(Items.STONE_AXE)
+                || itemStack.is(Items.COPPER_AXE);
 
-        boolean axeTier1 = mainHandItem.is(Items.IRON_AXE)
-                || mainHandItem.is(Items.GOLDEN_AXE);
+        boolean axeTier1 = itemStack.is(Items.IRON_AXE)
+                || itemStack.is(Items.GOLDEN_AXE);
 
-        boolean axeTier2 = mainHandItem.is(Items.DIAMOND_AXE)
-                || mainHandItem.is(ModItems.VERIXIUM_AXE);
+        boolean axeTier2 = itemStack.is(Items.DIAMOND_AXE)
+                || itemStack.is(ModItems.VERIXIUM_AXE);
 
         grantEffectTierBased(player,
                 axeTier0,
@@ -171,17 +176,17 @@ public final class BlessingOfTheVerdantWind {
         );
     }
     private static void hasPickaxe(Player player) {
-        ItemStack mainHandItem = player.getItemBySlot(EquipmentSlot.MAINHAND);
-        boolean pickaxeTier0 = mainHandItem.is(Items.WOODEN_PICKAXE)
-                || mainHandItem.is(Items.STONE_PICKAXE)
-                || mainHandItem.is(Items.COPPER_PICKAXE);
+        ItemStack itemStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
+        boolean pickaxeTier0 = itemStack.is(Items.WOODEN_PICKAXE)
+                || itemStack.is(Items.STONE_PICKAXE)
+                || itemStack.is(Items.COPPER_PICKAXE);
 
-        boolean pickaxeTier1 = mainHandItem.is(Items.IRON_PICKAXE)
-                || mainHandItem.is(Items.GOLDEN_PICKAXE);
+        boolean pickaxeTier1 = itemStack.is(Items.IRON_PICKAXE)
+                || itemStack.is(Items.GOLDEN_PICKAXE);
 
-        boolean pickaxeTier2 = mainHandItem.is(Items.DIAMOND_PICKAXE)
-                || mainHandItem.is(ModItems.VERIXIUM_PICKAXE)
-                || mainHandItem.is(Items.NETHERITE_PICKAXE);
+        boolean pickaxeTier2 = itemStack.is(Items.DIAMOND_PICKAXE)
+                || itemStack.is(ModItems.VERIXIUM_PICKAXE)
+                || itemStack.is(Items.NETHERITE_PICKAXE);
 
         grantEffectTierBased(player,
                 pickaxeTier0,
@@ -195,17 +200,17 @@ public final class BlessingOfTheVerdantWind {
         );
     }
     private static void hasHoe(Player player) {
-        ItemStack mainHandItem = player.getItemBySlot(EquipmentSlot.MAINHAND);
-        boolean hoeTier0 = mainHandItem.is(Items.WOODEN_HOE)
-                || mainHandItem.is(Items.STONE_HOE)
-                || mainHandItem.is(Items.COPPER_HOE);
+        ItemStack itemStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
+        boolean hoeTier0 = itemStack.is(Items.WOODEN_HOE)
+                || itemStack.is(Items.STONE_HOE)
+                || itemStack.is(Items.COPPER_HOE);
 
-        boolean hoeTier1 = mainHandItem.is(Items.IRON_HOE)
-                || mainHandItem.is(Items.GOLDEN_HOE);
+        boolean hoeTier1 = itemStack.is(Items.IRON_HOE)
+                || itemStack.is(Items.GOLDEN_HOE);
 
-        boolean hoeTier2 = mainHandItem.is(Items.DIAMOND_HOE)
-                || mainHandItem.is(ModItems.VERIXIUM_HOE)
-                || mainHandItem.is(Items.NETHERITE_HOE);
+        boolean hoeTier2 = itemStack.is(Items.DIAMOND_HOE)
+                || itemStack.is(ModItems.VERIXIUM_HOE)
+                || itemStack.is(Items.NETHERITE_HOE);
 
         grantEffectTierBased(player,
                 hoeTier0,
@@ -219,17 +224,17 @@ public final class BlessingOfTheVerdantWind {
         );
     }
     private static void hasShovel(Player player) {
-        ItemStack mainHandItem = player.getItemBySlot(EquipmentSlot.MAINHAND);
-        boolean shovelTier0 = mainHandItem.is(Items.WOODEN_SHOVEL)
-                || mainHandItem.is(Items.STONE_SHOVEL)
-                || mainHandItem.is(Items.COPPER_SHOVEL);
+        ItemStack itemStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
+        boolean shovelTier0 = itemStack.is(Items.WOODEN_SHOVEL)
+                || itemStack.is(Items.STONE_SHOVEL)
+                || itemStack.is(Items.COPPER_SHOVEL);
 
-        boolean shovelTier1 = mainHandItem.is(Items.IRON_SHOVEL)
-                || mainHandItem.is(Items.GOLDEN_SHOVEL);
+        boolean shovelTier1 = itemStack.is(Items.IRON_SHOVEL)
+                || itemStack.is(Items.GOLDEN_SHOVEL);
 
-        boolean shovelTier2 = mainHandItem.is(Items.DIAMOND_SHOVEL)
-                || mainHandItem.is(ModItems.VERIXIUM_SHOVEL)
-                || mainHandItem.is(Items.NETHERITE_SHOVEL);
+        boolean shovelTier2 = itemStack.is(Items.DIAMOND_SHOVEL)
+                || itemStack.is(ModItems.VERIXIUM_SHOVEL)
+                || itemStack.is(Items.NETHERITE_SHOVEL);
 
         grantEffectTierBased(player,
                 shovelTier0,
@@ -243,9 +248,9 @@ public final class BlessingOfTheVerdantWind {
         );
     }
     private static void hasOther(Player player) {
-        ItemStack mainHandItem = player.getItemBySlot(EquipmentSlot.MAINHAND);
+        ItemStack itemStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
         
-        if (mainHandItem.is(ModItems.VERIXIUM_POWDER)) {
+        if (itemStack.is(ModItems.VERIXIUM_POWDER)) {
             grantEffect(player,
                     MobEffects.SLOW_FALLING,
                     setDuration(0, 6),
@@ -254,7 +259,7 @@ public final class BlessingOfTheVerdantWind {
             player.getMainHandItem().consume(1, player);
             if (!player.isCreative()) {setCooldown(player, setDuration(1, 15), setDuration(2, 0)); }
 
-        } else if (mainHandItem.is(Items.GLOWSTONE_DUST)) {
+        } else if (itemStack.is(Items.GLOWSTONE_DUST)) {
             grantEffect(player,
                     MobEffects.NIGHT_VISION,
                     TICK_MINUTES,
