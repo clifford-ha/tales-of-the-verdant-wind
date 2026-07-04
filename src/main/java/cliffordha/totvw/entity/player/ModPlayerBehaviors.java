@@ -1,7 +1,7 @@
 package cliffordha.totvw.entity.player;
 
 import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.item.ScatteredPage;
+import cliffordha.totvw.item.ScatteredPageItem;
 import cliffordha.totvw.item.events.ReadScatteredPages;
 import cliffordha.totvw.util.ModUtil;
 import cliffordha.totvw.entity.skill.ConfigTools;
@@ -201,7 +201,7 @@ public class ModPlayerBehaviors {
                 }
             } else {
                 boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.SCATTERED_PAGES)))
-                        && !(mainHand.getItem() instanceof ScatteredPage);
+                        && !(mainHand.getItem() instanceof ScatteredPageItem);
 
                 if (!isItem) return InteractionResult.PASS;
 

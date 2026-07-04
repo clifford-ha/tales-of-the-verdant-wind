@@ -1,6 +1,6 @@
 package cliffordha.totvw.registry;
 
-import cliffordha.totvw.item.ScatteredPage;
+import cliffordha.totvw.item.ScatteredPageItem;
 import cliffordha.totvw.registry.blocks.VerdantBlocks;
 import cliffordha.totvw.registry.creativetab.VerdantItemsTab;
 import cliffordha.totvw.item.ItemInstance;
@@ -210,9 +210,12 @@ public class ModItems {
                     .fireResistant()
             ));
     public static final Item VERIXIUM_PAPER = TOTVW.registerItem("verixium_paper",
-            properties -> new ScatteredPage(properties
-                    .fireResistant()
-            ));
+            properties -> new ScatteredPageItem(
+                    properties
+                            .fireResistant(),
+                    1)
+
+            );
     public static final Item VERIXIUM_ARMOR_UPGRADE_TEMPLATE = TOTVW.registerItem("verixium_armor_upgrade_template",
             properties -> new Item(properties
                     .rarity(Rarity.EPIC)

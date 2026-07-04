@@ -7,8 +7,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
-public class ScatteredPage extends Item {
-    public ScatteredPage(Properties properties) {
+public class ScatteredPageItem extends Item {
+    public ScatteredPageItem(Properties properties, int page) {
         super(properties);
     }
 
