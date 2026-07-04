@@ -1,16 +1,24 @@
 package cliffordha.totvw.entity;
 
+import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.entity.player.InteractionData;
 import cliffordha.totvw.registry.ModAttachments;
 import cliffordha.totvw.registry.ModColors;
+import cliffordha.totvw.tag.ModBiomeTags;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Objects;
@@ -18,9 +26,49 @@ import java.util.Objects;
 import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromPlayer;
 
 public final class ModEntityOtherBehaviors {
+    private static final Identifier VERDANT_OMEN_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_omen");
+
     public static void register() {
         trust();
         verdantTrades();
+        verdantBiomeEffects();
+    }
+
+    private static void verdantBiomeEffects() {
+        ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
+            for (var serverLevel : server.getAllLevels()) {
+                serverLevel.getAllEntities().forEach(entity -> {
+                    if (!entity.getAttachedOrElse(ModAttachments.HAS_VERDANT_OMEN, false)) {
+                        if (!entity.level().getBiome(entity.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES)) return;
+                        if (entity instanceof Enemy enemy) {
+                            LivingEntity mob = (LivingEntity) enemy;
+                            mob.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(
+                                    new AttributeModifier(
+                                            VERDANT_OMEN_ID,
+                                            -0.3f,
+                                            AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                                    )
+                            );
+                            mob.getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(
+                                    new AttributeModifier(
+                                            VERDANT_OMEN_ID,
+                                            -1,
+                                            AttributeModifier.Operation.ADD_VALUE
+                                    )
+                            );
+                            mob.getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(
+                                    new AttributeModifier(
+                                            VERDANT_OMEN_ID,
+                                            -0.25f,
+                                            AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                                    )
+                            );
+                            mob.setAttached(ModAttachments.HAS_VERDANT_OMEN, true);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private static void verdantTrades() {

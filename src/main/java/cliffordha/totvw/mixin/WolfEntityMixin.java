@@ -9,7 +9,6 @@ import cliffordha.totvw.tag.ModItemTags;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
@@ -21,34 +20,31 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.biome.Biomes;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
 
 import static cliffordha.totvw.util.ModUtil.*;
 import static cliffordha.totvw.entity.skill.ConfigTools.*;
 
 @Mixin(Wolf.class)
 public abstract class WolfEntityMixin extends LivingEntity {
-
-    @Unique
-    private static final SoundEvent[] DISTANT_HOWL_SOUNDS = {
-            ModSounds.WOLF_HOWL_A,
-            ModSounds.WOLF_HOWL_B1,
-            ModSounds.WOLF_HOWL_B2,
-            ModSounds.WOLF_HOWL_B3};
 
     protected WolfEntityMixin(EntityType<? extends LivingEntity> type, Level level) {
         super(type, level);
@@ -58,25 +54,57 @@ public abstract class WolfEntityMixin extends LivingEntity {
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Wolf wolf = (Wolf) (Object) this;
         boolean inVerdant = level.getBiome(wolf.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES);
-        if (!inVerdant) return;
-        wolf.setAttached(ModAttachments.Wolf.IS_VERDANT_TYPE, true);
+        if (inVerdant) {
+            wolf.setAttached(ModAttachments.Wolf.IS_VERDANT_TYPE, true);
+        }
+    }
+
+    @ModifyArg(method = "registerGoals", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/goal/GoalSelector;addGoal(ILnet/minecraft/world/entity/ai/goal/Goal;)V", ordinal = 4), index = 1)
+    private Goal leap(Goal goal) {
+        Wolf wolf = (Wolf) (Object) this;
+        return new LeapAtTargetGoal(wolf, 0.55f);
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void attackIfPresent(CallbackInfo ci) {
+        Wolf wolf = (Wolf) (Object) this;
+        boolean inVerdant = level().getBiome(blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES);
+
+        if (wolf.level().getGameTime() % 60 == 0) {
+            if (inVerdant && !wolf.isTame()) {
+                List<Zombie> zombies = wolf.level().getEntities(
+                        EntityType.ZOMBIE,
+                        wolf.getBoundingBox().inflate(16),
+                        zombie -> zombie.getTarget() != null && zombie.getTarget().is(EntityType.VILLAGER));
+                if (zombies.isEmpty()) return;
+                for (Zombie zombie : zombies) {
+                    wolf.setTarget(zombie);
+                    wolf.setAttached(ModAttachments.Wolf.HAS_TRIED_PROTECTING_VILLAGER, true);
+                }
+            }
+        }
     }
 
     @Inject(method = "applyTamingSideEffects", at = @At("HEAD"), cancellable = true)
     private void createAttributes(CallbackInfo ci) {
         Wolf wolf = (Wolf) (Object) this;
+
+        boolean isVerdant = wolf.getAttachedOrElse(ModAttachments.Wolf.IS_VERDANT_TYPE, false);
+
         if (wolf.isTame()) {
             wolf.getAttribute(Attributes.MAX_HEALTH).setBaseValue(40.0);
-            wolf.setHealth(40.0F);
+            wolf.setHealth(40.0f);
         } else {
             wolf.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0);
+            wolf.setHealth(20.0f);
         }
-        wolf.setHealth(wolf.getMaxHealth());
 
         wolf.getAttribute(Attributes.WATER_MOVEMENT_EFFICIENCY).setBaseValue(0.1);
 
-        if (wolf.getAttachedOrElse(ModAttachments.Wolf.IS_VERDANT_TYPE, false) == true) {
+        if (isVerdant) {
             wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.43);
+        } else {
+            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.305);
         }
         ci.cancel();
     }
@@ -88,9 +116,19 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
         int ACTIVE_BENEDICTION = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_BENEDICTION, 0);
         int ACTIVE_BENEDICTION_ENCHANTMENT = wolfEnchantmentLVL(wolf, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
+        boolean villagerGuard = wolf.getAttachedOrElse(ModAttachments.Wolf.IS_VILLAGE_GUARD, false);
         ItemStack itemStack = player.getItemInHand(hand);
 
         if (wolf.isTame()) {
+            if (itemStack.is(Items.STICK) && villagerGuard) {
+                notifyFromWolf(wolf, ModColors.DEFAULT, true, "This is a village wolf");
+                cir.setReturnValue(InteractionResult.PASS);
+            }
+            if (itemStack.is(Items.SHEARS) && wolf.getOwner() != player) {
+                wolf.setOwner(null);
+                wolf.setTame(false, false);
+                cir.setReturnValue(InteractionResult.SUCCESS);
+            }
             if (itemStack.is(Items.TOTEM_OF_UNDYING) && wolf.isWearingBodyArmor()) {
                 if (ACTIVE_BENEDICTION_ENCHANTMENT == 0) return;
                 if (ACTIVE_BENEDICTION >= 3) {
@@ -148,6 +186,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
     @Inject(method = "wantsToAttack", at = @At("HEAD"), cancellable = true)
     private void wantsToAttack(LivingEntity target, LivingEntity owner, CallbackInfoReturnable<Boolean> cir) {
         Wolf wolf = (Wolf) (Object) this;
+
         if (target instanceof Creeper) {
             if (wolf.getHealth() < wolf.getMaxHealth() * 0.5f) return;
             if (!wolf.isWearingBodyArmor()) return;

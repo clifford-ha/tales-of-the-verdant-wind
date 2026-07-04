@@ -78,15 +78,6 @@ public class ModEnchantments {
                         EnchantmentEffectComponents.ATTRIBUTES,
                         new EnchantmentAttributeEffect(
                                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "wolf_armor_enhancement_kit"),
-                                Attributes.MOVEMENT_SPEED,
-                                LevelBasedValue.constant(0.15f),
-                                AttributeModifier.Operation.ADD_VALUE
-                        )
-                )
-                .withEffect(
-                        EnchantmentEffectComponents.ATTRIBUTES,
-                        new EnchantmentAttributeEffect(
-                                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "wolf_armor_enhancement_kit"),
                                 Attributes.WATER_MOVEMENT_EFFICIENCY,
                                 LevelBasedValue.constant(0.15f),
                                 AttributeModifier.Operation.ADD_VALUE

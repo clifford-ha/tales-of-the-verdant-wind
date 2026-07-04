@@ -15,6 +15,7 @@ public class ModAttachments {
 
     public static final AttachmentType<Integer> TRUST_POINTS = registerInt("betrayal_strikes");
     public static final AttachmentType<Integer> TRUST_COOLDOWN = registerInt("trust_cooldown");
+    public static final AttachmentType<Boolean> HAS_VERDANT_OMEN = registerBool("has_verdant_omen");
 
     public static class Player {
         public static final AttachmentType<Integer> CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("cd_player_blessing_of_the_verdant_wind");
@@ -22,6 +23,8 @@ public class ModAttachments {
     }
     public static class Wolf {
         public static final AttachmentType<Boolean> IS_VERDANT_TYPE = registerBool("is_verdant_type");
+        public static final AttachmentType<Boolean> IS_VILLAGE_GUARD = registerBool("is_village_guard");
+        public static final AttachmentType<Boolean> HAS_TRIED_PROTECTING_VILLAGER = registerBool("has_tried_protecting_villager");
 
         public static final AttachmentType<Integer> TIMER_AIR_SUPPLY = registerInt("timer_wolf_air_supply");
         public static final AttachmentType<Integer> NOTIFY_AIR_SUPPLY = registerInt("air_supply_notify");
@@ -42,6 +45,7 @@ public class ModAttachments {
 
     public static class Villager {
         public static final AttachmentType<Boolean> IS_VERDANT_TYPE = registerBool("is_verdant_type");
+        public static final AttachmentType<Boolean> HAS_SUMMONED_WOLF = registerBool("has_summoned_wolf");
         public static final AttachmentType<Integer> CD_DISCOUNT_REROLL = registerInt("cd_discount_reroll");
         public static final AttachmentType<Float> DISCOUNT_MODIFIER = registerFloat("discount_modifier");
     }
@@ -70,11 +74,13 @@ public class ModAttachments {
                 INTERACTION_DATA,
                 TRUST_POINTS,
                 TRUST_COOLDOWN,
+                HAS_VERDANT_OMEN,
 
                 Player.CD_BLESSING_OF_THE_VERDANT_WIND,
                 Player.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
 
                 Wolf.IS_VERDANT_TYPE,
+                Wolf.IS_VILLAGE_GUARD,
                 Wolf.TIMER_AIR_SUPPLY,
                 Wolf.NOTIFY_AIR_SUPPLY,
                 Wolf.CD_BLESSING_OF_THE_VERDANT_WIND,

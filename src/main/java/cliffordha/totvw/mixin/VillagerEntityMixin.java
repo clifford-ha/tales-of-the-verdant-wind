@@ -1,16 +1,15 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.registry.ModItems;
+import cliffordha.totvw.registry.*;
 import cliffordha.totvw.util.ModUtil;
-import cliffordha.totvw.registry.ModAttachments;
-import cliffordha.totvw.registry.ModColors;
 import cliffordha.totvw.tag.ModBiomeTags;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +22,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromPlayer;
 
 @Mixin(Villager.class)
@@ -34,6 +36,30 @@ public class VillagerEntityMixin {
         boolean inVerdant = level.getBiome(villager.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES);
         if (!inVerdant) return;
         villager.setAttached(ModAttachments.Villager.IS_VERDANT_TYPE, true);
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void attackIfPresent(CallbackInfo ci) {
+        Villager villager = (Villager) (Object) this;
+        boolean inVerdant = villager.level().getBiome(villager.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES);
+
+        if (villager.level().getGameTime() % 100 == 0) {
+            if (inVerdant) {
+                List<Wolf> wolves = villager.level().getEntities(
+                        EntityType.WOLF,
+                        villager.getBoundingBox().inflate(12),
+                        wolf -> wolf.isAlive()
+                                && wolf.getHealth() <= wolf.getMaxHealth() * 0.75f
+                                && wolf.getAttachedOrElse(ModAttachments.Wolf.HAS_TRIED_PROTECTING_VILLAGER, false));
+                if (wolves.isEmpty()) return;
+                for (Wolf wolf : wolves) {
+                    wolf.heal(villager.getHealth() * 0.5f);
+                    wolf.removeAttached(ModAttachments.Wolf.HAS_TRIED_PROTECTING_VILLAGER);
+                    ModParticleEffects.spawnBlessingParticlesEntity(wolf, 2);
+                    ModParticleEffects.spawnBlessingParticlesEntity(villager, 2);
+                }
+            }
+        }
     }
 
     @Inject(method = "updateSpecialPrices", at = @At("TAIL"))

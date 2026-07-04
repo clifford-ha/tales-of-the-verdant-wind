@@ -25,10 +25,7 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.skeleton.WitherSkeleton;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -241,7 +238,8 @@ public final class ModWolfBehaviors {
 
         if (ACTIVE_LIFTING > 0) {
             if (victim.hasEffect(MobEffects.LEVITATION)) {
-                victim.knockback(ACTIVE_LIFTING, level.getRandom().nextDouble(), level.getRandom().nextDouble());
+                var random = level.getRandom().nextDouble();
+                victim.knockback(ACTIVE_LIFTING, random, random);
             } else {
                 addHiddenEffect(victim, MobEffects.LEVITATION, 10, ACTIVE_LIFTING * 3);
             }

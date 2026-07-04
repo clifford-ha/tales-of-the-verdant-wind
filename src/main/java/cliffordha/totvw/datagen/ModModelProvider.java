@@ -20,6 +20,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import java.util.List;
+
 public class ModModelProvider extends FabricModelProvider {
     public ModModelProvider(FabricPackOutput output) {
         super(output);
@@ -38,11 +40,11 @@ public class ModModelProvider extends FabricModelProvider {
 
         block.createTrivialCube(ModBlocks.VERIXIUM_STONE_ORE);
         block.createTrivialCube(ModBlocks.VERIXIUM_DEEPSLATE_ORE);
+        block.createColoredBlockWithRandomRotations(TexturedModel.CUBE, VerdantBlocks.VERDANT_MOSS_BLOCK);
         block.createColoredBlockWithRandomRotations(TexturedModel.CUBE, ModBlocks.VERIXIUM_POWDER_BLOCK);
 
         block.createGlassBlocks(ModBlocks.IRIDESCENT_GLASS, ModBlocks.IRIDESCENT_GLASS_PANE);
 
-        block.createColoredBlockWithRandomRotations(TexturedModel.CUBE, VerdantBlocks.VERDANT_MOSS_BLOCK);
         block.createTrivialBlock(VerdantBlocks.VERDANT_SPRUCE_LEAVES, TexturedModel.LEAVES);
         block.createPlantWithDefaultItem(VerdantBlocks.VERDANT_SPRUCE_SAPLING, VerdantBlocks.POTTED_VERDANT_SPRUCE_SAPLING, BlockModelGenerators.PlantType.TINTED);
 

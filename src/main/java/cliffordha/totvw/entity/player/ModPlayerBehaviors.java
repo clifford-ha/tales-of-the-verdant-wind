@@ -23,10 +23,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -254,7 +251,9 @@ public class ModPlayerBehaviors {
                     List<Wolf> wolves = serverLevel.getEntities(
                             EntityType.WOLF,
                             player.getBoundingBox().inflate(32),
-                            wolf -> wolf.isTame() && (wolf.getUUID() != player.getUUID()) );
+                            wolf -> wolf.isTame()
+                                    && !wolf.getAttachedOrElse(ModAttachments.Wolf.IS_VILLAGE_GUARD, false)
+                                    && (wolf.getUUID() != player.getUUID()) );
                     if (wolves.isEmpty()) return;
                     for (Wolf wolf : wolves) {
                         wolf.setOwner(player);
