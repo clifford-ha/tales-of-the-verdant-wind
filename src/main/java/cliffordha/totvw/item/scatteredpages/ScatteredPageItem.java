@@ -11,6 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTitle.*;
 import static cliffordha.totvw.item.scatteredpages.TextColorEnum.*;
 import static cliffordha.totvw.item.scatteredpages.TextFormatterEnum.*;
@@ -38,10 +41,22 @@ public class ScatteredPageItem extends Item {
     }
 
     private static String[] getPages(Player player, int contents) {
-
         switch (contents) {
             case 1001 -> {
-                return new String[] {
+                return addPage(
+                        pText(1)
+                                + "...3 days later, the village cleric successfully healed the wounded villagers. The relocation to the deep forest was a success but not without problems."
+                                + nextParagraph()
+                                + "Notes: Berries are edible, but not very tasty. " + fText(STRIKETHROUGH, "Fog") + " is also a big problem. These berry bushes also seem to behave " + bText("strangely") + " when within the this specific biome... Moreover, the surrounding environment is quite the challenge to navigate with all these unforgiving fog -_-"
+                                + nextParagraph()
+                                + "A day later after the final relocation day, some folks claim to have witnessed a " + bText("wolf") + " tearing down a zombie that chased them."
+                                + fText(UNDERLINED, "Verify later...")
+                                + nextParagraph()
+                                + "There was also a " + fText(STRIKETHROUGH, "trader") + " who passed by yesterday. He seemed—"
+                                + nextParagraph()
+                                + pText(2));
+                //return new String[] {
+                        /*
                         addPage(
                                 pText(1)
                                 + "...3 days later, the village cleric successfully healed the wounded villagers. The relocation to the deep forest was a success but not without problems."
@@ -56,19 +71,15 @@ public class ScatteredPageItem extends Item {
                                 + "There was also a " + fText(STRIKETHROUGH, "trader") + " who passed by yesterday. He seemed—"
                                 + nextParagraph()
                                 + pText(2)
-                        ),
-                };
+                        ),*/
             }
             case 1002 -> {
 
-                return new String[] {
-                        "This is a test. ".repeat(100)
-                };
+                return addPage("Is this long enough or what? ".repeat(1000));
             }
         }
         return new String[] { "Error: Invalid Pages or Null" };
     }
-
 
 
 
@@ -116,20 +127,48 @@ public class ScatteredPageItem extends Item {
         return "\n\n";
     }
 
-    private static String nextLine(String text) {
-        return "\n" + text;
+    /** purely made for separating *pages visually, rip brain **/
+    private static String[] addPage(String text) {
+        final int maxPageLength = 750;
+        List<String> pages = new ArrayList<>();
+        int start = 0;
+
+        while (start < text.length()) {
+            while (start < text.length() && Character.isWhitespace(text.charAt(start))) {
+                start++;
+            }
+
+            if (start >= text.length()) {
+                break;
+            }
+
+            int end = Math.min(start + maxPageLength, text.length());
+
+            if (end < text.length()) {
+                int split = end;
+
+                while (split > start && !Character.isWhitespace(text.charAt(split - 1))) {
+                    split--;
+                }
+
+                if (split > start) {
+                    end = split;
+                }
+            }
+
+            pages.add(text.substring(start, end).trim());
+            start = end;
+        }
+        return pages.toArray(new String[0]);
     }
 
-    /** purely made for separating *pages visually, rip brain **/
-    private static String addPage(String text) {
-        return text;
-    }
 
 
 
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
+
         if (level.isClientSide()) {
             openScreen(getTitle(player, pageID), getPages(player, pageID));
         }
