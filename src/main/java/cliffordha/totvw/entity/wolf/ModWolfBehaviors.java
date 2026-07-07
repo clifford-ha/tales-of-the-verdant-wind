@@ -73,12 +73,12 @@ public final class ModWolfBehaviors {
                         () -> TOTVWConfig.get().lowHealthThreshold * 0.01f,
                         () -> TOTVWConfig.get().maxWolfPlayerDistance)
                         .and(WolfCondition.hasBodyArmor())
-                        .and(WolfCondition.checkNoAttached(ModAttachments.Wolf.CD_BLESSING_OF_THE_VERDANT_WIND)),
+                        .and(WolfCondition.checkNoAttached(ModAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND)),
                 ModWolfBehaviors::runPlayerBlessing
         ));
         TICK_RULES.add(WolfBehaviorRule.forTamed(
                 WolfCondition.tick(0, 1)
-                        .and(WolfCondition.checkNoAttached(ModAttachments.Wolf.TIMER_AIR_SUPPLY))
+                        .and(WolfCondition.checkNoAttached(ModAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY))
                         .and(WolfCondition.isUnderWater())
                         .and(WolfCondition.airSupplyLowerThan(0.5f))
                         .and(WolfCondition.unableToTeleport()),
@@ -101,6 +101,20 @@ public final class ModWolfBehaviors {
         ON_DAMAGE_RULES.add(WolfBehaviorRule.forAny(
                 WolfCondition.hasBodyArmor(),
                 ModWolfBehaviors::runEnchantmentsOnDamage
+        ));
+        ON_DAMAGE_RULES.add(WolfBehaviorRule.forAny(
+                WolfCondition.alwaysTrue(),
+                (wolf, level) -> {
+                    var victim = CURRENT_VICTIM.get();
+                    if (victim == null) return;
+                    if (wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0) == 1) {
+                        int points = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_TRY_SAVE_POINTS, 0);
+                        wolf.setAttached(ModAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 2);
+                        victim.setAttached(ModAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 2);
+                        if (victim.getHealth() <= victim.getMaxHealth() * 0.8f) {}
+                        wolf.setAttached(ModAttachments.Wolf.WOLF_TRY_SAVE_POINTS, points + 1);
+                    }
+                }
         ));
         TICK_RULES.add(WolfBehaviorRule.forAny(
                 WolfCondition.newSoundsEnable(),
@@ -130,12 +144,12 @@ public final class ModWolfBehaviors {
         TICK_RULES.add(WolfBehaviorRule.forAny(WolfCondition.tick(0, 1), (wolf, _) -> {
             if (TOTVWConfig.get().sendLog) {ConfigTools.setWolfConfiguration(wolf, 0);}
             if (TOTVWConfig.get().otherAttachmentCD) {
-                ConfigTools.depleteCooldown(wolf,  ModAttachments.Wolf.TIMER_AIR_SUPPLY);
+                ConfigTools.depleteCooldown(wolf,  ModAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY);
             }
             if (TOTVWConfig.get().attachmentSkillCD) {
-                ConfigTools.depleteCooldown(wolf, ModAttachments.Wolf.CD_BLESSING_OF_THE_VERDANT_WIND);
-                ConfigTools.depleteCooldown(wolf, ModAttachments.Wolf.CD_BLOODLUST_SKILL_PARALYZE);
-                ConfigTools.depleteCooldown(wolf, ModAttachments.Wolf.CD_MIGHT_SKILL_RUPTURE);
+                ConfigTools.depleteCooldown(wolf, ModAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND);
+                ConfigTools.depleteCooldown(wolf, ModAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE);
+                ConfigTools.depleteCooldown(wolf, ModAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE);
             } else {
                 ConfigTools.setWolfConfiguration(wolf, 1);
             }
@@ -144,14 +158,14 @@ public final class ModWolfBehaviors {
             SkillUtil.notifyReset(wolf, PARALYZER);
 
             processCDNotify(wolf,
-                    ModAttachments.Wolf.CD_BLESSING_OF_THE_VERDANT_WIND,
-                    ModAttachments.Wolf.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+                    ModAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND,
+                    ModAttachments.Wolf.WOLF_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
                     ModColors.VERDANT_WIND_MUTED,
                     "§nVerdant Wind's Blessing§f cooldown reset for §r" + wolfName(wolf)
             );
             processCDNotify(wolf,
-                    ModAttachments.Wolf.CD_BLOODLUST_SKILL_PARALYZE,
-                    ModAttachments.Wolf.NOTIFY_BLOODLUST_SKILL_PARALYZE,
+                    ModAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE,
+                    ModAttachments.Wolf.WOLF_NOTIFY_BLOODLUST_SKILL_PARALYZE,
                     ModColors.BLOODLUST_EFFECT_MUTED,
                     "§nBloodlust Skill: Paralyzer§r cooldown reset for §r" + wolfName(wolf)
             );
@@ -165,8 +179,8 @@ public final class ModWolfBehaviors {
             notifyFromWolf(wolf, ModColors.MIGHT_EFFECT_MUTED, "[" + wolfName(wolf) + "] My air supply is about to run out...");
         }
 
-        wolf.setAttached(ModAttachments.Wolf.TIMER_AIR_SUPPLY, sec(3));
-        wolf.setAttached(ModAttachments.Wolf.NOTIFY_AIR_SUPPLY, 1);
+        wolf.setAttached(ModAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY, sec(3));
+        wolf.setAttached(ModAttachments.Wolf.WOLF_NOTIFY_AIR_SUPPLY, 1);
     }
     private static void runPlayerBlessing(Wolf wolf, ServerLevel level) {
         LivingEntity player = wolf.getOwner();
@@ -208,8 +222,8 @@ public final class ModWolfBehaviors {
 
         boolean inNether = level.getBiome(wolf.blockPosition()).is(BiomeTags.IS_NETHER);
 
-        int getParalyzeCD = wolf.getAttachedOrElse(ModAttachments.Wolf.CD_BLOODLUST_SKILL_PARALYZE, 0);
-        int getRuptureCD = wolf.getAttachedOrElse(ModAttachments.Wolf.CD_MIGHT_SKILL_RUPTURE, 0);
+        int getParalyzeCD = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE, 0);
+        int getRuptureCD = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE, 0);
 
         if (ACTIVE_IGNITION > 0) {
             int burnTime = ACTIVE_IGNITION * 3;
@@ -342,24 +356,24 @@ public final class ModWolfBehaviors {
 
     public static final WolfSkillDefinition VERDANT_BLESSING =
             new WolfSkillDefinition(
-                    ModAttachments.Wolf.CD_BLESSING_OF_THE_VERDANT_WIND,
-                    ModAttachments.Wolf.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+                    ModAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND,
+                    ModAttachments.Wolf.WOLF_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
                     ModColors.VERDANT_WIND,
                    "§nVerdant Wind's Blessing§r"
             );
 
     private static final WolfSkillDefinition PARALYZER =
             new WolfSkillDefinition(
-                    ModAttachments.Wolf.CD_BLOODLUST_SKILL_PARALYZE,
-                    ModAttachments.Wolf.NOTIFY_BLOODLUST_SKILL_PARALYZE,
+                    ModAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE,
+                    ModAttachments.Wolf.WOLF_NOTIFY_BLOODLUST_SKILL_PARALYZE,
                     ModColors.BLOODLUST_EFFECT,
                 "§nBloodlust Skill: Paralyzer§r"
             );
 
     private static final WolfSkillDefinition RUPTURE =
             new WolfSkillDefinition(
-                    ModAttachments.Wolf.CD_MIGHT_SKILL_RUPTURE,
-                    ModAttachments.Wolf.NOTIFY_MIGHT_SKILL_RUPTURE,
+                    ModAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE,
+                    ModAttachments.Wolf.WOLF_NOTIFY_MIGHT_SKILL_RUPTURE,
                     ModColors.MIGHT_EFFECT,
                     "§nMight Skill: Rupture§r"
             );
@@ -383,6 +397,8 @@ public final class ModWolfBehaviors {
         ServerLivingEntityEvents.AFTER_DAMAGE.register(
                 (victim, damageSource, _, _, _) -> getWolfVictimThread(victim,  damageSource)
         );
+
+        // test purpose: for wolf to still get the enchantment benefits even after entity dies
         ServerLivingEntityEvents.AFTER_DEATH.register(
                 ModWolfBehaviors::getWolfVictimThread
         );

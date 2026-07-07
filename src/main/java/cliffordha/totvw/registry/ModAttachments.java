@@ -8,46 +8,51 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.resources.Identifier;
 
 public class ModAttachments {
-    public static final AttachmentType<InteractionData> INTERACTION_DATA = AttachmentRegistry.create(
+    public static final AttachmentType<InteractionData> ENTITY_INTERACTION_DATA = AttachmentRegistry.create(
             Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "interaction_data"),
             builder -> builder.persistent(InteractionData.CODEC).initializer(InteractionData::create)
     );
 
-    public static final AttachmentType<Integer> TRUST_POINTS = registerInt("betrayal_strikes");
-    public static final AttachmentType<Integer> TRUST_COOLDOWN = registerInt("trust_cooldown");
-    public static final AttachmentType<Boolean> HAS_VERDANT_OMEN = registerBool("has_verdant_omen");
+    public static final AttachmentType<Integer> ENTITY_TRUST_POINTS = registerInt("entity_trust_points");
+    public static final AttachmentType<Integer> ENTITY_TRUST_COOLDOWN = registerInt("entity_trust_cooldown");
+    public static final AttachmentType<Boolean> ENTITY_HAS_VERDANT_OMEN = registerBool("entity_has_verdant_omen");
 
     public static class Player {
-        public static final AttachmentType<Integer> CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("cd_player_blessing_of_the_verdant_wind");
-        public static final AttachmentType<Integer> NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("notify_player_blessing_of_the_verdant_wind");
+        public static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_cd_blessing_of_the_verdant_wind");
+        public static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_notify_blessing_of_the_verdant_wind");
     }
     public static class Wolf {
-        public static final AttachmentType<Boolean> IS_VERDANT_TYPE = registerBool("is_verdant_type");
-        public static final AttachmentType<Boolean> IS_VILLAGE_GUARD = registerBool("is_village_guard");
-        public static final AttachmentType<Boolean> HAS_TRIED_PROTECTING_VILLAGER = registerBool("has_tried_protecting_villager");
+        public static final AttachmentType<Boolean> WOLF_IS_VERDANT_TYPE = registerBool("wolf_is_verdant_type");
+        public static final AttachmentType<Boolean> WOLF_IS_VILLAGE_GUARD = registerBool("wolf_is_village_guard");
 
-        public static final AttachmentType<Integer> TIMER_AIR_SUPPLY = registerInt("timer_wolf_air_supply");
-        public static final AttachmentType<Integer> NOTIFY_AIR_SUPPLY = registerInt("air_supply_notify");
+        public static final AttachmentType<Integer> WOLF_TIMER_AIR_SUPPLY = registerInt("wolf_timer_air_supply");
+        public static final AttachmentType<Integer> WOLF_NOTIFY_AIR_SUPPLY = registerInt("wolf_notify_air_supply");
+
+        public static final AttachmentType<Integer> WOLF_TRY_SAVE_POINTS = registerInt("wolf_try_save_points");
+        public static final AttachmentType<Integer> WOLF_TRY_SAVE_STATUS = registerInt("wolf_try_save_pending_points");
+
+        public static final AttachmentType<Integer> WOLF_CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("wolf_cd_blessing_of_the_verdant_wind");
+        public static final AttachmentType<Integer> WOLF_CD_BLOODLUST_SKILL_PARALYZE = registerInt("wolf_cd_bloodlust_skill_paralyze");
+        public static final AttachmentType<Integer> WOLF_CD_MIGHT_SKILL_RUPTURE = registerInt("wolf_cd_might_skill_rupture");
 
 
-        public static final AttachmentType<Integer> CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("cd_wolf_blessing_of_the_verdant_wind");
-        public static final AttachmentType<Integer> CD_BLOODLUST_SKILL_PARALYZE = registerInt("cd_wolf_might_skill_paralyze");
-        public static final AttachmentType<Integer> CD_MIGHT_SKILL_RUPTURE = registerInt("cd_wolf_bloodlust_skill_rupture");
-
-
-        public static final AttachmentType<Integer> NOTIFY_MIGHT_SKILL_RUPTURE = registerInt("notify_wolf_bloodlust_skill_rupture");
-        public static final AttachmentType<Integer> NOTIFY_BLOODLUST_SKILL_PARALYZE = registerInt("notify_wolf_might_skill_paralyze");
-        public static final AttachmentType<Integer> NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("notify_wolf_blessing_of_the_verdant_wind");
+        public static final AttachmentType<Integer> WOLF_NOTIFY_MIGHT_SKILL_RUPTURE = registerInt("wolf_notify_might_skill_rupture");
+        public static final AttachmentType<Integer> WOLF_NOTIFY_BLOODLUST_SKILL_PARALYZE = registerInt("wolf_notify_bloodlust_skill_paralyze");
+        public static final AttachmentType<Integer> WOLF_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("wolf_notify_blessing_of_the_verdant_wind");
 
         public static final AttachmentType<Integer> WOLF_BENEDICTION = registerInt("wolf_benediction");
-        public static final AttachmentType<Integer> VERDANT_BIOME_PERMANENT_BLESSING = registerInt("verdant_biome_permanent_biome");
+        public static final AttachmentType<Integer> WOLF_PERMANENT_VERDANT_BLESSING = registerInt("wolf_permanent_verdant_blessing");
     }
 
     public static class Villager {
-        public static final AttachmentType<Boolean> IS_VERDANT_TYPE = registerBool("is_verdant_type");
-        public static final AttachmentType<Boolean> HAS_SUMMONED_WOLF = registerBool("has_summoned_wolf");
-        public static final AttachmentType<Integer> CD_DISCOUNT_REROLL = registerInt("cd_discount_reroll");
-        public static final AttachmentType<Float> DISCOUNT_MODIFIER = registerFloat("discount_modifier");
+        public static final AttachmentType<Boolean> VILLAGER_IS_VERDANT_TYPE = registerBool("villager_is_verdant_type");
+
+        public static final AttachmentType<Integer> VILLAGER_CD_HEAL_OTHERS = registerInt("villager_cd_heal_others");
+        public static final AttachmentType<Integer> VILLAGER_CD_HEAL_WOLF = registerInt("villager_cd_heal_wolf");
+        public static final AttachmentType<Integer> VILLAGER_CD_HEAL_IRON_GOLEM = registerInt("villager_cd_heal_iron_golem");
+        public static final AttachmentType<Integer> VILLAGER_CD_DISCOUNT_REROLL = registerInt("villager_cd_discount_reroll");
+
+        public static final AttachmentType<Float> VILLAGER_DISCOUNT_MODIFIER = registerFloat("villager_discount_modifier");
     }
 
     private static AttachmentType<Integer> registerInt(String name) {
@@ -70,32 +75,52 @@ public class ModAttachments {
     }
 
     public static void registerModAttachments() {
-        AttachmentType<?>[] attachmentTypes = {
-                INTERACTION_DATA,
-                TRUST_POINTS,
-                TRUST_COOLDOWN,
-                HAS_VERDANT_OMEN,
-
-                Player.CD_BLESSING_OF_THE_VERDANT_WIND,
-                Player.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
-
-                Wolf.IS_VERDANT_TYPE,
-                Wolf.IS_VILLAGE_GUARD,
-                Wolf.TIMER_AIR_SUPPLY,
-                Wolf.NOTIFY_AIR_SUPPLY,
-                Wolf.CD_BLESSING_OF_THE_VERDANT_WIND,
-                Wolf.CD_BLOODLUST_SKILL_PARALYZE,
-                Wolf.CD_MIGHT_SKILL_RUPTURE,
-                Wolf.NOTIFY_MIGHT_SKILL_RUPTURE,
-                Wolf.NOTIFY_BLOODLUST_SKILL_PARALYZE,
-                Wolf.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
-                Wolf.WOLF_BENEDICTION,
-                Wolf.VERDANT_BIOME_PERMANENT_BLESSING,
-
-                Villager.IS_VERDANT_TYPE,
-                Villager.CD_DISCOUNT_REROLL,
-                Villager.DISCOUNT_MODIFIER
+        AttachmentType<?>[] globalAttachments = {
+                ENTITY_INTERACTION_DATA,
+                ENTITY_TRUST_POINTS,
+                ENTITY_TRUST_COOLDOWN,
+                ENTITY_HAS_VERDANT_OMEN,
         };
-        TOTVW.sendLog("Custom Attachments: " + attachmentTypes.length);
+
+        AttachmentType<?>[] playerAttachments = {
+                Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
+                Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+        };
+
+        AttachmentType<?>[] wolfAttachments = {
+                Wolf.WOLF_IS_VERDANT_TYPE,
+                Wolf.WOLF_IS_VILLAGE_GUARD,
+                Wolf.WOLF_TIMER_AIR_SUPPLY,
+                Wolf.WOLF_NOTIFY_AIR_SUPPLY,
+                Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND,
+                Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE,
+                Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE,
+                Wolf.WOLF_NOTIFY_MIGHT_SKILL_RUPTURE,
+                Wolf.WOLF_NOTIFY_BLOODLUST_SKILL_PARALYZE,
+                Wolf.WOLF_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+                Wolf.WOLF_BENEDICTION,
+                Wolf.WOLF_PERMANENT_VERDANT_BLESSING,
+                Wolf.WOLF_TRY_SAVE_POINTS,
+                Wolf.WOLF_TRY_SAVE_STATUS,
+        };
+
+        AttachmentType<?>[] villagerAttachments = {
+                Villager.VILLAGER_IS_VERDANT_TYPE,
+                Villager.VILLAGER_CD_HEAL_OTHERS,
+                Villager.VILLAGER_CD_HEAL_WOLF,
+                Villager.VILLAGER_CD_HEAL_IRON_GOLEM,
+                Villager.VILLAGER_CD_DISCOUNT_REROLL,
+                Villager.VILLAGER_DISCOUNT_MODIFIER,
+        };
+        int total = globalAttachments.length + playerAttachments.length + wolfAttachments.length + villagerAttachments.length;
+
+        TOTVW.sendLog(
+                "Custom Attachments: " +
+                        "GLOBAL: " + globalAttachments.length + ", " +
+                        "PLAYER: " + playerAttachments.length + ", " +
+                        "WOLF: " + wolfAttachments.length + ", " +
+                        "VILLAGER: " + villagerAttachments.length + " || " +
+                        "TOTAL: " + total
+        );
     }
 }

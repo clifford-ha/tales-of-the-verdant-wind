@@ -47,16 +47,16 @@ public class PlayerEntityMixin {
             if (untrustable) return;
             if (isTamedWolf) return;
 
-            if (!Objects.equals(entity.getAttached(ModAttachments.INTERACTION_DATA), new InteractionData(truster, trustee))) {
-                entity.setAttached(ModAttachments.INTERACTION_DATA, new InteractionData(truster, trustee));
-                entity.setAttached(ModAttachments.TRUST_POINTS, + 2);
+            if (!Objects.equals(entity.getAttached(ModAttachments.ENTITY_INTERACTION_DATA), new InteractionData(truster, trustee))) {
+                entity.setAttached(ModAttachments.ENTITY_INTERACTION_DATA, new InteractionData(truster, trustee));
+                entity.setAttached(ModAttachments.ENTITY_TRUST_POINTS, + 2);
                 notifyFromPlayer(player, ModColors.VERDANT_WIND, true, "Trusted: " + name);
                 cir.setReturnValue(InteractionResult.SUCCESS);
                 if (player.isInvulnerable() || player.isCreative() || player.isSpectator()) return;
                 itemStack.shrink(1);
-            } else if (Objects.equals(entity.getAttached(ModAttachments.INTERACTION_DATA), new InteractionData(truster, trustee)) && player.isShiftKeyDown()) {
-                entity.removeAttached(ModAttachments.INTERACTION_DATA);
-                entity.removeAttached(ModAttachments.TRUST_POINTS);
+            } else if (Objects.equals(entity.getAttached(ModAttachments.ENTITY_INTERACTION_DATA), new InteractionData(truster, trustee)) && player.isShiftKeyDown()) {
+                entity.removeAttached(ModAttachments.ENTITY_INTERACTION_DATA);
+                entity.removeAttached(ModAttachments.ENTITY_TRUST_POINTS);
                 notifyFromPlayer(player, ModColors.VERDANT_WIND, true, "Removed trust for " + name);
                 cir.setReturnValue(InteractionResult.SUCCESS);
             } else {

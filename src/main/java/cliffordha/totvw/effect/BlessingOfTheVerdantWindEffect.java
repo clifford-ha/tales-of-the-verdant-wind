@@ -14,6 +14,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.Monster;
 
 public class BlessingOfTheVerdantWindEffect extends MobEffect {
     private static final Identifier ATK_DMG_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "blessing_attack_damage");
@@ -32,14 +34,16 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
 
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
+        if (entity instanceof Monster) return;
         ModParticleEffects.spawnBlessingParticlesEntity(entity, 1);
         AttributeMap attributes = entity.getAttributes();
 
         double atkDamage = 0.15 + (amplifier * 0.15);
         double burnTime = 0.2 + (amplifier * 0.2);
 
-        double maxHealthIncrease = Math.min(amplifier, 2);
-        double health = 0.2 + (maxHealthIncrease * 0.2);
+        double healthIncreaseCap = Math.min(amplifier, 2);
+        double health = 0.2 + (healthIncreaseCap * 0.2);
+
         if (attributes.hasAttribute(Attributes.ATTACK_DAMAGE)) {
             attributes.getInstance(Attributes.ATTACK_DAMAGE).addOrReplacePermanentModifier(
                     new AttributeModifier(
@@ -77,8 +81,9 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity entity, int amplifier) {
-        if (serverLevel.getRandom().nextInt(20 * 6) == 0) {
-            entity.heal(3.0f + (amplifier * 2.0f));
+        float heal = (entity instanceof Monster) ? 0f : 3.0f + (amplifier * 2.0f);
+        if (serverLevel.getRandom().nextInt(60) == 0) {
+            entity.heal(heal);
             ModParticleEffects.benedictionEnvironmentParticleEntity(entity);
         }
         return super.applyEffectTick(serverLevel, entity, amplifier);

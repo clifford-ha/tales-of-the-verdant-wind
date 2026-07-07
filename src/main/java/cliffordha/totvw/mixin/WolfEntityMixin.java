@@ -24,7 +24,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -55,7 +55,32 @@ public abstract class WolfEntityMixin extends LivingEntity {
         Wolf wolf = (Wolf) (Object) this;
         boolean inVerdant = level.getBiome(wolf.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES);
         if (inVerdant) {
-            wolf.setAttached(ModAttachments.Wolf.IS_VERDANT_TYPE, true);
+            wolf.setAttached(ModAttachments.Wolf.WOLF_IS_VERDANT_TYPE, true);
+        }
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void onTick(CallbackInfo ci) {
+        Wolf wolf = (Wolf) (Object) this;
+        boolean isVerdantType = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false);
+
+        if (wolf.level().getGameTime() % 60 == 0) {
+            if (isVerdantType && !wolf.isTame()) {
+                if (!wolf.isAngry()) {
+                    wolf.setAttached(ModAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0);
+                }
+                LivingEntity target = wolf.getTarget();
+                List<Monster> monsters = wolf.level().getEntitiesOfClass(Monster.class, wolf.getBoundingBox().inflate(12), z -> z.getTarget() != null && z.getTarget().is(EntityType.VILLAGER));
+                if (monsters.isEmpty()) return;
+
+                if (target != null && target.isAlive() && !target.is(EntityType.VILLAGER)) return;
+
+                for (Monster monster : monsters) {
+                    wolf.setTarget(monster);
+                    if (wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0) == 2) return;
+                    wolf.setAttached(ModAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 1);
+                }
+            }
         }
     }
 
@@ -65,31 +90,11 @@ public abstract class WolfEntityMixin extends LivingEntity {
         return new LeapAtTargetGoal(wolf, 0.55f);
     }
 
-    @Inject(method = "tick", at = @At("HEAD"))
-    private void attackIfPresent(CallbackInfo ci) {
-        Wolf wolf = (Wolf) (Object) this;
-        boolean inVerdant = level().getBiome(blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES);
-
-        if (wolf.level().getGameTime() % 60 == 0) {
-            if (inVerdant && !wolf.isTame()) {
-                List<Zombie> zombies = wolf.level().getEntities(
-                        EntityType.ZOMBIE,
-                        wolf.getBoundingBox().inflate(16),
-                        zombie -> zombie.getTarget() != null && zombie.getTarget().is(EntityType.VILLAGER));
-                if (zombies.isEmpty()) return;
-                for (Zombie zombie : zombies) {
-                    wolf.setTarget(zombie);
-                    wolf.setAttached(ModAttachments.Wolf.HAS_TRIED_PROTECTING_VILLAGER, true);
-                }
-            }
-        }
-    }
-
     @Inject(method = "applyTamingSideEffects", at = @At("HEAD"), cancellable = true)
     private void createAttributes(CallbackInfo ci) {
         Wolf wolf = (Wolf) (Object) this;
 
-        boolean isVerdant = wolf.getAttachedOrElse(ModAttachments.Wolf.IS_VERDANT_TYPE, false);
+        boolean isVerdant = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false);
 
         if (wolf.isTame()) {
             wolf.getAttribute(Attributes.MAX_HEALTH).setBaseValue(40.0);
@@ -102,7 +107,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
         wolf.getAttribute(Attributes.WATER_MOVEMENT_EFFICIENCY).setBaseValue(0.1);
 
         if (isVerdant) {
-            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.43);
+            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.375);
         } else {
             wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.305);
         }
@@ -116,7 +121,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
         int ACTIVE_BENEDICTION = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_BENEDICTION, 0);
         int ACTIVE_BENEDICTION_ENCHANTMENT = wolfEnchantmentLVL(wolf, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
-        boolean villagerGuard = wolf.getAttachedOrElse(ModAttachments.Wolf.IS_VILLAGE_GUARD, false);
+        boolean villagerGuard = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_IS_VILLAGE_GUARD, false);
         ItemStack itemStack = player.getItemInHand(hand);
 
         if (wolf.isTame()) {
@@ -203,7 +208,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
             String dash = "-";
             String truster = player.getName().getString() + player.getStringUUID();
             String trustee = dash + target.getName().getString() + target.getStringUUID();
-            InteractionData data = target.getAttached(ModAttachments.INTERACTION_DATA);
+            InteractionData data = target.getAttached(ModAttachments.ENTITY_INTERACTION_DATA);
             if (data == null) return;
             if (data.player().equals(truster) && data.trustee().equals(trustee)) {
                 wolf.stopBeingAngry();

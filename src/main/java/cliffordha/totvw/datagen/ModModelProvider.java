@@ -4,6 +4,7 @@ import cliffordha.totvw.block.ModStorageBlock;
 import cliffordha.totvw.registry.blocks.VerdantBlocks;
 import cliffordha.totvw.registry.ModBlocks;
 import cliffordha.totvw.registry.ModItems;
+import cliffordha.totvw.registry.items.ScatteredPages;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.MultiVariant;
@@ -104,6 +105,11 @@ public class ModModelProvider extends FabricModelProvider {
 
         item.generateFlatItem(ModItems.VERDANT_SPRUCE_BOAT, ModelTemplates.FLAT_ITEM);
         item.generateFlatItem(ModItems.VERDANT_SPRUCE_CHEST_BOAT, ModelTemplates.FLAT_ITEM);
+
+
+        item.generateFlatItem(ScatteredPages.SP_ID_1000, ModItems.VERIXIUM_PAPER, ModelTemplates.FLAT_ITEM);
+        item.generateFlatItem(ScatteredPages.SP_ID_1001, ModItems.VERIXIUM_PAPER, ModelTemplates.FLAT_ITEM);
+        item.generateFlatItem(ScatteredPages.SP_ID_1002, ModItems.VERIXIUM_PAPER, ModelTemplates.FLAT_ITEM);
     }
 
     @Override

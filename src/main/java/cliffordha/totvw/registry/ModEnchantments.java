@@ -70,7 +70,7 @@ public class ModEnchantments {
                         new EnchantmentAttributeEffect(
                                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "wolf_armor_enhancement_kit"),
                                 Attributes.KNOCKBACK_RESISTANCE,
-                                LevelBasedValue.constant(0.2f),
+                                LevelBasedValue.constant(0.1f),
                                 AttributeModifier.Operation.ADD_VALUE
                         )
                 )

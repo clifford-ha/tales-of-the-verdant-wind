@@ -1,17 +1,12 @@
 package cliffordha.totvw.item.events;
 
-import cliffordha.totvw.client.screen.ModTestScreen;
 import cliffordha.totvw.registry.ModEffects;
 import cliffordha.totvw.registry.ModItems;
 import cliffordha.totvw.registry.ModParticleEffects;
 import cliffordha.totvw.tag.ModBiomeTags;
 import cliffordha.totvw.tag.ModItemTags;
 import cliffordha.totvw.registry.ModColors;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;

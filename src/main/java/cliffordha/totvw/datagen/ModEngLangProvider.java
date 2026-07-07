@@ -10,9 +10,12 @@ import cliffordha.totvw.registry.ModEntities;
 import cliffordha.totvw.registry.ModItems;
 
 import cliffordha.totvw.registry.ModSounds;
+import cliffordha.totvw.registry.items.ScatteredPages;
 import net.minecraft.core.HolderLookup;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+
+import static cliffordha.totvw.item.scatteredpages.ScatteredPageTitle.*;
 
 public class ModEngLangProvider extends FabricLanguageProvider {
     public ModEngLangProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
@@ -82,6 +85,11 @@ public class ModEngLangProvider extends FabricLanguageProvider {
         text.add(ModItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE, "Verixium Armor Upgrade Template");
 
         text.add(ModItems.VERIXIUM_HORSE_ARMOR, "Verixium Horse Armor");
+
+
+        text.add(ScatteredPages.SP_ID_1000, SP_1000.getTitle());
+        text.add(ScatteredPages.SP_ID_1001, SP_1001.getTitle());
+        text.add(ScatteredPages.SP_ID_1002, SP_1002.getTitle());
 
 
         text.addEnchantment(ModEnchantments.WOLF_EFFECT_IGNITION, "Wolf ATK Effect: §vIgnition");

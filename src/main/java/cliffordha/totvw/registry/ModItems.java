@@ -1,13 +1,15 @@
 package cliffordha.totvw.registry;
 
-import cliffordha.totvw.item.ScatteredPageItem;
+import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
 import cliffordha.totvw.registry.blocks.VerdantBlocks;
+import cliffordha.totvw.registry.creativetab.ScatteredPagesTab;
 import cliffordha.totvw.registry.creativetab.VerdantItemsTab;
 import cliffordha.totvw.item.ItemInstance;
 import cliffordha.totvw.TOTVW;
 
 import cliffordha.totvw.item.ModArmorMaterial;
 import cliffordha.totvw.item.ModToolMaterial;
+import cliffordha.totvw.registry.items.ScatteredPages;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -150,7 +152,7 @@ public class ModItems {
                                             Attributes.MOVEMENT_SPEED,
                                             new AttributeModifier(
                                                     VERIXIUM_WOLF_ARMOR_EQUIPPED,
-                                                    0.3,
+                                                    0.05,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
                                             EquipmentSlotGroup.BODY
@@ -213,7 +215,7 @@ public class ModItems {
             properties -> new ScatteredPageItem(
                     properties
                             .fireResistant(),
-                    1)
+                    1001)
 
             );
     public static final Item VERIXIUM_ARMOR_UPGRADE_TEMPLATE = TOTVW.registerItem("verixium_armor_upgrade_template",
@@ -272,5 +274,7 @@ public class ModItems {
 
     public static void registerModItems() {
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VerdantItemsTab.VERDANT_ITEMS_TAB_KEY, VerdantItemsTab.VERDANT_ITEMS_TAB);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ScatteredPagesTab.SCATTERED_PAGES_TAB_KEY, ScatteredPagesTab.SCATTERED_PAGES_TAB);
+        ScatteredPages.registerScatteredPages();
         sendLog("Items"); }
 }

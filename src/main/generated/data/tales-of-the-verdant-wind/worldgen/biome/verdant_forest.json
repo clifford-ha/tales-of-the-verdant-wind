@@ -8,11 +8,12 @@
       }
     },
     "minecraft:gameplay/increased_fire_burnout": true,
-    "minecraft:visual/cloud_color": "#0090e1d5",
+    "minecraft:visual/cloud_color": "#00aefff3",
     "minecraft:visual/fog_color": "#90e1d5",
     "minecraft:visual/fog_end_distance": 128.0,
     "minecraft:visual/sky_color": "#90e1d5",
     "minecraft:visual/sky_fog_end_distance": 64.0,
+    "minecraft:visual/sunrise_sunset_color": "#00b6e1af",
     "minecraft:visual/water_fog_color": "#48d9c1",
     "minecraft:visual/water_fog_end_distance": 32.0
   },

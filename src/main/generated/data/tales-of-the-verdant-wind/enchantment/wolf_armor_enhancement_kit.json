@@ -18,7 +18,7 @@
         "operation": "add_value"
       },
       {
-        "amount": 0.2,
+        "amount": 0.1,
         "attribute": "minecraft:knockback_resistance",
         "id": "tales-of-the-verdant-wind:wolf_armor_enhancement_kit",
         "operation": "add_value"

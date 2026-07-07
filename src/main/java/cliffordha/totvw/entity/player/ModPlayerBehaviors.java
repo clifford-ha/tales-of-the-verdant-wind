@@ -1,8 +1,6 @@
 package cliffordha.totvw.entity.player;
 
 import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.item.ScatteredPageItem;
-import cliffordha.totvw.item.events.ReadScatteredPages;
 import cliffordha.totvw.util.ModUtil;
 import cliffordha.totvw.entity.skill.ConfigTools;
 import cliffordha.totvw.entity.skill.PlayerSkillDefinition;
@@ -68,7 +66,7 @@ public class ModPlayerBehaviors {
         ));
         TICK_RULES.add(PlayerBehaviorRule.register(
                         PlayerCondition.hasBodyArmor()
-                        .and(PlayerCondition.checkNoAttached(ModAttachments.Player.CD_BLESSING_OF_THE_VERDANT_WIND)),
+                        .and(PlayerCondition.checkNoAttached(ModAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND)),
                 ModPlayerBehaviors::runWolfBlessing
         ));
         TICK_RULES.add(PlayerBehaviorRule.register(
@@ -76,16 +74,16 @@ public class ModPlayerBehaviors {
                 (player, _) -> {
                     if (TOTVWConfig.get().sendLog) { ConfigTools.setPlayerConfiguration(player, 0); }
                     if (TOTVWConfig.get().attachmentSkillCD) {
-                        ConfigTools.depleteCooldown(player, ModAttachments.Player.CD_BLESSING_OF_THE_VERDANT_WIND);
-                        ConfigTools.depleteCooldown(player, ModAttachments.TRUST_COOLDOWN);
+                        ConfigTools.depleteCooldown(player, ModAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND);
+                        ConfigTools.depleteCooldown(player, ModAttachments.ENTITY_TRUST_COOLDOWN);
                     } else {
                         ConfigTools.setPlayerConfiguration(player, 1);
                     }
 
                     SkillUtil.notifyReset(player, VERDANT_BLESSING);
                     processCDNotify(player,
-                            ModAttachments.Player.CD_BLESSING_OF_THE_VERDANT_WIND,
-                            ModAttachments.Player.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+                            ModAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
+                            ModAttachments.Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
                             ModColors.VERDANT_WIND,
                             "§nVerdant Wind's Blessing§f cooldown reset for §r"
                     );
@@ -155,8 +153,8 @@ public class ModPlayerBehaviors {
     }
 
     public static final PlayerSkillDefinition VERDANT_BLESSING = new PlayerSkillDefinition(
-            ModAttachments.Player.CD_BLESSING_OF_THE_VERDANT_WIND,
-            ModAttachments.Player.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+            ModAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
+            ModAttachments.Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
             ModColors.VERDANT_WIND_MUTED,
             "§nVerdant Wind's Blessing§r"
     );
@@ -179,37 +177,25 @@ public class ModPlayerBehaviors {
     private static void wireItemUseEvent() {
         UseItemCallback.EVENT.register((player, level, _) -> {
             ItemStack mainHand = player.getItemBySlot(EquipmentSlot.MAINHAND);
-            if (!level.isClientSide()) {
-                if (!player.isShiftKeyDown()) return InteractionResult.PASS;
-                if (player.isSpectator()) return InteractionResult.PASS;
-                if (playerEnchantmentLVL(player, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) <= 0)
-                    return InteractionResult.PASS;
+            if (level.isClientSide()) return InteractionResult.PASS;
+            if (!player.isShiftKeyDown()) return InteractionResult.PASS;
+            if (player.isSpectator()) return InteractionResult.PASS;
+            if (playerEnchantmentLVL(player, ModEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) <= 0)
+                return InteractionResult.PASS;
 
-                boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS))
-                        || mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)))
-                        && !(mainHand.getItem() instanceof ItemInstance);
+            boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS))
+                    || mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)))
+                    && !(mainHand.getItem() instanceof ItemInstance);
 
-                if (!isItem) return InteractionResult.PASS;
+            if (!isItem) return InteractionResult.PASS;
 
-                if (player.getCooldowns().isOnCooldown(mainHand)) return InteractionResult.PASS;
+            if (player.getCooldowns().isOnCooldown(mainHand)) return InteractionResult.PASS;
 
-                boolean applied = BlessingOfTheVerdantWind.tryApply(level, player);
-                if (applied) {
-                    return InteractionResult.SUCCESS;
-                } else {
-                    return InteractionResult.PASS;
-                }
+            boolean applied = BlessingOfTheVerdantWind.tryApply(level, player);
+            if (applied) {
+                return InteractionResult.SUCCESS;
             } else {
-                boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(ModItemTags.SCATTERED_PAGES)))
-                        && !(mainHand.getItem() instanceof ScatteredPageItem);
-
-                if (!isItem) return InteractionResult.PASS;
-
-                boolean applied = ReadScatteredPages.tryApply(level, player);
-                if (applied) { return InteractionResult.SUCCESS;
-                } else {
-                    return InteractionResult.PASS;
-                }
+                return InteractionResult.PASS;
             }
         });
     }
@@ -269,7 +255,7 @@ public class ModPlayerBehaviors {
                             EntityType.WOLF,
                             player.getBoundingBox().inflate(32),
                             wolf -> wolf.isTame()
-                                    && !wolf.getAttachedOrElse(ModAttachments.Wolf.IS_VILLAGE_GUARD, false)
+                                    && !wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_IS_VILLAGE_GUARD, false)
                                     && (wolf.getUUID() != player.getUUID()) );
                     if (wolves.isEmpty()) return;
                     for (Wolf wolf : wolves) {

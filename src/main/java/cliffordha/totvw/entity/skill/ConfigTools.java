@@ -40,7 +40,7 @@ public class ConfigTools {
 
     public static void setPlayerConfiguration(Player player, int config) {
         String name = player.getName().getString();
-        int CD_VERDANT_BLESSING = player.getAttachedOrElse(ModAttachments.Player.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+        int CD_VERDANT_BLESSING = player.getAttachedOrElse(ModAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
 
         if (config == 0) {
             if (CD_VERDANT_BLESSING > 0) {
@@ -48,7 +48,7 @@ public class ConfigTools {
             }
         } else if (config == 1) {
             if (CD_VERDANT_BLESSING > 0) {
-                player.setAttached(ModAttachments.Player.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+                player.setAttached(ModAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
             }
         } else throw new IllegalArgumentException("Invalid config value");
     }
@@ -57,9 +57,9 @@ public class ConfigTools {
     /** 0 = sendLog, 1 = resetCD **/
     public static void setWolfConfiguration(Wolf wolf, int config) {
         String name = wolf.getName().getString();
-        int CD_VERDANT_BLESSING = wolf.getAttachedOrElse(ModAttachments.Wolf.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-        int CD_BLOODLUST_SKILL_PARALYZE = wolf.getAttachedOrElse(ModAttachments.Wolf.CD_BLOODLUST_SKILL_PARALYZE, 0);
-        int CD_MIGHT_RUPTURE = wolf.getAttachedOrElse(ModAttachments.Wolf.CD_MIGHT_SKILL_RUPTURE, 0);
+        int CD_VERDANT_BLESSING = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+        int CD_BLOODLUST_SKILL_PARALYZE = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE, 0);
+        int CD_MIGHT_RUPTURE = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE, 0);
 
         if (config == 0) {
             if (CD_VERDANT_BLESSING > 0) {
@@ -73,13 +73,13 @@ public class ConfigTools {
             }
         } else if (config == 1) {
             if (CD_VERDANT_BLESSING > 0) {
-                wolf.setAttached(ModAttachments.Wolf.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+                wolf.setAttached(ModAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
             }
             if (CD_BLOODLUST_SKILL_PARALYZE > 0) {
-                wolf.setAttached(ModAttachments.Wolf.CD_BLOODLUST_SKILL_PARALYZE, 0);
+                wolf.setAttached(ModAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE, 0);
             }
             if (CD_MIGHT_RUPTURE > 0) {
-                wolf.setAttached(ModAttachments.Wolf.CD_MIGHT_SKILL_RUPTURE, 0);
+                wolf.setAttached(ModAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE, 0);
             }
         } else throw new IllegalArgumentException("Invalid config value");
     }

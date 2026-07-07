@@ -3,13 +3,15 @@
   "package": "cliffordha.totvw.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "BerryBushBlockMixin",
+    "IronGolemEntityMixin",
     "PlayerEntityMixin",
     "TamableAnimalMixin",
+    "VillagerEntityMixin",
+    "WolfEntityMixin",
     "misc.ArrowNameColorMixin",
     "misc.EffectNameColorMixin",
-    "misc.EnchantmentNameColorMixin",
-    "VillagerEntityMixin",
-    "WolfEntityMixin"
+    "misc.EnchantmentNameColorMixin"
   ],
   "injectors": {
     "defaultRequire": 1
