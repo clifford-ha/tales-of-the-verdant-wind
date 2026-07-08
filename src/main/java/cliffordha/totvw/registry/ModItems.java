@@ -19,6 +19,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.equipment.ArmorType;
 
+import java.util.Arrays;
+
 import static cliffordha.totvw.TOTVW.sendLog;
 
 public class ModItems {
@@ -212,11 +214,8 @@ public class ModItems {
                     .fireResistant()
             ));
     public static final Item VERIXIUM_PAPER = TOTVW.registerItem("verixium_paper",
-            properties -> new ScatteredPageItem(
-                    properties
-                            .fireResistant(),
-                    1001)
-
+            properties -> new Item(properties
+                    .fireResistant())
             );
     public static final Item VERIXIUM_ARMOR_UPGRADE_TEMPLATE = TOTVW.registerItem("verixium_armor_upgrade_template",
             properties -> new Item(properties
@@ -276,5 +275,6 @@ public class ModItems {
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VerdantItemsTab.VERDANT_ITEMS_TAB_KEY, VerdantItemsTab.VERDANT_ITEMS_TAB);
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ScatteredPagesTab.SCATTERED_PAGES_TAB_KEY, ScatteredPagesTab.SCATTERED_PAGES_TAB);
         ScatteredPages.registerScatteredPages();
-        sendLog("Items"); }
+        sendLog("Items");
+    }
 }

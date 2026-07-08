@@ -22,7 +22,7 @@ public class PageContentScreen extends Screen {
     private static final int COLOR_INNER  = 0xFFEDD9A3;
     private static final int COLOR_LINE   = 0xFF7A5230;
     private static final int COLOR_TEXT   = 0xff2c2720;
-    private static final int SCREEN_OVERLAY = 0x20000000;
+    private static final int SCREEN_OVERLAY = 0x50000000;
 
     private final String pageTitle;
     private final List<String> pages;
@@ -42,23 +42,27 @@ public class PageContentScreen extends Screen {
         this.leftPos = (this.width  - PANEL_WIDTH)  / 2;
         this.topPos  = (this.height - PANEL_HEIGHT) / 2;
 
-        int navY = this.topPos + PANEL_HEIGHT - 30;
+        int btnY = this.topPos + PANEL_HEIGHT + 10;
+
+        int closeBTN = 7;
+
+        if (this.pages.size() > 1 && this.currentPage >= 0) {
+            this.addRenderableWidget(
+                    Button.builder(Component.literal("◀"), b -> {
+                        if (this.currentPage > 0) this.currentPage--;
+                    }).bounds(this.leftPos - 3, btnY, 20, 20).build()
+            );
+
+            this.addRenderableWidget(
+                    Button.builder(Component.literal("▶"), b -> {
+                        if (this.currentPage < this.pages.size() - 1) this.currentPage++;
+                    }).bounds(this.leftPos + 23, btnY, 20, 20).build()
+            );
+        }
 
         this.addRenderableWidget(
-                Button.builder(Component.literal("◀"), b -> {
-                    if (this.currentPage > 0) this.currentPage--;
-                }).bounds(this.leftPos + PADDING, navY, 20, 20).build()
-        );
-
-        this.addRenderableWidget(
-                Button.builder(Component.literal("▶"), b -> {
-                    if (this.currentPage < this.pages.size() - 1) this.currentPage++;
-                }).bounds(this.leftPos + PANEL_WIDTH - PADDING - 20, navY, 20, 20).build()
-        );
-
-        this.addRenderableWidget(
-                Button.builder(Component.translatable("gui.done"), b -> this.onClose())
-                        .bounds(this.width / 2 - 40, this.topPos + PANEL_HEIGHT + 6, 80, 20)
+                Button.builder(Component.literal("X"), b -> this.onClose())
+                        .bounds(this.leftPos + PANEL_WIDTH - 17 - closeBTN, this.topPos - 3 + closeBTN, 20, 20)
                         .build()
         );
     }
@@ -70,22 +74,25 @@ public class PageContentScreen extends Screen {
         int w = PANEL_WIDTH;
         int h = PANEL_HEIGHT;
 
-        int titleCenter = (int) (((float) w / 2) - (w * 0.05f));
+        // can anyone pls make a screen visualizer...?
 
-        graphics.fill(x, y, x + w, y + h, SCREEN_OVERLAY);
+        // screen overlay
+        graphics.fill(-x, -y, (x + w) * 2, (y + h) * 2, SCREEN_OVERLAY);
 
         // border
         graphics.fill(x - 3, y - 3, x + w + 3, y + h + 3, COLOR_OUTER);
+
         // main bg
         graphics.fill(x, y, x + w, y + h, COLOR_BG);
+
         // inner parchment area
         graphics.fill(x + 5, y + 5, x + w - 5, y + h - 5, COLOR_INNER);
+
         // title separator
         graphics.fill(x + PADDING, y + 26, x + w - PADDING, y + 27, COLOR_LINE);
 
-
         // title
-        graphics.text(this.font, this.pageTitle, titleCenter, y + 10, COLOR_TEXT, false);
+        graphics.text(this.font, this.pageTitle, x + 10, y + 11, COLOR_TEXT, false);
 
         // scattered pages
         if (!this.pages.isEmpty() && this.currentPage < this.pages.size()) {
@@ -93,8 +100,9 @@ public class PageContentScreen extends Screen {
             int textStartY    = y + 32;
             int textEndY      = y + h - 36;
 
+            String readMore = (this.pages.size() > 1 && this.currentPage == 0) ? " §8......more§r" : "";
             List<FormattedCharSequence> lines = this.font.split(
-                    Component.literal(this.pages.get(this.currentPage)), textAreaWidth
+                    Component.literal(this.pages.get(this.currentPage) + readMore), textAreaWidth
             );
 
             int lineY = textStartY;
@@ -108,9 +116,11 @@ public class PageContentScreen extends Screen {
         }
 
         // Page indicator
-        if (this.pages.size() > 1) {
-            String indicator = (this.currentPage + 1) + " / " + this.pages.size();
-            graphics.text(this.font, indicator, titleCenter, y + h - 26, COLOR_TEXT, false);
+        if (this.pages.size() > 1 && this.currentPage >= 0) {
+            String pageCount = String.valueOf(this.pages.size());
+            String currentPage = String.valueOf(this.currentPage + 1);
+
+            graphics.text(this.font, "§8" + currentPage + " / " + pageCount, w + 5, y + h - 17, COLOR_TEXT, false);
         }
         super.extractRenderState(graphics, mouseX, mouseY, a);
     }

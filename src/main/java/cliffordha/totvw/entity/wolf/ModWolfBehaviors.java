@@ -119,6 +119,8 @@ public final class ModWolfBehaviors {
         TICK_RULES.add(WolfBehaviorRule.forAny(
                 WolfCondition.newSoundsEnable(),
                 (wolf, level) -> {
+                    if (wolf.isAngry()) return;
+                    if (wolf.level().getMaxLocalRawBrightness(wolf.blockPosition()) > 11) return;
                     boolean isInForest = wolf.level().getBiome(wolf.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES)
                             || wolf.level().getBiome(wolf.blockPosition()).is(Biomes.FOREST)
                             || wolf.level().getBiome(wolf.blockPosition()).is(Biomes.FLOWER_FOREST)
