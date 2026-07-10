@@ -2,7 +2,7 @@ package cliffordha.totvw.mixin;
 
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.tag.ModBiomeTags;
+import cliffordha.totvw.tag.VWBiomeTags;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
@@ -30,29 +30,29 @@ public class VillagerEntityMixin {
     @Inject(method = "finalizeSpawn", at = @At("HEAD"))
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Villager villager = (Villager) (Object) this;
-        boolean inVerdant = level.getBiome(villager.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES);
+        boolean inVerdant = level.getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
         if (!inVerdant) return;
-        villager.setAttached(ModAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
+        villager.setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void onTick(CallbackInfo ci) {
         Villager villager = (Villager) (Object) this;
 
-        boolean isCorrectVillager = villager.getAttachedOrElse(ModAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false) && villager.getVillagerData().profession().is(Predicate.isEqual(VillagerProfession.CLERIC));
+        boolean isCorrectVillager = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false) && villager.getVillagerData().profession().is(Predicate.isEqual(VillagerProfession.CLERIC));
         if (!isCorrectVillager) return;
 
         if (villager.level().getGameTime() % 20 == 0) {
-            depleteCD(villager, ModAttachments.Villager.VILLAGER_CD_HEAL_OTHERS);
-            depleteCD(villager, ModAttachments.Villager.VILLAGER_CD_HEAL_WOLF);
-            depleteCD(villager, ModAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM);
-            depleteCD(villager, ModAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL);
+            depleteCD(villager, VWAttachments.Villager.VILLAGER_CD_HEAL_OTHERS);
+            depleteCD(villager, VWAttachments.Villager.VILLAGER_CD_HEAL_WOLF);
+            depleteCD(villager, VWAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM);
+            depleteCD(villager, VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL);
         }
 
         if (villager.level().getGameTime() % 30 == 0) {
-            int healOthersCD = villager.getAttachedOrElse(ModAttachments.Villager.VILLAGER_CD_HEAL_OTHERS, 0);
-            int healWolfCD = villager.getAttachedOrElse(ModAttachments.Villager.VILLAGER_CD_HEAL_WOLF, 0);
-            int healIronGolemCD = villager.getAttachedOrElse(ModAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM, 0);
+            int healOthersCD = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_CD_HEAL_OTHERS, 0);
+            int healWolfCD = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_CD_HEAL_WOLF, 0);
+            int healIronGolemCD = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM, 0);
 
             int villagerCount = getVillagerCount(villager);
             float healStrength = villagerCount >= 3 ? villager.getHealth() * 0.7f + (villagerCount * 2) : villager.getHealth() * 0.4f;
@@ -67,7 +67,7 @@ public class VillagerEntityMixin {
                 if (!villagerList.isEmpty()) {
                     for (Villager others : villagerList) {
                         others.heal(healStrength);
-                        villager.setAttached(ModAttachments.Villager.VILLAGER_CD_HEAL_OTHERS, 30);
+                        villager.setAttached(VWAttachments.Villager.VILLAGER_CD_HEAL_OTHERS, 30);
                         healEffect(villager, others);
                     }
                 }
@@ -79,16 +79,16 @@ public class VillagerEntityMixin {
                         villager.getBoundingBox().inflate(12),
                         wolf -> wolf.isAlive()
                                 && wolf.getHealth() < wolf.getMaxHealth() * 0.9f
-                                && wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_TRY_SAVE_POINTS, 0) > 0);
+                                && wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_TRY_SAVE_POINTS, 0) > 0);
 
                 if (!wolves.isEmpty()) {
                     for (Wolf wolf : wolves) {
-                        int currentPoints = wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_TRY_SAVE_POINTS, 0);
+                        int currentPoints = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_TRY_SAVE_POINTS, 0);
 
                         wolf.heal(healStrength);
-                        wolf.setAttached(ModAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0);
-                        wolf.setAttached(ModAttachments.Wolf.WOLF_TRY_SAVE_POINTS, currentPoints - 1);
-                        villager.setAttached(ModAttachments.Villager.VILLAGER_CD_HEAL_WOLF, 60);
+                        wolf.setAttached(VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0);
+                        wolf.setAttached(VWAttachments.Wolf.WOLF_TRY_SAVE_POINTS, currentPoints - 1);
+                        villager.setAttached(VWAttachments.Villager.VILLAGER_CD_HEAL_WOLF, 60);
                         healEffect(villager, wolf);
                     }
                 }
@@ -102,7 +102,7 @@ public class VillagerEntityMixin {
                 if (!golems.isEmpty()) {
                     for (IronGolem golem : golems) {
                         golem.heal(healStrength * 2f);
-                        villager.setAttached(ModAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM, 90);
+                        villager.setAttached(VWAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM, 90);
                         golem.makeSound(SoundEvents.IRON_GOLEM_REPAIR);
                         healEffect(villager, golem);
                     }
@@ -115,13 +115,13 @@ public class VillagerEntityMixin {
     private void villagerVerdantTrades(Player player, CallbackInfo ci) {
         Villager villager = (Villager) (Object) this;
 
-        boolean verdantVillager = villager.getAttachedOrElse(ModAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false);
-        boolean villagerInVerdant = villager.level().getBiome(villager.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES);
+        boolean verdantVillager = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false);
+        boolean villagerInVerdant = villager.level().getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
 
         if (!verdantVillager) return;
 
-        int rerollCD = villager.getAttachedOrElse(ModAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL, 0);
-        float modifier = villager.getAttachedOrElse(ModAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER, 0.0f);
+        int rerollCD = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL, 0);
+        float modifier = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER, 0.0f);
         float additional = villagerInVerdant ? 0.25f : 0.0f;
 
         float MIN_MODIFIER = 0.0f;
@@ -130,8 +130,8 @@ public class VillagerEntityMixin {
 
         if (rerollCD <= 0 || modifier <= 0.0f) {
             modifier = MIN_MODIFIER + villager.level().getRandom().nextFloat() * ((MAX_MODIFIER + additional) - MIN_MODIFIER);
-            villager.setAttached(ModAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER, modifier);
-            villager.setAttached(ModAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL, REROLL_INTERVAL);
+            villager.setAttached(VWAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER, modifier);
+            villager.setAttached(VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL, REROLL_INTERVAL);
         }
 
         for (MerchantOffer offer : villager.getOffers()) {
@@ -155,8 +155,8 @@ public class VillagerEntityMixin {
     private static void healEffect(Villager villager, LivingEntity entity) {
         float random = villager.level().getRandom().nextFloat();
         villager.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 0.7f + random, 0.7f + random);
-        ModParticleEffects.spawnBlessingParticlesEntity(villager, 1);
-        ModParticleEffects.spawnBlessingParticlesEntity(entity, 4);
+        VWParticleEffects.spawnBlessingParticlesEntity(villager, 1);
+        VWParticleEffects.spawnBlessingParticlesEntity(entity, 4);
     }
 
     private static int getVillagerCount(Villager villager) {

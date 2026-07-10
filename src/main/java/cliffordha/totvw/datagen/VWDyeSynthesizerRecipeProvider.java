@@ -1,0 +1,111 @@
+package cliffordha.totvw.datagen;
+
+import cliffordha.totvw.registry.VWBlocks;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+
+import java.util.concurrent.CompletableFuture;
+
+public class VWDyeSynthesizerRecipeProvider extends VWRecipeProvider {
+    public VWDyeSynthesizerRecipeProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
+    }
+
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput exporter) {
+        return new RecipeProvider(registryLookup, exporter) {
+
+            public void buildRecipes() {
+                HolderLookup.RegistryLookup<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
+
+                // Request by DustyWoofi
+                shaped(RecipeCategory.MISC, VWBlocks.IRIDESCENT_GLASS_PANE, 16)
+                        .pattern("XXX")
+                        .pattern("XXX")
+                        .define('X', VWBlocks.IRIDESCENT_GLASS)
+                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .save(output);
+
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.WHITE_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.GRAY_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.BROWN_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.ORANGE_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.LIME_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.CYAN_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.BLUE_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.MAGENTA_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.LIGHT_GRAY_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.BLACK_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.RED_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.YELLOW_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.GREEN_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.LIGHT_BLUE_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.PURPLE_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.PINK_DYE, VWBlocks.IRIDESCENT_GLASS, 4);
+
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.WHITE_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.GRAY_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.BROWN_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.ORANGE_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.LIME_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.CYAN_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.BLUE_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.MAGENTA_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.LIGHT_GRAY_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.BLACK_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.RED_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.YELLOW_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.GREEN_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.LIGHT_BLUE_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.PURPLE_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.PINK_DYE, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+
+                /*
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.white(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.gray(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.brown(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.orange(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.lime(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.cyan(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.blue(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.magenta(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.lightGray(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.black(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.red(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.yellow(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.green(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.lightBlue(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.purple(), ModBlocks.IRIDESCENT_GLASS, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.pink(), ModBlocks.IRIDESCENT_GLASS, 4);
+
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.white(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.gray(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.brown(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.orange(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.lime(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.cyan(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.blue(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.magenta(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.lightGray(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.black(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.red(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.yellow(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.green(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.lightBlue(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.purple(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                stonecutterResultFromBase(RecipeCategory.MISC, Items.DYE.pink(), ModBlocks.IRIDESCENT_GLASS_PANE, 4);
+                 */
+            }
+        };
+    }
+
+    @Override
+    public String getName() {
+        return "ModDyeSynthesizerRecipeProvider";
+    }
+}

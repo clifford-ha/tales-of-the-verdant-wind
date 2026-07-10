@@ -1,9 +1,9 @@
 package cliffordha.totvw.effect;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.registry.ModColors;
+import cliffordha.totvw.registry.VWColors;
 
-import cliffordha.totvw.registry.ModEnchantments;
+import cliffordha.totvw.registry.VWEnchantments;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
@@ -17,11 +17,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
 
-import static cliffordha.totvw.util.ModUtil.*;
+import static cliffordha.totvw.util.VWGlobalUtil.*;
 
 public class AmplifiedMightEffect extends MobEffect {
     public AmplifiedMightEffect() {
-        super(MobEffectCategory.BENEFICIAL, ModColors.MIGHT_EFFECT);
+        super(MobEffectCategory.BENEFICIAL, VWColors.MIGHT_EFFECT);
     }
     private static final Identifier MIGHT_ARMOR_TOUGHNESS_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "amp_might_armor_toughness");
     private static final Identifier MIGHT_KNOCKBACK_RESISTANCE_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "amp_might_knockback_resistance");
@@ -43,7 +43,7 @@ public class AmplifiedMightEffect extends MobEffect {
             ItemStack bodyArmor = wolf.getBodyArmorItem();
             if (bodyArmor.isEmpty()) return;
 
-            int mightLevel = wolfEnchantmentLVL(wolf, ModEnchantments.WOLF_EFFECT_MIGHT);
+            int mightLevel = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_MIGHT);
             if (mightLevel <= 0) return;
 
             if (attributes.hasAttribute(Attributes.ARMOR)) {

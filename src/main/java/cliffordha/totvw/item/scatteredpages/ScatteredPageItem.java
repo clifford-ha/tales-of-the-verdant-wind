@@ -1,6 +1,6 @@
 package cliffordha.totvw.item.scatteredpages;
 
-import cliffordha.totvw.client.screen.PageContentScreen;
+import cliffordha.totvw.client.screen.ScatteredPageScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTitle.*;
-import static cliffordha.totvw.item.scatteredpages.TextColorEnum.*;
-import static cliffordha.totvw.item.scatteredpages.TextFormatterEnum.*;
+import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
+import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
 
 public class ScatteredPageItem extends Item {
     private final int pageID;
@@ -68,7 +68,9 @@ public class ScatteredPageItem extends Item {
                         + "Did you try it? If you have an armor, you should see a red color on the " + fText(UNDERLINED, "COLOR") + " text otherwise, you should see aqua color."
                         + nextParagraph
                         + "But, what if I wanna underline a text? Look here: " + fText(UNDERLINED, "UNDERLINED")
-                        + " Do you wanna see a couple more? Look below: "
+                        + " Do you wanna see a couple more?"
+                        + nextParagraph
+                        + "Look below: "
                         + nextLine
                         + fText(ITALIC, "ITALIC")
                         + nextLine
@@ -94,7 +96,7 @@ public class ScatteredPageItem extends Item {
     }
 
     /** colors text **/
-    private static String cText(TextColorEnum color, String text) {
+    private static String cText(ScatteredPageTextColor color, String text) {
         return color.getColor() + text + "§r";
     }
 
@@ -105,7 +107,7 @@ public class ScatteredPageItem extends Item {
     }
 
     /** like a docx, format text **/
-    private static String fText(TextFormatterEnum formatter, String text) {
+    private static String fText(ScatteredPageTextStyle formatter, String text) {
         return formatter.getMarker() + text + "§r";
     }
 
@@ -125,14 +127,14 @@ public class ScatteredPageItem extends Item {
         return cText(DARK_GRAY, "[" + predefinedText + "]") + nextParagraph;
     }
 
-    private static final String nextLine = "\n";
+    private static final String nextLine = " §f§f§f§r\n";
 
     /** why... **/
-    private static final String nextParagraph = "\n\n";
+    private static final String nextParagraph = " \n §f§f§f§r \n";
 
     /** purely made for separating *pages visually, rip brain **/
     private static String[] addPage(String text) {
-        final int lengthBound = 550;
+        final int lengthBound = 700;
         int charCount = text.length();
         List<String> pages = new ArrayList<>();
         int start = 0;
@@ -187,6 +189,6 @@ public class ScatteredPageItem extends Item {
 
     @Environment(EnvType.CLIENT)
     private static void openScreen(String title, String[] pages) {
-        Minecraft.getInstance().setScreen(new PageContentScreen(title, pages));
+        Minecraft.getInstance().setScreen(new ScatteredPageScreen(title, pages));
     }
 }

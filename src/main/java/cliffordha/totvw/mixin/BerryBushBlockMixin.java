@@ -1,6 +1,6 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.tag.ModBiomeTags;
+import cliffordha.totvw.tag.VWBiomeTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -20,7 +20,7 @@ public class BerryBushBlockMixin {
 
     @Inject(method = "entityInside", at = @At("HEAD"), cancellable = true)
     private void evaluateType(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise, CallbackInfo ci) {
-        boolean inVerdant = level.getBiome(pos).is(ModBiomeTags.IS_VERDANT_BIOMES);
+        boolean inVerdant = level.getBiome(pos).is(VWBiomeTags.IS_VERDANT_BIOMES);
         if (inVerdant) {
             if (entity instanceof LivingEntity && !entity.is(EntityType.FOX) && !entity.is(EntityType.BEE) && !entity.is(EntityType.WOLF) && !entity.is(EntityType.VILLAGER) && !entity.is(EntityType.IRON_GOLEM) && !entity.is(EntityType.WANDERING_TRADER)) {
                 entity.makeStuckInBlock(state, new Vec3(0.6F, 0.7, 0.6F));

@@ -1,9 +1,9 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.entity.player.InteractionData;
-import cliffordha.totvw.registry.ModAttachments;
-import cliffordha.totvw.registry.ModColors;
-import cliffordha.totvw.registry.ModItems;
+import cliffordha.totvw.entity.VWInteractionData;
+import cliffordha.totvw.registry.VWAttachments;
+import cliffordha.totvw.registry.VWColors;
+import cliffordha.totvw.registry.VWItems;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
 
-import static cliffordha.totvw.entity.skill.ConfigTools.notifyFromPlayer;
+import static cliffordha.totvw.entity.skill.VWSkillProcessor.notifyFromPlayer;
 
 @Mixin(Player.class)
 public class PlayerEntityMixin {
@@ -40,27 +40,27 @@ public class PlayerEntityMixin {
         boolean untrustable = entity instanceof Enemy && !(entity instanceof ZombieVillager);
         boolean isTamedWolf = entity instanceof Wolf wolf && wolf.getOwner() != null && wolf.getStringUUID().equals(wolf.getOwner().getStringUUID());
 
-        if (itemStack.is(ModItems.VERIXIUM_POWDER)) {
+        if (itemStack.is(VWItems.VERIXIUM_POWDER)) {
             if (inanimate) { cir.setReturnValue(InteractionResult.SUCCESS); }
             if (inanimate) return;
-            if (untrustable) { notifyFromPlayer(player, ModColors.BLOODLUST_EFFECT_MUTED, true, "Can't trust this entity");}
+            if (untrustable) { notifyFromPlayer(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Can't trust this entity");}
             if (untrustable) return;
             if (isTamedWolf) return;
 
-            if (!Objects.equals(entity.getAttached(ModAttachments.ENTITY_INTERACTION_DATA), new InteractionData(truster, trustee))) {
-                entity.setAttached(ModAttachments.ENTITY_INTERACTION_DATA, new InteractionData(truster, trustee));
-                entity.setAttached(ModAttachments.ENTITY_TRUST_POINTS, + 2);
-                notifyFromPlayer(player, ModColors.VERDANT_WIND, true, "Trusted: " + name);
+            if (!Objects.equals(entity.getAttached(VWAttachments.ENTITY_INTERACTION_DATA), new VWInteractionData(truster, trustee))) {
+                entity.setAttached(VWAttachments.ENTITY_INTERACTION_DATA, new VWInteractionData(truster, trustee));
+                entity.setAttached(VWAttachments.ENTITY_TRUST_POINTS, + 2);
+                notifyFromPlayer(player, VWColors.VERDANT_WIND, true, "Trusted: " + name);
                 cir.setReturnValue(InteractionResult.SUCCESS);
                 if (player.isInvulnerable() || player.isCreative() || player.isSpectator()) return;
                 itemStack.shrink(1);
-            } else if (Objects.equals(entity.getAttached(ModAttachments.ENTITY_INTERACTION_DATA), new InteractionData(truster, trustee)) && player.isShiftKeyDown()) {
-                entity.removeAttached(ModAttachments.ENTITY_INTERACTION_DATA);
-                entity.removeAttached(ModAttachments.ENTITY_TRUST_POINTS);
-                notifyFromPlayer(player, ModColors.VERDANT_WIND, true, "Removed trust for " + name);
+            } else if (Objects.equals(entity.getAttached(VWAttachments.ENTITY_INTERACTION_DATA), new VWInteractionData(truster, trustee)) && player.isShiftKeyDown()) {
+                entity.removeAttached(VWAttachments.ENTITY_INTERACTION_DATA);
+                entity.removeAttached(VWAttachments.ENTITY_TRUST_POINTS);
+                notifyFromPlayer(player, VWColors.VERDANT_WIND, true, "Removed trust for " + name);
                 cir.setReturnValue(InteractionResult.SUCCESS);
             } else {
-                notifyFromPlayer(player, ModColors.DEFAULT_MUTED, true, "Already trusted: " + name);
+                notifyFromPlayer(player, VWColors.DEFAULT_MUTED, true, "Already trusted: " + name);
                 cir.setReturnValue(InteractionResult.PASS);
             }
         }

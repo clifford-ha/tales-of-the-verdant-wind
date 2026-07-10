@@ -1,7 +1,7 @@
 package cliffordha.totvw.config;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.registry.ModColors;
+import cliffordha.totvw.registry.VWColors;
 import me.shedaniel.clothconfig2.api.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -10,7 +10,7 @@ public class TOTVWConfigScreen {
     public static Screen create(Screen parent) {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Component.literal(TOTVW.MOD_NAME).withColor(ModColors.VERDANT_WIND))
+                .setTitle(Component.literal(TOTVW.MOD_NAME).withColor(VWColors.VERDANT_WIND))
                 .transparentBackground()
                 .setSavingRunnable(TOTVWConfig::save);
 
@@ -125,6 +125,6 @@ public class TOTVWConfigScreen {
         return builder.build();
     }
     private static Component text(String text) {
-        return Component.literal(text).withColor(ModColors.DEFAULT_MUTED);
+        return Component.literal(text).withColor(VWColors.DEFAULT_MUTED);
     }
 }

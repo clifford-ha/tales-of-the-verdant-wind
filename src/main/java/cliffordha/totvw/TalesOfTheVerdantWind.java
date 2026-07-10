@@ -1,29 +1,23 @@
 package cliffordha.totvw;
 
 import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.registry.ModBlocks;
-import cliffordha.totvw.registry.ModEffects;
-import cliffordha.totvw.registry.ModEnchantments;
-import cliffordha.totvw.registry.ModEntities;
-import cliffordha.totvw.registry.ModFluids;
-import cliffordha.totvw.registry.ModItems;
-import cliffordha.totvw.loot.ModLootTableModifier;
-import cliffordha.totvw.registry.ModParticles;
-import cliffordha.totvw.registry.ModPotions;
+import cliffordha.totvw.registry.VWBlocks;
+import cliffordha.totvw.registry.VWEffects;
+import cliffordha.totvw.registry.VWEnchantments;
+import cliffordha.totvw.registry.VWEntities;
+import cliffordha.totvw.registry.VWFluids;
+import cliffordha.totvw.registry.VWItems;
+import cliffordha.totvw.loot.VWLootTableModifier;
+import cliffordha.totvw.registry.VWParticles;
+import cliffordha.totvw.registry.VWPotions;
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.registry.ModSounds;
-import cliffordha.totvw.world.ModBiomeModifications;
+import cliffordha.totvw.registry.VWSounds;
+import cliffordha.totvw.world.VWBiomeModifications;
 
-import cliffordha.totvw.world.ModBiomes;
+import cliffordha.totvw.world.VWBiomes;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import terrablender.api.TerraBlenderApi;
-
-import java.util.Optional;
 
 import static cliffordha.totvw.TOTVW.MOD_NAME;
 
@@ -33,30 +27,30 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 
 	@Override
 	public void onInitialize() {
-		ModItems.registerModItems();
-		ModBlocks.registerModBlocks();
+		VWItems.registerModItems();
+		VWBlocks.registerModBlocks();
 
-		ModBlockProperties.register();
-		ModFluids.registerModFluids();
+		VWBlockProperties.register();
+		VWFluids.registerModFluids();
 
-		ModEntities.registerModEntities();
-		ModBlockEntityTypes.register();
-		ModEnchantments.registerModEnchantments();
+		VWEntities.registerModEntities();
+		VWBlockEntityTypes.register();
+		VWEnchantments.registerModEnchantments();
 
-		ModEffects.registerModEffects();
-		ModPotions.registerModPotions();
-		ModPotionBrewing.registerBrewingRecipes();
-		ModParticles.registerModParticles();
-		ModSounds.registerModSounds();
-		ModBiomeModifications.addBiomeModifications();
-		ModAttachments.registerModAttachments();
+		VWEffects.registerModEffects();
+		VWPotions.registerModPotions();
+		VWPotionBrewing.registerBrewingRecipes();
+		VWParticles.registerModParticles();
+		VWSounds.registerModSounds();
+		VWBiomeModifications.addBiomeModifications();
+		VWAttachments.registerModAttachments();
 
 		TOTVWConfig.load();
 		TOTVWConfig.save();
 
 		// Debugging
-		ModCommands.registerModCommands();
-		LootTableEvents.MODIFY.register(ModLootTableModifier::modifyLootTables);
+		//VWCommands.registerModCommands();
+		LootTableEvents.MODIFY.register(VWLootTableModifier::modifyLootTables);
 
 
 		TOTVW.LOGGER.info(MOD_NAME + " has been initialized!");
@@ -64,7 +58,7 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 
 	@Override
 	public void onTerraBlenderInitialized() {
-		ModBiomes.registerBiomes();
+		VWBiomes.registerBiomes();
 
 		TOTVW.LOGGER.info(MOD_NAME + " | [TerraBlender] - Biomes registered!");
 	}

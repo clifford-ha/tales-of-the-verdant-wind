@@ -1,6 +1,6 @@
 package cliffordha.totvw.mixin.misc;
 
-import cliffordha.totvw.util.ModTextColors;
+import cliffordha.totvw.util.VWColorizeTextMixin;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -19,7 +19,7 @@ public abstract class EnchantmentNameColorMixin {
         Component description = enchantment.value().description();
         if (!(description.getContents() instanceof TranslatableContents tc)) return;
 
-        Integer color = ModTextColors.getColor(tc.getKey());
+        Integer color = VWColorizeTextMixin.getColor(tc.getKey());
         if (color == null) return;
 
         MutableComponent result = cir.getReturnValue().plainCopy().setStyle(Style.EMPTY.withColor(color));

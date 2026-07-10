@@ -3,12 +3,12 @@ package cliffordha.totvw.fluid;
 import java.util.Optional;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.registry.ModBlocks;
-import cliffordha.totvw.registry.ModFluids;
-import cliffordha.totvw.registry.ModItems;
-import cliffordha.totvw.registry.ModParticles;
-import cliffordha.totvw.tag.ModBiomeTags;
-import cliffordha.totvw.tag.ModFluidTags;
+import cliffordha.totvw.registry.VWBlocks;
+import cliffordha.totvw.registry.VWFluids;
+import cliffordha.totvw.registry.VWItems;
+import cliffordha.totvw.registry.VWParticles;
+import cliffordha.totvw.tag.VWBiomeTags;
+import cliffordha.totvw.tag.VWFluidTags;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
@@ -48,23 +48,23 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
-import static cliffordha.totvw.util.ModUtil.addHiddenEffect;
+import static cliffordha.totvw.util.VWGlobalUtil.addHiddenEffect;
 
 @SuppressWarnings("NullableProblems")
 public abstract class VerixiumFluid extends FlowingFluid {
     private static final Direction[] ALL_DIRECTIONS = { Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP};
 
     @Override
-    public  Fluid getFlowing() { return ModFluids.FLOWING_VERIXIUM_FLUID; }
+    public  Fluid getFlowing() { return VWFluids.FLOWING_VERIXIUM_FLUID; }
 
     @Override
-    public  Fluid getSource() { return ModFluids.VERIXIUM_FLUID; }
+    public  Fluid getSource() { return VWFluids.VERIXIUM_FLUID; }
 
     @Override
-    public Item getBucket() { return ModItems.VERIXIUM_FLUID_BUCKET; }
+    public Item getBucket() { return VWItems.VERIXIUM_FLUID_BUCKET; }
 
     @Override
-    public boolean isSame(Fluid fluid) { return fluid == ModFluids.VERIXIUM_FLUID || fluid == ModFluids.FLOWING_VERIXIUM_FLUID; }
+    public boolean isSame(Fluid fluid) { return fluid == VWFluids.VERIXIUM_FLUID || fluid == VWFluids.FLOWING_VERIXIUM_FLUID; }
     
     @Override
     public void animateTick(final Level level, final BlockPos pos, final FluidState fluidState, final RandomSource random) {
@@ -80,7 +80,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
             level.addParticle(ParticleTypes.UNDERWATER, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + random.nextDouble(), (double)pos.getZ() + random.nextDouble(), 0.0F, 0.0F, 0.0F);
         }
         if (random.nextDouble() <= 0.1) {
-            level.addParticle(ModParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, glowX, glowY, glowZ, 3D, 1D, 3D);
+            level.addParticle(VWParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, glowX, glowY, glowZ, 3D, 1D, 3D);
         }
     }
 
@@ -127,11 +127,11 @@ public abstract class VerixiumFluid extends FlowingFluid {
             BlockPos neighborPos = pos.relative(direction);
             BlockState neighborState = level.getBlockState(neighborPos);
             if (neighborState.is(Blocks.GLASS) && random < 0.67f) {
-                level.setBlock(neighborPos, ModBlocks.IRIDESCENT_GLASS.defaultBlockState(), Block.UPDATE_CLIENTS);
+                level.setBlock(neighborPos, VWBlocks.IRIDESCENT_GLASS.defaultBlockState(), Block.UPDATE_CLIENTS);
                 level.addParticle(ParticleTypes.GUST_EMITTER_LARGE, xx, yy, zz, 0.0F, 0.0F, 0.0F);
                 level.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT, 0.2F + level.getRandom().nextFloat() * 0.2F, 0.9F + level.getRandom().nextFloat() * 0.15F);
             } else if (neighborState.is(Blocks.GLASS_PANE) && random < 0.67f) {
-                level.setBlock(neighborPos, ModBlocks.IRIDESCENT_GLASS_PANE.defaultBlockState(), Block.UPDATE_CLIENTS);
+                level.setBlock(neighborPos, VWBlocks.IRIDESCENT_GLASS_PANE.defaultBlockState(), Block.UPDATE_CLIENTS);
                 level.addParticle(ParticleTypes.GUST_EMITTER_LARGE, xx, yy, zz, 0.0F, 0.0F, 0.0F);
                 level.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT, 0.2F + level.getRandom().nextFloat() * 0.2F, 0.9F + level.getRandom().nextFloat() * 0.15F);
             }
@@ -161,7 +161,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
         if (!(world instanceof ServerLevel) || !(entity instanceof LivingEntity livingEntity)) return;
 
         if (world.getGameTime() % 60 == 0) {
-            if (entity.level().getBiome(entity.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES)) {
+            if (entity.level().getBiome(entity.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES)) {
                 if (livingEntity.is(EntityTypeTags.UNDEAD) || livingEntity.is(EntityTypeTags.ILLAGER)) return;
                 if (livingEntity.hasEffect(MobEffects.WITHER)) {
                     livingEntity.removeEffect(MobEffects.POISON);
@@ -177,7 +177,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
         int bossAmp;
         int time;
         int amplifier;
-        if (entity.level().getBiome(entity.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES)) {
+        if (entity.level().getBiome(entity.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES)) {
             bossTime = TOTVW.setTime(1, 30);
             bossAmp = 1;
             time = TOTVW.setTime(0, 12);
@@ -227,7 +227,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
     private static void evaluateSlowness(LivingEntity livingEntity) {
         int defaultDuration;
         int defaultAmp;
-        boolean inVerdantBiome = livingEntity.level().getBiome(livingEntity.blockPosition()).is(ModBiomeTags.IS_VERDANT_BIOMES);
+        boolean inVerdantBiome = livingEntity.level().getBiome(livingEntity.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
         boolean inForest = livingEntity.level().getBiome(livingEntity.blockPosition()).is(BiomeTags.IS_FOREST);
         boolean inEnd = livingEntity.level().getBiome(livingEntity.blockPosition()).is(BiomeTags.IS_END);
         if (inVerdantBiome) {
@@ -251,7 +251,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
 
     @Override
     protected  BlockState createLegacyBlock( FluidState state) {
-        return ModBlocks.VERIXIUM_FLUID.defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state)); }
+        return VWBlocks.VERIXIUM_FLUID.defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state)); }
 
     @Override
     public int getDropOff( LevelReader world) { return 1; }
@@ -261,7 +261,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
 
     @Override
     public boolean canBeReplacedWith(final FluidState state, final BlockGetter level, final BlockPos pos, final Fluid other, final Direction direction) {
-        return direction == Direction.DOWN && !other.is(ModFluidTags.VERIXIUM_FLUID);
+        return direction == Direction.DOWN && !other.is(VWFluidTags.VERIXIUM_FLUID);
     }
 
     @Override

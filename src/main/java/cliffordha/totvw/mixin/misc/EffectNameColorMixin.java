@@ -1,6 +1,6 @@
 package cliffordha.totvw.mixin.misc;
 
-import cliffordha.totvw.util.ModTextColors;
+import cliffordha.totvw.util.VWColorizeTextMixin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -20,7 +20,7 @@ public class EffectNameColorMixin {
         Component description = cir.getReturnValue();
         if (!(description.getContents() instanceof TranslatableContents tc)) return;
 
-        Integer color = ModTextColors.getColor(tc.getKey());
+        Integer color = VWColorizeTextMixin.getColor(tc.getKey());
         if (color == null) return;
 
         MutableComponent result = cir.getReturnValue().plainCopy().setStyle(Style.EMPTY.withColor(color));

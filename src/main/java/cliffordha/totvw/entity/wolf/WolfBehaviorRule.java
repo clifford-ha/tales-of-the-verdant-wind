@@ -4,7 +4,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 
 // signle rule that fires (a) WolfBehaviorAction when a WolfCondition is met
-public final class WolfBehaviorRule {
+public class WolfBehaviorRule {
     public enum Scope {
         TAMED,
         WILD,

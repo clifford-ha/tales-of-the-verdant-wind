@@ -1,8 +1,8 @@
 package cliffordha.totvw.effect;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.registry.ModParticleEffects;
-import cliffordha.totvw.registry.ModColors;
+import cliffordha.totvw.registry.VWParticleEffects;
+import cliffordha.totvw.registry.VWColors;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 
 public class BlessingOfTheVerdantWindEffect extends MobEffect {
@@ -23,7 +22,7 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
     private static final Identifier HEALTH_INCREASE_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "blessing_health_increase");
 
     public BlessingOfTheVerdantWindEffect() {
-        super(MobEffectCategory.BENEFICIAL, ModColors.VERDANT_WIND);
+        super(MobEffectCategory.BENEFICIAL, VWColors.VERDANT_WIND);
     }
 
     @Override
@@ -35,7 +34,7 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
         if (entity instanceof Monster) return;
-        ModParticleEffects.spawnBlessingParticlesEntity(entity, 1);
+        VWParticleEffects.spawnBlessingParticlesEntity(entity, 1);
         AttributeMap attributes = entity.getAttributes();
 
         double atkDamage = 0.15 + (amplifier * 0.15);
@@ -84,7 +83,7 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
         float heal = (entity instanceof Monster) ? 0f : 3.0f + (amplifier * 2.0f);
         if (serverLevel.getRandom().nextInt(60) == 0) {
             entity.heal(heal);
-            ModParticleEffects.benedictionEnvironmentParticleEntity(entity);
+            VWParticleEffects.benedictionEnvironmentParticleEntity(entity);
         }
         return super.applyEffectTick(serverLevel, entity, amplifier);
     }

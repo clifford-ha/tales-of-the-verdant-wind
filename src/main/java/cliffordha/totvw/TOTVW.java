@@ -25,7 +25,7 @@ public class TOTVW {
     public static final String MOD_NAME = "Tales of the Verdant Wind";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static void sendLog(String className) {
-        TOTVW.LOGGER.info(MOD_NAME + " - {} registered!", className);
+        TOTVW.LOGGER.info("{} registered!", className);
     }
     
     private static final int secTick = 20;

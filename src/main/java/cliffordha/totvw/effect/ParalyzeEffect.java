@@ -1,7 +1,7 @@
 package cliffordha.totvw.effect;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.registry.ModColors;
+import cliffordha.totvw.registry.VWColors;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
@@ -14,7 +14,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public class ParalyzeEffect extends MobEffect {
-    public ParalyzeEffect() {super(MobEffectCategory.NEUTRAL, ModColors.PARALYZE);}
+    public ParalyzeEffect() {super(MobEffectCategory.NEUTRAL, VWColors.PARALYZE);}
     private static final Identifier PARALYZE_ATTACK_DMG_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "paralyze_attack_dmg");
     private static final Identifier PARALYZE_KNOCKBACK_RESISTANCE_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "paralyze_knockback_resistance");
     private static final Identifier PARALYZE_ARMOR_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "paralyze_armor");

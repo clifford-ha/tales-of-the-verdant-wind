@@ -1,10 +1,10 @@
 package cliffordha.totvw.effect;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.datagen.ModDamageTypes;
-import cliffordha.totvw.registry.ModEffects;
-import cliffordha.totvw.registry.ModEnchantments;
-import cliffordha.totvw.registry.ModColors;
+import cliffordha.totvw.datagen.VWDamageTypes;
+import cliffordha.totvw.registry.VWEffects;
+import cliffordha.totvw.registry.VWEnchantments;
+import cliffordha.totvw.registry.VWColors;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -29,7 +29,7 @@ public class BloodlustEffect extends MobEffect {
     private static final Identifier ARMOR_REDUCTION_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "bloodlust_armor_reduction");
 
     public BloodlustEffect() {
-        super(MobEffectCategory.HARMFUL, ModColors.BLOODLUST_EFFECT);
+        super(MobEffectCategory.HARMFUL, VWColors.BLOODLUST_EFFECT);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class BloodlustEffect extends MobEffect {
             RegistryAccess registryAccess = wolf.level().registryAccess();
             Registry<Enchantment> enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 
-            int mightLevel = bodyArmor.getEnchantments().getLevel(enchantmentRegistry.getOrThrow(ModEnchantments.WOLF_EFFECT_MIGHT));
+            int mightLevel = bodyArmor.getEnchantments().getLevel(enchantmentRegistry.getOrThrow(VWEnchantments.WOLF_EFFECT_MIGHT));
             if (mightLevel <= 0) return;
             if (attributes.hasAttribute(Attributes.ARMOR)) {
                 attributes.getInstance(Attributes.ARMOR).addOrReplacePermanentModifier(
@@ -113,11 +113,11 @@ public class BloodlustEffect extends MobEffect {
         float inflictDMG = 0.10f + (Math.min(amplifier, 0.3f) * 0.10f);
         if (entity.getHealth() <= 6.0f && entity.hasEffect(MobEffects.REGENERATION)
                 || entity.hasEffect(MobEffects.ABSORPTION)
-                || entity.hasEffect(ModEffects.BLESSING_OF_THE_VERDANT_WIND)) return false;
+                || entity.hasEffect(VWEffects.BLESSING_OF_THE_VERDANT_WIND)) return false;
 
         if (serverLevel.getRandom().nextInt(60) == 0) {
             float damage = entity.getHealth() * inflictDMG;
-            entity.hurtServer(serverLevel, ModDamageTypes.create(serverLevel, ModDamageTypes.BLOODLUST), damage);
+            entity.hurtServer(serverLevel, VWDamageTypes.create(serverLevel, VWDamageTypes.BLOODLUST), damage);
         }
         return super.applyEffectTick(serverLevel, entity, amplifier);
     }

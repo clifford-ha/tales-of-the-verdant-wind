@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
 	"id": "tales-of-the-verdant-wind",
-	"version": "*",
+	"version": "1.0.0-R",
 	"name": "Tales of the Verdant Wind",
-	"description": "The verdant mountains—a humble home of the missing wind.",
+	"description": "The verdant mountains—a place where the missing wind rests.",
 	"authors": [
 		"Clifford HA"
 	],

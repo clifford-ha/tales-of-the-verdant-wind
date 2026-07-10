@@ -1,7 +1,7 @@
 package cliffordha.totvw.block.custom;
 
-import cliffordha.totvw.registry.ModParticles;
-import cliffordha.totvw.world.ModBiomes;
+import cliffordha.totvw.registry.VWParticles;
+import cliffordha.totvw.world.VWBiomes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.RandomSource;
@@ -16,8 +16,8 @@ public class VerdantSpruceLeavesBlock extends UntintedParticleLeavesBlock {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        boolean inVerdantForest = level.getBiome(pos).is(ModBiomes.VERDANT_FOREST);
-        boolean inVerdantMountains = level.getBiome(pos).is(ModBiomes.VERDANT_MOUNTAINS);
+        boolean inVerdantForest = level.getBiome(pos).is(VWBiomes.VERDANT_FOREST);
+        boolean inVerdantMountains = level.getBiome(pos).is(VWBiomes.VERDANT_MOUNTAINS);
 
         boolean darkness = level.getMaxLocalRawBrightness(pos, 0) < 13;
         double randomChance = random.nextDouble();
@@ -27,9 +27,9 @@ public class VerdantSpruceLeavesBlock extends UntintedParticleLeavesBlock {
         double glowZ = (double)pos.getZ() + random.nextDouble() * 13.0 - 5.0;
 
         if (darkness && randomChance <= 0.05 && inVerdantMountains) {
-            level.addParticle(ModParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, glowX, glowY, glowZ, 9D, 13D, 9D );
+            level.addParticle(VWParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, glowX, glowY, glowZ, 9D, 13D, 9D );
         } else if (darkness && randomChance <= 0.01 && inVerdantForest) {
-            level.addParticle(ModParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, glowX, glowY, glowZ, 13D, 15D, 13D );
+            level.addParticle(VWParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, glowX, glowY, glowZ, 13D, 15D, 13D );
         }
         super.animateTick(state, level, pos, random);
     }

@@ -1,6 +1,6 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.registry.ModAttachments;
+import cliffordha.totvw.registry.VWAttachments;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -14,7 +14,7 @@ public class IronGolemEntityMixin {
 
     @Inject(method = "canAttack", at = @At("HEAD"), cancellable = true)
     private void onTick(LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
-        if (target instanceof Wolf wolf && wolf.getAttachedOrElse(ModAttachments.Wolf.WOLF_TRY_SAVE_POINTS, 0) > 0) {
+        if (target instanceof Wolf wolf && wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_TRY_SAVE_POINTS, 0) > 0) {
             cir.setReturnValue(false);
         }
     }

@@ -1,14 +1,14 @@
 package cliffordha.totvw;
 
-import cliffordha.totvw.client.ModTooltipsClient;
+import cliffordha.totvw.client.VWItemBlessingTooltip;
 import cliffordha.totvw.particle.MightParalyzeParticle;
 import cliffordha.totvw.particle.VerixiumPowderRainParticle;
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.client.ModModelLayerProvider;
+import cliffordha.totvw.client.VWModelLayerProvider;
 import cliffordha.totvw.particle.BenedictionTriggerParticle;
 import cliffordha.totvw.particle.VerdantBiomesEnvironmentAmbiance;
-import cliffordha.totvw.util.ModEffectOverlays;
-import cliffordha.totvw.util.ModTextColors;
+import cliffordha.totvw.util.VWEffectOverlays;
+import cliffordha.totvw.util.VWColorizeTextMixin;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
@@ -32,8 +32,8 @@ import java.util.List;
 public class TOTVWClient implements ClientModInitializer {
     public void onInitializeClient() {
         FluidRenderingRegistry.register(
-                ModFluids.VERIXIUM_FLUID,
-                ModFluids.FLOWING_VERIXIUM_FLUID,
+                VWFluids.VERIXIUM_FLUID,
+                VWFluids.FLOWING_VERIXIUM_FLUID,
                 new FluidModel.Unbaked(
                         new Material(Identifier.withDefaultNamespace("block/water_still")),
                         new Material(Identifier.withDefaultNamespace("block/water_flow")),
@@ -43,40 +43,40 @@ public class TOTVWClient implements ClientModInitializer {
         );
         BlockColorRegistry.register(
                 List.of((_) -> getRainbowColor()),
-                ModBlocks.IRIDESCENT_GLASS,
-                ModBlocks.IRIDESCENT_GLASS_PANE
+                VWBlocks.IRIDESCENT_GLASS,
+                VWBlocks.IRIDESCENT_GLASS_PANE
         );
-        ModTextColors.register(
+        VWColorizeTextMixin.register(
                 "enchantment.tales-of-the-verdant-wind.benediction_of_the_verdant_mountains",
-                ModColors.VERDANT_WIND
+                VWColors.VERDANT_WIND
         );
-        ModTextColors.register(
+        VWColorizeTextMixin.register(
                 "effect.tales-of-the-verdant-wind.blessing_of_the_verdant_wind",
-                ModColors.VERDANT_WIND
+                VWColors.VERDANT_WIND
         );
-        ModTextColors.register(
+        VWColorizeTextMixin.register(
                 "item.minecraft.tipped_arrow.effect.sacred_verdant_potion",
-                ModColors.VERDANT_WIND
+                VWColors.VERDANT_WIND
         );
-        ModTextColors.register(
+        VWColorizeTextMixin.register(
                 "effect.tales-of-the-verdant-wind.bloodlust",
-                ModColors.BLOODLUST_EFFECT
+                VWColors.BLOODLUST_EFFECT
         );
-        ParticleProviderRegistry.getInstance().register(ModParticles.BENEDICTION_TRIGGER_PARTICLE, BenedictionTriggerParticle.BenedictionParticleProvider::new);
-        ParticleProviderRegistry.getInstance().register(ModParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, VerdantBiomesEnvironmentAmbiance.VerdantBiomesEnvironmentAmbianceProvider::new);
-        ParticleProviderRegistry.getInstance().register(ModParticles.VERIXIUM_POWDER_RAIN_PARTICLE, VerixiumPowderRainParticle.VerixiumPowderRainParticleProvider::new);
-        ParticleProviderRegistry.getInstance().register(ModParticles.MIGHT_PARALYZE_PARTICLE, MightParalyzeParticle.MightParalyzeParticleProvider::new);
+        ParticleProviderRegistry.getInstance().register(VWParticles.BENEDICTION_TRIGGER_PARTICLE, BenedictionTriggerParticle.BenedictionParticleProvider::new);
+        ParticleProviderRegistry.getInstance().register(VWParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, VerdantBiomesEnvironmentAmbiance.VerdantBiomesEnvironmentAmbianceProvider::new);
+        ParticleProviderRegistry.getInstance().register(VWParticles.VERIXIUM_POWDER_RAIN_PARTICLE, VerixiumPowderRainParticle.VerixiumPowderRainParticleProvider::new);
+        ParticleProviderRegistry.getInstance().register(VWParticles.MIGHT_PARALYZE_PARTICLE, MightParalyzeParticle.MightParalyzeParticleProvider::new);
 
-        EntityRenderers.register(ModEntities.VERDANT_SPRUCE_BOAT, context -> new BoatRenderer(context, ModModelLayerProvider.VERDANT_SPRUCE_BOAT));
-        EntityRenderers.register(ModEntities.VERDANT_SPRUCE_CHEST_BOAT, context -> new BoatRenderer(context, ModModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT));
-        ModelLayerRegistry.registerModelLayer(ModModelLayerProvider.VERDANT_SPRUCE_BOAT, BoatModel::createBoatModel);
-        ModelLayerRegistry.registerModelLayer(ModModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT, BoatModel::createChestBoatModel);
+        EntityRenderers.register(VWEntities.VERDANT_SPRUCE_BOAT, context -> new BoatRenderer(context, VWModelLayerProvider.VERDANT_SPRUCE_BOAT));
+        EntityRenderers.register(VWEntities.VERDANT_SPRUCE_CHEST_BOAT, context -> new BoatRenderer(context, VWModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT));
+        ModelLayerRegistry.registerModelLayer(VWModelLayerProvider.VERDANT_SPRUCE_BOAT, BoatModel::createBoatModel);
+        ModelLayerRegistry.registerModelLayer(VWModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT, BoatModel::createChestBoatModel);
 
-        BlockEntityRenderers.register(ModBlockEntityTypes.SIGN, StandingSignRenderer::new);
-        BlockEntityRenderers.register(ModBlockEntityTypes.HANGING_SIGN, HangingSignRenderer::new);
-        BlockEntityRenderers.register(ModBlockEntityTypes.SHELF, ShelfRenderer::new);
-        ModEffectOverlays.register();
-        ModTooltipsClient.register();
+        BlockEntityRenderers.register(VWBlockEntityTypes.SIGN, StandingSignRenderer::new);
+        BlockEntityRenderers.register(VWBlockEntityTypes.HANGING_SIGN, HangingSignRenderer::new);
+        BlockEntityRenderers.register(VWBlockEntityTypes.SHELF, ShelfRenderer::new);
+        VWEffectOverlays.register();
+        VWItemBlessingTooltip.register();
     }
     private static int getRainbowColor() {
         float hue = (System.currentTimeMillis() % 4000) / 1000.0f;
