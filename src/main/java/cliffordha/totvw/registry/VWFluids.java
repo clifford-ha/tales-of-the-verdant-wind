@@ -15,7 +15,7 @@ public class VWFluids {
         return Registry.register(BuiltInRegistries.FLUID, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), fluid);
     }
 
-    public static void registerModFluids() {
+    public static void register() {
         TOTVW.sendLog("Fluids");
     }
 }

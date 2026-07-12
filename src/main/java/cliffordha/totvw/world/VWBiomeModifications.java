@@ -7,7 +7,7 @@ import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.world.level.levelgen.GenerationStep;
 
 public class VWBiomeModifications {
-    public static void addBiomeModifications() {
+    public static void register() {
         BiomeModifications.addFeature(
                 BiomeSelectors.tag(VWBiomeTags.IS_VERDANT_BIOMES),
                 GenerationStep.Decoration.LOCAL_MODIFICATIONS,

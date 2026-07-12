@@ -8,8 +8,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.alchemy.Potion;
 
-import static cliffordha.totvw.TOTVW.MOD_NAME;
-
 public class VWPotions {
     private static final int TICK_SECONDS = 20;
     private static final int TICK_MINUTES = TICK_SECONDS * 60;
@@ -37,7 +35,7 @@ public class VWPotions {
         return Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), potion);
     }
 
-    public static void registerModPotions() {
-        TOTVW.LOGGER.info(MOD_NAME + " - Potions initialized!");
+    public static void register() {
+        TOTVW.sendLog("Potions");
     }
 }

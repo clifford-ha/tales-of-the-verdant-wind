@@ -34,7 +34,7 @@ public class VWEntities {
                             MobCategory.MISC).sized(1.375f, 0.5625f)
                     .clientTrackingRange(10).build(VERDANT_SPRUCE_CHEST_BOAT_KEY));
 
-    public static void registerModEntities() {
+    public static void register() {
         VWPlayerBehaviors.registerModPlayerBehaviors();
         VWWolfBehaviors.registerModWolfBehaviors();
         VWGlobalEntityBehaviors.register();

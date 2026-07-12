@@ -12,6 +12,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -137,35 +138,20 @@ public class VWItemTags extends FabricTagsProvider.ItemTagsProvider {
                 .add(VWBlocksVerdant.VERDANT_SPRUCE_DOOR.asItem());
     }
 
-    public static final TagKey<Item> VERDANT_ITEMS = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_items")
-    );
-    public static final TagKey<Item> VERDANT_SPRUCE_LOGS = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce_logs")
-    );
-    public static final TagKey<Item> REPAIRS_VERIXIUM = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "repairs_verixium")
-    );
-    public static final TagKey<Item> VERIXIUM_ARMOR = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_armor")
-    );
-    public static final TagKey<Item> VERIXIUM_WEAPON = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_weapon")
-    );
-    public static final TagKey<Item> VERIXIUM_TOOL = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_tool")
-    );
-    public static final TagKey<Item> WOLF_ARMOR_ENCHANTABLE = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "wolf_armor_enchantable")
-    );
+    public static final TagKey<Item> VERDANT_ITEMS = create("verdant_items");
+    public static final TagKey<Item> VERDANT_SPRUCE_LOGS = create("verdant_spruce_logs");
 
-    public static final TagKey<Item> BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "benediction_enchantment_use_qualified_items")
-    );
-    public static final TagKey<Item> BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "benediction_enchantment_use_qualified_tools")
-    );
-    public static final TagKey<Item> SCATTERED_PAGES = TagKey.create(Registries.ITEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "scattered_pages")
-    );
+    public static final TagKey<Item> REPAIRS_VERIXIUM = create("repairs_verixium");
+    public static final TagKey<Item> VERIXIUM_ARMOR = create("verixium_armor");
+    public static final TagKey<Item> VERIXIUM_WEAPON = create("verixium_weapon");
+    public static final TagKey<Item> VERIXIUM_TOOL = create("verixium_tool");
+
+    public static final TagKey<Item> WOLF_ARMOR_ENCHANTABLE = create("wolf_armor_enchantable");
+
+    public static final TagKey<Item> BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS = create("benediction_enchantment_use_qualified_items");
+    public static final TagKey<Item> BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS = create("benediction_enchantment_use_qualified_tools");
+    public static final TagKey<Item> SCATTERED_PAGES = create("scattered_pages");
+
+    private static TagKey<Item> create(String name) {
+        return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }
 }

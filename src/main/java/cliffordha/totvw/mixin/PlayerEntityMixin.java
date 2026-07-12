@@ -18,6 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
@@ -62,6 +63,18 @@ public class PlayerEntityMixin {
             } else {
                 notifyFromPlayer(player, VWColors.DEFAULT_MUTED, true, "Already trusted: " + name);
                 cir.setReturnValue(InteractionResult.PASS);
+            }
+        }
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void onTick(CallbackInfo ci) {
+        Player player = (Player) (Object) this;
+
+        if (player.level().getGameTime() % (20 * 30) == 0) {
+            int atrocityCount = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
+            if (atrocityCount > 0) {
+                player.setAttached(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, atrocityCount - 1);
             }
         }
     }

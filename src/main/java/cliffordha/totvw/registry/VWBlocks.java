@@ -69,7 +69,7 @@ public class VWBlocks {
 
     // separate blocks of the same family when >= 10 items
     // my forgetful ahh will remember better that way
-    public static void registerModBlocks() {
+    public static void register() {
         VWBlocksVerdant.registerVerdantBlocks();
         sendLog("Blocks");
     }

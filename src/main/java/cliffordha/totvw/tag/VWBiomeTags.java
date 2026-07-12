@@ -12,6 +12,7 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -27,14 +28,20 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
         getOrCreateRawBuilder(BiomeTags.IS_OVERWORLD)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
-        getOrCreateRawBuilder(VWBiomeTags.IS_VERDANT_BIOMES)
+        getOrCreateRawBuilder(IS_VERDANT_BIOMES)
                 .add(TagEntry.element(VWBiomes.VERDANT_MOUNTAINS.identifier()))
                 .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
 
-        getOrCreateRawBuilder(VWBiomeTags.HAS_VERDANT_FOREST_VILLAGE)
+        getOrCreateRawBuilder(HAS_VERIXIUM_CORE_PILLARS)
+                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
+
+        getOrCreateRawBuilder(HAS_VERDANT_UNDERGROUND_CAMPS)
+                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
+
+        getOrCreateRawBuilder(HAS_VERDANT_FOREST_VILLAGE)
                 .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
 
-        getOrCreateRawBuilder(VWBiomeTags.HAS_VERDANT_MOUNTAINS_VILLAGE)
+        getOrCreateRawBuilder(HAS_VERDANT_MOUNTAINS_VILLAGE)
                 .add(TagEntry.element(VWBiomes.VERDANT_MOUNTAINS.identifier()));
 
         getOrCreateRawBuilder(BiomeTags.IS_MOUNTAIN)
@@ -75,8 +82,14 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
 
         getOrCreateRawBuilder(BiomeTags.HAS_WOODLAND_MANSION)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
+
     }
-    public static final TagKey<Biome> IS_VERDANT_BIOMES = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "is_verdant_biomes"));
-    public static final TagKey<Biome> HAS_VERDANT_FOREST_VILLAGE = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "has_verdant_forest_village"));
-    public static final TagKey<Biome> HAS_VERDANT_MOUNTAINS_VILLAGE = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "has_verdant_mountains_village"));
+    public static final TagKey<Biome> IS_VERDANT_BIOMES = create("is_verdant_biomes");
+    public static final TagKey<Biome> HAS_VERDANT_FOREST_VILLAGE = create("has_verdant_forest_village");
+    public static final TagKey<Biome> HAS_VERDANT_MOUNTAINS_VILLAGE = create("has_verdant_mountains_village");
+    public static final TagKey<Biome> HAS_VERIXIUM_CORE_PILLARS = create("has_verixium_core_pillars");
+    public static final TagKey<Biome> HAS_VERDANT_UNDERGROUND_CAMPS = create("has_verdant_underground_camps");
+
+    private static TagKey<Biome> create(String name) {
+        return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }
 }

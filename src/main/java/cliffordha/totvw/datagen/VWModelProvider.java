@@ -10,14 +10,12 @@ import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.client.data.models.model.*;
 
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
@@ -74,44 +72,66 @@ public class VWModelProvider extends FabricModelProvider {
                 ));
     }
 
+    private static void add(ItemModelGenerators item, ModelTemplate template, Item... v) {
+        for (Item items : v) {
+            item.generateFlatItem(items, template);
+        }
+    }
+    private static void addCopy(ItemModelGenerators item, ModelTemplate template, Item donor, Item... v) {
+        for (Item items : v) {
+            item.generateFlatItem(items, donor, template);
+        }
+    }
+
     @Override
     public void generateItemModels(ItemModelGenerators item) {
-        item.generateFlatItem(VWItems.VERIXIUM_CHUNK, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.CONDENSED_VERIXIUM, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_SHARD, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_POWDER, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_INGOT, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_PAPER, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE, ModelTemplates.FLAT_ITEM);
+        add(item, ModelTemplates.FLAT_ITEM,
+                VWItems.VERIXIUM_CHUNK,
+                VWItems.CONDENSED_VERIXIUM,
+                VWItems.VERIXIUM_SHARD,
+                VWItems.VERIXIUM_POWDER,
+                VWItems.VERIXIUM_INGOT,
+                VWItems.VERIXIUM_PAPER,
+                VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE,
 
-        item.generateFlatItem(VWItems.VERIXIUM_HELMET, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_CHESTPLATE, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_LEGGINGS, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_BOOTS, ModelTemplates.FLAT_ITEM);
+                VWItems.VERIXIUM_HELMET,
+                VWItems.VERIXIUM_CHESTPLATE,
+                VWItems.VERIXIUM_LEGGINGS,
+                VWItems.VERIXIUM_BOOTS,
 
-        item.generateFlatItem(VWItems.VERIXIUM_WOLF_ARMOR, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_HORSE_ARMOR, ModelTemplates.FLAT_HANDHELD_ITEM);
+                VWItems.VERIXIUM_WOLF_ARMOR,
+                VWItems.VERIXIUM_HORSE_ARMOR,
 
-        item.generateFlatItem(VWItems.VERIXIUM_SWORD, ModelTemplates.FLAT_HANDHELD_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_AXE, ModelTemplates.FLAT_HANDHELD_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_PICKAXE, ModelTemplates.FLAT_HANDHELD_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_SHOVEL, ModelTemplates.FLAT_HANDHELD_ITEM);
-        item.generateFlatItem(VWItems.VERIXIUM_HOE, ModelTemplates.FLAT_HANDHELD_ITEM);
+                VWItems.VERIXIUM_FLUID_BUCKET,
+                VWItems.VERDANT_SPRUCE_BOAT,
+                VWItems.VERDANT_SPRUCE_CHEST_BOAT
+        );
+
+        add(item, ModelTemplates.FLAT_HANDHELD_ITEM,
+                VWItems.VERIXIUM_SWORD,
+                VWItems.VERIXIUM_AXE,
+                VWItems.VERIXIUM_PICKAXE,
+                VWItems.VERIXIUM_SHOVEL,
+                VWItems.VERIXIUM_HOE
+        );
         item.generateSpear(VWItems.VERIXIUM_SPEAR);
 
-        item.generateFlatItem(VWItems.VERIXIUM_FLUID_BUCKET, ModelTemplates.FLAT_ITEM);
+        item.generateFlatItem(VWItemsScatteredPage.SCATTERED_PAGE, ModelTemplates.FLAT_ITEM);
+        addCopy(item, ModelTemplates.FLAT_ITEM, VWItemsScatteredPage.SCATTERED_PAGE,
+                VWItemsScatteredPage.SP_ID_1000,
+                VWItemsScatteredPage.SP_ID_1001,
+                VWItemsScatteredPage.SP_ID_1002,
+                VWItemsScatteredPage.SP_ID_1003,
+                VWItemsScatteredPage.SP_ID_1004,
+                VWItemsScatteredPage.SP_ID_1005,
 
-        item.generateFlatItem(VWItems.VERDANT_SPRUCE_BOAT, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItems.VERDANT_SPRUCE_CHEST_BOAT, ModelTemplates.FLAT_ITEM);
-
-
-        item.generateFlatItem(VWItemsScatteredPage.SP_ID_1000, VWItems.VERIXIUM_PAPER, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItemsScatteredPage.SP_ID_1001, VWItems.VERIXIUM_PAPER, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(VWItemsScatteredPage.SP_ID_1002, VWItems.VERIXIUM_PAPER, ModelTemplates.FLAT_ITEM);
+                VWItemsScatteredPage.SP_ID_TEST,
+                VWItemsScatteredPage.PLAYER_STATS
+        );
     }
 
     @Override
     public String getName() {
-        return "ModModelProvider";
+        return "VWModelProvider";
     }
 }

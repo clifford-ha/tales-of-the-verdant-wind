@@ -32,19 +32,19 @@ public class TOTVWConfigScreen {
         client.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Use New Sounds"),
-                                TOTVWConfig.get().newSounds)
+                                TOTVWConfig.get().ENABLE_NEW_SOUNDS)
                         .setDefaultValue(true)
                         .setTooltip(text("Wolf howls when within certain biomes\nOther sounds will be added in the future"))
-                        .setSaveConsumer(value -> TOTVWConfig.get().newSounds = value)
+                        .setSaveConsumer(value -> TOTVWConfig.get().ENABLE_NEW_SOUNDS = value)
                         .build()
         );
         client.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Bloodlust Effect Screen Overlay"),
-                                TOTVWConfig.get().bloodlustScreenOverlay)
+                                TOTVWConfig.get().BLOODLUST_SCREEN_OVERLAY)
                         .setDefaultValue(false)
                         .setTooltip(text("When the player has the Bloodlust Effect, an overlay\nwill be displayed on the whole screen.\nThe strength of the overlay depends on the player's health.\n\n§8§oDisabled by default for safety purposes."))
-                        .setSaveConsumer(value -> TOTVWConfig.get().bloodlustScreenOverlay = value)
+                        .setSaveConsumer(value -> TOTVWConfig.get().BLOODLUST_SCREEN_OVERLAY = value)
                         .build()
         );
 
@@ -56,55 +56,55 @@ public class TOTVWConfigScreen {
         server.addEntry(
                 entryBuilder.startIntSlider(
                                 Component.literal("Max Wolf/Player Scan"),
-                                TOTVWConfig.get().maxWolfPlayerDistance, 1, 64)
+                                TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE, 1, 64)
                         .setDefaultValue(16)
                         .setTooltip(text("Set a max chunk scan distance for enchantment effects to trigger.\n§8§oHigher values may affect performance!"))
-                        .setSaveConsumer(value -> TOTVWConfig.get().maxWolfPlayerDistance = value)
+                        .setSaveConsumer(value -> TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE = value)
                         .build()
         );
         server.addEntry(
                 entryBuilder.startIntSlider(
                                 Component.literal("Low Health Threshold"),
-                                TOTVWConfig.get().lowHealthThreshold, 15, 90)
+                                TOTVWConfig.get().LOW_HEALTH_THRESHOLD, 15, 90)
                         .setDefaultValue(30)
                         .setTooltip(text("Set a health threshold for when to trigger enchantment effects."))
-                        .setSaveConsumer(value -> TOTVWConfig.get().lowHealthThreshold = value)
+                        .setSaveConsumer(value -> TOTVWConfig.get().LOW_HEALTH_THRESHOLD = value)
                         .build()
         );
         server.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Wolf Armor Damage Distribution"),
-                                TOTVWConfig.get().wolfArmorDamageDistribution)
+                                TOTVWConfig.get().WOLF_ARMOR_DMG_DISTRIBUTION)
                         .setDefaultValue(true)
                         .setTooltip(text("Allow distributing damage to both the armor and the wolf"))
-                        .setSaveConsumer(value -> TOTVWConfig.get().wolfArmorDamageDistribution = value)
+                        .setSaveConsumer(value -> TOTVWConfig.get().WOLF_ARMOR_DMG_DISTRIBUTION = value)
                         .build()
         );
         server.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Use Notifiers"),
-                                TOTVWConfig.get().useNotifiers)
+                                TOTVWConfig.get().ENABLE_NOTIFIERS)
                         .setDefaultValue(true)
                         .setTooltip(text("Some enchantments and effects will send \na message to the player when activated."))
-                        .setSaveConsumer(value -> TOTVWConfig.get().useNotifiers = value)
+                        .setSaveConsumer(value -> TOTVWConfig.get().ENABLE_NOTIFIERS = value)
                         .build()
         );
         server.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Attachment Cooldowns"),
-                                TOTVWConfig.get().attachmentSkillCD)
+                                TOTVWConfig.get().ATTACHMENT_SKILL_CD)
                         .setDefaultValue(true)
                         .setTooltip(text("Used for skill and item cooldowns"))
-                        .setSaveConsumer(value -> TOTVWConfig.get().attachmentSkillCD = value)
+                        .setSaveConsumer(value -> TOTVWConfig.get().ATTACHMENT_SKILL_CD = value)
                         .build()
         );
         server.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Other Attachment Cooldowns"),
-                                TOTVWConfig.get().otherAttachmentCD)
+                                TOTVWConfig.get().OTHER_ATTACHMENT_CD)
                         .setDefaultValue(true)
                         .setTooltip(text("Used for other time-based cooldowns"))
-                        .setSaveConsumer(value -> TOTVWConfig.get().otherAttachmentCD = value)
+                        .setSaveConsumer(value -> TOTVWConfig.get().OTHER_ATTACHMENT_CD = value)
                         .build()
         );
 
@@ -116,9 +116,9 @@ public class TOTVWConfigScreen {
         debug.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("SEND LOGS"),
-                                TOTVWConfig.get().sendLog)
+                                TOTVWConfig.get().DEBUG_PRINT_LOGS)
                         .setDefaultValue(false)
-                        .setSaveConsumer(value -> TOTVWConfig.get().sendLog = value)
+                        .setSaveConsumer(value -> TOTVWConfig.get().DEBUG_PRINT_LOGS = value)
                         .build()
         );
 

@@ -1,10 +1,10 @@
 package cliffordha.totvw.mixin;
 
 import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.util.VWGlobalUtil;
 import cliffordha.totvw.entity.VWInteractionData;
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWItemTags;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -77,7 +77,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
                 for (Monster monster : monsters) {
                     wolf.setTarget(monster);
-                    if (wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0) == 2) return;
+                    if (wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0) >= 2) return;
                     wolf.setAttached(VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 1);
                 }
             }
@@ -221,7 +221,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
         int ACTIVE_BENEDICTION = wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
         int ACTIVE_ENHANCEMENT_KIT = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_ARMOR_ENHANCEMENT_KIT);
 
-        if (TOTVWConfig.get().wolfArmorDamageDistribution) {
+        if (TOTVWConfig.get().WOLF_ARMOR_DMG_DISTRIBUTION) {
             if (!wolf.canArmorAbsorb(source)) return;
 
             ItemStack armor = wolf.getBodyArmorItem();
@@ -250,7 +250,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
             super.actuallyHurt(level, source, finalWolfDMG);
 
-            if (TOTVWConfig.get().sendLog) { notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, "TrueDMG: " + damage + " §e| FinalWolfDMG: " + finalWolfDMG + " §d| FinalArmorDMG: " + finalArmorDMG); }
+            if (TOTVWConfig.get().DEBUG_PRINT_LOGS) { notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, "TrueDMG: " + damage + " §e| FinalWolfDMG: " + finalWolfDMG + " §d| FinalArmorDMG: " + finalArmorDMG); }
             ci.cancel();
         }
     }

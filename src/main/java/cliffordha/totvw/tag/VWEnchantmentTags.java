@@ -12,6 +12,7 @@ import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -62,15 +63,11 @@ public class VWEnchantmentTags extends FabricTagsProvider<Enchantment> {
                 .add(TagEntry.element(VWEnchantments.WOLF_EFFECT_BLOODLUST.identifier()))
                 .add(TagEntry.element(VWEnchantments.WOLF_EFFECT_GNAWING.identifier()));
     }
-    public static final TagKey<Enchantment> WOLF_ENCHANTMENTS = TagKey.create(Registries.ENCHANTMENT,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "wolf_enchantments")
-    );
-    public static final TagKey<Enchantment> CONTINUOUS_DAMAGE = TagKey.create(Registries.ENCHANTMENT,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "continuous_damage")
-    );
-    public static final TagKey<Enchantment> IMPAIRING_DAMAGE = TagKey.create(Registries.ENCHANTMENT,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "impairing_damage")
-    );
+    public static final TagKey<Enchantment> WOLF_ENCHANTMENTS = create("wolf_enchantments");
+    public static final TagKey<Enchantment> CONTINUOUS_DAMAGE = create("continuous_damage");
+    public static final TagKey<Enchantment> IMPAIRING_DAMAGE = create("impairing_damage");
 
+    private static TagKey<Enchantment> create(String name) {
+        return TagKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }
 
 }

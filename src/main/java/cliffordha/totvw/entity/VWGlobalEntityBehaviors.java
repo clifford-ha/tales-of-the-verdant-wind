@@ -7,6 +7,7 @@ import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.tag.VWBiomeTags;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -16,8 +17,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Objects;
@@ -29,8 +32,9 @@ public final class VWGlobalEntityBehaviors {
 
     public static void register() {
         trust();
-        applyVerdanOmen();
+        applyVerdantOmen();
         removeVerdantBlessings();
+        atrocityCounter();
     }
 
     private static void removeVerdantBlessings() {
@@ -49,7 +53,7 @@ public final class VWGlobalEntityBehaviors {
         });
     }
 
-    private static void applyVerdanOmen() {
+    private static void applyVerdantOmen() {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
                 serverLevel.getAllEntities().forEach(entity -> {
@@ -94,6 +98,33 @@ public final class VWGlobalEntityBehaviors {
         });
     }
 
+    private static void atrocityCounter() {
+        ServerLivingEntityEvents.AFTER_DAMAGE.register((victim, damageSource, _, _, _) -> {
+            Entity attacker = damageSource.getEntity();
+            if (!(attacker instanceof Player player)) return;
+            if (!(victim.level() instanceof ServerLevel)) return;
+
+            if (victim instanceof Villager) {
+                int atrocity = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
+                if (atrocity >= 1000) return;
+                player.setAttached(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, atrocity + 3);
+                player.sendSystemMessage(Component.literal("Atrocity: " + player.getAttached(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT)));
+            }
+        });
+        ServerLivingEntityEvents.AFTER_DEATH.register(VWGlobalEntityBehaviors::atrocityExt);
+    }
+    private static void atrocityExt(LivingEntity victim, DamageSource damageSource) {
+        Entity attacker = damageSource.getEntity();
+        if (!(attacker instanceof Player player)) return;
+        if (!(victim.level() instanceof ServerLevel)) return;
+        if (victim instanceof Villager) {
+            int atrocity = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
+            if (atrocity >= 1000) return;
+            player.setAttached(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, atrocity + 12);
+            player.sendSystemMessage(Component.literal("Atrocity: " + player.getAttached(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT)));
+        }
+    }
+
     private static void trust() {
         ServerLivingEntityEvents.AFTER_DAMAGE.register((victim, damageSource, _, _, _) -> {
             Entity attacker = damageSource.getEntity();
@@ -119,12 +150,12 @@ public final class VWGlobalEntityBehaviors {
         });
     }
 
-    private static void processTrust(LivingEntity victim, boolean who, int trustPoints, int config, DamageSource damageSource) {
+    private static void processTrust(LivingEntity victim, boolean attachment, int trustPoints, int config, DamageSource damageSource) {
         Entity attacker = damageSource.getEntity();
         if (attacker == null) return;
         if (!(victim.level() instanceof ServerLevel)) return;
 
-        if (who) {
+        if (attachment) {
             if (trustPoints > 0) {
                 if (config == 0) {
                     attacker.setAttached(VWAttachments.ENTITY_TRUST_POINTS, trustPoints - 1);

@@ -85,7 +85,6 @@
     [
       "minecraft:glow_lichen",
       "tales-of-the-verdant-wind:verdant_pillars",
-      "tales-of-the-verdant-wind:verdant_spruce_bush_tree",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:vines",
@@ -93,6 +92,7 @@
       "tales-of-the-verdant-wind:verdant_fern_patch",
       "tales-of-the-verdant-wind:verdant_torchflower_patch",
       "tales-of-the-verdant-wind:verdant_moss_patch",
+      "tales-of-the-verdant-wind:verdant_moss_patch_high",
       "tales-of-the-verdant-wind:verdant_river_seagrass",
       "tales-of-the-verdant-wind:ancient_verdant_spruce_tree"
     ]
@@ -113,8 +113,8 @@
       {
         "type": "minecraft:wolf",
         "maxCount": 4,
-        "minCount": 2,
-        "weight": 90
+        "minCount": 3,
+        "weight": 20
       },
       {
         "type": "minecraft:sniffer",

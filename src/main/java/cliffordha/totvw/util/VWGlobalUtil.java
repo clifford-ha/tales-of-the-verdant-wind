@@ -13,6 +13,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -41,7 +42,7 @@ public final class VWGlobalUtil {
         return triggerHeal;
     }
     public static void verdantBlessingAfterEffects(ServerLevel level, LivingEntity entity) {
-        if (!TOTVWConfig.get().attachmentSkillCD) return;
+        if (!TOTVWConfig.get().ATTACHMENT_SKILL_CD) return;
         int cooldown = setDifficultyBasedValue(level, min(3), min(9), min(15), min(21));
         if (isHalfHealth(entity)) {
             addHiddenEffect(entity, MobEffects.WEAKNESS, min(1), 0);
@@ -118,8 +119,7 @@ public final class VWGlobalUtil {
         return wolf.getItemBySlot(EquipmentSlot.BODY).getEnchantments()
                 .getLevel(wolf.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment));}
 
-    public static int playerEnchantmentLVL(Wolf wolf, ResourceKey<Enchantment> enchantment) {
-        LivingEntity player = wolf.getOwner();
+    public static int playerEnchantmentLVL(LivingEntity player, ResourceKey<Enchantment> enchantment) {
         if (player == null) return 0;
         return player.getItemBySlot(EquipmentSlot.CHEST).getEnchantments()
                 .getLevel(player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment));

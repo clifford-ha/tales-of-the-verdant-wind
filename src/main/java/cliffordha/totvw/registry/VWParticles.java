@@ -27,7 +27,7 @@ public class VWParticles {
         return Registry.register(BuiltInRegistries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), particleType);
     }
 
-    public static void registerModParticles() {
+    public static void register() {
         sendLog("Particles");
     }
 }

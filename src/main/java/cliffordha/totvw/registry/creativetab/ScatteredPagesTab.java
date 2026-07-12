@@ -16,19 +16,19 @@ public class ScatteredPagesTab extends Item {
     public ScatteredPagesTab(Properties properties) {
         super(properties);
     }
-    /*
 
     public static final ResourceKey<CreativeModeTab> SCATTERED_PAGES_TAB_KEY = ResourceKey.create(
             BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "scattered_pages_tab"));
 
     public static final CreativeModeTab SCATTERED_PAGES_TAB = FabricCreativeModeTab.builder()
-            .icon(() -> new ItemStack(Items.PAPER))
+            .icon(() -> new ItemStack(VWItemsScatteredPage.SCATTERED_PAGE))
             .title(Component.translatable("creativeTab.scatteredPages"))
             .displayItems((params, output) -> {
                 output.accept(VWItemsScatteredPage.SP_ID_1000);
                 output.accept(VWItemsScatteredPage.SP_ID_1001);
                 output.accept(VWItemsScatteredPage.SP_ID_1002);
+                output.accept(VWItemsScatteredPage.SP_ID_1003);
+                output.accept(VWItemsScatteredPage.SP_ID_1004);
+                output.accept(VWItemsScatteredPage.SP_ID_1005);
             }).build();
-
-     */
 }

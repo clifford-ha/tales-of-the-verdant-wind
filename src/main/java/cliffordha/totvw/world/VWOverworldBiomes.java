@@ -24,8 +24,9 @@ public class VWOverworldBiomes {
             MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
             BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-            spawner.addSpawn(MobCategory.CREATURE, 90, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2));
-            spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 3));
+            spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2));
+            spawner.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 3));
+
             BiomeDefaultFeatures.commonSpawns(spawner, 30);
 
             biome.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
@@ -59,7 +60,7 @@ public class VWOverworldBiomes {
 
             return new Biome.BiomeBuilder()
                     .hasPrecipitation(true)
-                    .temperature(0.3F)
+                    .temperature(0.45F)
                     .downfall(0.85F)
 
                     .specialEffects((new BiomeSpecialEffects.Builder()
@@ -82,7 +83,7 @@ public class VWOverworldBiomes {
         MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
         BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-        spawner.addSpawn(MobCategory.CREATURE, 90, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 2, 4));
+        spawner.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 3, 4));
         spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 1));
 
         BiomeDefaultFeatures.commonSpawns(spawner, 30);
@@ -103,13 +104,14 @@ public class VWOverworldBiomes {
         biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, VWPlacedFeatures.VERIXIUM_ORE_BURIED_KEY);
 
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_PILLARS_KEY);
-        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_SPRUCE_BUSH_TREE_KEY);
+
         BiomeDefaultFeatures.addDefaultMushrooms(biome);
         BiomeDefaultFeatures.addJungleVines(biome);
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_GRASS_PATCH_KEY);
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_FERN_PATCH_KEY);
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_TORCHFLOWER_PATCH_KEY);
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_MOSS_PATCH_KEY);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_MOSS_PATCH_HIGH_KEY);
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_RIVER_SEAGRASS_KEY);
 
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.ANCIENT_VERDANT_SPRUCE_TREE_KEY);
@@ -137,5 +139,13 @@ public class VWOverworldBiomes {
                 .setAttribute(EnvironmentAttributes.WATER_FOG_END_DISTANCE, 32f)
                 .setAttribute(EnvironmentAttributes.BACKGROUND_MUSIC, new BackgroundMusic(SoundEvents.MUSIC_BIOME_FOREST))
                 .build();
+    }
+
+
+    private static void addVerdantDefaults(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
+        MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
+
+
     }
 }

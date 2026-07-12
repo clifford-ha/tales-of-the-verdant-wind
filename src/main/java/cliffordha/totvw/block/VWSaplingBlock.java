@@ -15,6 +15,6 @@ public class VWSaplingBlock extends SaplingBlock {
 
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.is(BlockTags.DIRT);
+        return state.is(BlockTags.GRASS_BLOCKS);
     }
 }

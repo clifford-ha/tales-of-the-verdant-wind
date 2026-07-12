@@ -32,7 +32,7 @@ public class VWEffects {
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), effect);
     }
 
-    public static void registerModEffects() {
+    public static void register() {
         sendLog("Effects");
     }
 }

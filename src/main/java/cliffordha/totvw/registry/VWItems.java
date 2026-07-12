@@ -2,7 +2,7 @@ package cliffordha.totvw.registry;
 
 import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import cliffordha.totvw.registry.creativetab.ScatteredPagesTab;
-import cliffordha.totvw.registry.creativetab.VerdantItemsTab;
+import cliffordha.totvw.registry.creativetab.TOTVWItemsTab;
 import cliffordha.totvw.item.VWItemBlessingsInstance;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.item.VWArmorMaterials;
@@ -268,11 +268,12 @@ public class VWItems {
             ));
 
 
-    public static void registerModItems() {
-        //Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ScatteredPagesTab.SCATTERED_PAGES_TAB_KEY, ScatteredPagesTab.SCATTERED_PAGES_TAB);
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VerdantItemsTab.VERDANT_ITEMS_TAB_KEY, VerdantItemsTab.VERDANT_ITEMS_TAB);
+    public static void register() {
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TOTVWItemsTab.TOTVW_ITEMS_TAB_KEY, TOTVWItemsTab.TOTVW_ITEMS_TAB);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ScatteredPagesTab.SCATTERED_PAGES_TAB_KEY, ScatteredPagesTab.SCATTERED_PAGES_TAB);
 
         VWItemsScatteredPage.registerAdditionalItems();
+
         sendLog("Items");
     }
 }

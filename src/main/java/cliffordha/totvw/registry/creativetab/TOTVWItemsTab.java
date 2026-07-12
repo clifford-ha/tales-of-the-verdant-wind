@@ -13,16 +13,16 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class VerdantItemsTab extends Item {
-    public VerdantItemsTab(Properties properties) {
+public class TOTVWItemsTab extends Item {
+    public TOTVWItemsTab(Properties properties) {
         super(properties);
     }
 
-    public static final ResourceKey<CreativeModeTab> VERDANT_ITEMS_TAB_KEY = ResourceKey.create(
+    public static final ResourceKey<CreativeModeTab> TOTVW_ITEMS_TAB_KEY = ResourceKey.create(
             BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_items_tab"));
 
-    public static final CreativeModeTab VERDANT_ITEMS_TAB = FabricCreativeModeTab.builder()
-            .icon(() -> new ItemStack(VWItems.VERIXIUM_INGOT))
+    public static final CreativeModeTab TOTVW_ITEMS_TAB = FabricCreativeModeTab.builder()
+            .icon(() -> new ItemStack(VWItems.VERIXIUM_CHUNK))
             .title(Component.translatable("creativeTab.verdantItems"))
             .displayItems((params, output) -> {
                 output.accept(VWBlocks.VERIXIUM_STONE_ORE);

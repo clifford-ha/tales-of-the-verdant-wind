@@ -10,6 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.NonNull;
@@ -160,13 +161,11 @@ public class VWBlockTags extends FabricTagsProvider.BlockTagsProvider {
         valueLookupBuilder(BlockTags.LOGS_THAT_BURN)
                 .addTag(VWBlockTags.VERDANT_SPRUCE_LOGS);
     }
-    public static final TagKey<Block> VERDANT_BLOCKS = TagKey.create(Registries.BLOCK,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_blocks")
-    );
-    public static final TagKey<Block> VERDANT_SPRUCE_LOGS = TagKey.create(Registries.BLOCK,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce_logs")
-    );
-    public static final TagKey<Block> VERDANT_MOSS_REPLACEABLE = TagKey.create(Registries.BLOCK,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_moss_replaceable")
-    );
+
+    public static final TagKey<Block> VERDANT_BLOCKS = create("verdant_blocks");
+    public static final TagKey<Block> VERDANT_SPRUCE_LOGS = create("verdant_spruce_logs");
+    public static final TagKey<Block> VERDANT_MOSS_REPLACEABLE = create("verdant_moss_replaceable");
+
+    private static TagKey<Block> create(String name) {
+        return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }
 }

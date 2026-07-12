@@ -2,8 +2,6 @@ package cliffordha.totvw.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.shedaniel.cloth.clothconfig.shadowed.com.moandjiezana.toml.Toml;
-import me.shedaniel.cloth.clothconfig.shadowed.com.moandjiezana.toml.TomlWriter;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
@@ -17,17 +15,18 @@ public class TOTVWConfig {
     private static TOTVWConfig INSTANCE = new TOTVWConfig();
 
 
-    public boolean useNewLanguageSet = false;
-    public int maxWolfPlayerDistance = 16;
-    public boolean wolfArmorDamageDistribution = true;
-    public int lowHealthThreshold = 30;
-    public boolean useNotifiers = true;
-    public boolean attachmentSkillCD = true;
-    public boolean otherAttachmentCD = true;
-    public boolean newSounds = true;
-    public boolean bloodlustScreenOverlay = false;
+    public boolean ENABLE_NEW_LANGUAGE_SET = false;
+    public boolean BLOODLUST_SCREEN_OVERLAY = false;
 
-    public boolean sendLog = false;
+    public int MAX_WOLF_PLAYER_SCAN_DISTANCE = 16;
+    public boolean WOLF_ARMOR_DMG_DISTRIBUTION = true;
+    public int LOW_HEALTH_THRESHOLD = 30;
+    public boolean ENABLE_NOTIFIERS = true;
+    public boolean ATTACHMENT_SKILL_CD = true;
+    public boolean OTHER_ATTACHMENT_CD = true;
+    public boolean ENABLE_NEW_SOUNDS = true;
+
+    public boolean DEBUG_PRINT_LOGS = false;
 
 
     public static TOTVWConfig get() {

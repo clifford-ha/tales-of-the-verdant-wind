@@ -93,7 +93,7 @@ public final class VWItemBlessingTooltip {
         String LORE_verixiumIngot;
 
 
-        if (!TOTVWConfig.get().useNewLanguageSet) {
+        if (!TOTVWConfig.get().ENABLE_NEW_LANGUAGE_SET) {
             LORE_verixiumChunk = "\"For the land that they call 'home' and for the people they protect.\"";
             LORE_condensedVerixium0 = "\"For the land that they call 'home' and for the people they protect.";
             LORE_condensedVerixium1 = "O God of the Verdant Winds...\"";

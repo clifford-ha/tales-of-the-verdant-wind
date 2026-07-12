@@ -56,7 +56,7 @@ public class VWPlacedFeatures {
 
         context.register(VERIXIUM_ORE_LARGE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERIXIUM_ORE_LARGE_CONFIGURED_KEY),
                 List.of(
-                        CountPlacement.of(2),
+                        RarityFilter.onAverageOnceEvery(33),
                         InSquarePlacement.spread(),
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(64)),
                         BiomeFilter.biome()
@@ -139,9 +139,9 @@ public class VWPlacedFeatures {
         );
         context.register(VERDANT_HOLLOWS_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_HOLLOWS_CONFIGURED_KEY),
                 List.of(
-                        RarityFilter.onAverageOnceEvery(32),
+                        RarityFilter.onAverageOnceEvery(48),
                         InSquarePlacement.spread(),
-                        HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(256)),
+                        HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(48)),
                         BlockPredicateFilter.forPredicate(BlockPredicate.anyOf(
                                 BlockPredicate.matchesTag(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
                                 BlockPredicate.matchesTag(BlockTags.STONE_ORE_REPLACEABLES))),

@@ -12,12 +12,12 @@ public final class SkillUtil {
     private SkillUtil() {}
 
     public static void startCooldown(Wolf wolf, WolfSkillDefinition skill, int duration) {
-        if (!TOTVWConfig.get().attachmentSkillCD) return;
+        if (!TOTVWConfig.get().ATTACHMENT_SKILL_CD) return;
         wolf.setAttached(skill.cooldown(), duration);
         wolf.setAttached(skill.notifier(), 1);
     }
     public static void startCooldown(Player player, PlayerSkillDefinition skill, int duration) {
-        if (!TOTVWConfig.get().attachmentSkillCD) return;
+        if (!TOTVWConfig.get().ATTACHMENT_SKILL_CD) return;
         player.setAttached(skill.cooldown(), duration);
         player.setAttached(skill.notifier(), 1);
     }
@@ -29,7 +29,7 @@ public final class SkillUtil {
 
         if (cooldown <= 0 && notify == 1) {
             wolf.setAttached(skill.notifier(), 0);
-            if (!TOTVWConfig.get().useNotifiers) return;
+            if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
             notifyFromWolf(wolf, skill.notifierColor(), true, name(wolf) + skill.skillName() + " is ready!");
         }
     }
@@ -39,7 +39,7 @@ public final class SkillUtil {
 
         if (cooldown <= 0 && notify == 1) {
             player.setAttached(skill.notifier(), 0);
-            if (!TOTVWConfig.get().useNotifiers) return;
+            if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
             notifyFromPlayer(player, skill.notifierColor(), true, name(player) + skill.skillName() + " is ready!");
         }
     }

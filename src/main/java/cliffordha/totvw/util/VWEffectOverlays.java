@@ -30,7 +30,7 @@ public final class VWEffectOverlays {
     }
 
     private static void bloodlustEffect(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-        if (!TOTVWConfig.get().bloodlustScreenOverlay) return;
+        if (!TOTVWConfig.get().BLOODLUST_SCREEN_OVERLAY) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
         if (mc.player.isCreative()) return;

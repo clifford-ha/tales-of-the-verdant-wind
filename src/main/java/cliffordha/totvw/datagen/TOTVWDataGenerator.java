@@ -1,5 +1,6 @@
 package cliffordha.totvw.datagen;
 
+import cliffordha.totvw.entity.variants.VWWolfVariants;
 import cliffordha.totvw.loot.VWBlockLootTableProvider;
 import cliffordha.totvw.tag.*;
 import cliffordha.totvw.registry.VWEnchantments;
@@ -27,7 +28,6 @@ public class TOTVWDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(VWRegistryProvider::new);
 		pack.addProvider(VWBlockLootTableProvider::new);
 		pack.addProvider(VWRecipeProvider::new);
-		pack.addProvider(VWDyeSynthesizerRecipeProvider::new);
 		pack.addProvider(VWAdvancements::new);
 
 	}
@@ -38,5 +38,6 @@ public class TOTVWDataGenerator implements DataGeneratorEntrypoint {
 		registryBuilder.add(Registries.BIOME, VWBiomes::bootstrap);
 		registryBuilder.add(Registries.ENCHANTMENT, VWEnchantments::bootstrap);
 		registryBuilder.add(Registries.DAMAGE_TYPE, VWDamageTypes::bootstrap);
+		registryBuilder.add(Registries.WOLF_VARIANT, VWWolfVariants::bootstrap);
 	}
 }

@@ -4,15 +4,10 @@ import cliffordha.totvw.TOTVW;
 
 import cliffordha.totvw.config.TOTVWConfig;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.function.Supplier;
@@ -95,7 +90,7 @@ public interface WolfCondition {
     }
 
     static WolfCondition newSoundsEnable() {
-        return (wolf, level) -> TOTVWConfig.get().newSounds;
+        return (wolf, level) -> TOTVWConfig.get().ENABLE_NEW_SOUNDS;
     }
 
 

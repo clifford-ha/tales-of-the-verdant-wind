@@ -269,7 +269,7 @@ public class VWEnchantments {
         return ResourceKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name));
     }
 
-    public static void registerModEnchantments() {
+    public static void register() {
         TOTVW.sendLog("Enchantments");
     }
 }

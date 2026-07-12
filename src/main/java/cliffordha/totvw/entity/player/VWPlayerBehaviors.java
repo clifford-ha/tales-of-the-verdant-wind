@@ -1,7 +1,6 @@
 package cliffordha.totvw.entity.player;
 
 import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.util.VWGlobalUtil;
 import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.entity.skill.PlayerSkillDefinition;
 import cliffordha.totvw.entity.skill.SkillUtil;
@@ -14,8 +13,6 @@ import cliffordha.totvw.tag.VWItemTags;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BiomeTags;
@@ -27,7 +24,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.ArrayList;
@@ -72,8 +68,8 @@ public class VWPlayerBehaviors {
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(0, 1),
                 (player, _) -> {
-                    if (TOTVWConfig.get().sendLog) { VWSkillProcessor.setPlayerConfiguration(player, 0); }
-                    if (TOTVWConfig.get().attachmentSkillCD) {
+                    if (TOTVWConfig.get().DEBUG_PRINT_LOGS) { VWSkillProcessor.setPlayerConfiguration(player, 0); }
+                    if (TOTVWConfig.get().ATTACHMENT_SKILL_CD) {
                         VWSkillProcessor.depleteCooldown(player, VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND);
                         VWSkillProcessor.depleteCooldown(player, VWAttachments.ENTITY_TRUST_COOLDOWN);
                     } else {
@@ -94,8 +90,8 @@ public class VWPlayerBehaviors {
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (playerEnchantmentLVL(player, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) <= 0) return;
 
-        double distance = TOTVWConfig.get().maxWolfPlayerDistance;
-        float health = TOTVWConfig.get().lowHealthThreshold * 0.01f;
+        double distance = TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE;
+        float health = TOTVWConfig.get().LOW_HEALTH_THRESHOLD * 0.01f;
 
         List<Wolf> wolves = serverLevel.getEntities(
                 EntityType.WOLF,
@@ -108,7 +104,6 @@ public class VWPlayerBehaviors {
 
         for (Wolf wolf : wolves) {
             if (!wolf.isAlive()) return;
-            int wolfBenedictionEnchantment = VWGlobalUtil.wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
             int wolfBenediction = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
             if (wolfBenediction > 0) return;
 
@@ -119,18 +114,18 @@ public class VWPlayerBehaviors {
                 triggerHeal = 999.0f;
             }
 
-            addEffect(wolf, VWEffects.BLESSING_OF_THE_VERDANT_WIND, sec(30), 2);
-            if (wolfBenedictionEnchantment > 0) {
+            rewriteEffect(wolf, MobEffects.RESISTANCE, sec(6), 254);
+            rewriteEffect(wolf, VWEffects.BLESSING_OF_THE_VERDANT_WIND, sec(30), 2);
+            if (wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0) {
                 removeEffect(wolf, MobEffects.POISON);
                 removeEffect(wolf, MobEffects.WITHER);
             }
-            rewriteEffect(wolf, MobEffects.RESISTANCE, sec(10), 254);
-
-            notifyFromPlayer(player, VWColors.VERDANT_WIND, true, "Granted §nVerdant Wind's Blessing§r to " + wolfName(wolf));
             wolf.heal(triggerHeal);
+            notifyFromPlayer(player, VWColors.VERDANT_WIND, true, "Granted §nVerdant Wind's Blessing§r to " + wolfName(wolf));
+
+            VWParticleEffects.triggerBenedictionParticles(player, 1);
+            verdantBlessingAfterEffects(level, player);
         }
-        VWParticleEffects.triggerBenedictionParticles(player, 1);
-        verdantBlessingAfterEffects(level, player);
     }
 
     private static void runEnchantmentsOnDamage(Player player, ServerLevel level) {
@@ -147,8 +142,8 @@ public class VWPlayerBehaviors {
             victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, sec(3), 0));
         }
 
-        if (FIRE_PROTECTION > 0 && inNether) {
-            victim.hurtServer(level, level.damageSources().thorns(player), 1.0f + FIRE_PROTECTION);
+        if (FIRE_PROTECTION > 2 && inNether && !victim.fireImmune()) {
+            victim.hurtServer(level, level.damageSources().onFire(), 1.0f + FIRE_PROTECTION);
         }
     }
 
@@ -165,13 +160,6 @@ public class VWPlayerBehaviors {
             wolfName = "Wolf";
         } else {wolfName = "§d" + wolf.getName().getString() + "§r";}
         return wolfName;
-    }
-
-    private static int playerEnchantmentLVL(Player player, ResourceKey<Enchantment> enchantment) {
-        if (player == null) return 0;
-        return player.getItemBySlot(EquipmentSlot.CHEST).getEnchantments()
-                .getLevel(player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
-                        .getOrThrow(enchantment));
     }
 
     private static void wireItemUseEvent() {

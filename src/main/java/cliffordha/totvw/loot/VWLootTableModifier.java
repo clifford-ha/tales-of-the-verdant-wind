@@ -15,6 +15,7 @@ import net.minecraft.world.level.storage.loot.functions.SetEnchantmentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 public class VWLootTableModifier {
     public static void modifyLootTables(ResourceKey<LootTable> key, FabricLootTableBuilder builder, LootTableSource source, HolderLookup.Provider provider) {
@@ -31,34 +32,34 @@ public class VWLootTableModifier {
         if(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
-                    .when(LootItemRandomChanceCondition.randomChance(0.33f))
+                    .when(LootItemRandomChanceCondition.randomChance(0.1f))
                     .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK).apply(new SetEnchantmentsFunction.Builder()
-                            .withEnchantment(provider.getOrThrow(VWEnchantments.WOLF_EFFECT_WITHERING), ConstantValue.exactly(5))))
+                            .withEnchantment(provider.getOrThrow(VWEnchantments.WOLF_EFFECT_WITHERING), UniformGenerator.between(1, 3))))
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
             builder.pool(poolBuilder.build());
         }
         if(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
-                    .when(LootItemRandomChanceCondition.randomChance(0.33f))
+                    .when(LootItemRandomChanceCondition.randomChance(0.1f))
                     .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK).apply(new SetEnchantmentsFunction.Builder()
-                            .withEnchantment(provider.getOrThrow(VWEnchantments.WOLF_EFFECT_POISONING), ConstantValue.exactly(5))))
+                            .withEnchantment(provider.getOrThrow(VWEnchantments.WOLF_EFFECT_POISONING), UniformGenerator.between(3, 5))))
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
             builder.pool(poolBuilder.build());
         }
         if(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
-                    .when(LootItemRandomChanceCondition.randomChance(0.33f))
+                    .when(LootItemRandomChanceCondition.randomChance(0.1f))
                     .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK).apply(new SetEnchantmentsFunction.Builder()
-                            .withEnchantment(provider.getOrThrow(VWEnchantments.WOLF_EFFECT_MIGHT), ConstantValue.exactly(5))))
+                            .withEnchantment(provider.getOrThrow(VWEnchantments.WOLF_EFFECT_MIGHT), UniformGenerator.between(3, 5))))
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
             builder.pool(poolBuilder.build());
         }
         if(BuiltInLootTables.BURIED_TREASURE.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
-                    .when(LootItemRandomChanceCondition.randomChance(0.14f))
+                    .when(LootItemRandomChanceCondition.randomChance(0.03f))
                     .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK).apply(new SetEnchantmentsFunction.Builder()
                             .withEnchantment(provider.getOrThrow(VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS), ConstantValue.exactly(1))))
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
@@ -67,7 +68,7 @@ public class VWLootTableModifier {
         if(BuiltInLootTables.BABY_VILLAGER_GIFT.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
-                    .when(LootItemRandomChanceCondition.randomChance(0.80f))
+                    .when(LootItemRandomChanceCondition.randomChance(0.33f))
                     .add(LootItem.lootTableItem(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE).apply(new SetEnchantmentsFunction.Builder()))
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
             builder.pool(poolBuilder.build());

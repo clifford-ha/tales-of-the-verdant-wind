@@ -83,9 +83,19 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(VWItems.VERIXIUM_HORSE_ARMOR, "Verixium Horse Armor");
 
 
+
+        text.add(VWItemsScatteredPage.PLAYER_STATS, "Player Stats");
+        text.add(VWItemsScatteredPage.SCATTERED_PAGE, "Scattered Page");
+        text.add(VWItemsScatteredPage.SP_ID_TEST, "Test Page");
         text.add(VWItemsScatteredPage.SP_ID_1000, SP_1000.getTitle());
+
         text.add(VWItemsScatteredPage.SP_ID_1001, SP_1001.getTitle());
         text.add(VWItemsScatteredPage.SP_ID_1002, SP_1002.getTitle());
+        text.add(VWItemsScatteredPage.SP_ID_1003, SP_1003.getTitle());
+        text.add(VWItemsScatteredPage.SP_ID_1004, SP_1004.getTitle());
+
+        text.add(VWItemsScatteredPage.SP_ID_1005, SP_1005.getTitle());
+
 
 
         text.addEnchantment(VWEnchantments.WOLF_EFFECT_IGNITION, "Wolf ATK Effect: §vIgnition");
@@ -127,6 +137,9 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add("death.attack.bloodlust", "%1$s died from the agonizing effects of §cBloodlust§r");
         text.add("death.attack.bloodlust.player", "%1$s died from the agonizing effects of §cBloodlust§r while fighting %1$s");
 
+        text.add("death.attack.bleeding", "%1$s bled to death");
+        text.add("death.attack.bleeding.player", "%1$s bled to death while fighting %1$s");
+
 
         text.add(VWItems.VERIXIUM_SPEAR, "Verixium Spear");
         text.add(VWItems.VERIXIUM_SWORD, "Verixium Sword");
@@ -151,7 +164,7 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
 
         text.add(TOTVW.MOD_ID, "Tales of the Verdant Wind");
-        text.add("creativeTab.verdantItems", "Verdant Items");
+        text.add("creativeTab.verdantItems", "Tales of the Verdant Wind");
         text.add("creativeTab.scatteredPages", "Scattered Pages");
     }
 }

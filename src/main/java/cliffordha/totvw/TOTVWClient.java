@@ -26,6 +26,8 @@ import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 
 import java.util.List;
 
@@ -71,6 +73,7 @@ public class TOTVWClient implements ClientModInitializer {
         EntityRenderers.register(VWEntities.VERDANT_SPRUCE_CHEST_BOAT, context -> new BoatRenderer(context, VWModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT));
         ModelLayerRegistry.registerModelLayer(VWModelLayerProvider.VERDANT_SPRUCE_BOAT, BoatModel::createBoatModel);
         ModelLayerRegistry.registerModelLayer(VWModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT, BoatModel::createChestBoatModel);
+
 
         BlockEntityRenderers.register(VWBlockEntityTypes.SIGN, StandingSignRenderer::new);
         BlockEntityRenderers.register(VWBlockEntityTypes.HANGING_SIGN, HangingSignRenderer::new);

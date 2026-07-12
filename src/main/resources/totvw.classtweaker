@@ -11,4 +11,7 @@ accessible method net/minecraft/world/level/levelgen/structure/pools/SinglePoolE
 
 
 
+accessible method net/minecraft/world/entity/animal/wolf/Wolf setVariant (Lnet/minecraft/core/Holder;)V
+
+
 

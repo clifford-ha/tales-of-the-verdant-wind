@@ -2,6 +2,7 @@ package cliffordha.totvw.entity.wolf;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.util.VWGlobalUtil;
 import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.entity.skill.WolfSkillDefinition;
@@ -23,7 +24,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -70,8 +70,8 @@ public class VWWolfBehaviors {
         ));
         TICK_RULES.add(WolfBehaviorRule.forTamed(
                 WolfCondition.companionIsCritical(
-                        () -> TOTVWConfig.get().lowHealthThreshold * 0.01f,
-                        () -> TOTVWConfig.get().maxWolfPlayerDistance)
+                        () -> TOTVWConfig.get().LOW_HEALTH_THRESHOLD * 0.01f,
+                        () -> TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE)
                         .and(WolfCondition.hasBodyArmor())
                         .and(WolfCondition.checkNoAttached(VWAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND)),
                 VWWolfBehaviors::runPlayerBlessing
@@ -104,14 +104,13 @@ public class VWWolfBehaviors {
         ));
         ON_DAMAGE_RULES.add(WolfBehaviorRule.forAny(
                 WolfCondition.alwaysTrue(),
-                (wolf, level) -> {
+                (wolf, _) -> {
                     var victim = CURRENT_VICTIM.get();
                     if (victim == null) return;
                     if (wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0) == 1) {
                         int points = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_TRY_SAVE_POINTS, 0);
                         wolf.setAttached(VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 2);
                         victim.setAttached(VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 2);
-                        if (victim.getHealth() <= victim.getMaxHealth() * 0.8f) {}
                         wolf.setAttached(VWAttachments.Wolf.WOLF_TRY_SAVE_POINTS, points + 1);
                     }
                 }
@@ -144,12 +143,12 @@ public class VWWolfBehaviors {
                 (wolf, _) -> wolf.unRide()
         ));
         TICK_RULES.add(WolfBehaviorRule.forAny(WolfCondition.tick(0, 1), (wolf, _) -> {
-            if (TOTVWConfig.get().sendLog) {
+            if (TOTVWConfig.get().DEBUG_PRINT_LOGS) {
                 VWSkillProcessor.setWolfConfiguration(wolf, 0);}
-            if (TOTVWConfig.get().otherAttachmentCD) {
+            if (TOTVWConfig.get().OTHER_ATTACHMENT_CD) {
                 VWSkillProcessor.depleteCooldown(wolf,  VWAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY);
             }
-            if (TOTVWConfig.get().attachmentSkillCD) {
+            if (TOTVWConfig.get().ATTACHMENT_SKILL_CD) {
                 VWSkillProcessor.depleteCooldown(wolf, VWAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND);
                 VWSkillProcessor.depleteCooldown(wolf, VWAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE);
                 VWSkillProcessor.depleteCooldown(wolf, VWAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE);
@@ -186,18 +185,17 @@ public class VWWolfBehaviors {
         wolf.setAttached(VWAttachments.Wolf.WOLF_NOTIFY_AIR_SUPPLY, 1);
     }
     private static void runPlayerBlessing(Wolf wolf, ServerLevel level) {
+        if (wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) == 0) return;
         LivingEntity player = wolf.getOwner();
         if (player == null) return;
-        if (wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) == 0) return;
         
-        rewriteEffect(player, MobEffects.RESISTANCE, sec(10), 254);
-        if (playerEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0) {
+        rewriteEffect(player, MobEffects.RESISTANCE, sec(6), 254);
+        rewriteEffect(player, VWEffects.BLESSING_OF_THE_VERDANT_WIND, sec(30), 2);
+        if (playerEnchantmentLVL(player, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0) {
             removeEffect(player, MobEffects.POISON);
-            removeEffect(player, MobEffects.WITHER);}
-        
+            removeEffect(player, MobEffects.WITHER);
+        }
         player.heal(triggerHeal(wolf, player));
-        player.addEffect(new MobEffectInstance(VWEffects.BLESSING_OF_THE_VERDANT_WIND, sec(30), 2));
-
         notifyFromWolf(wolf, VWColors.VERDANT_WIND, true, "Granted §nVerdant Wind's Blessing§r to " + playerName(wolf));
 
         VWParticleEffects.triggerBenedictionParticles(wolf, 1);
@@ -219,14 +217,16 @@ public class VWWolfBehaviors {
         int ACTIVE_MIGHT = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_MIGHT);
         int ACTIVE_GNAWING = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_GNAWING);
 
+        int ACTIVE_BENEDICTION = wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
+
         int ACTIVE_PROTECTION = wolfEnchantmentLVL(wolf, Enchantments.PROTECTION);
         int ACTIVE_FIRE_PROTECTION = wolfEnchantmentLVL(wolf, Enchantments.FIRE_PROTECTION);
         int ACTIVE_BLAST_PROTECTION = wolfEnchantmentLVL(wolf, Enchantments.BLAST_PROTECTION);
 
-        boolean inNether = level.getBiome(wolf.blockPosition()).is(BiomeTags.IS_NETHER);
+        boolean IN_NETHER = level.getBiome(wolf.blockPosition()).is(BiomeTags.IS_NETHER);
 
-        int getParalyzeCD = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE, 0);
-        int getRuptureCD = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE, 0);
+        int CD_PARALYZE = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE, 0);
+        int CD_RUPTURE = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE, 0);
 
         if (ACTIVE_IGNITION > 0) {
             int burnTime = ACTIVE_IGNITION * 3;
@@ -234,7 +234,7 @@ public class VWWolfBehaviors {
             victim.igniteForSeconds(burnTime);
             if (victim.fireImmune()) {
                 victim.hurtServer(level, level.damageSources().magic(), ACTIVE_IGNITION * 2);
-                if (inNether) {
+                if (IN_NETHER) {
                     victim.hurtServer(level, level.damageSources().magic(), ACTIVE_IGNITION);
                 }
             }
@@ -272,7 +272,7 @@ public class VWWolfBehaviors {
                 removeEffect(victim, MobEffects.RESISTANCE);
                 removeEffect(victim, MobEffects.REGENERATION);
             }
-            if ((victim.getMaxHealth() > 20.0) && getParalyzeCD <= 0) {
+            if ((victim.getMaxHealth() > 40.0) && CD_PARALYZE <= 0) {
                 addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
 
                 notifyFromWolf(wolf, VWColors.MIGHT_EFFECT, wolfName(wolf) + " | " + victim.getName().getString() + " has been paralyzed for " + (paralyzeTime / sec(1)) + " seconds.");
@@ -296,18 +296,25 @@ public class VWWolfBehaviors {
         }
 
         if (ACTIVE_MIGHT > 0) {
+            DamageSource bleed = VWDamageTypes.create(level, VWDamageTypes.BLEEDING);
             addEffect(wolf, VWEffects.AMPLIFIED_MIGHT, ACTIVE_MIGHT * sec(3), Math.min(ACTIVE_MIGHT, 2));
             addEffect(wolf, MobEffects.ABSORPTION, ACTIVE_MIGHT * sec(3), Math.min(ACTIVE_MIGHT, 2));
-            wolf.stabAttack(EquipmentSlot.BODY, victim, ACTIVE_MIGHT, true, true, true);
+            victim.hurtServer(level, bleed, wolf.getMaxHealth() * 0.10f);
             if (ACTIVE_MIGHT >= 3) {
                 removeEffect(victim, MobEffects.STRENGTH);
 
-                if (victimHealth <= victimMaxHealth * 0.5f && getRuptureCD <= 0) {
-                    if (player != null && wolf.distanceTo(player) < 4) {
-                        addHiddenEffect(victim, MobEffects.INSTANT_DAMAGE, 1, 0);
+                if (victimHealth <= victimMaxHealth * 0.5f && CD_RUPTURE <= 0) {
+                    float finalDMG;
+                    if (player != null) {
+                        if (wolf.distanceTo(player) < 4) {
+                            finalDMG = wolf.getMaxHealth() * 0.5f;
+                        } else {
+                            finalDMG = wolf.getMaxHealth() * 0.75f;
+                        }
                     } else {
-                        addHiddenEffect(victim, MobEffects.INSTANT_DAMAGE, 1, 1);
+                        finalDMG = wolf.getMaxHealth() * 1.8f;
                     }
+                    victim.hurtServer(level, bleed, finalDMG);
                     SkillUtil.startCooldown(wolf, RUPTURE,
                             setDifficultyBasedValue(level, sec(7), sec(14), sec(21), sec(28)));
                 }
@@ -331,9 +338,15 @@ public class VWWolfBehaviors {
                 player.heal(1.0f);
             }
         }
+
+        if (IN_NETHER && ACTIVE_FIRE_PROTECTION > 0 && ACTIVE_BENEDICTION > 0 && !victim.fireImmune()) {
+            float dmg = ACTIVE_IGNITION > 0 ? (ACTIVE_FIRE_PROTECTION * 2) + ACTIVE_IGNITION : ACTIVE_FIRE_PROTECTION * 2;
+            victim.hurtServer(level, level.damageSources().onFire(), dmg);
+        }
     }
     private static void runEnchantmentsOnTick(Wolf wolf, ServerLevel level) {
         LivingEntity player = wolf.getOwner();
+        boolean WITH_PLAYER_STATS = player != null;
 
         int ACTIVE_BENEDICTION = wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
         int ACTIVE_IGNITION = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_IGNITION);
@@ -341,10 +354,9 @@ public class VWWolfBehaviors {
 
         boolean bothInNether = player != null && level.getBiome(player.blockPosition()).is(BiomeTags.IS_NETHER) || level.getBiome(wolf.blockPosition()).is(BiomeTags.IS_NETHER);
 
-        if (ACTIVE_IGNITION > 0) {
-            if (bothInNether && ACTIVE_BENEDICTION > 0 && ACTIVE_IGNITION >= 3 && ACTIVE_FIRE_PROTECTION >= 4) {
+        if (WITH_PLAYER_STATS) {
+            if (bothInNether && ACTIVE_BENEDICTION > 0 && ACTIVE_IGNITION > 0 && ACTIVE_FIRE_PROTECTION >= 3) {
                 addHiddenEffect(wolf, MobEffects.FIRE_RESISTANCE, sec(3), 4);
-                if (player == null) return;
                 addHiddenEffect(player, MobEffects.FIRE_RESISTANCE, sec(3), 4);
             }
         }

@@ -20,6 +20,8 @@ public class VWAttachments {
     public static class Player {
         public static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_cd_blessing_of_the_verdant_wind");
         public static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_notify_blessing_of_the_verdant_wind");
+        public static final AttachmentType<Integer> PLAYER_VILLAGER_ATROCITY_COUNT = registerInt("player_villager_atrocity_count");
+        public static final AttachmentType<Integer> PLAYER_WOLF_ATROCITY_COUNT = registerInt("player_wolf_atrocity_count");
     }
     public static class Wolf {
         public static final AttachmentType<Boolean> WOLF_IS_VERDANT_TYPE = registerBool("wolf_is_verdant_type");
@@ -61,6 +63,12 @@ public class VWAttachments {
                 builder -> builder.persistent(Codec.INT).initializer(() -> 0)
         );
     }
+    private static AttachmentType<Long> registerLong(String name) {
+        return AttachmentRegistry.create(
+                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
+                builder -> builder.persistent(Codec.LONG).initializer(() -> 0L)
+        );
+    }
     private static AttachmentType<Boolean> registerBool(String name) {
         return AttachmentRegistry.create(
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
@@ -74,7 +82,7 @@ public class VWAttachments {
         );
     }
 
-    public static void registerModAttachments() {
+    public static void register() {
         AttachmentType<?>[] globalAttachments = {
                 ENTITY_INTERACTION_DATA,
                 ENTITY_TRUST_POINTS,

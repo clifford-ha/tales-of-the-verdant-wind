@@ -4,13 +4,20 @@ import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWBiomeTags;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerData;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -27,12 +34,20 @@ import java.util.function.Predicate;
 @Mixin(Villager.class)
 public class VillagerEntityMixin {
 
-    @Inject(method = "finalizeSpawn", at = @At("HEAD"))
+    @Inject(method = "finalizeSpawn", at = @At("TAIL"))
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Villager villager = (Villager) (Object) this;
         boolean inVerdant = level.getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
-        if (!inVerdant) return;
-        villager.setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
+
+        VillagerData data = villager.getVillagerData();
+        Holder<VillagerType> taiga = level.registryAccess()
+                .lookupOrThrow(Registries.VILLAGER_TYPE)
+                .getOrThrow(VillagerType.TAIGA);
+
+        if (inVerdant) {
+            villager.setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
+            villager.setVillagerData(new VillagerData(taiga, data.profession(), data.level()));
+        }
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
@@ -140,9 +155,21 @@ public class VillagerEntityMixin {
         }
     }
 
+    @Inject(method = "mobInteract", at = @At("HEAD"))
+    private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+        Villager villager = (Villager) (Object) this;
+        int playerAtrocity = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
+        float def = 1.0f;
+        if (playerAtrocity > 15) {
+            villager.playSound(SoundEvents.VILLAGER_NO, def, def);
+            player.sendSystemMessage(Component.literal("Your atrocity level [" + playerAtrocity + "] is too high!"));
+            cir.setReturnValue(InteractionResult.FAIL);
+        }
+    }
+
     @Unique
     private static void depleteCD(Villager villager, AttachmentType<Integer> cooldown) {
-        if (TOTVWConfig.get().otherAttachmentCD) {
+        if (TOTVWConfig.get().OTHER_ATTACHMENT_CD) {
             int attachment = villager.getAttachedOrElse(cooldown, 0);
             if (attachment <= 0) return;
             villager.setAttached(cooldown, attachment - 1);
@@ -159,6 +186,7 @@ public class VillagerEntityMixin {
         VWParticleEffects.spawnBlessingParticlesEntity(entity, 4);
     }
 
+    @Unique
     private static int getVillagerCount(Villager villager) {
         List<Villager> aliveVillagerList = villager.level().getEntities(
                 EntityType.VILLAGER,

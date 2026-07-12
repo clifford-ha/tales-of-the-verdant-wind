@@ -95,7 +95,7 @@ public class BloodlustEffect extends MobEffect {
 
     @Override
     public boolean isBeneficial() {
-        return super.isBeneficial();
+        return false;
     }
 
     @Override

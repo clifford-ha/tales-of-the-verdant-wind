@@ -21,7 +21,7 @@ public class VWSounds {
         return Registry.register(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));
     }
 
-    public static void registerModSounds() {
+    public static void register() {
         TOTVW.sendLog("Sounds");
     }
 }

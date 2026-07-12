@@ -1,22 +1,28 @@
 package cliffordha.totvw.datagen;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import cliffordha.totvw.tag.VWItemTags;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger.TriggerInstance.Slots;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.world.level.ItemLike;
 
 import static net.minecraft.data.recipes.SingleItemRecipeBuilder.stonecutting;
 
@@ -245,12 +251,64 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .define('C', Items.CHEST)
                         .unlockedBy(getHasName(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS), has(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
                         .save(output);
+
+
+
+
+                // Request by DustyWoofi
+                shaped(RecipeCategory.MISC, VWBlocks.IRIDESCENT_GLASS_PANE, 16)
+                        .pattern("XXX")
+                        .pattern("XXX")
+                        .define('X', VWBlocks.IRIDESCENT_GLASS)
+                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .save(output);
+
+                dyeFromIridescentGlass(exporter,
+                        Items.WHITE_DYE,
+                        Items.GRAY_DYE,
+                        Items.BROWN_DYE,
+                        Items.ORANGE_DYE,
+                        Items.LIME_DYE,
+                        Items.CYAN_DYE,
+                        Items.BLUE_DYE,
+                        Items.MAGENTA_DYE,
+                        Items.LIGHT_GRAY_DYE,
+                        Items.BLACK_DYE,
+                        Items.RED_DYE,
+                        Items.YELLOW_DYE,
+                        Items.GREEN_DYE,
+                        Items.LIGHT_BLUE_DYE,
+                        Items.PURPLE_DYE,
+                        Items.PINK_DYE
+                );
             }
         };
     }
 
+    private static String getItemName(ItemLike item) {
+        return BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
+    }
+
+    private static SingleItemRecipeBuilder getDye(ItemLike block, ItemLike output, int count) {
+        String name = BuiltInRegistries.ITEM.getKey(output.asItem()).getPath();
+        return stonecutting(Ingredient.of(block), RecipeCategory.MISC, output, count).unlockedBy(name, CriteriaTriggers.INVENTORY_CHANGED.createCriterion(new InventoryChangeTrigger.TriggerInstance(Optional.empty(), Slots.ANY, List.of(ItemPredicate.Builder.item().build()))));
+    }
+
+    private void dyeFromIridescentGlass(RecipeOutput exporter, Item... dye) {
+        for (Item item : dye) {
+            SingleItemRecipeBuilder recipe = getDye(VWBlocks.IRIDESCENT_GLASS, item, 4);
+            String outputDye = "iridescent_glass_to_" + getItemName(item);
+            recipe.save(exporter, "stonecutting_" + outputDye);
+        }
+        for (Item item : dye) {
+            SingleItemRecipeBuilder recipe = getDye(VWBlocks.IRIDESCENT_GLASS_PANE, item, 2);
+            String outputDye = "iridescent_glass_pane_to_" + getItemName(item);
+            recipe.save(exporter, "stonecutting_" + outputDye);
+        }
+    }
+
     @Override
     public String getName() {
-        return "ModRecipeProvider";
+        return "VWRecipeProvider";
     }
 }
