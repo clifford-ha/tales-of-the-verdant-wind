@@ -61,8 +61,8 @@ public abstract class WolfEntityMixin extends LivingEntity {
     }
 
     @Unique
-    private static boolean isInVerdantBiome(Wolf wolf) {
-        return wolf.level().getBiome(wolf.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
+    private static boolean isInVerdantBiome(ServerLevel level, Wolf wolf) {
+        return level.getBiome(wolf.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
     }
 
     @Inject(method = "getBreedOffspring*", at = @At("RETURN"), cancellable = true)
@@ -71,7 +71,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
         Wolf wolf = (Wolf) (Object) this;
 
         if (baby != null && partner instanceof Wolf wolfPartner) {
-            if (isVerdant(wolf) || isVerdant(wolfPartner) || isInVerdantBiome(wolf) || isInVerdantBiome(wolfPartner)) {
+            if (isVerdant(wolf) || isVerdant(wolfPartner) || isInVerdantBiome(level, wolf) || isInVerdantBiome(level, wolfPartner)) {
                 baby.setCustomName(Component.literal("Verdant " + baby.getName().getString()).withColor(VWColors.VERDANT_WIND));
                 baby.setAttached(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, true);
             }
@@ -100,8 +100,9 @@ public abstract class WolfEntityMixin extends LivingEntity {
     @Inject(method = "finalizeSpawn", at = @At("TAIL"))
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Wolf wolf = (Wolf) (Object) this;
+        boolean inVerdant = level.getBiome(wolf.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
 
-        if (isInVerdantBiome(wolf)) {
+        if (inVerdant) {
             wolf.setAttached(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, true);
             wolf.setCustomName(Component.literal("Verdant " + wolf.getName().getString()).withColor(VWColors.VERDANT_WIND));
         }
