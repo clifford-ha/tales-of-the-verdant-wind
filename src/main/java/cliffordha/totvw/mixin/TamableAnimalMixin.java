@@ -15,7 +15,7 @@ public class TamableAnimalMixin {
         if ((Object) this instanceof Wolf wolf) {
             boolean ACTIVE_BENEDICTION = wolf.hasAttached(VWAttachments.Wolf.WOLF_BENEDICTION);
 
-            if (ACTIVE_BENEDICTION && wolf.isAlive()) {
+            if (ACTIVE_BENEDICTION) {
                 ci.cancel();
             }
         }

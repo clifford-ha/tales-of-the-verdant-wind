@@ -27,6 +27,9 @@ public class TOTVW {
     public static void sendLog(String className) {
         TOTVW.LOGGER.info("{} registered!", className);
     }
+    public static void sendInfo(String info) {
+        TOTVW.LOGGER.info(info);
+    }
     
     private static final int secTick = 20;
     private static final int minTick = secTick * 60;

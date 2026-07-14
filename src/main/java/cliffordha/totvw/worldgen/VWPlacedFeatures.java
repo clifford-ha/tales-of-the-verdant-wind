@@ -48,7 +48,9 @@ public class VWPlacedFeatures {
     public static final ResourceKey<PlacedFeature> VERDANT_GRASS_PATCH_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_grass_patch"));
     public static final ResourceKey<PlacedFeature> VERDANT_RIVER_SEAGRASS_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_river_seagrass"));
     public static final ResourceKey<PlacedFeature> VERDANT_FERN_PATCH_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_fern_patch"));
+
     public static final ResourceKey<PlacedFeature> VERDANT_TORCHFLOWER_PATCH_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_torchflower_patch"));
+    public static final ResourceKey<PlacedFeature> VERDANT_WILD_SNIFFER_EGG_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_wild_sniffer_egg"));
 
 
     public static void configure(BootstrapContext<PlacedFeature> context) {
@@ -83,6 +85,7 @@ public class VWPlacedFeatures {
                         RarityFilter.onAverageOnceEvery(4),
                         InSquarePlacement.spread(),
                         PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.AIR)),
                         BiomeFilter.biome()
                 ))
         );
@@ -152,7 +155,8 @@ public class VWPlacedFeatures {
                 List.of(
                         InSquarePlacement.spread(),
                         PlacementUtils.HEIGHTMAP_TOP_SOLID,
-                        CountPlacement.of(4)
+                        CountPlacement.of(4),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE))
                 ))
         );
         context.register(VERDANT_MOSS_PATCH_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_MOSS_PATCH_CONFIGURED_KEY),
@@ -231,5 +235,15 @@ public class VWPlacedFeatures {
                         BiomeFilter.biome()
                 ))
         );
+        /*
+        context.register(VERDANT_WILD_SNIFFER_EGG_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_SNIFFER_EGG_CONFIGURED_KEY),
+                List.of(
+                        RarityFilter.onAverageOnceEvery(23),
+                        InSquarePlacement.spread(),
+                        PlacementUtils.HEIGHTMAP_TOP_SOLID,
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.SWEET_BERRY_BUSH)),
+                        BiomeFilter.biome()
+                ))
+        );*/
     }
 }

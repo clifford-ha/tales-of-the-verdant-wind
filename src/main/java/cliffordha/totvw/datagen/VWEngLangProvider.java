@@ -96,6 +96,8 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add(VWItemsScatteredPage.SP_ID_1005, SP_1005.getTitle());
 
+        text.add(VWItemsScatteredPage.SP_ID_1006, SP_1006.getTitle());
+
 
 
         text.addEnchantment(VWEnchantments.WOLF_EFFECT_IGNITION, "Wolf ATK Effect: §vIgnition");

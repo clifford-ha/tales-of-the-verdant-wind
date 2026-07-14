@@ -119,11 +119,19 @@ public class VWModelProvider extends FabricModelProvider {
         item.generateFlatItem(VWItemsScatteredPage.SCATTERED_PAGE, ModelTemplates.FLAT_ITEM);
         addCopy(item, ModelTemplates.FLAT_ITEM, VWItemsScatteredPage.SCATTERED_PAGE,
                 VWItemsScatteredPage.SP_ID_1000,
+
                 VWItemsScatteredPage.SP_ID_1001,
                 VWItemsScatteredPage.SP_ID_1002,
                 VWItemsScatteredPage.SP_ID_1003,
                 VWItemsScatteredPage.SP_ID_1004,
+
                 VWItemsScatteredPage.SP_ID_1005,
+
+                VWItemsScatteredPage.SP_ID_1006,
+
+                VWItemsScatteredPage.SP_ID_1007,
+                VWItemsScatteredPage.SP_ID_1008,
+                VWItemsScatteredPage.SP_ID_1009,
 
                 VWItemsScatteredPage.SP_ID_TEST,
                 VWItemsScatteredPage.PLAYER_STATS

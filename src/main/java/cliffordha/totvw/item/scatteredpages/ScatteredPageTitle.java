@@ -24,7 +24,8 @@ public enum ScatteredPageTitle {
 
     SP_1005(1005,"A Torn Page"),
 
-    SP_1006(1006, "A Poem"),
+    SP_1006(1006, "A Hunter's Torn Anecdotes"),
+
     SP_1007(1007,"A Poem"),
     SP_1008(1008,"A Poem"),
     SP_1009(1009,"A Poem"),

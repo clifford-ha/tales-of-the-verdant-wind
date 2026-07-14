@@ -1,13 +1,19 @@
 package cliffordha.totvw.mixin;
 
+import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.entity.variants.VWWolfVariants;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.util.VWGlobalUtil;
 import cliffordha.totvw.entity.VWInteractionData;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWItemTags;
+import cliffordha.totvw.world.VWBiomes;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,21 +23,30 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.animal.wolf.WolfSoundVariants;
+import net.minecraft.world.entity.animal.wolf.WolfVariant;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.villager.VillagerType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.variant.SpawnContext;
+import net.minecraft.world.entity.variant.VariantUtils;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -39,6 +54,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static cliffordha.totvw.util.VWGlobalUtil.*;
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.*;
@@ -50,22 +66,84 @@ public abstract class WolfEntityMixin extends LivingEntity {
         super(type, level);
     }
 
-    @Inject(method = "finalizeSpawn", at = @At("TAIL"))
+    @Unique
+    private static boolean isVerdant(Wolf wolf) {
+        return wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false);
+    }
+
+    @Unique
+    private static boolean isInVerdantBiome(Wolf wolf) {
+        return wolf.level().getBiome(wolf.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
+    }
+
+    @Inject(method = "getBreedOffspring*", at = @At("RETURN"), cancellable = true)
+    private void getOffspring(ServerLevel level, AgeableMob partner, CallbackInfoReturnable<Wolf> cir) {
+        Wolf baby = EntityType.WOLF.create(level, EntitySpawnReason.BREEDING);
+        Wolf wolf = (Wolf) (Object) this;
+
+        if (baby != null && partner instanceof Wolf wolfPartner) {
+            if (isVerdant(wolf) || isVerdant(wolfPartner) || isInVerdantBiome(wolf) || isInVerdantBiome(wolfPartner)) {
+                baby.setCustomName(Component.literal("Verdant " + baby.getName().getString()).withColor(VWColors.VERDANT_WIND));
+                baby.setAttached(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, true);
+            }
+
+            if (this.random.nextBoolean()) {
+                baby.setVariant(wolf.getVariant());
+            } else {
+                baby.setVariant(wolfPartner.getVariant());
+            }
+
+            if (wolf.isTame()) {
+                baby.setOwnerReference(wolf.getOwnerReference());
+                baby.setTame(true, true);
+                DyeColor parent1CollarColor = wolf.getCollarColor();
+                DyeColor parent2CollarColor = wolfPartner.getCollarColor();
+                baby.setCollarColor(DyeColor.getMixedColor(level, parent1CollarColor, parent2CollarColor));
+            }
+
+            baby.setSoundVariant(WolfSoundVariants.pickRandomSoundVariant(this.registryAccess(), this.random));
+
+            cir.setReturnValue(baby);
+            cir.cancel();
+        }
+    }
+
+    @Inject(method = "finalizeSpawn", at = @At("HEAD"))
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Wolf wolf = (Wolf) (Object) this;
-        boolean inVerdant = level.getBiome(wolf.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
-        if (inVerdant) {
+
+        if (isInVerdantBiome(wolf)) {
             wolf.setAttached(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, true);
+            wolf.setCustomName(Component.literal("Verdant " + wolf.getName().getString()).withColor(VWColors.VERDANT_WIND));
         }
+        wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
+        if (isVerdant(wolf)) {
+            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.375);
+        } else {
+            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.305);
+        }
+        wolf.getAttribute(Attributes.WATER_MOVEMENT_EFFICIENCY).setBaseValue(0.1);
+    }
+
+    @Inject(method = "applyTamingSideEffects", at = @At("HEAD"), cancellable = true)
+    private void createAttributes(CallbackInfo ci) {
+        Wolf wolf = (Wolf) (Object) this;
+        if (wolf.isTame()) {
+            wolf.getAttribute(Attributes.MAX_HEALTH).setBaseValue(40.0);
+            wolf.setHealth(40.0f);
+        } else {
+            wolf.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0);
+            wolf.setHealth(20.0f);
+        }
+        ci.cancel();
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void onTick(CallbackInfo ci) {
         Wolf wolf = (Wolf) (Object) this;
-        boolean isVerdantType = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false);
 
         if (wolf.level().getGameTime() % 60 == 0) {
-            if (isVerdantType && !wolf.isTame()) {
+            if (isVerdant(wolf) && !wolf.isTame()) {
                 if (!wolf.isAngry()) {
                     wolf.setAttached(VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0);
                 }
@@ -90,71 +168,81 @@ public abstract class WolfEntityMixin extends LivingEntity {
         return new LeapAtTargetGoal(wolf, 0.55f);
     }
 
-    @Inject(method = "applyTamingSideEffects", at = @At("HEAD"), cancellable = true)
-    private void createAttributes(CallbackInfo ci) {
-        Wolf wolf = (Wolf) (Object) this;
-
-        boolean isVerdant = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false);
-
-        if (wolf.isTame()) {
-            wolf.getAttribute(Attributes.MAX_HEALTH).setBaseValue(40.0);
-            wolf.setHealth(40.0f);
-        } else {
-            wolf.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0);
-            wolf.setHealth(20.0f);
-        }
-
-        wolf.getAttribute(Attributes.WATER_MOVEMENT_EFFICIENCY).setBaseValue(0.1);
-
-        if (isVerdant) {
-            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.375);
-        } else {
-            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.305);
-        }
-        ci.cancel();
-    }
-
     @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
     private void wolfInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         Wolf wolf = (Wolf) (Object) this;
         String name = wolf.getName().getString();
 
         int ACTIVE_BENEDICTION = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
-        int ACTIVE_BENEDICTION_ENCHANTMENT = wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
         ItemStack itemStack = player.getItemInHand(hand);
 
-        if (wolf.isTame()) {
-            if (itemStack.is(Items.TOTEM_OF_UNDYING) && wolf.isWearingBodyArmor()) {
-                if (ACTIVE_BENEDICTION_ENCHANTMENT == 0) return;
-                if (ACTIVE_BENEDICTION >= 3) {
-                    notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, true, "Max Benediction stack reached!");
+        boolean canUseTotem = itemStack.is(Items.TOTEM_OF_UNDYING)
+                && wolf.isTame()
+                && !(wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) == 0);
+
+        boolean giveArmorToUntamed = itemStack.is(VWItemTags.WOLF_ARMOR_ENCHANTABLE)
+                && !wolf.isTame()
+                && !wolf.isWearingBodyArmor();
+
+        boolean unTame = itemStack.is(Items.HONEY_BOTTLE)
+                && player.getAttachedOrElse(VWAttachments.Player.PLAYER_IS_DEV_MODE, false)
+                && wolf.isTame()
+                && wolf.getOwner() == player;
+
+        boolean checkStat = itemStack.is(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE);
+
+        if (canUseTotem) {
+            if (ACTIVE_BENEDICTION >= 3) {
+
+                //reset stat for unconfigured value
+                if (ACTIVE_BENEDICTION > 3) {
+                    wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, 3);
+                    TOTVW.sendInfo(name + " has more than 3 of the Wolf Benediction stack. Resetting to 3.");
+                } else if (ACTIVE_BENEDICTION < 0) {
+                    wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
+                    TOTVW.sendInfo(name + " has negative value of the Wolf Benediction stack. Resetting to 0.");
                 }
-                if (ACTIVE_BENEDICTION >= 3) return;
+                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, true, name + " already reached Wolf Beneficiation stack limit!");
+                return;
+            }
 
-                wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION + 1);
-                if (player.isCreative() || player.isSpectator())  { itemStack.shrink(1); }
-                VWGlobalUtil.playSound(wolf, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
+            if (ACTIVE_BENEDICTION == 0) {
+                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, "Totem has been converted to Wolf Beneficiation stack");
+            }
 
-                addParticle(wolf.level(), wolf.blockPosition(), VWParticles.BENEDICTION_TRIGGER_PARTICLE, 1);
-                notifyFromWolf(wolf, VWColors.VERDANT_WIND, name + " Benediction stack: " + wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0));
+            wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION + 1);
+            notifyFromWolf(wolf, VWColors.VERDANT_WIND, "+1 Wolf Benediction stack to " + name);
+            if (player.isCreative() || player.isSpectator())  {
+                itemStack.shrink(1);
+            }
+            VWGlobalUtil.playSound(wolf, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
+
+            addParticle(wolf.level(), wolf.blockPosition(), VWParticles.BENEDICTION_TRIGGER_PARTICLE, 1);
+            cir.setReturnValue(InteractionResult.SUCCESS);
+        }
+
+        if (giveArmorToUntamed) {
+            if (wolf.level() instanceof ServerLevel serverLevel) {
+                wolf.equipItemIfPossible(serverLevel, itemStack);
                 cir.setReturnValue(InteractionResult.SUCCESS);
             }
-        } else {
-            if (itemStack.is(VWItemTags.WOLF_ARMOR_ENCHANTABLE) && !wolf.isWearingBodyArmor()) {
-                if (wolf.level() instanceof ServerLevel serverLevel) {
-                    wolf.equipItemIfPossible(serverLevel, itemStack);
-                    cir.setReturnValue(InteractionResult.SUCCESS);
-                }
-            }
+        }
+
+        if (unTame) {
+            wolf.setTame(false, false);
+            wolf.setOwner(null);
+        }
+        if (checkStat && wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false)) {
+            notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, true, name + " is already a Verdant type");
         }
     }
 
     @Inject(method = "die", at = @At("HEAD"), cancellable = true)
     private void reviveWolf(DamageSource source, CallbackInfo ci) {
         Wolf wolf = (Wolf) (Object) this;
-        int ACTIVE_BENEDICTION = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
+        int STACK_BEFORE = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
 
-        if (ACTIVE_BENEDICTION == 0) return;
+        if (STACK_BEFORE == 0) return;
         wolf.setHealth(40.0f);
         wolf.removeAllEffects();
 
@@ -163,18 +251,22 @@ public abstract class WolfEntityMixin extends LivingEntity {
         rewriteEffect(wolf, MobEffects.ABSORPTION, sec(10), 2);
         rewriteEffect(wolf, MobEffects.STRENGTH, sec(10), 2);
 
-        wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION - 1);
+        // main
+        wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, STACK_BEFORE - 1);
 
-        if (ACTIVE_BENEDICTION - 1 == 0) {
-            notifyFromWolf(wolf, VWColors.BLOODLUST_EFFECT_MUTED,ACTIVE_BENEDICTION - 1 + " Benediction stack remaining for " + wolf.getName().getString());
-            wolf.removeAttached(VWAttachments.Wolf.WOLF_BENEDICTION);
+        String name = wolf.getName().getString();
+        int STACK_AFTER = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
+        if (STACK_AFTER == 0) {
+            notifyFromWolf(wolf, VWColors.BLOODLUST_EFFECT_MUTED, name + " used up all Benediction stacks");
         } else {
-            notifyFromWolf(wolf, VWColors.VERDANT_WIND_MUTED,ACTIVE_BENEDICTION - 1 + " Benediction stack remaining for " + wolf.getName().getString());
+            notifyFromWolf(wolf, VWColors.VERDANT_WIND_MUTED,STACK_AFTER + " Benediction stack remaining for " + name);
         }
 
         if (wolf.level() instanceof ServerLevel) {
             wolf.level().broadcastEntityEvent(wolf, (byte) 35);
         }
+
+        TOTVW.sendInfo(name + " has triggered Benediction! Remaining stacks: " + STACK_AFTER);
         ci.cancel();
     }
 

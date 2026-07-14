@@ -64,6 +64,8 @@ public class VWConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> VERDANT_MOSS_VEGETATION_CONFIGURED_KEY = ResourceKey.create(Registries.CONFIGURED_FEATURE, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_moss_vegetation"));
     public static final ResourceKey<ConfiguredFeature<?, ?>> VERDANT_MOSS_PATCH_CONFIGURED_KEY = ResourceKey.create(Registries.CONFIGURED_FEATURE, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_moss_patch"));
 
+    public static final ResourceKey<ConfiguredFeature<?, ?>> VERDANT_SNIFFER_EGG_CONFIGURED_KEY = ResourceKey.create(Registries.CONFIGURED_FEATURE, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_sniffer_egg"));
+
 
     public static void configure(BootstrapContext<ConfiguredFeature<?, ?>> context) {
         HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
@@ -184,14 +186,14 @@ public class VWConfiguredFeatures {
         context.register(VERDANT_SPRUCE_TREE_CONFIGURED_KEY, new ConfiguredFeature<>(Feature.TREE,
                 new TreeConfiguration.TreeConfigurationBuilder(
                         BlockStateProvider.simple(VWBlocksVerdant.VERDANT_SPRUCE_LOG),
-                        new StraightTrunkPlacer(6, 3, 3),
+                        new StraightTrunkPlacer(7, 3, 3),
                         BlockStateProvider.simple(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES),
                         new SpruceFoliagePlacer(
                                 UniformInt.of(4, 7),
                                 UniformInt.of(0, 1),
-                                UniformInt.of(0, 3)
+                                UniformInt.of(2, 3)
                         ),
-                        new TwoLayersFeatureSize(0, 0, 0)
+                        new TwoLayersFeatureSize(1, 1, 2)
                 ).build()
         ));
 
@@ -203,11 +205,13 @@ public class VWConfiguredFeatures {
                         new SpruceFoliagePlacer(
                                 UniformInt.of(9, 11),
                                 ConstantInt.of(0),
-                                UniformInt.of(1, 9)
+                                UniformInt.of(2, 9)
                         ),
                         new TwoLayersFeatureSize(1, 1, 2)
                 ).build()
         ));
+
+        context.register(VERDANT_SNIFFER_EGG_CONFIGURED_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.SNIFFER_EGG.defaultBlockState()))));
 
     }
 }

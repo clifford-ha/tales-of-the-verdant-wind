@@ -232,13 +232,16 @@ public class VWPlayerBehaviors {
         });
 
         // Debugging
-        /*
+
         ServerTickEvents.START_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
                 serverLevel.getEntities(
                         EntityType.PLAYER,
                         _ -> true
                 ).forEach(player -> {
+                    if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_IS_DEV_MODE, false)) {
+                        player.setAttached(VWAttachments.Player.PLAYER_IS_DEV_MODE, true);
+                    }
                     List<Wolf> wolves = serverLevel.getEntities(
                             EntityType.WOLF,
                             player.getBoundingBox().inflate(32),
@@ -252,8 +255,6 @@ public class VWPlayerBehaviors {
                 });
             }
         });
-
-         */
     }
     private VWPlayerBehaviors() {}
 }

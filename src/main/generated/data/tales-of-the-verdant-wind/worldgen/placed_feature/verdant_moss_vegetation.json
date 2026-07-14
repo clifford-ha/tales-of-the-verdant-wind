@@ -11,6 +11,18 @@
     {
       "type": "minecraft:count",
       "count": 4
+    },
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:matching_blocks",
+        "blocks": [
+          "minecraft:air",
+          "minecraft:grass_block",
+          "minecraft:dirt",
+          "minecraft:stone"
+        ]
+      }
     }
   ]
 }

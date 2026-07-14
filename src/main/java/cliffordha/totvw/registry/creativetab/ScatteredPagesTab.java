@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class ScatteredPagesTab extends Item {
     public ScatteredPagesTab(Properties properties) {
@@ -24,11 +23,12 @@ public class ScatteredPagesTab extends Item {
             .icon(() -> new ItemStack(VWItemsScatteredPage.SCATTERED_PAGE))
             .title(Component.translatable("creativeTab.scatteredPages"))
             .displayItems((params, output) -> {
-                output.accept(VWItemsScatteredPage.SP_ID_1000);
+                //output.accept(VWItemsScatteredPage.SP_ID_1000);
                 output.accept(VWItemsScatteredPage.SP_ID_1001);
                 output.accept(VWItemsScatteredPage.SP_ID_1002);
                 output.accept(VWItemsScatteredPage.SP_ID_1003);
                 output.accept(VWItemsScatteredPage.SP_ID_1004);
                 output.accept(VWItemsScatteredPage.SP_ID_1005);
+                output.accept(VWItemsScatteredPage.SP_ID_1006);
             }).build();
 }

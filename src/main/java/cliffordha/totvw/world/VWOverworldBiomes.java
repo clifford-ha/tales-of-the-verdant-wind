@@ -24,10 +24,13 @@ public class VWOverworldBiomes {
             MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
             BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-            spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2));
-            spawner.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 3));
+            spawner.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2));
+            spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 3));
+            spawner.addSpawn(MobCategory.CREATURE, 60, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 2, 4));
+            spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 4, 4));
 
-            BiomeDefaultFeatures.commonSpawns(spawner, 30);
+            spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityType.ZOMBIE, 2, 2));
+            spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 2, 2));
 
             biome.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
 
@@ -83,10 +86,13 @@ public class VWOverworldBiomes {
         MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
         BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-        spawner.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 3, 4));
+        spawner.addSpawn(MobCategory.CREATURE, 30, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 3, 4));
         spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 1));
+        spawner.addSpawn(MobCategory.CREATURE, 80, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 2, 4));
+        spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 2, 2));
 
-        BiomeDefaultFeatures.commonSpawns(spawner, 30);
+        spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityType.ZOMBIE, 2, 2));
+        spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 2, 2));
 
         biome.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
 
@@ -115,6 +121,7 @@ public class VWOverworldBiomes {
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_RIVER_SEAGRASS_KEY);
 
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.ANCIENT_VERDANT_SPRUCE_TREE_KEY);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_SPRUCE_BUSH_TREE_KEY);
 
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(true)

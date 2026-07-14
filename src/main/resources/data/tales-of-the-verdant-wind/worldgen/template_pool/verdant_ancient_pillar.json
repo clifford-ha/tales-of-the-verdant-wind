@@ -1,0 +1,16 @@
+{
+  "name": "tales-of-the-verdant-wind:verdant_ancient_pillar",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "tales-of-the-verdant-wind:verdant_ancient_pillar",
+        "processors": "tales-of-the-verdant-wind:deepslate_cracks",
+        "override_liquid_settings": "ignore_waterlogging"
+      }
+    }
+  ]
+}

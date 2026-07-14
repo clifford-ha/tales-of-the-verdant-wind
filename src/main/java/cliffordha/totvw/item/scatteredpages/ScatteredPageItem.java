@@ -134,6 +134,16 @@ public class ScatteredPageItem extends Item {
                         + pText(4), "")
                 );
             }
+            case 1006 -> {
+                return addPage(
+                        pText(4)
+                        + "The remaining stock has been successfully transferred to the affected bunkers to alleviate the situation caused by starvation. The creatures from beyond, or what our scholars call the " + fText(ITALIC, "ongtan(s)") + ", have multiplied in numbers since the rift appeared. Threat level remain the same."
+                        + nextParagraph
+                        + "My companions and I have failed to secure the scholars' defense pillar... Fortunately, all of them have been rescued on time, including their papers that may help us in formulating an offensive strategy. Second problem, due to said failure of securing the defense pillar, we had to prioritize evacuation and halt the reconstruction of another core to prevent further casualty."
+                        + nextParagraph
+                        + pText(4)
+                );
+            }
         }
         return new String[] { "Error: Invalid page reference no." };
     }

@@ -34,15 +34,32 @@ import java.util.function.Predicate;
 @Mixin(Villager.class)
 public class VillagerEntityMixin {
 
+    @Unique
+    private static boolean isVerdant(Villager villager) {
+        return villager.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false);
+    }
+
+    @Unique
+    private static boolean isInVerdantBiome(Villager villager) {
+        return villager.level().getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
+    }
+
     @Inject(method = "finalizeSpawn", at = @At("TAIL"))
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Villager villager = (Villager) (Object) this;
-        boolean inVerdant = level.getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
+        boolean inVerdant = isInVerdantBiome(villager);
 
         VillagerData data = villager.getVillagerData();
         Holder<VillagerType> taiga = level.registryAccess()
                 .lookupOrThrow(Registries.VILLAGER_TYPE)
                 .getOrThrow(VillagerType.TAIGA);
+
+        if (spawnReason == EntitySpawnReason.BREEDING) {
+            villager.setVillagerData(villager.getVillagerData().withProfession(level.registryAccess(), VillagerProfession.NONE));
+            if (inVerdant || isVerdant(villager)) {
+                villager.setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
+            }
+        }
 
         if (inVerdant) {
             villager.setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
@@ -54,7 +71,8 @@ public class VillagerEntityMixin {
     private void onTick(CallbackInfo ci) {
         Villager villager = (Villager) (Object) this;
 
-        boolean isCorrectVillager = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false) && villager.getVillagerData().profession().is(Predicate.isEqual(VillagerProfession.CLERIC));
+        boolean isCorrectVillager = isVerdant(villager)
+                && villager.getVillagerData().profession().is(Predicate.isEqual(VillagerProfession.CLERIC));
         if (!isCorrectVillager) return;
 
         if (villager.level().getGameTime() % 20 == 0) {
@@ -130,14 +148,11 @@ public class VillagerEntityMixin {
     private void villagerVerdantTrades(Player player, CallbackInfo ci) {
         Villager villager = (Villager) (Object) this;
 
-        boolean verdantVillager = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false);
-        boolean villagerInVerdant = villager.level().getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
-
-        if (!verdantVillager) return;
+        if (!isVerdant(villager)) return;
 
         int rerollCD = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL, 0);
         float modifier = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER, 0.0f);
-        float additional = villagerInVerdant ? 0.25f : 0.0f;
+        float additional = isInVerdantBiome(villager) ? 0.25f : 0.0f;
 
         float MIN_MODIFIER = 0.0f;
         float MAX_MODIFIER = 0.75f;

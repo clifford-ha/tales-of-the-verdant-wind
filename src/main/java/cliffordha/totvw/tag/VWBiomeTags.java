@@ -32,11 +32,11 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
                 .add(TagEntry.element(VWBiomes.VERDANT_MOUNTAINS.identifier()))
                 .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
 
-        getOrCreateRawBuilder(HAS_VERIXIUM_CORE_PILLARS)
-                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
+        getOrCreateRawBuilder(IS_VERDANT_MOUNTAINS)
+                .add(TagEntry.element(VWBiomes.VERDANT_MOUNTAINS.identifier()));
 
-        getOrCreateRawBuilder(HAS_VERDANT_UNDERGROUND_CAMPS)
-                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
+        getOrCreateRawBuilder(IS_VERDANT_FOREST)
+                .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
 
         getOrCreateRawBuilder(HAS_VERDANT_FOREST_VILLAGE)
                 .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
@@ -85,6 +85,8 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
 
     }
     public static final TagKey<Biome> IS_VERDANT_BIOMES = create("is_verdant_biomes");
+    public static final TagKey<Biome> IS_VERDANT_MOUNTAINS = create("is_verdant_mountains");
+    public static final TagKey<Biome> IS_VERDANT_FOREST = create("is_verdant_forest");
     public static final TagKey<Biome> HAS_VERDANT_FOREST_VILLAGE = create("has_verdant_forest_village");
     public static final TagKey<Biome> HAS_VERDANT_MOUNTAINS_VILLAGE = create("has_verdant_mountains_village");
     public static final TagKey<Biome> HAS_VERIXIUM_CORE_PILLARS = create("has_verixium_core_pillars");
