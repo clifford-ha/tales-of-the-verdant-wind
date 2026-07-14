@@ -92,6 +92,9 @@ public class VWAttachments {
         };
 
         AttachmentType<?>[] playerAttachments = {
+                Player.PLAYER_IS_DEV_MODE,
+                Player.PLAYER_VILLAGER_ATROCITY_COUNT,
+                Player.PLAYER_WOLF_ATROCITY_COUNT,
                 Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
                 Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
         };

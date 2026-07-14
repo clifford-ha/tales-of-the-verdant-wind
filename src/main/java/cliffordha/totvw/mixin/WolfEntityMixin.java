@@ -2,17 +2,13 @@ package cliffordha.totvw.mixin;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.entity.variants.VWWolfVariants;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.util.VWGlobalUtil;
 import cliffordha.totvw.entity.VWInteractionData;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWItemTags;
-import cliffordha.totvw.world.VWBiomes;
-import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -23,7 +19,6 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -31,20 +26,15 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.animal.wolf.WolfSoundVariants;
-import net.minecraft.world.entity.animal.wolf.WolfVariant;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.villager.VillagerType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.variant.SpawnContext;
-import net.minecraft.world.entity.variant.VariantUtils;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.storage.ValueOutput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -54,7 +44,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
-import java.util.Optional;
 
 import static cliffordha.totvw.util.VWGlobalUtil.*;
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.*;
@@ -108,7 +97,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
         }
     }
 
-    @Inject(method = "finalizeSpawn", at = @At("HEAD"))
+    @Inject(method = "finalizeSpawn", at = @At("TAIL"))
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Wolf wolf = (Wolf) (Object) this;
 
@@ -117,11 +106,6 @@ public abstract class WolfEntityMixin extends LivingEntity {
             wolf.setCustomName(Component.literal("Verdant " + wolf.getName().getString()).withColor(VWColors.VERDANT_WIND));
         }
         wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
-        if (isVerdant(wolf)) {
-            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.375);
-        } else {
-            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.305);
-        }
         wolf.getAttribute(Attributes.WATER_MOVEMENT_EFFICIENCY).setBaseValue(0.1);
     }
 
@@ -134,6 +118,11 @@ public abstract class WolfEntityMixin extends LivingEntity {
         } else {
             wolf.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0);
             wolf.setHealth(20.0f);
+        }
+        if (isVerdant(wolf)) {
+            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.375);
+        } else {
+            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.305);
         }
         ci.cancel();
     }
