@@ -17,19 +17,16 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.List;
+
+import static cliffordha.totvw.registry.VWEffects.*;
 import static cliffordha.totvw.util.VWGlobalUtil.*;
 
 public class AmplifiedMightEffect extends MobEffect {
     public AmplifiedMightEffect() {
         super(MobEffectCategory.BENEFICIAL, VWColors.MIGHT_EFFECT);
     }
-    private static final Identifier MIGHT_ARMOR_TOUGHNESS_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "amp_might_armor_toughness");
-    private static final Identifier MIGHT_KNOCKBACK_RESISTANCE_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "amp_might_knockback_resistance");
-    private static final Identifier MIGHT_ARMOR_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "might_armor");
-    private static final Identifier MIGHT_MAX_ABSORPTION_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "might_max_absorption");
-    private static final Identifier MIGHT_JUMP_STRENGTH_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "might_jump_strength");
-    private static final Identifier MIGHT_FALL_DMG_REDUCTION_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "might_fall_dmg_reduction");
-
+    private static final Identifier AMPLIFIED_MIGHT_EFFECT = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "amplified_might_effect_modifier");
     @Override
     public void onEffectStarted(LivingEntity entity, int amplifier) {
         onEffectAdded(entity, amplifier);
@@ -39,69 +36,27 @@ public class AmplifiedMightEffect extends MobEffect {
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
         AttributeMap attributes = entity.getAttributes();
-        if (entity instanceof Wolf wolf) {
-            ItemStack bodyArmor = wolf.getBodyArmorItem();
-            if (bodyArmor.isEmpty()) return;
+        if (entity instanceof Wolf wolf && wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_MIGHT) > 0) {
+            addModifier(attributes, AMPLIFIED_MIGHT_EFFECT,
+                    Attributes.ARMOR,  4 + (2 * amplifier), AttributeModifier.Operation.ADD_VALUE);
 
-            int mightLevel = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_MIGHT);
-            if (mightLevel <= 0) return;
+            addModifier(attributes, AMPLIFIED_MIGHT_EFFECT,
+                    Attributes.JUMP_STRENGTH, 0.05 + (amplifier * 0.05), AttributeModifier.Operation.ADD_VALUE);
 
-            if (attributes.hasAttribute(Attributes.ARMOR)) {
-                attributes.getInstance(Attributes.ARMOR).addOrReplacePermanentModifier(
-                        new AttributeModifier(
-                                MIGHT_ARMOR_ID,
-                                4 + (2 * amplifier),
-                                AttributeModifier.Operation.ADD_VALUE
-                        )
-                );
-            }
-            if (attributes.hasAttribute(Attributes.JUMP_STRENGTH)) {
-                attributes.getInstance(Attributes.JUMP_STRENGTH).addOrReplacePermanentModifier(
-                        new AttributeModifier(
-                                MIGHT_JUMP_STRENGTH_ID,
-                                (0.05 + (amplifier * 0.05)),
-                                AttributeModifier.Operation.ADD_VALUE
-                        )
-                );
-            }
-            if (attributes.hasAttribute(Attributes.FALL_DAMAGE_MULTIPLIER)) {
-                attributes.getInstance(Attributes.FALL_DAMAGE_MULTIPLIER).addOrReplacePermanentModifier(
-                        new AttributeModifier(
-                                MIGHT_FALL_DMG_REDUCTION_ID,
-                                -(0.20 + (amplifier * 0.20)),
-                                AttributeModifier.Operation.ADD_VALUE
-                        )
-                );
-            }
+            addModifier(attributes, AMPLIFIED_MIGHT_EFFECT,
+                    Attributes.FALL_DAMAGE_MULTIPLIER, -(0.20 + (amplifier * 0.20)), AttributeModifier.Operation.ADD_VALUE);
         }
+
         double armorToughness = 0.3 + (amplifier * 0.2);
-        if (attributes.hasAttribute(Attributes.ARMOR_TOUGHNESS)) {
-            attributes.getInstance(Attributes.ARMOR_TOUGHNESS).addOrReplacePermanentModifier(
-                    new AttributeModifier(
-                            MIGHT_ARMOR_TOUGHNESS_ID,
-                            armorToughness + 1,
-                            AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
-                    )
-            );
-        }
-        if (attributes.hasAttribute(Attributes.KNOCKBACK_RESISTANCE)) {
-            attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).addOrReplacePermanentModifier(
-                    new AttributeModifier(
-                            MIGHT_KNOCKBACK_RESISTANCE_ID,
-                            1.25 + (amplifier * 1.25),
-                            AttributeModifier.Operation.ADD_VALUE
-                    )
-            );
-        }
-        if (attributes.hasAttribute(Attributes.MAX_ABSORPTION)) {
-            attributes.getInstance(Attributes.MAX_ABSORPTION).addOrReplacePermanentModifier(
-                    new AttributeModifier(
-                            MIGHT_MAX_ABSORPTION_ID,
-                            1.15 + (amplifier * 0.15),
-                            AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
-                    )
-            );
-        }
+
+        addModifier(attributes, AMPLIFIED_MIGHT_EFFECT,
+                Attributes.ARMOR_TOUGHNESS, armorToughness + 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+
+        addModifier(attributes, AMPLIFIED_MIGHT_EFFECT,
+                Attributes.KNOCKBACK_RESISTANCE, 1.25 + (amplifier * 1.25), AttributeModifier.Operation.ADD_VALUE);
+
+        addModifier(attributes, AMPLIFIED_MIGHT_EFFECT,
+                Attributes.MAX_ABSORPTION, 1.15 + (amplifier * 0.15), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     }
 
     @Override
@@ -115,24 +70,15 @@ public class AmplifiedMightEffect extends MobEffect {
     }
 
     private void removeModifiers(LivingEntity entity) {
-        AttributeMap attributes = entity.getAttributes();
-        if (attributes.hasAttribute(Attributes.ARMOR_TOUGHNESS)) {
-            attributes.getInstance(Attributes.ARMOR_TOUGHNESS).removeModifier(MIGHT_ARMOR_TOUGHNESS_ID);
-        }
-        if (attributes.hasAttribute(Attributes.KNOCKBACK_RESISTANCE)) {
-            attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).removeModifier(MIGHT_KNOCKBACK_RESISTANCE_ID);
-        }
-        if (attributes.hasAttribute(Attributes.ARMOR)) {
-            attributes.getInstance(Attributes.ARMOR).removeModifier(MIGHT_ARMOR_ID);
-        }
-        if (attributes.hasAttribute(Attributes.MAX_ABSORPTION)) {
-            attributes.getInstance(Attributes.MAX_ABSORPTION).removeModifier(MIGHT_MAX_ABSORPTION_ID);
-        }
-        if (attributes.hasAttribute(Attributes.JUMP_STRENGTH)) {
-            attributes.getInstance(Attributes.JUMP_STRENGTH).removeModifier(MIGHT_JUMP_STRENGTH_ID);
-        }
-        if (attributes.hasAttribute(Attributes.FALL_DAMAGE_MULTIPLIER)) {
-            attributes.getInstance(Attributes.FALL_DAMAGE_MULTIPLIER).removeModifier(MIGHT_FALL_DMG_REDUCTION_ID);
-        }
+        removeAllModifiers(entity, AMPLIFIED_MIGHT_EFFECT,
+                List.of(
+                        Attributes.ARMOR_TOUGHNESS,
+                        Attributes.KNOCKBACK_RESISTANCE,
+                        Attributes.ARMOR,
+                        Attributes.MAX_ABSORPTION,
+                        Attributes.JUMP_STRENGTH,
+                        Attributes.FALL_DAMAGE_MULTIPLIER
+                )
+        );
     }
 }

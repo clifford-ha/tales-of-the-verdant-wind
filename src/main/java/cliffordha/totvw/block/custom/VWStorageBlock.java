@@ -1,4 +1,4 @@
-package cliffordha.totvw.block;
+package cliffordha.totvw.block.custom;
 
 import cliffordha.totvw.block.entity.VWStorageBlockEntity;
 import com.mojang.serialization.MapCodec;

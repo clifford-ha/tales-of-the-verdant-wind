@@ -31,6 +31,7 @@ public final class SkillUtil {
             wolf.setAttached(skill.notifier(), 0);
             if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
             notifyFromWolf(wolf, skill.notifierColor(), true, name(wolf) + skill.skillName() + " is ready!");
+            playNotification(wolf);
         }
     }
     public static void notifyReset(Player player, PlayerSkillDefinition skill) {
@@ -41,6 +42,7 @@ public final class SkillUtil {
             player.setAttached(skill.notifier(), 0);
             if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
             notifyFromPlayer(player, skill.notifierColor(), true, name(player) + skill.skillName() + " is ready!");
+            playNotification(player);
         }
     }
 

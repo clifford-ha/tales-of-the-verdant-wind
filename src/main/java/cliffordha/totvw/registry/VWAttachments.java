@@ -1,18 +1,19 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.entity.VWInteractionData;
+import cliffordha.totvw.entity.VWTrustInteractionData;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.resources.Identifier;
 
 public class VWAttachments {
-    public static final AttachmentType<VWInteractionData> ENTITY_INTERACTION_DATA = AttachmentRegistry.create(
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "interaction_data"),
-            builder -> builder.persistent(VWInteractionData.CODEC).initializer(VWInteractionData::create)
+    public static final AttachmentType<VWTrustInteractionData> ENTITY_TRUSTED_MOB_DATA = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "entity_trusted_mob_data"),
+            builder -> builder.persistent(VWTrustInteractionData.CODEC).initializer(VWTrustInteractionData::create)
     );
 
+    public static final AttachmentType<Boolean> ENTITY_IS_PARALYZED = registerBool("entity_is_paralyzed");
     public static final AttachmentType<Integer> ENTITY_TRUST_POINTS = registerInt("entity_trust_points");
     public static final AttachmentType<Integer> ENTITY_TRUST_COOLDOWN = registerInt("entity_trust_cooldown");
     public static final AttachmentType<Boolean> ENTITY_HAS_VERDANT_OMEN = registerBool("entity_has_verdant_omen");
@@ -85,7 +86,8 @@ public class VWAttachments {
 
     public static void register() {
         AttachmentType<?>[] globalAttachments = {
-                ENTITY_INTERACTION_DATA,
+                ENTITY_TRUSTED_MOB_DATA,
+                ENTITY_IS_PARALYZED,
                 ENTITY_TRUST_POINTS,
                 ENTITY_TRUST_COOLDOWN,
                 ENTITY_HAS_VERDANT_OMEN,
@@ -126,13 +128,13 @@ public class VWAttachments {
         };
         int total = globalAttachments.length + playerAttachments.length + wolfAttachments.length + villagerAttachments.length;
 
-        TOTVW.sendLog(
-                "Custom Attachments: " +
-                        "GLOBAL: " + globalAttachments.length + ", " +
-                        "PLAYER: " + playerAttachments.length + ", " +
-                        "WOLF: " + wolfAttachments.length + ", " +
-                        "VILLAGER: " + villagerAttachments.length + " || " +
-                        "TOTAL: " + total
+        TOTVW.sendClassRegisterLog(
+                "Custom Attachments (" +
+                        "Global: " + globalAttachments.length + ", " +
+                        "Player: " + playerAttachments.length + ", " +
+                        "Wolf: " + wolfAttachments.length + ", " +
+                        "Villager: " + villagerAttachments.length + " ) " +
+                        total + " in total has been"
         );
     }
 }

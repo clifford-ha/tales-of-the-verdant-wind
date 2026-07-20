@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "tales-of-the-verdant-wind:block/lodestone_wind_core",
+    "front": "tales-of-the-verdant-wind:block/lodestone_wind_core_front_active",
+    "side": "tales-of-the-verdant-wind:block/lodestone_wind_core",
+    "top": "tales-of-the-verdant-wind:block/lodestone_wind_core"
+  }
+}

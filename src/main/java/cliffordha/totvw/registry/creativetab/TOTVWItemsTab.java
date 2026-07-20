@@ -78,6 +78,8 @@ public class TOTVWItemsTab extends Item {
                 output.accept(VWItems.VERIXIUM_PICKAXE);
                 output.accept(VWItems.VERIXIUM_HOE);
                 output.accept(VWItems.VERIXIUM_SHOVEL);
+
+                output.accept(VWBlocks.LODESTONE_WIND_CORE);
             })
             .build();
 }

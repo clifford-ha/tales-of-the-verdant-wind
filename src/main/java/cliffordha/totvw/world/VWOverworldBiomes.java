@@ -1,10 +1,8 @@
 package cliffordha.totvw.world;
 
-
 import cliffordha.totvw.worldgen.VWPlacedFeatures;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
-
 import net.minecraft.data.worldgen.Carvers;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.attribute.*;

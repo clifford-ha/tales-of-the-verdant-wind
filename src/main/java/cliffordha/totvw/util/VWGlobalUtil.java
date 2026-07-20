@@ -87,7 +87,7 @@ public final class VWGlobalUtil {
         var posY = entity.getY();
         var posZ = entity.getZ();
         var random = level.getRandom().nextFloat();
-        level.playSound(null, posX, posY, posZ, sound, source, 0.5f + random, 0.5f + random);
+        level.playSound(null, posX, posY, posZ, sound, source, 0.3f + random, 0.5f + random);
     }
 
     public static boolean isHalfHealth(LivingEntity entity) {

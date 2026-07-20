@@ -23,12 +23,19 @@ import java.util.function.Function;
 public class TOTVW {
     public static final String MOD_ID = "tales-of-the-verdant-wind";
     public static final String MOD_NAME = "Tales of the Verdant Wind";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static void sendLog(String className) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
+
+    public static void sendClassRegisterLog(String className) {
         TOTVW.LOGGER.info("{} registered!", className);
     }
     public static void sendInfo(String info) {
         TOTVW.LOGGER.info(info);
+    }
+    public static void sendWarning(String error) {
+        TOTVW.LOGGER.warn(error);
+    }
+    public static void sendWarning(String error, Object info) {
+        TOTVW.LOGGER.warn("{}{}", error, info);
     }
     
     private static final int secTick = 20;
@@ -43,28 +50,4 @@ public class TOTVW {
         if (finalTotal <= 0) return false;
         return gameTime % finalTotal == 0;
     }
-    
-    public static Item registerItem(String name, Function<Item.Properties, Item> function) {
-        return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
-                function.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name))))); }
-
-    public static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> blockFactory, BlockBehaviour.Properties settings, boolean registerBlock, Component... tooltips) {
-        ResourceKey<Block> blockKey = keyOfBlock(name);
-        Block block = blockFactory.apply(settings.setId(blockKey));
-        if (registerBlock) {
-            ResourceKey<Item> itemKey = keyOfItem(name);
-            BlockItem blockItem = new BlockItem(block, new Item.Properties().setId(itemKey).useBlockDescriptionPrefix()){
-                @Override
-                public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
-                    for (var component : tooltips) {
-                        builder.accept(component);
-                    }
-                    super.appendHoverText(itemStack, context, display, builder, tooltipFlag);
-                }
-            };
-            Registry.register(BuiltInRegistries.ITEM, itemKey, blockItem);}
-        return Registry.register(BuiltInRegistries.BLOCK, blockKey, block);}
-    
-    private static ResourceKey<Block> keyOfBlock(String name) { return ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }
-    private static ResourceKey<Item> keyOfItem(String name) { return ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }
 }

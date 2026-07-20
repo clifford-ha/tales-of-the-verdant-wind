@@ -1,7 +1,7 @@
 package cliffordha.totvw.registry.items;
 
-import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
+import cliffordha.totvw.registry.VWItems;
 import net.minecraft.world.item.Item;
 
 public class VWItemsScatteredPage {
@@ -33,7 +33,7 @@ public class VWItemsScatteredPage {
 
 
     private static Item createPage(String name, int id) {
-        return TOTVW.registerItem(name, properties -> new ScatteredPageItem(properties.stacksTo(1), id));
+        return VWItems.Util.registerItem(name, properties -> new ScatteredPageItem(properties.stacksTo(1), id));
     }
 
     public static void registerAdditionalItems() {}

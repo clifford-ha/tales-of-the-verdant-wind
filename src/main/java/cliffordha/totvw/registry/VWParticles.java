@@ -7,7 +7,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 
-import static cliffordha.totvw.TOTVW.sendLog;
+import static cliffordha.totvw.TOTVW.sendClassRegisterLog;
 
 public class VWParticles {
     public static final SimpleParticleType BENEDICTION_TRIGGER_PARTICLE =
@@ -28,6 +28,6 @@ public class VWParticles {
     }
 
     public static void register() {
-        sendLog("Particles");
+        sendClassRegisterLog("Particles");
     }
 }

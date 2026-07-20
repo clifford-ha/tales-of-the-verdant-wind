@@ -36,6 +36,6 @@ public class VWPotions {
     }
 
     public static void register() {
-        TOTVW.sendLog("Potions");
+        TOTVW.sendClassRegisterLog("Potions");
     }
 }

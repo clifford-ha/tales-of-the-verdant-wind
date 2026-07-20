@@ -1,6 +1,6 @@
 package cliffordha.totvw.block.entity;
 
-import cliffordha.totvw.block.VWStorageBlock;
+import cliffordha.totvw.block.custom.VWStorageBlock;
 import cliffordha.totvw.registry.VWBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;

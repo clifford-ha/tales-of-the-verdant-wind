@@ -22,6 +22,6 @@ public class VWSounds {
     }
 
     public static void register() {
-        TOTVW.sendLog("Sounds");
+        TOTVW.sendClassRegisterLog("Sounds");
     }
 }

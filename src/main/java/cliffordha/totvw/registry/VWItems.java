@@ -11,18 +11,23 @@ import cliffordha.totvw.registry.items.VWItemsScatteredPage;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.equipment.ArmorType;
 
-import static cliffordha.totvw.TOTVW.sendLog;
+import java.util.function.Function;
+
+import static cliffordha.totvw.TOTVW.sendClassRegisterLog;
+import static cliffordha.totvw.registry.VWItems.Util.registerItem;
 
 public class VWItems {
     public static final Identifier VERIXIUM_ARMOR_EQUIPPED = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_armor_equipped");
-    public static final Item VERIXIUM_HELMET = TOTVW.registerItem("verixium_helmet",
+    public static final Item VERIXIUM_HELMET = registerItem("verixium_helmet",
             properties -> new Item(properties
                     .humanoidArmor(VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL, ArmorType.HELMET)
                     .fireResistant()
@@ -39,7 +44,7 @@ public class VWItems {
                                     )
                     )
             ));
-    public static final Item VERIXIUM_CHESTPLATE = TOTVW.registerItem("verixium_chestplate",
+    public static final Item VERIXIUM_CHESTPLATE = registerItem("verixium_chestplate",
             properties -> new Item(properties
                     .humanoidArmor(VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL, ArmorType.CHESTPLATE)
                     .fireResistant()
@@ -66,7 +71,7 @@ public class VWItems {
 
                     )
             ));
-    public static final Item VERIXIUM_LEGGINGS = TOTVW.registerItem("verixium_leggings",
+    public static final Item VERIXIUM_LEGGINGS = registerItem("verixium_leggings",
             properties -> new Item(properties
                     .humanoidArmor(VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL, ArmorType.LEGGINGS)
                     .fireResistant()
@@ -101,7 +106,7 @@ public class VWItems {
                                     )
                     )
             ));
-    public static final Item VERIXIUM_BOOTS = TOTVW.registerItem("verixium_boots",
+    public static final Item VERIXIUM_BOOTS = registerItem("verixium_boots",
             properties -> new Item(properties
                     .humanoidArmor(VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL, ArmorType.BOOTS)
                     .fireResistant()
@@ -140,7 +145,7 @@ public class VWItems {
 
     public static final Identifier VERIXIUM_WOLF_ARMOR_EQUIPPED = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_wolf_armor_equipped");
     public static final Identifier VERIXIUM_HORSE_ARMOR_EQUIPPED = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_horse_armor_equipped");
-    public static final Item VERIXIUM_WOLF_ARMOR = TOTVW.registerItem("verixium_wolf_armor",
+    public static final Item VERIXIUM_WOLF_ARMOR = registerItem("verixium_wolf_armor",
             properties -> new Item(properties
                     .fireResistant()
                     .wolfArmor(VWArmorMaterials.VERIXIUM_ENTITY_ARMOR)
@@ -159,7 +164,7 @@ public class VWItems {
                     )
             ));
 
-    public static final Item VERIXIUM_HORSE_ARMOR = TOTVW.registerItem( "verixium_horse_armor",
+    public static final Item VERIXIUM_HORSE_ARMOR = registerItem( "verixium_horse_armor",
             properties -> new Item(properties
                     .fireResistant()
                     .horseArmor(VWArmorMaterials.VERIXIUM_ENTITY_ARMOR)
@@ -190,79 +195,78 @@ public class VWItems {
 
 
     //VERIXIUM ITEMS
-    public static final Item VERIXIUM_CHUNK = TOTVW.registerItem("verixium_chunk",
+    public static final Item VERIXIUM_CHUNK = registerItem("verixium_chunk",
             properties -> new Item(properties
                     .fireResistant()
             ));
-    public static final Item CONDENSED_VERIXIUM = TOTVW.registerItem("condensed_verixium",
+    public static final Item CONDENSED_VERIXIUM = registerItem("condensed_verixium",
             properties -> new Item(properties
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_SHARD = TOTVW.registerItem("verixium_shard",
+    public static final Item VERIXIUM_SHARD = registerItem("verixium_shard",
             properties -> new Item(properties
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_POWDER = TOTVW.registerItem("verixium_powder",
+    public static final Item VERIXIUM_POWDER = registerItem("verixium_powder",
             properties -> new Item(properties
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_INGOT = TOTVW.registerItem("verixium_ingot",
+    public static final Item VERIXIUM_INGOT = registerItem("verixium_ingot",
             properties -> new Item(properties
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_PAPER = TOTVW.registerItem("verixium_paper",
+    public static final Item VERIXIUM_PAPER = registerItem("verixium_paper",
             properties -> new Item(properties
                     .fireResistant())
             );
-    public static final Item VERIXIUM_ARMOR_UPGRADE_TEMPLATE = TOTVW.registerItem("verixium_armor_upgrade_template",
+    public static final Item VERIXIUM_ARMOR_UPGRADE_TEMPLATE = registerItem("verixium_armor_upgrade_template",
             properties -> new Item(properties
                     .rarity(Rarity.EPIC)
                     .fireResistant()
             ));
-    public static final float V = 0.5f;
-    public static final Item VERIXIUM_SPEAR = TOTVW.registerItem("verixium_spear",
+    public static final Item VERIXIUM_SPEAR = registerItem("verixium_spear",
             properties -> new Item(properties
                     .spear(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 1.10f, 1.1f, 0.5f, 1.3f, 9.0f, 6.0f, 5.1f, 9.10f, 4.6f)
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_SWORD = TOTVW.registerItem("verixium_sword",
+    public static final Item VERIXIUM_SWORD = registerItem("verixium_sword",
             properties -> new VWItemBlessingsInstance(properties
                     .sword(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 3.0F, -2.4f)
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_AXE = TOTVW.registerItem("verixium_axe",
-            properties -> new AxeItem(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 5.0F, -3.0f + V, properties
+    public static final Item VERIXIUM_AXE = registerItem("verixium_axe",
+            properties -> new AxeItem(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 5.0F, -2.5f, properties
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_PICKAXE = TOTVW.registerItem("verixium_pickaxe",
+    public static final Item VERIXIUM_PICKAXE = registerItem("verixium_pickaxe",
             properties -> new Item(properties
                     .pickaxe(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 1.0F, -2.8f)
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_HOE = TOTVW.registerItem("verixium_hoe",
+    public static final Item VERIXIUM_HOE = registerItem("verixium_hoe",
             properties -> new HoeItem(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 3.0F, 0.0f, properties
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_SHOVEL = TOTVW.registerItem("verixium_shovel",
+    public static final Item VERIXIUM_SHOVEL = registerItem("verixium_shovel",
             properties -> new ShovelItem(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 1.5F, -3.0f, properties
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_FLUID_BUCKET = TOTVW.registerItem("verixium_fluid_bucket",
+    public static final Item VERIXIUM_FLUID_BUCKET = registerItem("verixium_fluid_bucket",
             properties -> new BucketItem(VWFluids.VERIXIUM_FLUID, properties
                     .stacksTo(1)
                     .craftRemainder(Items.BUCKET)
                     .fireResistant()
             ));
-    public static final Item VERDANT_SPRUCE_BOAT = TOTVW.registerItem("verdant_spruce_boat",
+    public static final Item VERDANT_SPRUCE_BOAT = registerItem("verdant_spruce_boat",
             properties -> new BoatItem(VWEntities.VERDANT_SPRUCE_BOAT, properties.stacksTo(1)));
-    public static final Item VERDANT_SPRUCE_CHEST_BOAT = TOTVW.registerItem("verdant_spruce_chest_boat",
+    public static final Item VERDANT_SPRUCE_CHEST_BOAT = registerItem("verdant_spruce_chest_boat",
             properties -> new BoatItem(VWEntities.VERDANT_SPRUCE_CHEST_BOAT, properties.stacksTo(1)));
 
-    public static final Item VERDANT_SPRUCE_SIGN = TOTVW.registerItem("verdant_spruce_sign",
+    public static final Item VERDANT_SPRUCE_SIGN = registerItem("verdant_spruce_sign",
             properties -> new SignItem(VWBlocksVerdant.VERDANT_SPRUCE_SIGN, VWBlocksVerdant.VERDANT_SPRUCE_WALL_SIGN, properties
                     .stacksTo(16)
             ));
-    public static final Item VERDANT_SPRUCE_HANGING_SIGN = TOTVW.registerItem("verdant_spruce_hanging_sign",
+    public static final Item VERDANT_SPRUCE_HANGING_SIGN = registerItem("verdant_spruce_hanging_sign",
             properties -> new HangingSignItem(VWBlocksVerdant.VERDANT_SPRUCE_HANGING_SIGN, VWBlocksVerdant.VERDANT_SPRUCE_WALL_HANGING_SIGN, properties
                     .stacksTo(16)
             ));
@@ -274,6 +278,13 @@ public class VWItems {
 
         VWItemsScatteredPage.registerAdditionalItems();
 
-        sendLog("Items");
+        sendClassRegisterLog("Items");
+    }
+    
+    public static class Util {
+        public static Item registerItem(String name, Function<Item.Properties, Item> function) {
+            return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
+                    function.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)))));
+        }
     }
 }

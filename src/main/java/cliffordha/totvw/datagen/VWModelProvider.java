@@ -1,6 +1,7 @@
 package cliffordha.totvw.datagen;
 
-import cliffordha.totvw.block.VWStorageBlock;
+import cliffordha.totvw.block.custom.LodestoneWindCore;
+import cliffordha.totvw.block.custom.VWStorageBlock;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import cliffordha.totvw.registry.VWBlocks;
@@ -31,6 +32,14 @@ public class VWModelProvider extends FabricModelProvider {
                 .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, topSuffix));
     }
 
+    private static TextureMapping lodestoneWindCoreMapping(Block block, String front) {
+        return new TextureMapping()
+                .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block))
+                .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block))
+                .put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(block))
+                .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, "_front" + front));
+    }
+
     @Override
     public void generateBlockStateModels(BlockModelGenerators block) {
         var verdantSpruceFamily = block.family(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS);
@@ -59,6 +68,24 @@ public class VWModelProvider extends FabricModelProvider {
                 ModelTemplates.CUBE_BOTTOM_TOP.create(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX,
                         storageBoxTextureMapping(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX, "_top"), block.modelOutput)
         );
+
+        MultiVariant LODESTONE_WIND_CORE_ACTIVE = BlockModelGenerators.plainVariant(
+                ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.createWithSuffix(VWBlocks.LODESTONE_WIND_CORE, "_active",
+                        lodestoneWindCoreMapping(VWBlocks.LODESTONE_WIND_CORE, "_active"), block.modelOutput)
+        );
+        MultiVariant LODESTONE_WIND_CORE = BlockModelGenerators.plainVariant(
+                ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(VWBlocks.LODESTONE_WIND_CORE,
+                        lodestoneWindCoreMapping(VWBlocks.LODESTONE_WIND_CORE, ""), block.modelOutput)
+        );
+
+        block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VWBlocks.LODESTONE_WIND_CORE)
+                .with(BlockModelGenerators.createBooleanModelDispatch(LodestoneWindCore.ACTIVE, LODESTONE_WIND_CORE_ACTIVE, LODESTONE_WIND_CORE))
+                .with(PropertyDispatch.modify(BlockStateProperties.HORIZONTAL_FACING)
+                        .select(Direction.NORTH, BlockModelGenerators.NOP)
+                        .select(Direction.SOUTH, BlockModelGenerators.Y_ROT_180)
+                        .select(Direction.WEST,  BlockModelGenerators.Y_ROT_270)
+                        .select(Direction.EAST,  BlockModelGenerators.Y_ROT_90)
+                ));
 
         block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX)
                 .with(BlockModelGenerators.createBooleanModelDispatch(VWStorageBlock.OPEN, OPEN, CLOSED))

@@ -23,6 +23,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -179,6 +180,7 @@ public class VWWolfBehaviors {
         if (wolf.getAirSupply() <= wolf.getMaxAirSupply() * 0.5 && wolf.getAirSupply() > 0.0f) {
             wolf.makeSound(new SoundEvent(Identifier.withDefaultNamespace("entity.wolf.whine"), Optional.of(16.0f)));
             notifyFromWolf(wolf, VWColors.MIGHT_EFFECT_MUTED, "[" + wolfName(wolf) + "] My air supply is about to run out...");
+            playNotification(wolf);
         }
 
         wolf.setAttached(VWAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY, sec(3));
@@ -272,7 +274,7 @@ public class VWWolfBehaviors {
                 removeEffect(victim, MobEffects.RESISTANCE);
                 removeEffect(victim, MobEffects.REGENERATION);
             }
-            if ((victim.getMaxHealth() > 40.0) && CD_PARALYZE <= 0) {
+            if ((victim.getMaxHealth() > 40.0) && CD_PARALYZE <= 0 && !victim.hasEffect(VWEffects.PARALYZE)) {
                 addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
 
                 notifyFromWolf(wolf, VWColors.MIGHT_EFFECT, wolfName(wolf) + " | " + victim.getName().getString() + " has been paralyzed for " + (paralyzeTime / sec(1)) + " seconds.");
@@ -326,16 +328,18 @@ public class VWWolfBehaviors {
             if (ACTIVE_GNAWING == 1) {
                 heal = wolf.getMaxHealth() * 0.15f;
             } else {
-                heal = wolf.getMaxHealth() * 0.30f;}
-
-            wolf.heal(heal);
-            if (ACTIVE_PROTECTION > 0 || ACTIVE_BLAST_PROTECTION > 0 || ACTIVE_FIRE_PROTECTION > 0) {
-                if (player == null) return;
-                player.heal( Math.max(ACTIVE_PROTECTION, ( Math.max(ACTIVE_BLAST_PROTECTION, ACTIVE_FIRE_PROTECTION))) );
+                heal = wolf.getMaxHealth() * 0.30f;
             }
-            if (playerEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0) {
-                if (player == null) return;
-                player.heal(1.0f);
+            wolf.heal(heal);
+            if (player != null) {
+                if (ACTIVE_PROTECTION > 0 || ACTIVE_BLAST_PROTECTION > 0 || ACTIVE_FIRE_PROTECTION > 0) {
+                    player.heal(
+                            Mth.ceil((float) Math.max(ACTIVE_PROTECTION, (Math.max(ACTIVE_BLAST_PROTECTION, ACTIVE_FIRE_PROTECTION))) / 2)
+                    );
+                }
+                if (playerEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0) {
+                    player.heal(1.0f);
+                }
             }
         }
 

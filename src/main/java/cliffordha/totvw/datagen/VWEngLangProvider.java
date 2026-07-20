@@ -50,6 +50,7 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX, "Verdant Spruce Storage Box");
 
         text.add("container.tales-of-the-verdant-wind.storage_box", "Storage Box");
+        text.add(VWBlocks.LODESTONE_WIND_CORE, "Lodestone Wind Core");
 
         text.add(VWItems.VERDANT_SPRUCE_BOAT, "Verdant Spruce Boat");
         text.add(VWItems.VERDANT_SPRUCE_CHEST_BOAT, "Verdant Spruce Chest Boat");

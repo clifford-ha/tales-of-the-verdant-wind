@@ -6,7 +6,9 @@ import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWSounds;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -22,6 +24,16 @@ public class VWSkillProcessor {
         entity.setAttached(skillCD, current - sec(1));
     }
 
+    public static void playNotification(LivingEntity entity) {
+        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
+        if (!(entity.level() instanceof ServerLevel)) return;
+        if (entity instanceof Wolf wolf && wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer player) {
+            player.level().playLocalSound(player, VWSounds.NOTIFY, SoundSource.PLAYERS, 1.0f, 1.0f);
+        } else if (entity instanceof ServerPlayer player) {
+            player.level().playLocalSound(player, VWSounds.NOTIFY, SoundSource.PLAYERS, 1.0f, 1.0f);
+        }
+    }
+
     public static void processCDNotify(LivingEntity entity, AttachmentType<Integer> cooldown, AttachmentType<Integer> notify, int color, String... msg) {
         if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
         int cd = entity.getAttachedOrElse(cooldown, 0);
@@ -33,31 +45,24 @@ public class VWSkillProcessor {
             } else if (entity instanceof Player player) {
                 notifyFromPlayer(player, color, msg);
             }
+            playNotification(entity);
             entity.setAttached(notify, 0);
-            entity.playSound(VWSounds.NOTIFY, 1.0f, 1.0f);
         }
     }
 
     public static void setPlayerConfiguration(Player player, int config) {
         String name = player.getName().getString();
         int CD_VERDANT_BLESSING = player.getAttachedOrElse(VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-        int VILLAGER_ATROCITY = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
 
         if (config == 0) {
             if (CD_VERDANT_BLESSING > 0) {
-                notifyFromPlayer(player, VWColors.DEFAULT_MUTED, name + "| VerdantBlessingCD: " + CD_VERDANT_BLESSING / 20 + " sec");
-            }
-            if (VILLAGER_ATROCITY > 0) {
-                notifyFromPlayer(player, VWColors.DEFAULT_MUTED, name + "| Atrocity: " + VILLAGER_ATROCITY);
+                notifyFromPlayer(player, VWColors.DEFAULT_MUTED, name + " | VerdantBlessingCD: " + CD_VERDANT_BLESSING / 20 + " sec");
             }
         } else if (config == 1) {
             if (CD_VERDANT_BLESSING > 0) {
                 player.setAttached(VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
             }
-            if (VILLAGER_ATROCITY > 0) {
-                player.setAttached(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
-            }
-        } else throw new IllegalArgumentException("Invalid config value");
+        }
     }
 
 
@@ -70,13 +75,13 @@ public class VWSkillProcessor {
 
         if (config == 0) {
             if (CD_VERDANT_BLESSING > 0) {
-                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, name + "| VerdantBlessingCD: " + CD_VERDANT_BLESSING / sec(1) + " sec");
+                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, name + " | VerdantBlessingCD: " + CD_VERDANT_BLESSING / sec(1) + " sec");
             }
             if (CD_BLOODLUST_SKILL_PARALYZE > 0) {
-                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, name + "| ParalyzeCD: " + CD_BLOODLUST_SKILL_PARALYZE / sec(1) + " sec");
+                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, name + " | ParalyzeCD: " + CD_BLOODLUST_SKILL_PARALYZE / sec(1) + " sec");
             }
             if (CD_MIGHT_RUPTURE > 0) {
-                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, name + "| RuptureCD: " + CD_MIGHT_RUPTURE / sec(1) + " sec");
+                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, name + " | RuptureCD: " + CD_MIGHT_RUPTURE / sec(1) + " sec");
             }
         } else if (config == 1) {
             if (CD_VERDANT_BLESSING > 0) {
@@ -88,7 +93,7 @@ public class VWSkillProcessor {
             if (CD_MIGHT_RUPTURE > 0) {
                 wolf.setAttached(VWAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE, 0);
             }
-        } else throw new IllegalArgumentException("Invalid config value");
+        }
     }
 
 
@@ -100,7 +105,7 @@ public class VWSkillProcessor {
     }
     public static void notifyFromWolf(Wolf wolf, int color, String... msg) {
         if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
-        if (wolf.getOwner() instanceof ServerPlayer serverPlayer) {
+        if (wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer serverPlayer) {
             serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)).withColor(color));
         }
     }
@@ -114,7 +119,7 @@ public class VWSkillProcessor {
     }
     public static void notifyFromWolf(Wolf wolf, int color, boolean overlay, String... msg) {
         if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
-        if (wolf.getOwner() instanceof ServerPlayer serverPlayer) {
+        if (wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer serverPlayer) {
             serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)).withColor(color), overlay);
         }
     }

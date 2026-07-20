@@ -270,6 +270,6 @@ public class VWEnchantments {
     }
 
     public static void register() {
-        TOTVW.sendLog("Enchantments");
+        TOTVW.sendClassRegisterLog("Enchantments");
     }
 }

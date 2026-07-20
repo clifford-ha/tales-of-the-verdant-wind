@@ -2,14 +2,16 @@ package cliffordha.totvw.mixin;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.util.VWGlobalUtil;
-import cliffordha.totvw.entity.VWInteractionData;
+import cliffordha.totvw.entity.VWTrustInteractionData;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWItemTags;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -21,9 +23,10 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.animal.wolf.WolfSoundVariants;
 import net.minecraft.world.entity.monster.Creeper;
@@ -50,30 +53,59 @@ import static cliffordha.totvw.entity.skill.VWSkillProcessor.*;
 
 @Mixin(Wolf.class)
 public abstract class WolfEntityMixin extends LivingEntity {
-
     protected WolfEntityMixin(EntityType<? extends LivingEntity> type, Level level) {
         super(type, level);
     }
 
     @Unique
-    private static boolean isVerdant(Wolf wolf) {
-        return wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false);
+    private static final Identifier VERDANT_WOLF_PERMANENT_MODIFIERS = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_wolf_permanent_modifiers");
+
+    @Unique
+    private static void addAttributeModifier(Wolf wolf, Holder<Attribute> attribute, double amount, AttributeModifier.Operation operation) {
+        AttributeInstance m = wolf.getAttribute(attribute);
+        if (m != null && !m.hasModifier(VERDANT_WOLF_PERMANENT_MODIFIERS)) {
+            m.addPermanentModifier(new AttributeModifier(VERDANT_WOLF_PERMANENT_MODIFIERS, amount, operation));
+        }
     }
 
     @Unique
-    private static boolean isInVerdantBiome(ServerLevel level, Wolf wolf) {
-        return level.getBiome(wolf.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
+    private static void setAttributeBaseValue(Wolf wolf, Holder<Attribute> attribute, double amount) {
+        if (wolf.getAttributes().hasAttribute(attribute)) {
+            wolf.getAttribute(attribute).setBaseValue(amount);
+        }
     }
 
-    @Inject(method = "getBreedOffspring*", at = @At("RETURN"), cancellable = true)
+    @Unique
+    private static void setVerdantModifiers(Wolf wolf) {
+        addAttributeModifier(wolf,
+                Attributes.ATTACK_DAMAGE,
+                2,
+                AttributeModifier.Operation.ADD_VALUE
+        );
+        addAttributeModifier(wolf,
+                Attributes.MOVEMENT_SPEED,
+                0.075,
+                AttributeModifier.Operation.ADD_VALUE
+        );
+        addAttributeModifier(wolf,
+                Attributes.SCALE,
+                0.2,
+                AttributeModifier.Operation.ADD_VALUE
+        );
+    }
+
+    @Inject(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/wolf/Wolf;", at = @At("RETURN"), cancellable = true)
     private void getOffspring(ServerLevel level, AgeableMob partner, CallbackInfoReturnable<Wolf> cir) {
         Wolf baby = EntityType.WOLF.create(level, EntitySpawnReason.BREEDING);
         Wolf wolf = (Wolf) (Object) this;
 
         if (baby != null && partner instanceof Wolf wolfPartner) {
-            if (isVerdant(wolf) || isVerdant(wolfPartner) || isInVerdantBiome(level, wolf) || isInVerdantBiome(level, wolfPartner)) {
-                baby.setCustomName(Component.literal("Verdant " + baby.getName().getString()).withColor(VWColors.VERDANT_WIND));
+            if (wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false)
+                    || wolfPartner.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false)
+                    || wolf.level().getBiome(wolf.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES)
+                    || wolfPartner.level().getBiome(wolfPartner.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES)) {
                 baby.setAttached(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, true);
+                setVerdantModifiers(baby);
             }
 
             if (this.random.nextBoolean()) {
@@ -93,7 +125,6 @@ public abstract class WolfEntityMixin extends LivingEntity {
             baby.setSoundVariant(WolfSoundVariants.pickRandomSoundVariant(this.registryAccess(), this.random));
 
             cir.setReturnValue(baby);
-            cir.cancel();
         }
     }
 
@@ -101,31 +132,33 @@ public abstract class WolfEntityMixin extends LivingEntity {
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Wolf wolf = (Wolf) (Object) this;
         boolean inVerdant = level.getBiome(wolf.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
-
         if (inVerdant) {
             wolf.setAttached(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, true);
-            wolf.setCustomName(Component.literal("Verdant " + wolf.getName().getString()).withColor(VWColors.VERDANT_WIND));
+            setVerdantModifiers(wolf);
         }
-        wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
-        wolf.getAttribute(Attributes.WATER_MOVEMENT_EFFICIENCY).setBaseValue(0.1);
     }
 
     @Inject(method = "applyTamingSideEffects", at = @At("HEAD"), cancellable = true)
     private void createAttributes(CallbackInfo ci) {
         Wolf wolf = (Wolf) (Object) this;
         if (wolf.isTame()) {
-            wolf.getAttribute(Attributes.MAX_HEALTH).setBaseValue(40.0);
+            setAttributeBaseValue(wolf, Attributes.MAX_HEALTH, 40.0);
             wolf.setHealth(40.0f);
         } else {
-            wolf.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0);
-            wolf.setHealth(20.0f);
-        }
-        if (isVerdant(wolf)) {
-            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.375);
-        } else {
-            wolf.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.305);
+            setAttributeBaseValue(wolf, Attributes.MAX_HEALTH, 20.0);
         }
         ci.cancel();
+    }
+
+    @Inject(method = "createAttributes", at = @At("RETURN"), cancellable = true)
+    private static void initializeAttributes(CallbackInfoReturnable<AttributeSupplier.Builder> cir) {
+        cir.setReturnValue(Animal.createAnimalAttributes()
+                .add(Attributes.MOVEMENT_SPEED, 0.305)
+                .add(Attributes.MAX_HEALTH, 20.0)
+                .add(Attributes.ATTACK_DAMAGE, 4.0)
+                .add(Attributes.WATER_MOVEMENT_EFFICIENCY, 0.125)
+                .add(Attributes.SCALE, 1.0)
+        );
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
@@ -133,7 +166,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
         Wolf wolf = (Wolf) (Object) this;
 
         if (wolf.level().getGameTime() % 60 == 0) {
-            if (isVerdant(wolf) && !wolf.isTame()) {
+            if (wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false) && !wolf.isTame()) {
                 if (!wolf.isAngry()) {
                     wolf.setAttached(VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0);
                 }
@@ -174,13 +207,6 @@ public abstract class WolfEntityMixin extends LivingEntity {
                 && !wolf.isTame()
                 && !wolf.isWearingBodyArmor();
 
-        boolean unTame = itemStack.is(Items.HONEY_BOTTLE)
-                && player.getAttachedOrElse(VWAttachments.Player.PLAYER_IS_DEV_MODE, false)
-                && wolf.isTame()
-                && wolf.getOwner() == player;
-
-        boolean checkStat = itemStack.is(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE);
-
         if (canUseTotem) {
             if (ACTIVE_BENEDICTION >= 3) {
 
@@ -216,14 +242,6 @@ public abstract class WolfEntityMixin extends LivingEntity {
                 wolf.equipItemIfPossible(serverLevel, itemStack);
                 cir.setReturnValue(InteractionResult.SUCCESS);
             }
-        }
-
-        if (unTame) {
-            wolf.setTame(false, false);
-            wolf.setOwner(null);
-        }
-        if (checkStat && wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false)) {
-            notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, true, name + " is already a Verdant type");
         }
     }
 
@@ -277,12 +295,9 @@ public abstract class WolfEntityMixin extends LivingEntity {
         }
         if (wolf.isTame() && wolf.getOwner() != null) {
             LivingEntity player = wolf.getOwner();
-            String dash = "-";
-            String truster = player.getName().getString() + player.getStringUUID();
-            String trustee = dash + target.getName().getString() + target.getStringUUID();
-            VWInteractionData data = target.getAttached(VWAttachments.ENTITY_INTERACTION_DATA);
-            if (data == null) return;
-            if (data.player().equals(truster) && data.trustee().equals(trustee)) {
+            VWTrustInteractionData data = new VWTrustInteractionData(player.getStringUUID(), target.getStringUUID());
+            VWTrustInteractionData empty = new VWTrustInteractionData("", "");
+            if (target.getAttachedOrElse(VWAttachments.ENTITY_TRUSTED_MOB_DATA, empty).equals(data)) {
                 wolf.stopBeingAngry();
                 cir.setReturnValue(false);
             }
@@ -304,6 +319,11 @@ public abstract class WolfEntityMixin extends LivingEntity {
         int ACTIVE_ENHANCEMENT_KIT = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_ARMOR_ENHANCEMENT_KIT);
 
         if (TOTVWConfig.get().WOLF_ARMOR_DMG_DISTRIBUTION) {
+            if (source.is(VWDamageTypes.BLOODLUST)) {
+                float finalWolfDMG = ACTIVE_BENEDICTION > 0 ? damage * 0.5f : damage;
+                wolf.hurtServer(level, VWDamageTypes.create(level, VWDamageTypes.BLOODLUST), finalWolfDMG);
+                ci.cancel();
+            }
             if (!wolf.canArmorAbsorb(source)) return;
 
             ItemStack armor = wolf.getBodyArmorItem();

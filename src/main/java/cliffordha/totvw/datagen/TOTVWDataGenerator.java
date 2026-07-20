@@ -18,20 +18,25 @@ public class TOTVWDataGenerator implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
-		pack.addProvider(VWModelProvider::new);
+
 		pack.addProvider(VWItemTags::new);
 		pack.addProvider(VWBlockTags::new);
 		pack.addProvider(VWBiomeTags::new);
 		pack.addProvider(VWFluidTags::new);
 		pack.addProvider(VWEnchantmentTags::new);
+		pack.addProvider(VWDamageTypeTags::new);
+
+		pack.addProvider(VWModelProvider::new);
 		pack.addProvider(VWSoundsProvider::new);
 		pack.addProvider(VWEngLangProvider::new);
 		pack.addProvider(VWRegistryProvider::new);
 		pack.addProvider(VWBlockLootTableProvider::new);
 		pack.addProvider(VWChestLootProvider::new);
 		pack.addProvider(VWRecipeProvider::new);
+
 		pack.addProvider(VWAdvancements::new);
 	}
+
 	@Override
 	public void buildRegistry(RegistrySetBuilder registryBuilder) {
 		registryBuilder.add(Registries.CONFIGURED_FEATURE, VWConfiguredFeatures::configure);

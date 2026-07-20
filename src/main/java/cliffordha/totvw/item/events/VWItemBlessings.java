@@ -1,8 +1,10 @@
 package cliffordha.totvw.item.events;
 
+import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWItemTags;
+import cliffordha.totvw.util.VWGlobalUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -22,6 +24,7 @@ import net.minecraft.world.level.biome.Biome;
 
 import java.util.function.Predicate;
 
+import static cliffordha.totvw.entity.skill.VWSkillProcessor.playNotification;
 import static cliffordha.totvw.util.VWGlobalUtil.*;
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.notifyFromPlayer;
 
@@ -116,7 +119,8 @@ public class VWItemBlessings {
         } else {
             notifyFromPlayer(player, VWColors.VERDANT_WIND, "Granted: §n" + effect.getRegisteredName().replaceAll("^[^:]*:", "").toUpperCase() + "§r for §e" + targetDurationSec + "§r sec");}
         VWParticleEffects.spawnBlessingParticlesEntity(player, 2);
-        playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
+        //playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
+        playNotification(player);
 
         player.getMainHandItem().hurtWithoutBreaking(3, player);
         setCooldown(player, cdBiome, cd);

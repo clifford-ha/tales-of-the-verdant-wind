@@ -16,6 +16,6 @@ public class VWFluids {
     }
 
     public static void register() {
-        TOTVW.sendLog("Fluids");
+        TOTVW.sendClassRegisterLog("Fluids");
     }
 }

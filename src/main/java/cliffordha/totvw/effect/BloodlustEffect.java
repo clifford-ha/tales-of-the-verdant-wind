@@ -5,9 +5,6 @@ import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWColors;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
@@ -20,14 +17,14 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
+
+import java.util.List;
+
+import static cliffordha.totvw.registry.VWEffects.*;
+import static cliffordha.totvw.util.VWGlobalUtil.wolfEnchantmentLVL;
 
 public class BloodlustEffect extends MobEffect {
-    private static final Identifier ATK_DMG_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "bloodlust_attack_damage");
-    private static final Identifier MOVEMENT_SPEED_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "bloodlust_movement_speed");
-    private static final Identifier ARMOR_REDUCTION_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "bloodlust_armor_reduction");
-
+    private static final Identifier BLOODLUST_EFFECT = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "bloodlust_effect_buff_debuff");
     public BloodlustEffect() {
         super(MobEffectCategory.HARMFUL, VWColors.BLOODLUST_EFFECT);
     }
@@ -37,59 +34,25 @@ public class BloodlustEffect extends MobEffect {
         onEffectAdded(entity, amplifier);
     }
 
-
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
         AttributeMap attributes = entity.getAttributes();
 
         double atkMultiplier = 0.2 + (amplifier * 0.2);
-        if (attributes.hasAttribute(Attributes.ATTACK_DAMAGE)) {
-            attributes.getInstance(Attributes.ATTACK_DAMAGE).addOrReplacePermanentModifier(
-                    new AttributeModifier(
-                            ATK_DMG_ID,
-                            atkMultiplier,
-                            AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-                    )
-            );
-        }
         double speedMultiplier = 0.15 + (Math.min(amplifier, 2) * 0.15);
-        if (attributes.hasAttribute(Attributes.MOVEMENT_SPEED)) {
-            attributes.getInstance(Attributes.MOVEMENT_SPEED).addOrReplacePermanentModifier(
-                    new AttributeModifier(
-                            MOVEMENT_SPEED_ID,
-                            speedMultiplier,
-                            AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-                    )
-            );
-        }
-        if (entity instanceof Wolf wolf) {
-            ItemStack bodyArmor = wolf.getBodyArmorItem();
-            if (bodyArmor.isEmpty()) return;
 
-            RegistryAccess registryAccess = wolf.level().registryAccess();
-            Registry<Enchantment> enchantmentRegistry = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+        addModifier(attributes, BLOODLUST_EFFECT,
+                Attributes.ATTACK_DAMAGE, atkMultiplier, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
-            int mightLevel = bodyArmor.getEnchantments().getLevel(enchantmentRegistry.getOrThrow(VWEnchantments.WOLF_EFFECT_MIGHT));
-            if (mightLevel <= 0) return;
-            if (attributes.hasAttribute(Attributes.ARMOR)) {
-                attributes.getInstance(Attributes.ARMOR).addOrReplacePermanentModifier(
-                        new AttributeModifier(
-                                ARMOR_REDUCTION_ID,
-                                -(0.10 + (amplifier * 0.10)),
-                                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
-                        )
-                );
-            }
+        addModifier(attributes, BLOODLUST_EFFECT,
+                Attributes.MOVEMENT_SPEED, speedMultiplier, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+
+        if (entity instanceof Wolf wolf && wolf.isWearingBodyArmor() && wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_MIGHT) > 0) {
+            addModifier(attributes, BLOODLUST_EFFECT,
+                    Attributes.ARMOR, -(0.10 + (amplifier * 0.10)), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         } else {
-            if (attributes.hasAttribute(Attributes.ARMOR)) {
-                attributes.getInstance(Attributes.ARMOR).addOrReplacePermanentModifier(
-                        new AttributeModifier(
-                                ARMOR_REDUCTION_ID,
-                                -(0.30 + (amplifier * 0.30)),
-                                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
-                        )
-                );
-            }
+            addModifier(attributes, BLOODLUST_EFFECT,
+                    Attributes.ARMOR, -(0.30 + (amplifier * 0.30)), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         }
     }
 
@@ -110,14 +73,17 @@ public class BloodlustEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity entity, int amplifier) {
-        float inflictDMG = 0.10f + (Math.min(amplifier, 0.3f) * 0.10f);
-        if (entity.getHealth() <= 6.0f && entity.hasEffect(MobEffects.REGENERATION)
-                || entity.hasEffect(MobEffects.ABSORPTION)
-                || entity.hasEffect(VWEffects.BLESSING_OF_THE_VERDANT_WIND)) return false;
-
-        if (serverLevel.getRandom().nextInt(60) == 0) {
-            float damage = entity.getHealth() * inflictDMG;
-            entity.hurtServer(serverLevel, VWDamageTypes.create(serverLevel, VWDamageTypes.BLOODLUST), damage);
+        if (entity.getHealth() > 2.0f) {
+            float inflictDMG = 0.10f + (Math.min(amplifier, 0.3f) * 0.10f);
+            if (serverLevel.getRandom().nextInt(60) == 0) {
+                float damage = entity.getHealth() * inflictDMG;
+                entity.hurtServer(serverLevel, VWDamageTypes.create(serverLevel, VWDamageTypes.BLOODLUST), damage);
+            }
+        } else {
+            if (!entity.hasEffect(MobEffects.WEAKNESS)) {
+                entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 0));
+            }
+            entity.removeEffect(VWEffects.BLOODLUST);
         }
         return super.applyEffectTick(serverLevel, entity, amplifier);
     }
@@ -128,16 +94,12 @@ public class BloodlustEffect extends MobEffect {
     }
 
     private void removeModifiers(LivingEntity entity) {
-        AttributeMap attributes = entity.getAttributes();
-
-        if (attributes.hasAttribute(Attributes.ATTACK_DAMAGE)) {
-            attributes.getInstance(Attributes.ATTACK_DAMAGE).removeModifier(ATK_DMG_ID);
-        }
-        if (attributes.hasAttribute(Attributes.MOVEMENT_SPEED)) {
-            attributes.getInstance(Attributes.MOVEMENT_SPEED).removeModifier(MOVEMENT_SPEED_ID);
-        }
-        if (attributes.hasAttribute(Attributes.ARMOR)) {
-            attributes.getInstance(Attributes.ARMOR).removeModifier(ARMOR_REDUCTION_ID);
-        }
+        removeAllModifiers(entity, BLOODLUST_EFFECT,
+                List.of(
+                        Attributes.ATTACK_DAMAGE,
+                        Attributes.MOVEMENT_SPEED,
+                        Attributes.ARMOR
+                )
+        );
     }
 }

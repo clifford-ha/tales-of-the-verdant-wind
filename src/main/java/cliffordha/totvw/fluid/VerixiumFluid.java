@@ -9,6 +9,7 @@ import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.VWParticles;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWFluidTags;
+
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
@@ -22,7 +23,6 @@ import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;

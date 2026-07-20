@@ -16,11 +16,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 
-public class BlessingOfTheVerdantWindEffect extends MobEffect {
-    private static final Identifier ATK_DMG_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "blessing_attack_damage");
-    private static final Identifier BURNING_TIME_REDUCTION_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "blessing_damage_reduction");
-    private static final Identifier HEALTH_INCREASE_ID = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "blessing_health_increase");
+import java.util.List;
 
+import static cliffordha.totvw.registry.VWEffects.*;
+
+public class BlessingOfTheVerdantWindEffect extends MobEffect {
+    private static final Identifier BLESSING_OF_THE_VERDANT_WIND = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "blessing_of_the_verdant_wind");
     public BlessingOfTheVerdantWindEffect() {
         super(MobEffectCategory.BENEFICIAL, VWColors.VERDANT_WIND);
     }
@@ -39,38 +40,18 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
 
         double atkDamage = 0.15 + (amplifier * 0.15);
         double burnTime = 0.2 + (amplifier * 0.2);
+        double health = 0.2 + (Math.min(amplifier, 4) * 0.2);
 
-        double healthIncreaseCap = Math.min(amplifier, 2);
-        double health = 0.2 + (healthIncreaseCap * 0.2);
+        addModifier(attributes, BLESSING_OF_THE_VERDANT_WIND,
+                Attributes.ATTACK_DAMAGE, atkDamage, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
-        if (attributes.hasAttribute(Attributes.ATTACK_DAMAGE)) {
-            attributes.getInstance(Attributes.ATTACK_DAMAGE).addOrReplacePermanentModifier(
-                    new AttributeModifier(
-                            ATK_DMG_ID,
-                            atkDamage,
-                            AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
-                    )
-            );
-        }
-        if (attributes.hasAttribute(Attributes.BURNING_TIME)) {
-            attributes.getInstance(Attributes.BURNING_TIME).addOrReplacePermanentModifier(
-                    new AttributeModifier(
-                            BURNING_TIME_REDUCTION_ID,
-                            - burnTime,
-                            AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
-                    )
-            );
-        }
-        if (attributes.hasAttribute(Attributes.MAX_HEALTH)) {
-            attributes.getInstance(Attributes.MAX_HEALTH).addOrReplacePermanentModifier(
-                    new AttributeModifier(
-                            HEALTH_INCREASE_ID,
-                            health,
-                            AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-                    )
-            );
-            entity.heal(6.0f);
-        }
+        addModifier(attributes, BLESSING_OF_THE_VERDANT_WIND,
+                Attributes.BURNING_TIME, - burnTime, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+
+        addModifier(attributes, BLESSING_OF_THE_VERDANT_WIND,
+                Attributes.MAX_HEALTH, health, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+
+        entity.heal(6.0f);
     }
 
     @Override
@@ -104,16 +85,12 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
     }
 
     private void removeModifiers(LivingEntity entity) {
-        AttributeMap attributes = entity.getAttributes();
-
-        if (attributes.hasAttribute(Attributes.ATTACK_DAMAGE)) {
-            attributes.getInstance(Attributes.ATTACK_DAMAGE).removeModifier(ATK_DMG_ID);
-        }
-        if (attributes.hasAttribute(Attributes.BURNING_TIME)) {
-            attributes.getInstance(Attributes.BURNING_TIME).removeModifier(BURNING_TIME_REDUCTION_ID);
-        }
-        if (attributes.hasAttribute(Attributes.MAX_HEALTH)) {
-            attributes.getInstance(Attributes.MAX_HEALTH).removeModifier(HEALTH_INCREASE_ID);
-        }
+        removeAllModifiers(entity, BLESSING_OF_THE_VERDANT_WIND,
+                List.of(
+                        Attributes.ATTACK_DAMAGE,
+                        Attributes.BURNING_TIME,
+                        Attributes.MAX_HEALTH
+                )
+        );
     }
 }

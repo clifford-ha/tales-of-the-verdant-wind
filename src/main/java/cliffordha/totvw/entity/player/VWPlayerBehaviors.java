@@ -22,6 +22,8 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -146,6 +148,7 @@ public class VWPlayerBehaviors {
             victim.hurtServer(level, level.damageSources().onFire(), 1.0f + FIRE_PROTECTION);
         }
     }
+
 
     public static final PlayerSkillDefinition VERDANT_BLESSING = new PlayerSkillDefinition(
             VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,

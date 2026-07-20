@@ -14,7 +14,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.entity.vehicle.boat.ChestBoat;
 
-import static cliffordha.totvw.TOTVW.sendLog;
+import static cliffordha.totvw.TOTVW.sendClassRegisterLog;
 
 public class VWEntities {
 
@@ -39,6 +39,6 @@ public class VWEntities {
         VWWolfBehaviors.registerModWolfBehaviors();
         VWGlobalEntityBehaviors.register();
 
-        sendLog("Entities and Entity Behaviors");
+        sendClassRegisterLog("Entities and Entity Behaviors");
     }
 }

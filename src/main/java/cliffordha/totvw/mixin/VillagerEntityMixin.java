@@ -6,7 +6,6 @@ import cliffordha.totvw.tag.VWBiomeTags;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -34,20 +33,10 @@ import java.util.function.Predicate;
 @Mixin(Villager.class)
 public class VillagerEntityMixin {
 
-    @Unique
-    private static boolean isVerdant(Villager villager) {
-        return villager.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false);
-    }
-
-    @Unique
-    private static boolean isInVerdantBiome(Villager villager) {
-        return villager.level().getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
-    }
-
     @Inject(method = "finalizeSpawn", at = @At("TAIL"))
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Villager villager = (Villager) (Object) this;
-        boolean inVerdant = isInVerdantBiome(villager);
+        boolean inVerdant = villager.level().getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
 
         VillagerData data = villager.getVillagerData();
         Holder<VillagerType> taiga = level.registryAccess()
@@ -56,7 +45,7 @@ public class VillagerEntityMixin {
 
         if (spawnReason == EntitySpawnReason.BREEDING) {
             villager.setVillagerData(villager.getVillagerData().withProfession(level.registryAccess(), VillagerProfession.NONE));
-            if (inVerdant || isVerdant(villager)) {
+            if (inVerdant || villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false)) {
                 villager.setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
             }
         }
@@ -71,7 +60,7 @@ public class VillagerEntityMixin {
     private void onTick(CallbackInfo ci) {
         Villager villager = (Villager) (Object) this;
 
-        boolean isCorrectVillager = isVerdant(villager)
+        boolean isCorrectVillager = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false)
                 && villager.getVillagerData().profession().is(Predicate.isEqual(VillagerProfession.CLERIC));
         if (!isCorrectVillager) return;
 
@@ -144,15 +133,29 @@ public class VillagerEntityMixin {
         }
     }
 
+    @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
+    private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+        Villager villager = (Villager) (Object) this;
+        if (player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) > 15) {
+            if (!villager.level().isClientSide()) {
+                villager.makeSound(SoundEvents.VILLAGER_NO);
+            }
+            int unhappiness = villager.getUnhappyCounter();
+            villager.setUnhappyCounter(unhappiness + 12);
+            cir.setReturnValue(InteractionResult.FAIL);
+        }
+    }
+
     @Inject(method = "updateSpecialPrices", at = @At("TAIL"))
     private void villagerVerdantTrades(Player player, CallbackInfo ci) {
         Villager villager = (Villager) (Object) this;
+        boolean inVerdant = villager.level().getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
 
-        if (!isVerdant(villager)) return;
+        if (!inVerdant) return;
 
         int rerollCD = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL, 0);
         float modifier = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER, 0.0f);
-        float additional = isInVerdantBiome(villager) ? 0.25f : 0.0f;
+        float additional = villager.level().getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES) ? 0.25f : 0.0f;
 
         float MIN_MODIFIER = 0.0f;
         float MAX_MODIFIER = 0.75f;
@@ -167,18 +170,6 @@ public class VillagerEntityMixin {
         for (MerchantOffer offer : villager.getOffers()) {
             int costReduction = (int) Math.floor(modifier * (double) offer.getBaseCostA().getCount());
             offer.addToSpecialPriceDiff(-Math.max(costReduction, 1));
-        }
-    }
-
-    @Inject(method = "mobInteract", at = @At("HEAD"))
-    private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        Villager villager = (Villager) (Object) this;
-        int playerAtrocity = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
-        float def = 1.0f;
-        if (playerAtrocity > 15) {
-            villager.playSound(SoundEvents.VILLAGER_NO, def, def);
-            player.sendSystemMessage(Component.literal("Your atrocity level [" + playerAtrocity + "] is too high!"));
-            cir.setReturnValue(InteractionResult.FAIL);
         }
     }
 

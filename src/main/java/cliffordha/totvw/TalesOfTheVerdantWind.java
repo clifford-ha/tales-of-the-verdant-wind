@@ -9,8 +9,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import terrablender.api.TerraBlenderApi;
 
-import static cliffordha.totvw.TOTVW.MOD_NAME;
-
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 	public TalesOfTheVerdantWind() {}
 
@@ -42,13 +40,13 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		LootTableEvents.MODIFY.register(VWLootTableModifier::modifyLootTables);
 
 
-		TOTVW.LOGGER.info(MOD_NAME + " has been initialized!");
+		TOTVW.sendInfo("Mod has been initialized!");
 	}
 
 	@Override
 	public void onTerraBlenderInitialized() {
 		VWBiomes.registerBiomes();
 
-		TOTVW.LOGGER.info(" Initialized TerraBlender for " + MOD_NAME);
+		TOTVW.sendClassRegisterLog("[Dependency] TerraBlender");
 	}
 }
