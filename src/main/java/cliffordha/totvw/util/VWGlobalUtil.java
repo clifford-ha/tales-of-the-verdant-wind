@@ -3,6 +3,7 @@ package cliffordha.totvw.util;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.player.VWPlayerBehaviors;
 import cliffordha.totvw.entity.skill.SkillUtil;
+import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.tag.VWBiomeTags;
@@ -13,7 +14,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
@@ -26,8 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 
-import static cliffordha.totvw.entity.skill.VWSkillProcessor.notifyFromPlayer;
-import static cliffordha.totvw.entity.skill.VWSkillProcessor.notifyFromWolf;
+import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
 
 public final class VWGlobalUtil {
     public static int sec(int sec) {return sec * 20;}
@@ -51,10 +50,10 @@ public final class VWGlobalUtil {
         }
         if (entity instanceof Wolf wolf) {
             SkillUtil.startCooldown(wolf, VWWolfBehaviors.VERDANT_BLESSING, cooldown);
-            notifyFromWolf(wolf, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown / min(1) + " minutes");
+            VWSkillProcessor.sendToChat(wolf, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown / min(1) + " minutes");
         } else if (entity instanceof Player player) {
             SkillUtil.startCooldown(player, VWPlayerBehaviors.VERDANT_BLESSING, cooldown);
-            notifyFromPlayer(player, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown / min(1) + " minutes");
+            VWSkillProcessor.sendToChat(player, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown / min(1) + " minutes");
         }
     }
 
@@ -101,17 +100,27 @@ public final class VWGlobalUtil {
     }
 
     public static void rewriteEffect(LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {
-        if (entity.hasEffect(effect)) { entity.removeEffect(effect); }
-        entity.addEffect(new MobEffectInstance(effect, sec, amp, false, false)); }
+        if (entity.hasEffect(effect)) {
+            entity.removeEffect(effect);
+        }
+        entity.addEffect(new MobEffectInstance(effect, sec, amp, false, false));
+    }
 
-    public static void addEffect(LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {
-        entity.addEffect(new MobEffectInstance(effect, sec, amp)); }
+    public static void addEffect( LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {
+        if (entity.hasEffect(effect)) return;
+        entity.addEffect(new MobEffectInstance(effect, sec, amp));
+    }
 
     public static void addHiddenEffect(LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {
-        entity.addEffect(new MobEffectInstance(effect, sec, amp, false, false)); }
+        if (entity.hasEffect(effect)) return;
+        entity.addEffect(new MobEffectInstance(effect, sec, amp, false, false));
+    }
 
     public static void removeEffect(LivingEntity entity, Holder<MobEffect> effect) {
-        if (entity.hasEffect(effect)) {entity.removeEffect(effect);} }
+        if (entity.hasEffect(effect)) {
+            entity.removeEffect(effect);
+        }
+    }
 
 
     public static int wolfEnchantmentLVL(Wolf wolf, ResourceKey<Enchantment> enchantment) {

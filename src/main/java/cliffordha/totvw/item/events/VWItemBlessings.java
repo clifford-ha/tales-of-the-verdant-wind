@@ -4,7 +4,6 @@ import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWItemTags;
-import cliffordha.totvw.util.VWGlobalUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -26,7 +25,7 @@ import java.util.function.Predicate;
 
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.playNotification;
 import static cliffordha.totvw.util.VWGlobalUtil.*;
-import static cliffordha.totvw.entity.skill.VWSkillProcessor.notifyFromPlayer;
+import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
 
 public class VWItemBlessings {
     private static final int TICK_SECONDS = 20;
@@ -103,11 +102,11 @@ public class VWItemBlessings {
             MobEffectInstance existingDuration = player.getEffect(effect);
             if (existingDuration != null && existingDuration.getDuration() >= targetDuration) {
                 if (withinBiome) {
-                    notifyFromPlayer(player, VWColors.VERDANT_WIND_MUTED,
+                    VWSkillProcessor.sendToChat(player, VWColors.VERDANT_WIND_MUTED,
                             "Cannot grant enhanced blessing: Player already has",
                             "the same attribute with higher duration (§e" + (existingDuration.getDuration() / 20) + "§r vs " + targetDurationSec + ")");
                 } else {
-                    notifyFromPlayer(player, VWColors.VERDANT_WIND_MUTED,
+                    VWSkillProcessor.sendToChat(player, VWColors.VERDANT_WIND_MUTED,
                             "Cannot grant blessing: Player already has",
                             "the same attribute with higher duration (§e" + (existingDuration.getDuration() / 20) + "§r vs " + targetDurationSec + ")");
                 }return;
@@ -115,9 +114,9 @@ public class VWItemBlessings {
         }
         player.addEffect(new MobEffectInstance(effect, targetDuration, targetAmp));
         if (withinBiome) {
-            notifyFromPlayer(player, VWColors.VERDANT_WIND, "Granted: §n" + effect.getRegisteredName().replaceAll("^[^:]*:", "").toUpperCase() + "§r (§eEnhanced§r) for §e" + targetDurationSec + "§r sec");
+            VWSkillProcessor.sendToChat(player, VWColors.VERDANT_WIND, "Granted: §n" + effect.getRegisteredName().replaceAll("^[^:]*:", "").toUpperCase() + "§r (§eEnhanced§r) for §e" + targetDurationSec + "§r sec");
         } else {
-            notifyFromPlayer(player, VWColors.VERDANT_WIND, "Granted: §n" + effect.getRegisteredName().replaceAll("^[^:]*:", "").toUpperCase() + "§r for §e" + targetDurationSec + "§r sec");}
+            VWSkillProcessor.sendToChat(player, VWColors.VERDANT_WIND, "Granted: §n" + effect.getRegisteredName().replaceAll("^[^:]*:", "").toUpperCase() + "§r for §e" + targetDurationSec + "§r sec");}
         VWParticleEffects.spawnBlessingParticlesEntity(player, 2);
         //playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
         playNotification(player);

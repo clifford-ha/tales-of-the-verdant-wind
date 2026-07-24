@@ -22,8 +22,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.entity.npc.villager.Villager;
-import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -123,7 +121,7 @@ public class VWPlayerBehaviors {
                 removeEffect(wolf, MobEffects.WITHER);
             }
             wolf.heal(triggerHeal);
-            notifyFromPlayer(player, VWColors.VERDANT_WIND, true, "Granted §nVerdant Wind's Blessing§r to " + wolfName(wolf));
+            sendToChat(player, VWColors.VERDANT_WIND, true, "Granted §nVerdant Wind's Blessing§r to " + wolfName(wolf));
 
             VWParticleEffects.triggerBenedictionParticles(player, 1);
             verdantBlessingAfterEffects(level, player);

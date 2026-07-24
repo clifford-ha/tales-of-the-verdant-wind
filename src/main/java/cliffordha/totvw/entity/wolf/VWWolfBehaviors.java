@@ -179,7 +179,7 @@ public class VWWolfBehaviors {
     private static void warnOwner(Wolf wolf, ServerLevel level) {
         if (wolf.getAirSupply() <= wolf.getMaxAirSupply() * 0.5 && wolf.getAirSupply() > 0.0f) {
             wolf.makeSound(new SoundEvent(Identifier.withDefaultNamespace("entity.wolf.whine"), Optional.of(16.0f)));
-            notifyFromWolf(wolf, VWColors.MIGHT_EFFECT_MUTED, "[" + wolfName(wolf) + "] My air supply is about to run out...");
+            sendToChat(wolf, VWColors.MIGHT_EFFECT_MUTED, "[" + wolfName(wolf) + "] My air supply is about to run out...");
             playNotification(wolf);
         }
 
@@ -198,7 +198,7 @@ public class VWWolfBehaviors {
             removeEffect(player, MobEffects.WITHER);
         }
         player.heal(triggerHeal(wolf, player));
-        notifyFromWolf(wolf, VWColors.VERDANT_WIND, true, "Granted §nVerdant Wind's Blessing§r to " + playerName(wolf));
+        VWSkillProcessor.sendToChat(wolf, VWColors.VERDANT_WIND, true, "Granted §nVerdant Wind's Blessing§r to " + playerName(wolf));
 
         VWParticleEffects.triggerBenedictionParticles(wolf, 1);
         verdantBlessingAfterEffects(level, wolf);
@@ -277,7 +277,7 @@ public class VWWolfBehaviors {
             if ((victim.getMaxHealth() > 40.0) && CD_PARALYZE <= 0 && !victim.hasEffect(VWEffects.PARALYZE)) {
                 addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
 
-                notifyFromWolf(wolf, VWColors.MIGHT_EFFECT, wolfName(wolf) + " | " + victim.getName().getString() + " has been paralyzed for " + (paralyzeTime / sec(1)) + " seconds.");
+                sendToChat(wolf, VWColors.MIGHT_EFFECT, wolfName(wolf) + " | " + victim.getName().getString() + " has been paralyzed for " + (paralyzeTime / sec(1)) + " seconds.");
                 SkillUtil.startCooldown(wolf, PARALYZER,
                         setDifficultyBasedValue(level, min(1), min(12), min(18), min(24)));
 

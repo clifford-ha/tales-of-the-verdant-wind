@@ -1,7 +1,7 @@
 package cliffordha.totvw.datagen;
 
-import cliffordha.totvw.block.custom.LodestoneWindCore;
-import cliffordha.totvw.block.custom.VWStorageBlock;
+import cliffordha.totvw.block.custom.LodestoneWindCoreBlock;
+import cliffordha.totvw.block.custom.StorageBlock;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import cliffordha.totvw.registry.VWBlocks;
@@ -79,7 +79,7 @@ public class VWModelProvider extends FabricModelProvider {
         );
 
         block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VWBlocks.LODESTONE_WIND_CORE)
-                .with(BlockModelGenerators.createBooleanModelDispatch(LodestoneWindCore.ACTIVE, LODESTONE_WIND_CORE_ACTIVE, LODESTONE_WIND_CORE))
+                .with(BlockModelGenerators.createBooleanModelDispatch(LodestoneWindCoreBlock.ACTIVE, LODESTONE_WIND_CORE_ACTIVE, LODESTONE_WIND_CORE))
                 .with(PropertyDispatch.modify(BlockStateProperties.HORIZONTAL_FACING)
                         .select(Direction.NORTH, BlockModelGenerators.NOP)
                         .select(Direction.SOUTH, BlockModelGenerators.Y_ROT_180)
@@ -88,7 +88,7 @@ public class VWModelProvider extends FabricModelProvider {
                 ));
 
         block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX)
-                .with(BlockModelGenerators.createBooleanModelDispatch(VWStorageBlock.OPEN, OPEN, CLOSED))
+                .with(BlockModelGenerators.createBooleanModelDispatch(StorageBlock.OPEN, OPEN, CLOSED))
                 .with(PropertyDispatch.modify(BlockStateProperties.FACING)
                         .select(Direction.DOWN,  BlockModelGenerators.X_ROT_180)
                         .select(Direction.UP,    BlockModelGenerators.NOP)
@@ -163,6 +163,8 @@ public class VWModelProvider extends FabricModelProvider {
                 VWItemsScatteredPage.SP_ID_TEST,
                 VWItemsScatteredPage.PLAYER_STATS
         );
+
+        item.generateFlatItem(VWItemsScatteredPage.LODESTONE_WIND_CORE_MANUAL, VWItems.VERIXIUM_PAPER, ModelTemplates.FLAT_ITEM);
     }
 
     @Override

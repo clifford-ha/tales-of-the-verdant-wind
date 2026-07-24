@@ -1,6 +1,6 @@
 package cliffordha.totvw.block.custom;
 
-import cliffordha.totvw.block.entity.VWStorageBlockEntity;
+import cliffordha.totvw.block.entity.custom.StorageBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,12 +23,12 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
-public class VWStorageBlock extends BaseEntityBlock {
-    public static final MapCodec<? extends BaseEntityBlock> CODEC = simpleCodec(VWStorageBlock::new);
+public class StorageBlock extends BaseEntityBlock {
+    public static final MapCodec<? extends BaseEntityBlock> CODEC = simpleCodec(StorageBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static BooleanProperty OPEN = BlockStateProperties.OPEN;
 
-    public VWStorageBlock(Properties properties) {
+    public StorageBlock(Properties properties) {
         super(properties);
     }
 
@@ -39,14 +39,14 @@ public class VWStorageBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos worldPosition, BlockState blockState) {
-        return new VWStorageBlockEntity(worldPosition, blockState);
+        return new StorageBlockEntity(worldPosition, blockState);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level instanceof ServerLevel) {
             BlockEntity storage = level.getBlockEntity(pos);
-            if (storage instanceof VWStorageBlockEntity storageBlockEntity) {
+            if (storage instanceof StorageBlockEntity storageBlockEntity) {
                 player.openMenu(storageBlockEntity);
                 player.awardStat(Stats.OPEN_BARREL);
             }
@@ -62,8 +62,8 @@ public class VWStorageBlock extends BaseEntityBlock {
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof VWStorageBlockEntity) {
-            ((VWStorageBlockEntity) blockEntity).recheckOpen();
+        if (blockEntity instanceof StorageBlockEntity) {
+            ((StorageBlockEntity) blockEntity).recheckOpen();
         }
     }
 

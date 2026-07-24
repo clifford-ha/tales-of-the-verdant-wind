@@ -71,7 +71,7 @@ public class VillagerEntityMixin {
             depleteCD(villager, VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL);
         }
 
-        if (villager.level().getGameTime() % 30 == 0) {
+        if (villager.level().getGameTime() % 40 == 0) {
             int healOthersCD = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_CD_HEAL_OTHERS, 0);
             int healWolfCD = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_CD_HEAL_WOLF, 0);
             int healIronGolemCD = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM, 0);

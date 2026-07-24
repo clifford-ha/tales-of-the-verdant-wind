@@ -30,6 +30,7 @@ public class VWItemsScatteredPage {
 
     /** under testing **/
     public static final Item PLAYER_STATS = createPage("player_stats", -2);
+    public static final Item LODESTONE_WIND_CORE_MANUAL = createPage("lodestone_wind_core_manual", 333);
 
 
     private static Item createPage(String name, int id) {

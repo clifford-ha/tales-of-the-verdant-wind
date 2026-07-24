@@ -1,6 +1,6 @@
-package cliffordha.totvw.block.entity;
+package cliffordha.totvw.block.entity.custom;
 
-import cliffordha.totvw.block.custom.VWStorageBlock;
+import cliffordha.totvw.block.custom.StorageBlock;
 import cliffordha.totvw.registry.VWBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -26,25 +26,25 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.List;
 
-public class VWStorageBlockEntity extends RandomizableContainerBlockEntity {
+public class StorageBlockEntity extends RandomizableContainerBlockEntity {
     private NonNullList<ItemStack> items;
     private final ContainerOpenersCounter openersCounter;
 
     private final int CONTAINER_SIZE = 9 * 6;
 
-    public VWStorageBlockEntity(BlockPos worldPosition, BlockState blockState) {
+    public StorageBlockEntity(BlockPos worldPosition, BlockState blockState) {
         super(VWBlockEntityTypes.STORAGE_BOX, worldPosition, blockState);
 
         this.items = NonNullList.withSize(CONTAINER_SIZE, ItemStack.EMPTY);
         this.openersCounter = new ContainerOpenersCounter() {
             protected void onOpen(Level level, BlockPos pos, BlockState state) {
-                VWStorageBlockEntity.this.playSound(state, SoundEvents.BARREL_OPEN);
-                VWStorageBlockEntity.this.updateBlockState(state, true);
+                StorageBlockEntity.this.playSound(state, SoundEvents.BARREL_OPEN);
+                StorageBlockEntity.this.updateBlockState(state, true);
             }
 
             protected void onClose(Level level, BlockPos pos, BlockState state) {
-                VWStorageBlockEntity.this.playSound(state, SoundEvents.BARREL_CLOSE);
-                VWStorageBlockEntity.this.updateBlockState(state, false);
+                StorageBlockEntity.this.playSound(state, SoundEvents.BARREL_CLOSE);
+                StorageBlockEntity.this.updateBlockState(state, false);
             }
 
             protected void openerCountChanged(Level level, BlockPos pos, BlockState blockState, int previous, int current) {
@@ -53,7 +53,7 @@ public class VWStorageBlockEntity extends RandomizableContainerBlockEntity {
             public boolean isOwnContainer(final Player player) {
                 if (player.containerMenu instanceof ChestMenu) {
                     Container container = ((ChestMenu)player.containerMenu).getContainer();
-                    return container == VWStorageBlockEntity.this;
+                    return container == StorageBlockEntity.this;
                 } else {
                     return false;
                 }
@@ -142,11 +142,11 @@ public class VWStorageBlockEntity extends RandomizableContainerBlockEntity {
     }
 
     private void updateBlockState(BlockState state, boolean isOpen) {
-        this.level.setBlock(this.getBlockPos(), state.setValue(VWStorageBlock.OPEN, isOpen), 3);
+        this.level.setBlock(this.getBlockPos(), state.setValue(StorageBlock.OPEN, isOpen), 3);
     }
 
     private void playSound(BlockState state, SoundEvent event) {
-        Vec3i direction = state.getValue(VWStorageBlock.FACING).getUnitVec3i();
+        Vec3i direction = state.getValue(StorageBlock.FACING).getUnitVec3i();
         double x = (double)this.worldPosition.getX() + 0.5 + (double)direction.getX() / 2.0;
         double y = (double)this.worldPosition.getY() + 0.5 + (double)direction.getY() / 2.0;
         double z = (double)this.worldPosition.getZ() + 0.5 + (double)direction.getZ() / 2.0;

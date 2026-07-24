@@ -1,10 +1,9 @@
 package cliffordha.totvw.effect;
 
-import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.registry.VWIdentifiers;
 import cliffordha.totvw.registry.VWParticleEffects;
 import cliffordha.totvw.registry.VWColors;
 
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -21,7 +20,6 @@ import java.util.List;
 import static cliffordha.totvw.registry.VWEffects.*;
 
 public class BlessingOfTheVerdantWindEffect extends MobEffect {
-    private static final Identifier BLESSING_OF_THE_VERDANT_WIND = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "blessing_of_the_verdant_wind");
     public BlessingOfTheVerdantWindEffect() {
         super(MobEffectCategory.BENEFICIAL, VWColors.VERDANT_WIND);
     }
@@ -42,13 +40,13 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
         double burnTime = 0.2 + (amplifier * 0.2);
         double health = 0.2 + (Math.min(amplifier, 4) * 0.2);
 
-        addModifier(attributes, BLESSING_OF_THE_VERDANT_WIND,
+        addModifier(attributes, VWIdentifiers.EFFECT_BLESSING_OF_THE_VERDANT_WIND,
                 Attributes.ATTACK_DAMAGE, atkDamage, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
-        addModifier(attributes, BLESSING_OF_THE_VERDANT_WIND,
+        addModifier(attributes, VWIdentifiers.EFFECT_BLESSING_OF_THE_VERDANT_WIND,
                 Attributes.BURNING_TIME, - burnTime, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
-        addModifier(attributes, BLESSING_OF_THE_VERDANT_WIND,
+        addModifier(attributes, VWIdentifiers.EFFECT_BLESSING_OF_THE_VERDANT_WIND,
                 Attributes.MAX_HEALTH, health, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
         entity.heal(6.0f);
@@ -85,7 +83,7 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
     }
 
     private void removeModifiers(LivingEntity entity) {
-        removeAllModifiers(entity, BLESSING_OF_THE_VERDANT_WIND,
+        removeAllModifiers(entity, VWIdentifiers.EFFECT_BLESSING_OF_THE_VERDANT_WIND,
                 List.of(
                         Attributes.ATTACK_DAMAGE,
                         Attributes.BURNING_TIME,

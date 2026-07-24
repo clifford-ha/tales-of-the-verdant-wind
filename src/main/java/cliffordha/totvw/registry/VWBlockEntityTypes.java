@@ -4,7 +4,7 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.block.entity.VWHangingSignBlockEntity;
 import cliffordha.totvw.block.entity.VWShelfBlockEntity;
 import cliffordha.totvw.block.entity.VWSignBlockEntity;
-import cliffordha.totvw.block.entity.VWStorageBlockEntity;
+import cliffordha.totvw.block.entity.custom.StorageBlockEntity;
 import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,8 +30,8 @@ public class VWBlockEntityTypes {
             new BlockEntityType<>(VWShelfBlockEntity::new,
                     Set.of(VWBlocksVerdant.VERDANT_SPRUCE_SHELF)));
 
-    public static final BlockEntityType<VWStorageBlockEntity> STORAGE_BOX = create("storage_box",
-            new BlockEntityType<>(VWStorageBlockEntity::new,
+    public static final BlockEntityType<StorageBlockEntity> STORAGE_BOX = create("storage_box",
+            new BlockEntityType<>(StorageBlockEntity::new,
                     Set.of(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX)));
 
     public static <T extends BlockEntityType<?>> T create(String name, T blockEntityType) {

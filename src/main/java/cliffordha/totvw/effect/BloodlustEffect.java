@@ -1,11 +1,11 @@
 package cliffordha.totvw.effect;
 
-import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWColors;
-import net.minecraft.resources.Identifier;
+import cliffordha.totvw.registry.VWIdentifiers;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -24,7 +24,6 @@ import static cliffordha.totvw.registry.VWEffects.*;
 import static cliffordha.totvw.util.VWGlobalUtil.wolfEnchantmentLVL;
 
 public class BloodlustEffect extends MobEffect {
-    private static final Identifier BLOODLUST_EFFECT = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "bloodlust_effect_buff_debuff");
     public BloodlustEffect() {
         super(MobEffectCategory.HARMFUL, VWColors.BLOODLUST_EFFECT);
     }
@@ -41,17 +40,17 @@ public class BloodlustEffect extends MobEffect {
         double atkMultiplier = 0.2 + (amplifier * 0.2);
         double speedMultiplier = 0.15 + (Math.min(amplifier, 2) * 0.15);
 
-        addModifier(attributes, BLOODLUST_EFFECT,
+        addModifier(attributes, VWIdentifiers.EFFECT_BLOODLUST,
                 Attributes.ATTACK_DAMAGE, atkMultiplier, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
-        addModifier(attributes, BLOODLUST_EFFECT,
+        addModifier(attributes, VWIdentifiers.EFFECT_BLOODLUST,
                 Attributes.MOVEMENT_SPEED, speedMultiplier, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
         if (entity instanceof Wolf wolf && wolf.isWearingBodyArmor() && wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_MIGHT) > 0) {
-            addModifier(attributes, BLOODLUST_EFFECT,
+            addModifier(attributes, VWIdentifiers.EFFECT_BLOODLUST,
                     Attributes.ARMOR, -(0.10 + (amplifier * 0.10)), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         } else {
-            addModifier(attributes, BLOODLUST_EFFECT,
+            addModifier(attributes, VWIdentifiers.EFFECT_BLOODLUST,
                     Attributes.ARMOR, -(0.30 + (amplifier * 0.30)), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         }
     }
@@ -94,7 +93,7 @@ public class BloodlustEffect extends MobEffect {
     }
 
     private void removeModifiers(LivingEntity entity) {
-        removeAllModifiers(entity, BLOODLUST_EFFECT,
+        removeAllModifiers(entity, VWIdentifiers.EFFECT_BLOODLUST,
                 List.of(
                         Attributes.ATTACK_DAMAGE,
                         Attributes.MOVEMENT_SPEED,

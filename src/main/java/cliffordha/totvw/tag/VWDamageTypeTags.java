@@ -34,8 +34,12 @@ public class VWDamageTypeTags extends FabricTagsProvider<DamageType> {
                 .add(TagEntry.element(VWDamageTypes.BLEEDING.identifier()))
                 .build();
 
+        getOrCreateRawBuilder(DamageTypeTags.ALWAYS_HURTS_ENDER_DRAGONS)
+                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
+                .build();
+
         getOrCreateRawBuilder(DamageTypeTags.BYPASSES_INVULNERABILITY)
-                .add(TagEntry.element(VWDamageTypes.VERIXIUM_CORE_PULSE.identifier()))
+                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
                 .build();
     }
 }

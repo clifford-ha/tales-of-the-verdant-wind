@@ -1,6 +1,7 @@
 package cliffordha.totvw.tag;
 
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
@@ -89,6 +90,11 @@ public class VWItemTags extends FabricTagsProvider.ItemTagsProvider {
                 .add(Items.PAPER)
                 .add(VWItems.VERIXIUM_PAPER);
 
+        valueLookupBuilder(VWItemTags.LODESTONE_WIND_CORE_ENERGY_SOURCES)
+                .add(VWItems.VERIXIUM_POWDER)
+                .add(VWBlocks.VERIXIUM_POWDER_BLOCK.asItem())
+                .add(Items.WIND_CHARGE);
+
 
 
         valueLookupBuilder(ItemTags.ARMOR_ENCHANTABLE)
@@ -150,6 +156,7 @@ public class VWItemTags extends FabricTagsProvider.ItemTagsProvider {
 
     public static final TagKey<Item> BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS = create("benediction_enchantment_use_qualified_items");
     public static final TagKey<Item> BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS = create("benediction_enchantment_use_qualified_tools");
+    public static final TagKey<Item> LODESTONE_WIND_CORE_ENERGY_SOURCES = create("lodestone_wind_core_energy_sources");
     public static final TagKey<Item> SCATTERED_PAGES = create("scattered_pages");
 
     private static TagKey<Item> create(String name) {

@@ -1,6 +1,5 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.VWTrustInteractionData;
 import cliffordha.totvw.registry.*;
@@ -24,14 +23,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static cliffordha.totvw.entity.skill.VWSkillProcessor.notifyFromPlayer;
+import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
 import static cliffordha.totvw.util.VWGlobalUtil.playerEnchantmentLVL;
 
 @Mixin(Player.class)
@@ -66,7 +64,7 @@ public abstract class PlayerEntityMixin {
                 return;
             }
             if (untrustable) {
-                notifyFromPlayer(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Can't trust this entity");
+                sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Can't trust this entity");
                 return;
             }
             if (isTamedWolf) return;
@@ -84,17 +82,17 @@ public abstract class PlayerEntityMixin {
             if (!hasTrust) {
                 entity.setAttached(VWAttachments.ENTITY_TRUSTED_MOB_DATA, data);
                 entity.setAttached(VWAttachments.ENTITY_TRUST_POINTS, 2);
-                notifyFromPlayer(player, VWColors.VERDANT_WIND, true, "Trusted " + targetName);
+                sendToChat(player,true, "Trusted " + targetName);
                 cir.setReturnValue(InteractionResult.SUCCESS);
-                if (player.isCreative() || player.isSpectator()) return;
+                if (player.isCreative()) return;
                 itemStack.shrink(1);
             } else if (hasTrust && player.isShiftKeyDown()) {
                 entity.removeAttached(VWAttachments.ENTITY_TRUSTED_MOB_DATA);
                 entity.removeAttached(VWAttachments.ENTITY_TRUST_POINTS);
-                notifyFromPlayer(player, VWColors.VERDANT_WIND, true, "Removed trust for " + targetName);
+                sendToChat(player,true, "Removed trust for " + targetName);
                 cir.setReturnValue(InteractionResult.SUCCESS);
             } else {
-                notifyFromPlayer(player, VWColors.DEFAULT_MUTED, true, "Already trusted " + targetName);
+                sendToChat(player,true, "Already trusted " + targetName);
                 cir.setReturnValue(InteractionResult.PASS);
             }
         }
@@ -112,16 +110,16 @@ public abstract class PlayerEntityMixin {
                 sendInfo(player, target + t + "verdant type");
                 cir.setReturnValue(InteractionResult.SUCCESS);
             } else if (itemStack.is(Items.HONEY_BOTTLE)) {
-                boolean unTame = player.isShiftKeyDown()
+                boolean unTame = player.isCrouching()
                         && wolf.isTame()
                         && wolf.getOwner() == player;
 
                 if (unTame) {
                     wolf.setTame(false, true);
                     wolf.setOwner(null);
-                    cir.setReturnValue(InteractionResult.SUCCESS);
                     sendInfo(player, target + " has been un-tamed");
                 }
+                cir.setReturnValue(InteractionResult.SUCCESS);
             }
         }
     }

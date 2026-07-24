@@ -3,6 +3,7 @@ package cliffordha.totvw.mixin;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.datagen.VWDamageTypes;
+import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.util.VWGlobalUtil;
 import cliffordha.totvw.entity.VWTrustInteractionData;
@@ -11,7 +12,6 @@ import cliffordha.totvw.tag.VWItemTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -58,13 +58,10 @@ public abstract class WolfEntityMixin extends LivingEntity {
     }
 
     @Unique
-    private static final Identifier VERDANT_WOLF_PERMANENT_MODIFIERS = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_wolf_permanent_modifiers");
-
-    @Unique
-    private static void addAttributeModifier(Wolf wolf, Holder<Attribute> attribute, double amount, AttributeModifier.Operation operation) {
+    private static void addAttributeModifier(Wolf wolf, Holder<Attribute> attribute, double amount) {
         AttributeInstance m = wolf.getAttribute(attribute);
-        if (m != null && !m.hasModifier(VERDANT_WOLF_PERMANENT_MODIFIERS)) {
-            m.addPermanentModifier(new AttributeModifier(VERDANT_WOLF_PERMANENT_MODIFIERS, amount, operation));
+        if (m != null && !m.hasModifier(VWIdentifiers.VERDANT_WOLF_PERMANENT_MODIFIERS)) {
+            m.addPermanentModifier(new AttributeModifier(VWIdentifiers.VERDANT_WOLF_PERMANENT_MODIFIERS, amount, AttributeModifier.Operation.ADD_VALUE));
         }
     }
 
@@ -77,21 +74,9 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
     @Unique
     private static void setVerdantModifiers(Wolf wolf) {
-        addAttributeModifier(wolf,
-                Attributes.ATTACK_DAMAGE,
-                2,
-                AttributeModifier.Operation.ADD_VALUE
-        );
-        addAttributeModifier(wolf,
-                Attributes.MOVEMENT_SPEED,
-                0.075,
-                AttributeModifier.Operation.ADD_VALUE
-        );
-        addAttributeModifier(wolf,
-                Attributes.SCALE,
-                0.2,
-                AttributeModifier.Operation.ADD_VALUE
-        );
+        addAttributeModifier(wolf, Attributes.ATTACK_DAMAGE, 2);
+        addAttributeModifier(wolf, Attributes.MOVEMENT_SPEED, 0.075);
+        addAttributeModifier(wolf, Attributes.SCALE, 0.2);
     }
 
     @Inject(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/wolf/Wolf;", at = @At("RETURN"), cancellable = true)
@@ -218,16 +203,16 @@ public abstract class WolfEntityMixin extends LivingEntity {
                     wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
                     TOTVW.sendInfo(name + " has negative value of the Wolf Benediction stack. Resetting to 0.");
                 }
-                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, true, name + " already reached Wolf Beneficiation stack limit!");
+                VWSkillProcessor.sendToChat(wolf, VWColors.DEFAULT_MUTED, true, name + " already reached Wolf Beneficiation stack limit!");
                 return;
             }
 
             if (ACTIVE_BENEDICTION == 0) {
-                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, "Totem has been converted to Wolf Beneficiation stack");
+                sendToChat(wolf, VWColors.DEFAULT_MUTED, "Totem has been converted to Wolf Beneficiation stack");
             }
 
             wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION + 1);
-            notifyFromWolf(wolf, VWColors.VERDANT_WIND, "+1 Wolf Benediction stack to " + name);
+            sendToChat(wolf, VWColors.VERDANT_WIND, "+1 Wolf Benediction stack to " + name);
             if (player.isCreative() || player.isSpectator())  {
                 itemStack.shrink(1);
             }
@@ -265,9 +250,9 @@ public abstract class WolfEntityMixin extends LivingEntity {
         String name = wolf.getName().getString();
         int STACK_AFTER = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
         if (STACK_AFTER == 0) {
-            notifyFromWolf(wolf, VWColors.BLOODLUST_EFFECT_MUTED, name + " used up all Benediction stacks");
+            sendToChat(wolf, VWColors.BLOODLUST_EFFECT_MUTED, name + " used up all Benediction stacks");
         } else {
-            notifyFromWolf(wolf, VWColors.VERDANT_WIND_MUTED,STACK_AFTER + " Benediction stack remaining for " + name);
+            sendToChat(wolf, VWColors.VERDANT_WIND_MUTED,STACK_AFTER + " Benediction stack remaining for " + name);
         }
 
         if (wolf.level() instanceof ServerLevel) {
@@ -352,7 +337,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
             super.actuallyHurt(level, source, finalWolfDMG);
 
-            if (TOTVWConfig.get().DEBUG_PRINT_LOGS) { notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, "TrueDMG: " + damage + " §e| FinalWolfDMG: " + finalWolfDMG + " §d| FinalArmorDMG: " + finalArmorDMG); }
+            if (TOTVWConfig.get().DEBUG_PRINT_LOGS) { sendToChat(wolf, VWColors.DEFAULT_MUTED, "TrueDMG: " + damage + " §e| FinalWolfDMG: " + finalWolfDMG + " §d| FinalArmorDMG: " + finalArmorDMG); }
             ci.cancel();
         }
     }

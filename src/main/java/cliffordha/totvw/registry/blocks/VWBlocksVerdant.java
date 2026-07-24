@@ -1,7 +1,7 @@
 package cliffordha.totvw.registry.blocks;
 
 import cliffordha.totvw.block.*;
-import cliffordha.totvw.block.custom.VWStorageBlock;
+import cliffordha.totvw.block.custom.StorageBlock;
 import cliffordha.totvw.block.custom.VerdantSpruceLeavesBlock;
 import cliffordha.totvw.world.tree.VWTreeGrowers;
 
@@ -136,7 +136,7 @@ public class VWBlocksVerdant extends Blocks {
             true
     );
     public static final Block VERDANT_SPRUCE_STORAGE_BOX = registerBlock("verdant_spruce_storage_box",
-            VWStorageBlock::new,
+            StorageBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL),
             true
     );

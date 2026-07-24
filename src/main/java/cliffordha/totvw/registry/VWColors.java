@@ -21,6 +21,12 @@ public final class VWColors {
     public static final int DEFAULT = 0xDCFAFA;
     public static final int DEFAULT_MUTED = 0x90A4AE;
 
+    public static final int INDICATOR_20 = 0xb93636;
+    public static final int INDICATOR_40 = 0xB97232;
+    public static final int INDICATOR_60 = 0xadb94f;
+    public static final int INDICATOR_80 = 0x4bb94f;
+    public static final int INDICATOR_100 = 0x46B5B9;
+
     public static final int BLOCK_VERDANT_WOOD = 0x19281B;
     public static final int BLOCK_VERDANT_LEAVES = 0x0B604B;
     public static final int BLOCK_VERDANT_LOG = 0x517360;

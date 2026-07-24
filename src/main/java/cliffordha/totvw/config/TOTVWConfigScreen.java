@@ -109,7 +109,6 @@ public class TOTVWConfigScreen {
         );
 
 
-
         ConfigCategory debug = builder.getOrCreateCategory(
                 Component.literal("Debug"));
 
@@ -121,6 +120,27 @@ public class TOTVWConfigScreen {
                         .setSaveConsumer(value -> TOTVWConfig.get().DEBUG_PRINT_LOGS = value)
                         .build()
         );
+        debug.addEntry(
+                entryBuilder.startBooleanToggle(
+                                Component.literal("Additional Server Logs"),
+                                TOTVWConfig.get().ADDITIONAL_SERVER_LOG)
+                        .setDefaultValue(false)
+                        .setTooltip(text("Mostly for debugging purposes. But if you want to see what's going on, turn this on."))
+                        .setSaveConsumer(value -> TOTVWConfig.get().ADDITIONAL_SERVER_LOG = value)
+                        .requireRestart()
+                        .build()
+        );
+        if (TOTVWConfig.get().ADDITIONAL_SERVER_LOG) {
+            debug.addEntry(
+                    entryBuilder.startBooleanToggle(
+                                    Component.literal("Block Updates"),
+                                    TOTVWConfig.get().SERVER_BLOCK_UPDATE_LOG)
+                            .setDefaultValue(false)
+                            .setTooltip(text("Block updates will be logged to the console."))
+                            .setSaveConsumer(value -> TOTVWConfig.get().SERVER_BLOCK_UPDATE_LOG = value)
+                            .build()
+            );
+        }
 
         return builder.build();
     }

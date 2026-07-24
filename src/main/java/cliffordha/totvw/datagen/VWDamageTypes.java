@@ -12,15 +12,13 @@ import net.minecraft.world.level.Level;
 
 public class VWDamageTypes {
     public static final ResourceKey<DamageType> BLOODLUST = createDMGType("bloodlust");
-
     public static final ResourceKey<DamageType> BLEEDING = createDMGType("bleeding");
-
-    public static final ResourceKey<DamageType> VERIXIUM_CORE_PULSE = createDMGType("verixium_core_pulse");
+    public static final ResourceKey<DamageType> LODESTONE_WIND_CORE_PULSE = createDMGType("wind_core_pulse");
 
     public static void bootstrap(BootstrapContext<DamageType> context) {
         context.register(BLOODLUST, new DamageType("bloodlust", 0.0f, DamageEffects.HURT));
         context.register(BLEEDING, new DamageType("bleeding", 0.0f, DamageEffects.HURT));
-        context.register(VERIXIUM_CORE_PULSE, new DamageType("verixium_core_pulse", 0.3f, DamageEffects.HURT));
+        context.register(LODESTONE_WIND_CORE_PULSE, new DamageType("wind_core_pulse", 0.3f, DamageEffects.HURT));
     }
 
     private static ResourceKey<DamageType> createDMGType(String name) {

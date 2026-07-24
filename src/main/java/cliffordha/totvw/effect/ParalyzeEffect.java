@@ -1,9 +1,9 @@
 package cliffordha.totvw.effect;
 
-import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.VWAttachments;
 import cliffordha.totvw.registry.VWColors;
-import net.minecraft.resources.Identifier;
+import cliffordha.totvw.registry.VWIdentifiers;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -23,7 +23,7 @@ import static cliffordha.totvw.registry.VWEffects.*;
 
 public class ParalyzeEffect extends MobEffect {
     public ParalyzeEffect() {super(MobEffectCategory.NEUTRAL, VWColors.PARALYZE);}
-    private static final Identifier PARALYZE_EFFECT = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "paralyze_effect");
+    
     @Override
     public void onEffectStarted(LivingEntity entity, int amplifier) {
         onEffectAdded(entity, amplifier);
@@ -39,25 +39,25 @@ public class ParalyzeEffect extends MobEffect {
         if (entity instanceof Mob mob && !entity.is(EntityType.PLAYER)) {
             mob.setNoAi(true);
         } else if (entity instanceof Player) {
-            addModifier(attributes, PARALYZE_EFFECT,
+            addModifier(attributes, VWIdentifiers.EFFECT_PARALYZE,
                     Attributes.ARMOR, -1000, AttributeModifier.Operation.ADD_VALUE);
 
-            addModifier(attributes, PARALYZE_EFFECT,
+            addModifier(attributes, VWIdentifiers.EFFECT_PARALYZE,
                     Attributes.KNOCKBACK_RESISTANCE, -1000, AttributeModifier.Operation.ADD_VALUE);
 
-            addModifier(attributes, PARALYZE_EFFECT,
+            addModifier(attributes, VWIdentifiers.EFFECT_PARALYZE,
                     Attributes.MAX_ABSORPTION, -1000, AttributeModifier.Operation.ADD_VALUE);
 
-            addModifier(attributes, PARALYZE_EFFECT,
+            addModifier(attributes, VWIdentifiers.EFFECT_PARALYZE,
                     Attributes.MOVEMENT_SPEED, -1000, AttributeModifier.Operation.ADD_VALUE);
 
-            addModifier(attributes, PARALYZE_EFFECT,
+            addModifier(attributes, VWIdentifiers.EFFECT_PARALYZE,
                     Attributes.ATTACK_DAMAGE, -1000, AttributeModifier.Operation.ADD_VALUE);
 
-            addModifier(attributes, PARALYZE_EFFECT,
+            addModifier(attributes, VWIdentifiers.EFFECT_PARALYZE,
                     Attributes.ATTACK_KNOCKBACK, -1000, AttributeModifier.Operation.ADD_VALUE);
 
-            addModifier(attributes, PARALYZE_EFFECT,
+            addModifier(attributes, VWIdentifiers.EFFECT_PARALYZE,
                     Attributes.JUMP_STRENGTH, -1000, AttributeModifier.Operation.ADD_VALUE);
         }
     }
@@ -77,7 +77,7 @@ public class ParalyzeEffect extends MobEffect {
         if (entity instanceof Mob mob && !entity.is(EntityType.PLAYER)) {
             mob.setNoAi(false);
         } else if (entity instanceof Player) {
-            removeAllModifiers(entity, PARALYZE_EFFECT,
+            removeAllModifiers(entity, VWIdentifiers.EFFECT_PARALYZE,
                     List.of(
                             Attributes.ARMOR,
                             Attributes.KNOCKBACK_RESISTANCE,

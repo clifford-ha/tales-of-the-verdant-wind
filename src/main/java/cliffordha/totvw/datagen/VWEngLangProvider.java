@@ -99,6 +99,8 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add(VWItemsScatteredPage.SP_ID_1006, SP_1006.getTitle());
 
+        text.add(VWItemsScatteredPage.LODESTONE_WIND_CORE_MANUAL, LODESTONE_WIND_CORE_MANUAL.getTitle());
+
 
 
         text.addEnchantment(VWEnchantments.WOLF_EFFECT_IGNITION, "Wolf ATK Effect: §vIgnition");
@@ -142,6 +144,9 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add("death.attack.bleeding", "%1$s bled to death");
         text.add("death.attack.bleeding.player", "%1$s bled to death while fighting %1$s");
+
+        text.add("death.attack.wind_core_pulse", "%1$s got incapacitated by the Wind Core's pulse");
+        text.add("death.attack.wind_core_pulse.player", "%1$s got incapacitated by the Wind Core's pulse while fighting %1$s");
 
 
         text.add(VWItems.VERIXIUM_SPEAR, "Verixium Spear");

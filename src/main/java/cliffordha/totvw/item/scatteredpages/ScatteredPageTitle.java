@@ -29,9 +29,11 @@ public enum ScatteredPageTitle {
     SP_1007(1007,"A Poem"),
     SP_1008(1008,"A Poem"),
     SP_1009(1009,"A Poem"),
-    SP_1010(10010,"A Poem"),
-    SP_1011(10011,"A Poem"),
-    SP_1012(10012,"A Poem"),
+    SP_1010(1010,"A Poem"),
+    SP_1011(1011,"A Poem"),
+    SP_1012(1012,"A Poem"),
+
+    LODESTONE_WIND_CORE_MANUAL(333, "Lodestone Wind Core Manual"),
     ;
 
     private final int id;

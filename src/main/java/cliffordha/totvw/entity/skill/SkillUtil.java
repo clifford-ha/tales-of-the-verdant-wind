@@ -30,7 +30,7 @@ public final class SkillUtil {
         if (cooldown <= 0 && notify == 1) {
             wolf.setAttached(skill.notifier(), 0);
             if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
-            notifyFromWolf(wolf, skill.notifierColor(), true, name(wolf) + skill.skillName() + " is ready!");
+            VWSkillProcessor.sendToChat(wolf, skill.notifierColor(), true, name(wolf) + skill.skillName() + " is ready!");
             playNotification(wolf);
         }
     }
@@ -41,7 +41,7 @@ public final class SkillUtil {
         if (cooldown <= 0 && notify == 1) {
             player.setAttached(skill.notifier(), 0);
             if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
-            notifyFromPlayer(player, skill.notifierColor(), true, name(player) + skill.skillName() + " is ready!");
+            sendToChat(player, skill.notifierColor(), true, name(player) + skill.skillName() + " is ready!");
             playNotification(player);
         }
     }

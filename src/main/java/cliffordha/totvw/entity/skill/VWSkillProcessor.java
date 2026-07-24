@@ -41,9 +41,9 @@ public class VWSkillProcessor {
 
         if (notifyFlag == 1 && cd == 0) {
             if (entity instanceof Wolf wolf) {
-                notifyFromWolf(wolf, color, msg);
+                sendToChat(wolf, color, msg);
             } else if (entity instanceof Player player) {
-                notifyFromPlayer(player, color, msg);
+                sendToChat(player, color, msg);
             }
             playNotification(entity);
             entity.setAttached(notify, 0);
@@ -56,7 +56,7 @@ public class VWSkillProcessor {
 
         if (config == 0) {
             if (CD_VERDANT_BLESSING > 0) {
-                notifyFromPlayer(player, VWColors.DEFAULT_MUTED, name + " | VerdantBlessingCD: " + CD_VERDANT_BLESSING / 20 + " sec");
+                sendToChat(player, VWColors.DEFAULT_MUTED, name + " | VerdantBlessingCD: " + CD_VERDANT_BLESSING / 20 + " sec");
             }
         } else if (config == 1) {
             if (CD_VERDANT_BLESSING > 0) {
@@ -75,13 +75,13 @@ public class VWSkillProcessor {
 
         if (config == 0) {
             if (CD_VERDANT_BLESSING > 0) {
-                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, name + " | VerdantBlessingCD: " + CD_VERDANT_BLESSING / sec(1) + " sec");
+                sendToChat(wolf, VWColors.DEFAULT_MUTED, name + " | VerdantBlessingCD: " + CD_VERDANT_BLESSING / sec(1) + " sec");
             }
             if (CD_BLOODLUST_SKILL_PARALYZE > 0) {
-                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, name + " | ParalyzeCD: " + CD_BLOODLUST_SKILL_PARALYZE / sec(1) + " sec");
+                sendToChat(wolf, VWColors.DEFAULT_MUTED, name + " | ParalyzeCD: " + CD_BLOODLUST_SKILL_PARALYZE / sec(1) + " sec");
             }
             if (CD_MIGHT_RUPTURE > 0) {
-                notifyFromWolf(wolf, VWColors.DEFAULT_MUTED, name + " | RuptureCD: " + CD_MIGHT_RUPTURE / sec(1) + " sec");
+                sendToChat(wolf, VWColors.DEFAULT_MUTED, name + " | RuptureCD: " + CD_MIGHT_RUPTURE / sec(1) + " sec");
             }
         } else if (config == 1) {
             if (CD_VERDANT_BLESSING > 0) {
@@ -97,13 +97,26 @@ public class VWSkillProcessor {
     }
 
 
-    public static void notifyFromPlayer(Player player, int color, String... msg) {
+    public static void sendToChat(Player player, boolean b, String... msg) {
+        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
+        if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)), b);
+        }
+    }
+    public static void sendToChat(Wolf wolf, boolean b, String... msg) {
+        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
+        if (wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer serverPlayer) {
+            serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)), b);
+        }
+    }
+
+    public static void sendToChat(Player player, int color, String... msg) {
         if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
         if (player instanceof ServerPlayer serverPlayer) {
             serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)).withColor(color));
         }
     }
-    public static void notifyFromWolf(Wolf wolf, int color, String... msg) {
+    public static void sendToChat(Wolf wolf, int color, String... msg) {
         if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
         if (wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer serverPlayer) {
             serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)).withColor(color));
@@ -111,13 +124,13 @@ public class VWSkillProcessor {
     }
 
 
-    public static void notifyFromPlayer(Player player, int color, boolean overlay, String... msg) {
+    public static void sendToChat(Player player, int color, boolean overlay, String... msg) {
         if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
         if (player instanceof ServerPlayer serverPlayer) {
             serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)).withColor(color), overlay);
         }
     }
-    public static void notifyFromWolf(Wolf wolf, int color, boolean overlay, String... msg) {
+    public static void sendToChat(Wolf wolf, int color, boolean overlay, String... msg) {
         if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
         if (wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer serverPlayer) {
             serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)).withColor(color), overlay);

@@ -18,6 +18,11 @@ public class VWAttachments {
     public static final AttachmentType<Integer> ENTITY_TRUST_COOLDOWN = registerInt("entity_trust_cooldown");
     public static final AttachmentType<Boolean> ENTITY_HAS_VERDANT_OMEN = registerBool("entity_has_verdant_omen");
 
+    public static class WindCore {
+        public static final AttachmentType<Integer> CORE_ENTITY_INWARD_PRESSURE = registerInt("core_wind_pressure");
+        public static final AttachmentType<Boolean> CORE_ENTITY_HAS_IMPLODED = registerBool("core_entity_has_implodeed");
+    }
+
     public static class Player {
         public static final AttachmentType<Boolean> PLAYER_IS_DEV_MODE = registerBool("player_is_dev_mode");
         public static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_cd_blessing_of_the_verdant_wind");
@@ -126,11 +131,18 @@ public class VWAttachments {
                 Villager.VILLAGER_CD_DISCOUNT_REROLL,
                 Villager.VILLAGER_DISCOUNT_MODIFIER,
         };
-        int total = globalAttachments.length + playerAttachments.length + wolfAttachments.length + villagerAttachments.length;
+
+        AttachmentType<?>[] windCore = {
+                WindCore.CORE_ENTITY_INWARD_PRESSURE,
+                WindCore.CORE_ENTITY_HAS_IMPLODED,
+        };
+
+        int total = globalAttachments.length + playerAttachments.length + wolfAttachments.length + villagerAttachments.length + windCore.length;
 
         TOTVW.sendClassRegisterLog(
                 "Custom Attachments (" +
                         "Global: " + globalAttachments.length + ", " +
+                        "Block/LodestoneWindCore: " + windCore.length + ", " +
                         "Player: " + playerAttachments.length + ", " +
                         "Wolf: " + wolfAttachments.length + ", " +
                         "Villager: " + villagerAttachments.length + " ) " +

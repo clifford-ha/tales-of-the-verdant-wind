@@ -1,6 +1,6 @@
 package cliffordha.totvw.registry;
 
-import cliffordha.totvw.block.custom.LodestoneWindCore;
+import cliffordha.totvw.block.custom.LodestoneWindCoreBlock;
 import cliffordha.totvw.block.custom.VerixiumPowderBlock;
 import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import cliffordha.totvw.TOTVW;
@@ -82,10 +82,11 @@ public class VWBlocks {
     );
 
     public final static Block LODESTONE_WIND_CORE = registerBlock("lodestone_wind_core",
-            properties -> new LodestoneWindCore(properties
-                    .strength(10.0f, 50.0f)
+            properties -> new LodestoneWindCoreBlock(properties
+                    .strength(20.0f, 50.0f)
                     .sound(SoundType.STONE)
-                    .lightLevel((state) -> state.getValue(LodestoneWindCore.ACTIVE) ? 15 : 0)
+                    .pushReaction(PushReaction.IGNORE)
+                    .lightLevel((state) -> state.getValue(LodestoneWindCoreBlock.ACTIVE) ? 15 : 0)
             ),
             BlockBehaviour.Properties.of(),
             true

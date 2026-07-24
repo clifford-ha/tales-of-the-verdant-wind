@@ -27,6 +27,15 @@ public class TOTVWConfig {
     public boolean ENABLE_NEW_SOUNDS = true;
 
     public boolean DEBUG_PRINT_LOGS = false;
+    public boolean ADDITIONAL_SERVER_LOG = false;
+    public boolean SERVER_BLOCK_UPDATE_LOG = false;
+
+    public static boolean conditionalToggle(boolean parent, boolean toggle) {
+        if (parent) {
+            return toggle;
+        } else
+            return false;
+    }
 
 
     public static TOTVWConfig get() {
