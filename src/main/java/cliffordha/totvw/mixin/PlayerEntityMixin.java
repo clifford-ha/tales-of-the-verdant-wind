@@ -1,5 +1,6 @@
 package cliffordha.totvw.mixin;
 
+import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.VWTrustInteractionData;
 import cliffordha.totvw.registry.*;
@@ -10,7 +11,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.decoration.painting.Painting;
@@ -21,6 +24,7 @@ import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,8 +33,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
+
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
-import static cliffordha.totvw.util.VWGlobalUtil.playerEnchantmentLVL;
+import static cliffordha.totvw.util.VWGlobalUtil.*;
 
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin {
@@ -39,6 +45,44 @@ public abstract class PlayerEntityMixin {
     private static void sendInfo(Player player, String message) {
         if (!(player instanceof ServerPlayer server)) return;
         server.sendSystemMessage(Component.literal(message).withColor(VWColors.DEFAULT), true);
+    }
+
+    // under testing
+    @Inject(method = "die", at = @At("HEAD"), cancellable = true)
+    private void onDeath(DamageSource source, CallbackInfo ci) {
+        Player player = (Player) (Object) this;
+        sendToChat(player, false, "You died test");
+        if (player.level() instanceof ServerLevel level) {
+            List<Wolf> wolves = level.getEntities(EntityType.WOLF, player.getBoundingBox().inflate(128), wolf ->
+                    wolf.getOwner() != null && wolf.getOwner().is(player) && wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0) > 1);
+            Wolf wolf = wolves.getFirst();
+
+            sendToChat(player, false, "You died test 0");
+
+            int benediction = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
+            player.setHealth(1000f);
+            player.removeAllEffects();
+
+            rewriteEffect(player, MobEffects.RESISTANCE, sec(3), 255);
+            rewriteEffect(player, VWEffects.BLESSING_OF_THE_VERDANT_WIND, sec(10), 2);
+            rewriteEffect(player, MobEffects.ABSORPTION, sec(10), 2);
+            wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, benediction - 1);
+
+            if (wolf.position().distanceTo(player.position()) > 10) {
+                if (wolf.isInLava()) return;
+                player.teleportTo(wolf.getX(), wolf.getY(), wolf.getZ());
+            } else {
+                if (player.isInLava()) return;
+                wolf.tryToTeleportToOwner();
+            }
+
+            level.broadcastEntityEvent(player, (byte) 35);
+
+            String name = wolf.getName().getString();
+            int STACK_AFTER = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
+            TOTVW.sendInfo(name + " your companion shared their Benediction stack! Remaining stacks: " + STACK_AFTER);
+            ci.cancel();
+        }
     }
 
     @Inject(method = "interactOn", at = @At("HEAD"), cancellable = true)
