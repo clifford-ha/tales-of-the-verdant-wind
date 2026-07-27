@@ -46,12 +46,12 @@ public class VillagerEntityMixin {
         if (spawnReason == EntitySpawnReason.BREEDING) {
             villager.setVillagerData(villager.getVillagerData().withProfession(level.registryAccess(), VillagerProfession.NONE));
             if (inVerdant || villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false)) {
-                villager.setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
+                villager.level().setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
             }
         }
 
         if (inVerdant) {
-            villager.setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
+            villager.level().setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
             villager.setVillagerData(new VillagerData(taiga, data.profession(), data.level()));
         }
     }
@@ -89,7 +89,7 @@ public class VillagerEntityMixin {
                 if (!villagerList.isEmpty()) {
                     for (Villager others : villagerList) {
                         others.heal(healStrength);
-                        villager.setAttached(VWAttachments.Villager.VILLAGER_CD_HEAL_OTHERS, 30);
+                        villager.level().setAttached(VWAttachments.Villager.VILLAGER_CD_HEAL_OTHERS, 30);
                         healEffect(villager, others);
                     }
                 }
@@ -110,7 +110,7 @@ public class VillagerEntityMixin {
                         wolf.heal(healStrength);
                         wolf.setAttached(VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS, 0);
                         wolf.setAttached(VWAttachments.Wolf.WOLF_TRY_SAVE_POINTS, currentPoints - 1);
-                        villager.setAttached(VWAttachments.Villager.VILLAGER_CD_HEAL_WOLF, 60);
+                        villager.level().setAttached(VWAttachments.Villager.VILLAGER_CD_HEAL_WOLF, 60);
                         healEffect(villager, wolf);
                     }
                 }
@@ -124,7 +124,7 @@ public class VillagerEntityMixin {
                 if (!golems.isEmpty()) {
                     for (IronGolem golem : golems) {
                         golem.heal(healStrength * 2f);
-                        villager.setAttached(VWAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM, 90);
+                        villager.level().setAttached(VWAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM, 90);
                         golem.makeSound(SoundEvents.IRON_GOLEM_REPAIR);
                         healEffect(villager, golem);
                     }
@@ -163,8 +163,8 @@ public class VillagerEntityMixin {
 
         if (rerollCD <= 0 || modifier <= 0.0f) {
             modifier = MIN_MODIFIER + villager.level().getRandom().nextFloat() * ((MAX_MODIFIER + additional) - MIN_MODIFIER);
-            villager.setAttached(VWAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER, modifier);
-            villager.setAttached(VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL, REROLL_INTERVAL);
+            villager.level().setAttached(VWAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER, modifier);
+            villager.level().setAttached(VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL, REROLL_INTERVAL);
         }
 
         for (MerchantOffer offer : villager.getOffers()) {
@@ -178,9 +178,9 @@ public class VillagerEntityMixin {
         if (TOTVWConfig.get().OTHER_ATTACHMENT_CD) {
             int attachment = villager.getAttachedOrElse(cooldown, 0);
             if (attachment <= 0) return;
-            villager.setAttached(cooldown, attachment - 1);
+            villager.level().setAttached(cooldown, attachment - 1);
         } else {
-            villager.setAttached(cooldown, 0);
+            villager.level().setAttached(cooldown, 0);
         }
     }
 

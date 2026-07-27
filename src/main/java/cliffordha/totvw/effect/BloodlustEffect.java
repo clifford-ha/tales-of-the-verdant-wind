@@ -72,7 +72,7 @@ public class BloodlustEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity entity, int amplifier) {
-        if (entity.getHealth() > 2.0f) {
+        if (entity.getHealth() > 3.0f) {
             float inflictDMG = 0.10f + (Math.min(amplifier, 0.3f) * 0.10f);
             if (serverLevel.getRandom().nextInt(60) == 0) {
                 float damage = entity.getHealth() * inflictDMG;

@@ -50,27 +50,7 @@ public class TOTVWConfigScreen {
 
 
 
-        ConfigCategory server = builder.getOrCreateCategory(
-                Component.literal("Server"));
-
-        server.addEntry(
-                entryBuilder.startIntSlider(
-                                Component.literal("Max Wolf/Player Scan"),
-                                TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE, 1, 64)
-                        .setDefaultValue(16)
-                        .setTooltip(text("Set a max chunk scan distance for enchantment effects to trigger.\n§8§oHigher values may affect performance!"))
-                        .setSaveConsumer(value -> TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE = value)
-                        .build()
-        );
-        server.addEntry(
-                entryBuilder.startIntSlider(
-                                Component.literal("Low Health Threshold"),
-                                TOTVWConfig.get().LOW_HEALTH_THRESHOLD, 15, 90)
-                        .setDefaultValue(30)
-                        .setTooltip(text("Set a health threshold for when to trigger enchantment effects."))
-                        .setSaveConsumer(value -> TOTVWConfig.get().LOW_HEALTH_THRESHOLD = value)
-                        .build()
-        );
+        ConfigCategory server = builder.getOrCreateCategory(Component.literal("Server"));
         server.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Wolf Armor Damage Distribution"),
@@ -85,11 +65,34 @@ public class TOTVWConfigScreen {
                                 Component.literal("Use Notifiers"),
                                 TOTVWConfig.get().ENABLE_NOTIFIERS)
                         .setDefaultValue(true)
-                        .setTooltip(text("Some enchantments and effects will send \na message to the player when activated."))
+                        .setTooltip(text("When enabled, notifications will be sent to chat or overlay"))
                         .setSaveConsumer(value -> TOTVWConfig.get().ENABLE_NOTIFIERS = value)
                         .build()
         );
-        server.addEntry(
+
+        var benedictionSettings = entryBuilder.startSubCategory(Component.literal("Enchantment: Benediction of the Verdant Mountains"));
+        benedictionSettings.add(
+                entryBuilder.startIntSlider(
+                                Component.literal("Max Wolf/Player Scan"),
+                                TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE, 1, 64)
+                        .setDefaultValue(16)
+                        .setTooltip(text("Max chunk scan distance for enchantment effects to trigger.\n§8§oHigher values may affect performance!"))
+                        .setSaveConsumer(value -> TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE = value)
+                        .build()
+        );
+        benedictionSettings.add(
+                entryBuilder.startIntSlider(
+                                Component.literal("Low Health Threshold"),
+                                TOTVWConfig.get().LOW_HEALTH_THRESHOLD, 15, 90)
+                        .setDefaultValue(30)
+                        .setTooltip(text("Trigger Benediction when health threshold is met"))
+                        .setSaveConsumer(value -> TOTVWConfig.get().LOW_HEALTH_THRESHOLD = value)
+                        .build()
+        );
+        server.addEntry(benedictionSettings.build());
+
+        var enchantmentSkillSettings = entryBuilder.startSubCategory(Component.literal("Enchantment Skills"));
+        enchantmentSkillSettings.add(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Attachment Cooldowns"),
                                 TOTVWConfig.get().ATTACHMENT_SKILL_CD)
@@ -98,7 +101,7 @@ public class TOTVWConfigScreen {
                         .setSaveConsumer(value -> TOTVWConfig.get().ATTACHMENT_SKILL_CD = value)
                         .build()
         );
-        server.addEntry(
+        enchantmentSkillSettings.add(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Other Attachment Cooldowns"),
                                 TOTVWConfig.get().OTHER_ATTACHMENT_CD)
@@ -107,11 +110,10 @@ public class TOTVWConfigScreen {
                         .setSaveConsumer(value -> TOTVWConfig.get().OTHER_ATTACHMENT_CD = value)
                         .build()
         );
+        server.addEntry(enchantmentSkillSettings.build());
 
 
-        ConfigCategory debug = builder.getOrCreateCategory(
-                Component.literal("Debug"));
-
+        ConfigCategory debug = builder.getOrCreateCategory(Component.literal("Debug"));
         debug.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("SEND LOGS"),
@@ -120,27 +122,16 @@ public class TOTVWConfigScreen {
                         .setSaveConsumer(value -> TOTVWConfig.get().DEBUG_PRINT_LOGS = value)
                         .build()
         );
-        debug.addEntry(
-                entryBuilder.startBooleanToggle(
-                                Component.literal("Additional Server Logs"),
-                                TOTVWConfig.get().ADDITIONAL_SERVER_LOG)
+
+        var debugCategory = entryBuilder.startSubCategory(Component.literal("Block Updates"));
+        debugCategory.add(entryBuilder.startBooleanToggle(
+                                Component.literal("Lodestone Wind Core"),
+                                TOTVWConfig.get().BLOCK_UPDATE_WIND_CORE)
                         .setDefaultValue(false)
-                        .setTooltip(text("Mostly for debugging purposes. But if you want to see what's going on, turn this on."))
-                        .setSaveConsumer(value -> TOTVWConfig.get().ADDITIONAL_SERVER_LOG = value)
-                        .requireRestart()
+                        .setSaveConsumer(value -> TOTVWConfig.get().BLOCK_UPDATE_WIND_CORE = value)
                         .build()
-        );
-        if (TOTVWConfig.get().ADDITIONAL_SERVER_LOG) {
-            debug.addEntry(
-                    entryBuilder.startBooleanToggle(
-                                    Component.literal("Block Updates"),
-                                    TOTVWConfig.get().SERVER_BLOCK_UPDATE_LOG)
-                            .setDefaultValue(false)
-                            .setTooltip(text("Block updates will be logged to the console."))
-                            .setSaveConsumer(value -> TOTVWConfig.get().SERVER_BLOCK_UPDATE_LOG = value)
-                            .build()
-            );
-        }
+                );
+        debug.addEntry(debugCategory.build());
 
         return builder.build();
     }

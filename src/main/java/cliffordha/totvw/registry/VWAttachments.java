@@ -43,14 +43,13 @@ public class VWAttachments {
         public static final AttachmentType<Integer> WOLF_CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("wolf_cd_blessing_of_the_verdant_wind");
         public static final AttachmentType<Integer> WOLF_CD_BLOODLUST_SKILL_PARALYZE = registerInt("wolf_cd_bloodlust_skill_paralyze");
         public static final AttachmentType<Integer> WOLF_CD_MIGHT_SKILL_RUPTURE = registerInt("wolf_cd_might_skill_rupture");
-
+        public static final AttachmentType<Integer> WOLF_CD_IGNORE_HIGH_DAMAGE = registerInt("wolf_cd_ignored_insurmountable_damage");
 
         public static final AttachmentType<Integer> WOLF_NOTIFY_MIGHT_SKILL_RUPTURE = registerInt("wolf_notify_might_skill_rupture");
         public static final AttachmentType<Integer> WOLF_NOTIFY_BLOODLUST_SKILL_PARALYZE = registerInt("wolf_notify_bloodlust_skill_paralyze");
         public static final AttachmentType<Integer> WOLF_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("wolf_notify_blessing_of_the_verdant_wind");
 
         public static final AttachmentType<Integer> WOLF_BENEDICTION = registerInt("wolf_benediction");
-        public static final AttachmentType<Integer> WOLF_PERMANENT_VERDANT_BLESSING = registerInt("wolf_permanent_verdant_blessing");
     }
 
     public static class Villager {
@@ -118,7 +117,6 @@ public class VWAttachments {
                 Wolf.WOLF_NOTIFY_BLOODLUST_SKILL_PARALYZE,
                 Wolf.WOLF_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
                 Wolf.WOLF_BENEDICTION,
-                Wolf.WOLF_PERMANENT_VERDANT_BLESSING,
                 Wolf.WOLF_TRY_SAVE_POINTS,
                 Wolf.WOLF_TRY_SAVE_STATUS,
         };

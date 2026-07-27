@@ -9,6 +9,7 @@ import cliffordha.totvw.util.VWGlobalUtil;
 import cliffordha.totvw.entity.VWTrustInteractionData;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWItemTags;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -21,6 +22,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
@@ -80,7 +82,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
     }
 
     @Inject(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/wolf/Wolf;", at = @At("RETURN"), cancellable = true)
-    private void getOffspring(ServerLevel level, AgeableMob partner, CallbackInfoReturnable<Wolf> cir) {
+    private void inheritStat(ServerLevel level, AgeableMob partner, CallbackInfoReturnable<Wolf> cir) {
         Wolf baby = EntityType.WOLF.create(level, EntitySpawnReason.BREEDING);
         Wolf wolf = (Wolf) (Object) this;
 
@@ -176,67 +178,23 @@ public abstract class WolfEntityMixin extends LivingEntity {
         return new LeapAtTargetGoal(wolf, 0.55f);
     }
 
-    @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
-    private void wolfInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        Wolf wolf = (Wolf) (Object) this;
-        String name = wolf.getName().getString();
-
-        int ACTIVE_BENEDICTION = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
-        ItemStack itemStack = player.getItemInHand(hand);
-
-        boolean canUseTotem = itemStack.is(Items.TOTEM_OF_UNDYING)
-                && wolf.isTame()
-                && !(wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) == 0);
-
-        boolean giveArmorToUntamed = itemStack.is(VWItemTags.WOLF_ARMOR_ENCHANTABLE)
-                && !wolf.isTame()
-                && !wolf.isWearingBodyArmor();
-
-        if (canUseTotem) {
-            if (ACTIVE_BENEDICTION >= 3) {
-
-                //reset stat for unconfigured value
-                if (ACTIVE_BENEDICTION > 3) {
-                    wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, 3);
-                    TOTVW.sendInfo(name + " has more than 3 of the Wolf Benediction stack. Resetting to 3.");
-                } else if (ACTIVE_BENEDICTION < 0) {
-                    wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
-                    TOTVW.sendInfo(name + " has negative value of the Wolf Benediction stack. Resetting to 0.");
-                }
-                VWSkillProcessor.sendToChat(wolf, VWColors.DEFAULT_MUTED, true, name + " already reached Wolf Beneficiation stack limit!");
-                return;
-            }
-
-            if (ACTIVE_BENEDICTION == 0) {
-                sendToChat(wolf, VWColors.DEFAULT_MUTED, "Totem has been converted to Wolf Beneficiation stack");
-            }
-
-            wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, ACTIVE_BENEDICTION + 1);
-            sendToChat(wolf, VWColors.VERDANT_WIND, "+1 Wolf Benediction stack to " + name);
-            if (player.isCreative() || player.isSpectator())  {
-                itemStack.shrink(1);
-            }
-            VWGlobalUtil.playSound(wolf, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
-
-            addParticle(wolf.level(), wolf.blockPosition(), VWParticles.BENEDICTION_TRIGGER_PARTICLE, 1);
-            cir.setReturnValue(InteractionResult.SUCCESS);
-        }
-
-        if (giveArmorToUntamed) {
-            if (wolf.level() instanceof ServerLevel serverLevel) {
-                wolf.equipItemIfPossible(serverLevel, itemStack);
-                cir.setReturnValue(InteractionResult.SUCCESS);
-            }
-        }
-    }
+    @Unique
+    private static final AttachmentType<Integer> WOLF_BENEDICTION_STACK = VWAttachments.Wolf.WOLF_BENEDICTION;
 
     @Inject(method = "die", at = @At("HEAD"), cancellable = true)
     private void reviveWolf(DamageSource source, CallbackInfo ci) {
         Wolf wolf = (Wolf) (Object) this;
-        int STACK_BEFORE = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
+
+        if (source.getEntity() instanceof Player player) {
+            AttachmentType<Integer> COUNTER = VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT;
+            int currentAtrocity = player.getAttachedOrElse(COUNTER, 0);
+            player.setAttached(COUNTER, currentAtrocity + 24);
+        }
+
+        int STACK_BEFORE = wolf.getAttachedOrElse(WOLF_BENEDICTION_STACK, 0);
 
         if (STACK_BEFORE == 0) return;
-        wolf.setHealth(40.0f);
+        wolf.setHealth(wolf.getMaxHealth() * 0.5f);
         wolf.removeAllEffects();
 
         rewriteEffect(wolf, MobEffects.RESISTANCE, sec(3), 255);
@@ -245,10 +203,10 @@ public abstract class WolfEntityMixin extends LivingEntity {
         rewriteEffect(wolf, MobEffects.STRENGTH, sec(10), 2);
 
         // main
-        wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, STACK_BEFORE - 1);
+        wolf.setAttached(WOLF_BENEDICTION_STACK, STACK_BEFORE - 1);
 
         String name = wolf.getName().getString();
-        int STACK_AFTER = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
+        int STACK_AFTER = wolf.getAttachedOrElse(WOLF_BENEDICTION_STACK, 0);
         if (STACK_AFTER == 0) {
             sendToChat(wolf, VWColors.BLOODLUST_EFFECT_MUTED, name + " used up all Benediction stacks");
         } else {
@@ -299,6 +257,9 @@ public abstract class WolfEntityMixin extends LivingEntity {
     private void distributeHurt(ServerLevel level, DamageSource source, float damage, CallbackInfo ci) {
         Wolf wolf = (Wolf) (Object) this;
 
+        ItemStack armor = wolf.getBodyArmorItem();
+        boolean hasBenediction = wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0;
+
         int ACTIVE_MIGHT = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_MIGHT);
         int ACTIVE_BENEDICTION = wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
         int ACTIVE_ENHANCEMENT_KIT = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_ARMOR_ENHANCEMENT_KIT);
@@ -308,10 +269,20 @@ public abstract class WolfEntityMixin extends LivingEntity {
                 float finalWolfDMG = ACTIVE_BENEDICTION > 0 ? damage * 0.5f : damage;
                 wolf.hurtServer(level, VWDamageTypes.create(level, VWDamageTypes.BLOODLUST), finalWolfDMG);
                 ci.cancel();
+                return;
+            }
+            if (hasBenediction && !source.is(DamageTypes.GENERIC_KILL) && damage > wolf.getMaxHealth() * 0.5f) {
+                AttachmentType<Integer> IGNORE_DMG_CD = VWAttachments.Wolf.WOLF_CD_IGNORE_HIGH_DAMAGE;
+                int IGNORE_DMG = wolf.getAttachedOrElse(IGNORE_DMG_CD, 0);
+                if (IGNORE_DMG > 0) return;
+                armor.hurtAndBreak(12, wolf, EquipmentSlot.BODY);
+                wolf.setAttached(IGNORE_DMG_CD, IGNORE_DMG + 15);
+                sendToChat(wolf, false, wolf.getPlainTextName() + " ignored " + damage + " damage");
+                ci.cancel();
+                return;
             }
             if (!wolf.canArmorAbsorb(source)) return;
 
-            ItemStack armor = wolf.getBodyArmorItem();
             int damageBefore = armor.getDamageValue();
             int maxDamage = armor.getMaxDamage();
 

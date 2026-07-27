@@ -17,6 +17,7 @@ import cliffordha.totvw.registry.VWColors;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -25,6 +26,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -36,15 +38,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static cliffordha.totvw.util.VWGlobalUtil.*;
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.*;
+import static cliffordha.totvw.util.VWGlobalUtil.*;
 
 public class VWWolfBehaviors {
     private static final SoundEvent[] DISTANT_HOWL_SOUNDS = {
             VWSounds.WOLF_HOWL_A,
             VWSounds.WOLF_HOWL_B1,
             VWSounds.WOLF_HOWL_B2,
-            VWSounds.WOLF_HOWL_B3};
+            VWSounds.WOLF_HOWL_B3
+    };
 
     private static final List<WolfBehaviorRule> ON_DAMAGE_RULES = new ArrayList<>();
     private static final List<WolfBehaviorRule> TICK_RULES = new ArrayList<>();
@@ -66,19 +69,20 @@ public class VWWolfBehaviors {
                 (wolf, _) -> wolf.tryToTeleportToOwner()
         ));
         TICK_RULES.add(WolfBehaviorRule.forTamed(
-                WolfCondition.tick(0, 1),
+                WolfCondition.tick(),
                 VWWolfBehaviors::runEnchantmentsOnTick
         ));
         TICK_RULES.add(WolfBehaviorRule.forTamed(
-                WolfCondition.companionIsCritical(
-                        () -> TOTVWConfig.get().LOW_HEALTH_THRESHOLD * 0.01f,
-                        () -> TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE)
-                        .and(WolfCondition.hasBodyArmor())
+                WolfCondition.halfTick()
+                        .and(WolfCondition.companionIsCritical(() -> TOTVWConfig.get().LOW_HEALTH_THRESHOLD * 0.01f, () -> TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE))
                         .and(WolfCondition.checkNoAttached(VWAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND)),
-                VWWolfBehaviors::runPlayerBlessing
+                (wolf, level) -> {
+                    if (wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) < 1) return;
+                    runPlayerBlessing(wolf, level);
+                }
         ));
         TICK_RULES.add(WolfBehaviorRule.forTamed(
-                WolfCondition.tick(0, 1)
+                WolfCondition.tick()
                         .and(WolfCondition.checkNoAttached(VWAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY))
                         .and(WolfCondition.isUnderWater())
                         .and(WolfCondition.airSupplyLowerThan(0.5f))
@@ -138,24 +142,22 @@ public class VWWolfBehaviors {
                 VWWolfBehaviors::runNaturalHealOnTick
         ));
         TICK_RULES.add(WolfBehaviorRule.forAny(
-                WolfCondition.tick(0, 1)
+                WolfCondition.tick()
                         .and(WolfCondition.isPassenger())
                         .and(WolfCondition.isAngry()),
                 (wolf, _) -> wolf.unRide()
         ));
-        TICK_RULES.add(WolfBehaviorRule.forAny(WolfCondition.tick(0, 1), (wolf, _) -> {
-            if (TOTVWConfig.get().DEBUG_PRINT_LOGS) {
-                VWSkillProcessor.setWolfConfiguration(wolf, 0);}
+        TICK_RULES.add(WolfBehaviorRule.forAny(WolfCondition.tick(), (wolf, _) -> {
+            if (TOTVWConfig.get().DEBUG_PRINT_LOGS) setWolfConfiguration(wolf, 0);
             if (TOTVWConfig.get().OTHER_ATTACHMENT_CD) {
-                VWSkillProcessor.depleteCooldown(wolf,  VWAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY);
+                depleteCooldown(wolf,  VWAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY);
             }
             if (TOTVWConfig.get().ATTACHMENT_SKILL_CD) {
-                VWSkillProcessor.depleteCooldown(wolf, VWAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND);
-                VWSkillProcessor.depleteCooldown(wolf, VWAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE);
-                VWSkillProcessor.depleteCooldown(wolf, VWAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE);
-            } else {
-                VWSkillProcessor.setWolfConfiguration(wolf, 1);
-            }
+                depleteCooldown(wolf, VWAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND);
+                depleteCooldown(wolf, VWAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE);
+                depleteCooldown(wolf, VWAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE);
+                depleteCooldown(wolf, VWAttachments.Wolf.WOLF_CD_IGNORE_HIGH_DAMAGE);
+            } else setWolfConfiguration(wolf, 1);
 
             SkillUtil.notifyReset(wolf, VERDANT_BLESSING);
             SkillUtil.notifyReset(wolf, PARALYZER);
@@ -183,7 +185,7 @@ public class VWWolfBehaviors {
             playNotification(wolf);
         }
 
-        wolf.setAttached(VWAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY, sec(3));
+        wolf.setAttached(VWAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY, 3);
         wolf.setAttached(VWAttachments.Wolf.WOLF_NOTIFY_AIR_SUPPLY, 1);
     }
     private static void runPlayerBlessing(Wolf wolf, ServerLevel level) {
@@ -202,6 +204,9 @@ public class VWWolfBehaviors {
 
         VWParticleEffects.triggerBenedictionParticles(wolf, 1);
         verdantBlessingAfterEffects(level, wolf);
+    }
+    private static int minutes(int min) {
+        return min * 60;
     }
     private static void runEnchantmentsOnDamage(Wolf wolf, ServerLevel level) {
         var victim = CURRENT_VICTIM.get();
@@ -271,17 +276,17 @@ public class VWWolfBehaviors {
             addEffect(victim, MobEffects.WEAKNESS, ACTIVE_BLOODLUST * sec(6), Math.min(ACTIVE_BLOODLUST, 2));
             if (ACTIVE_BLOODLUST >= 3) {
                 addHiddenEffect(victim, MobEffects.SLOWNESS, sec(3), 1);
-                removeEffect(victim, MobEffects.RESISTANCE);
+                removeEffect(victim, MobEffects.SPEED);
                 removeEffect(victim, MobEffects.REGENERATION);
             }
             if ((victim.getMaxHealth() > 40.0) && CD_PARALYZE <= 0 && !victim.hasEffect(VWEffects.PARALYZE)) {
                 addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
 
-                sendToChat(wolf, VWColors.MIGHT_EFFECT, wolfName(wolf) + " | " + victim.getName().getString() + " has been paralyzed for " + (paralyzeTime / sec(1)) + " seconds.");
+                sendToChat(wolf, VWColors.MIGHT_EFFECT, victim.getName().getString() + " has been paralyzed for " + (paralyzeTime / sec(1)) + " seconds by " + wolfName(wolf) + "!");
                 SkillUtil.startCooldown(wolf, PARALYZER,
-                        setDifficultyBasedValue(level, min(1), min(12), min(18), min(24)));
+                        setDifficultyBasedValue(level, minutes(1), minutes(12), minutes(18), minutes(24)));
 
-                VWGlobalUtil.playSound(victim, VWSounds.WOLF_SKILL_PARALYZE, SoundSource.HOSTILE);
+                VWGlobalUtil.playSound(victim, VWSounds.WOLF_SKILL_PARALYZE, SoundSource.HOSTILE, 0.3f, 0.7f + level.getRandom().nextFloat());
                 VWParticleEffects.triggerMightParalyzeParticles(victim, 4);
             }
         }
@@ -293,17 +298,19 @@ public class VWWolfBehaviors {
             } else if (ACTIVE_MIGHT > 0) {
                 defaultTime = (int) ((ACTIVE_MIGHT * 1.25) * min(1));
             } else {
-                defaultTime = min(1); }
+                defaultTime = min(1);
+            }
             addEffect(victim, MobEffects.OOZING, defaultTime, 1);
         }
 
         if (ACTIVE_MIGHT > 0) {
             DamageSource bleed = VWDamageTypes.create(level, VWDamageTypes.BLEEDING);
             addEffect(wolf, VWEffects.AMPLIFIED_MIGHT, ACTIVE_MIGHT * sec(3), Math.min(ACTIVE_MIGHT, 2));
-            addEffect(wolf, MobEffects.ABSORPTION, ACTIVE_MIGHT * sec(3), Math.min(ACTIVE_MIGHT, 2));
-            victim.hurtServer(level, bleed, wolf.getMaxHealth() * 0.10f);
+            addEffect(wolf, MobEffects.ABSORPTION, ACTIVE_MIGHT * sec(3), 1);
             if (ACTIVE_MIGHT >= 3) {
+                removeEffect(victim, MobEffects.RESISTANCE);
                 removeEffect(victim, MobEffects.STRENGTH);
+                removeEffect(victim, MobEffects.ABSORPTION);
 
                 if (victimHealth <= victimMaxHealth * 0.5f && CD_RUPTURE <= 0) {
                     float finalDMG;
@@ -318,8 +325,11 @@ public class VWWolfBehaviors {
                     }
                     victim.hurtServer(level, bleed, finalDMG);
                     SkillUtil.startCooldown(wolf, RUPTURE,
-                            setDifficultyBasedValue(level, sec(7), sec(14), sec(21), sec(28)));
+                            setDifficultyBasedValue(level, 7, 14, 21, 28));
                 }
+            }
+            if (ACTIVE_MIGHT >= 5) {
+                victim.hurtServer(level, bleed, wolf.getMaxHealth() * 0.10f);
             }
         }
 
@@ -402,15 +412,15 @@ public class VWWolfBehaviors {
 
     private static String wolfName(Wolf wolf) {
         String wolfName;
-        if (wolf.getName().getString().equals("Wolf")) {wolfName = "§dWolf§r";} else {wolfName = "§d" + wolf.getName().getString() + "§r";}
-        return wolfName; }
+        if (wolf.getPlainTextName().equals("Wolf")) {wolfName = "§dWolf§r";} else {wolfName = "§d" + wolf.getPlainTextName() + "§r";}
+        return wolfName;
+    }
 
     private static String playerName(Wolf wolf) {
         if (wolf.getOwner() != null) {
-            return "§d" + wolf.getOwner().getName().getString() + "§r";
-        } else return null; }
-
-
+            return "§d" + wolf.getOwner().getPlainTextName() + "§r";
+        } else return null;
+    }
 
     public static final ThreadLocal<LivingEntity> CURRENT_VICTIM = new ThreadLocal<>();
     public static void wireOnDamageEvent() {

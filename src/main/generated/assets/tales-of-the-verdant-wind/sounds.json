@@ -1,38 +1,44 @@
 {
-  "alex-jauk-howling-wolf-268894": {
+  "lodestone_wind_core_ambient": {
     "sounds": [
-      "tales-of-the-verdant-wind:alex-jauk-howling-wolf-268894"
+      "tales-of-the-verdant-wind:dragon_studio/lodestone_wind_core_ambient"
     ],
-    "subtitle": "subtitles.tales-of-the-verdant-wind.alex-jauk-howling-wolf-268894"
+    "subtitle": "subtitles.tales-of-the-verdant-wind.lodestone_wind_core_ambient"
   },
-  "dragon-studio-howling-wolves-515977": {
+  "notify": {
     "sounds": [
-      "tales-of-the-verdant-wind:dragon-studio-howling-wolves-515977"
+      "tales-of-the-verdant-wind:dragon_studio/notify"
     ],
-    "subtitle": "subtitles.tales-of-the-verdant-wind.dragon-studio-howling-wolves-515977"
+    "subtitle": "subtitles.tales-of-the-verdant-wind.notify"
   },
-  "dragon-studio-notification-bell-sound-1-376885": {
+  "wolf_howl_a": {
     "sounds": [
-      "tales-of-the-verdant-wind:dragon-studio-notification-bell-sound-1-376885"
+      "tales-of-the-verdant-wind:alex_jauk/wolf_howl_a"
     ],
-    "subtitle": "subtitles.tales-of-the-verdant-wind.dragon-studio-notification-bell-sound-1-376885"
+    "subtitle": "subtitles.tales-of-the-verdant-wind.wolf_howl_a"
   },
-  "dragon-studio-sci-fi-portal-jump-05-416165": {
+  "wolf_howl_b1": {
     "sounds": [
-      "tales-of-the-verdant-wind:dragon-studio-sci-fi-portal-jump-05-416165"
+      "tales-of-the-verdant-wind:dragon_studio/wolf_howl_b1"
     ],
-    "subtitle": "subtitles.tales-of-the-verdant-wind.dragon-studio-sci-fi-portal-jump-05-416165"
+    "subtitle": "subtitles.tales-of-the-verdant-wind.wolf_howl_b1"
   },
-  "dragon-studio-wolf-howl-2-359870": {
+  "wolf_howl_b2": {
     "sounds": [
-      "tales-of-the-verdant-wind:dragon-studio-wolf-howl-2-359870"
+      "tales-of-the-verdant-wind:dragon_studio/wolf_howl_b2"
     ],
-    "subtitle": "subtitles.tales-of-the-verdant-wind.dragon-studio-wolf-howl-2-359870"
+    "subtitle": "subtitles.tales-of-the-verdant-wind.wolf_howl_b2"
   },
-  "dragon-studio-wolf-howl-359873": {
+  "wolf_howl_b3": {
     "sounds": [
-      "tales-of-the-verdant-wind:dragon-studio-wolf-howl-359873"
+      "tales-of-the-verdant-wind:dragon_studio/wolf_howl_b3"
     ],
-    "subtitle": "subtitles.tales-of-the-verdant-wind.dragon-studio-wolf-howl-359873"
+    "subtitle": "subtitles.tales-of-the-verdant-wind.wolf_howl_b3"
+  },
+  "wolf_skill_paralyze": {
+    "sounds": [
+      "tales-of-the-verdant-wind:dragon_studio/wolf_skill_paralyze"
+    ],
+    "subtitle": "subtitles.tales-of-the-verdant-wind.wolf_skill_paralyze"
   }
 }

@@ -4,8 +4,6 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEffects;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -15,7 +13,6 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
-@Environment(EnvType.CLIENT)
 public final class VWEffectOverlays {
     private static final int RGB_BLOODLUST = VWColors.BLOODLUST_EFFECT;
     private static final float BLOODLUST_PULSE_SPEED_MS = (float) (Math.PI * 2.0 / 2000.0);
@@ -41,13 +38,13 @@ public final class VWEffectOverlays {
 
         float max;
         if (playerHealth <= playerMaxHealth * 0.2) {
-            max = 0.7f;
-        } else if (playerHealth <= playerMaxHealth * 0.35) {
             max = 0.55f;
+        } else if (playerHealth <= playerMaxHealth * 0.35) {
+            max = 0.40f;
         } else if (playerHealth <= playerMaxHealth * 0.5) {
-            max = 0.35f;
-        } else if (playerHealth <= playerMaxHealth * 0.75) {
             max = 0.25f;
+        } else if (playerHealth <= playerMaxHealth * 0.75) {
+            max = 0.15f;
         } else {
             max = 0.2f;
         }

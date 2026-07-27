@@ -1,19 +1,12 @@
 package cliffordha.totvw.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import net.fabricmc.loader.api.FabricLoader;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 
-import java.io.*;
-import java.nio.file.*;
-
-public class TOTVWConfig {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final Path CONFIG_PATH = FabricLoader.getInstance()
-            .getConfigDir().resolve("tales-of-the-verdant-wind.json");
-
-    private static TOTVWConfig INSTANCE = new TOTVWConfig();
-
+@Config(name = "tales-of-the-verdant-wind")
+public class TOTVWConfig implements ConfigData {
 
     public boolean ENABLE_NEW_LANGUAGE_SET = false;
     public boolean BLOODLUST_SCREEN_OVERLAY = false;
@@ -27,36 +20,21 @@ public class TOTVWConfig {
     public boolean ENABLE_NEW_SOUNDS = true;
 
     public boolean DEBUG_PRINT_LOGS = false;
-    public boolean ADDITIONAL_SERVER_LOG = false;
-    public boolean SERVER_BLOCK_UPDATE_LOG = false;
+    public boolean BLOCK_UPDATE_WIND_CORE = false;
 
     public static boolean conditionalToggle(boolean parent, boolean toggle) {
-        if (parent) {
-            return toggle;
-        } else
-            return false;
+        return parent && toggle;
     }
 
-
     public static TOTVWConfig get() {
-        return INSTANCE;
+        return AutoConfig.getConfigHolder(TOTVWConfig.class).getConfig();
     }
 
     public static void load() {
-        if (Files.exists(CONFIG_PATH)) {
-            try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
-                INSTANCE = GSON.fromJson(reader, TOTVWConfig.class);
-            } catch (IOException e) {
-                INSTANCE = new TOTVWConfig();
-            }
-        }
+        AutoConfig.register(TOTVWConfig.class, Toml4jConfigSerializer::new);
     }
 
     public static void save() {
-        try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
-            GSON.toJson(INSTANCE, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        AutoConfig.getConfigHolder(TOTVWConfig.class).save();
     }
 }

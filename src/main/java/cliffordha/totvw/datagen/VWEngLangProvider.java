@@ -1,11 +1,9 @@
 package cliffordha.totvw.datagen;
 
 import java.util.concurrent.CompletableFuture;
-
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
-
 import cliffordha.totvw.registry.items.VWItemsScatteredPage;
 import net.minecraft.core.HolderLookup;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
@@ -168,6 +166,8 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add(VWSounds.NOTIFY, "Notification popped");
         text.add(VWSounds.WOLF_SKILL_PARALYZE, "%1$s got paralyzed");
+
+        text.add(VWSounds.LODESTONE_WIND_CORE_AMBIENT, "Wind Core whooshes");
 
 
 

@@ -60,6 +60,16 @@ public interface PlayerCondition {
     static PlayerCondition tick(int min, int sec) {
         return (player, world) -> TOTVW.getGameTime(world, min, sec);
     }
+    static PlayerCondition tick() {
+        return (player, world) -> world.getGameTime() % 20 == 0;
+    }
+    static PlayerCondition halfTick() {
+        return (_, world) -> world.getGameTime() % 10 == 0;
+    }
+
+    static PlayerCondition quarterTick() {
+        return (_, world) -> world.getGameTime() % 5 == 0;
+    }
     static PlayerCondition checkNoAttached(AttachmentType<Integer> type) {
         return (wolf, level) -> wolf.getAttachedOrElse(type, 0) == 0;
     }

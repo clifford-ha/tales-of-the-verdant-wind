@@ -61,12 +61,15 @@ public class VWPlayerBehaviors {
                 ((player, _) -> player.heal(1.0f))
         ));
         TICK_RULES.add(PlayerBehaviorRule.register(
-                        PlayerCondition.hasBodyArmor()
+                        PlayerCondition.halfTick()
                         .and(PlayerCondition.checkNoAttached(VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND)),
-                VWPlayerBehaviors::runWolfBlessing
+                (player, level) -> {
+                            if (playerEnchantmentLVL(player, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) < 1) return;
+                            runWolfBlessing(player, level);
+                }
         ));
         TICK_RULES.add(PlayerBehaviorRule.register(
-                PlayerCondition.tick(0, 1),
+                PlayerCondition.tick(),
                 (player, _) -> {
                     if (TOTVWConfig.get().DEBUG_PRINT_LOGS) { VWSkillProcessor.setPlayerConfiguration(player, 0); }
                     if (TOTVWConfig.get().ATTACHMENT_SKILL_CD) {

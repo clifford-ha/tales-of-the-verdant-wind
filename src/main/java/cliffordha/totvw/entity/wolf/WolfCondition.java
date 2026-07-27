@@ -3,6 +3,7 @@ package cliffordha.totvw.entity.wolf;
 import cliffordha.totvw.TOTVW;
 
 import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.entity.player.PlayerCondition;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -83,6 +84,17 @@ public interface WolfCondition {
 
     static WolfCondition tick(int min, int sec) {
         return (wolf, world) -> TOTVW.getGameTime(world, min, sec);
+    }
+    static WolfCondition tick() {
+        return (player, world) -> world.getGameTime() % 20 == 0;
+    }
+
+    static WolfCondition halfTick() {
+        return (_, world) -> world.getGameTime() % 10 == 0;
+    }
+
+    static WolfCondition quarterTick() {
+        return (_, world) -> world.getGameTime() % 5 == 0;
     }
 
     static WolfCondition randomChance(float value) {

@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -20,7 +19,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -40,25 +38,28 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EnchantingTableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
+import static cliffordha.totvw.util.VWGlobalUtil.removeEffect;
 
 public class LodestoneWindCoreBlock extends Block {
     public static final MapCodec<LodestoneWindCoreBlock> CODEC = simpleCodec(LodestoneWindCoreBlock::new);
@@ -67,8 +68,6 @@ public class LodestoneWindCoreBlock extends Block {
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
     public static final IntegerProperty WIND_ENERGY = IntegerProperty.create("wind_energy", 0, ENERGY_LIMIT);
-
-    private static final Logger SEND = LoggerFactory.getLogger("TOTVW/Lodestone Wind Core");
 
     public LodestoneWindCoreBlock(Properties properties) {
         super(properties);
@@ -91,10 +90,16 @@ public class LodestoneWindCoreBlock extends Block {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (state.getValue(ACTIVE) && state.getValue(WIND_ENERGY) > 0) {
-            float randomPos = level.getRandom().nextFloat();
-            level.addParticle(VWParticles.VERIXIUM_POWDER_RAIN_PARTICLE,
-                    pos.getX() + randomPos, pos.getY() + 1, pos.getZ() + randomPos, 0.0D, 0.0D, 0.0D);
+        if (state.getValue(ACTIVE)) {
+            if (level.getGameTime() % 20 * 16 == 0) {
+                float pitch = random.nextIntBetweenInclusive(20, 100) * 0.01f;
+                level.playLocalSound(pos, VWSounds.LODESTONE_WIND_CORE_AMBIENT, SoundSource.BLOCKS, 0.1f, pitch, true);
+            }
+            if (state.getValue(WIND_ENERGY) > 0) {
+                float randomPos = level.getRandom().nextFloat();
+                level.addParticle(VWParticles.VERIXIUM_POWDER_RAIN_PARTICLE,
+                        pos.getX() + randomPos, pos.getY() + 1, pos.getZ() + randomPos, 0.0D, 0.0D, 0.0D);
+            }
         }
     }
 
@@ -217,7 +222,7 @@ public class LodestoneWindCoreBlock extends Block {
 
             if (tickInterval(level, 5) && state.getValue(WIND_ENERGY) <= 0 && random.nextFloat() < 0.5f) {
                 level.setBlockAndUpdate(pos, state.setValue(ACTIVE, false));
-                sendToServer("A core at " + getStringPos(pos) + " has been deactivated due to lack of energy.");
+                sendToServer("A core at " + getStringPos(pos) + " has been deactivated due to lack of energy source.");
             }
         }
     }
@@ -270,16 +275,19 @@ public class LodestoneWindCoreBlock extends Block {
 
             addEffect(wolf, MobEffects.STRENGTH, duration, 0);
             addEffect(wolf, MobEffects.RESISTANCE, duration, amp);
+            maybeClearBadEffects(level, wolf);
 
             VWParticleEffects.spawnBlessingParticlesEntity(wolf, 2);
         }
 
         List<Player> players = level.getEntitiesOfClass(Player.class, standardRange,
-                test -> test.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0) < 20
-                        && test.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) < 20
+                test -> test.gameMode() == GameType.SURVIVAL
+                        && test.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0) < 20
+                        && test.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) < 40
         );
         for (Player player : players) {
             addEffect(player, MobEffects.STRENGTH, duration, 0);
+            maybeClearBadEffects(level, player);
             player.heal(heal);
             VWParticleEffects.spawnBlessingParticlesEntity(player, 0);
         }
@@ -291,6 +299,7 @@ public class LodestoneWindCoreBlock extends Block {
 
             addEffect(villager, MobEffects.ABSORPTION, duration, 0);
             addEffect(villager, MobEffects.RESISTANCE, duration, amp);
+            maybeClearBadEffects(level, villager);
 
             VWParticleEffects.spawnBlessingParticlesEntity(villager, 2);
 
@@ -306,6 +315,7 @@ public class LodestoneWindCoreBlock extends Block {
         List<WanderingTrader> traders = level.getEntitiesOfClass(WanderingTrader.class, shortRange);
         for (WanderingTrader trader : traders) {
             addEffect(trader, MobEffects.ABSORPTION, duration, 0);
+            maybeClearBadEffects(level, trader);
             trader.heal(heal);
             VWParticleEffects.spawnBlessingParticlesEntity(trader, 0);
         }
@@ -340,6 +350,22 @@ public class LodestoneWindCoreBlock extends Block {
         if (finalTotal <= 0) return;
 
         depleteEnergy(level, pos, state, finalTotal);
+    }
+
+    private static void maybeClearBadEffects(ServerLevel level, LivingEntity entity) {
+        if (!(level.getRandom().nextFloat() < 0.33f)) return;
+
+        if (entity instanceof Player player) {
+            removeEffect(player, MobEffects.NAUSEA);
+            removeEffect(player, MobEffects.BLINDNESS);
+        }
+        if (level.getRandom().nextBoolean()) {
+            removeEffect(entity, MobEffects.WEAKNESS);
+            removeEffect(entity, MobEffects.SLOWNESS);
+        } else {
+            removeEffect(entity, MobEffects.WITHER);
+            removeEffect(entity, MobEffects.POISON);
+        }
     }
 
     private static void applyVerdantOmen(LivingEntity monster) {
@@ -491,9 +517,10 @@ public class LodestoneWindCoreBlock extends Block {
                 int CHECK_1 = player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0);
                 int CHECK_2 = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
 
-                if ((CHECK_1 + CHECK_2) > 60 && (!player.isCreative() || !player.isSpectator())) {
-                    String omenStamp = String.format("%.8s", player.getStringUUID()) + player.getPlainTextName();
+                String omenStamp = String.format("%.8s", player.getStringUUID()) + "-" + player.getPlainTextName() + ":verdantOmen";
 
+                if ((CHECK_1 + CHECK_2) > 60) {
+                    if (player.isCreative() || player.isSpectator()) return;
                     addEffect(player, MobEffects.WEAKNESS, randomDuration, 2);
                     addEffect(player, MobEffects.SLOWNESS, randomDuration, 0);
 
@@ -501,6 +528,7 @@ public class LodestoneWindCoreBlock extends Block {
                     sendToChat(player, VWColors.INDICATOR_40, true, "A surge of omen carried by the winds washes upon you...");
                     player.entityTags().add(omenStamp);
                 } else {
+                    player.entityTags().remove(omenStamp);
                     addEffect(player, MobEffects.RESISTANCE, randomDuration, randomAMP);
                     addEffect(player, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 2);
                 }
@@ -563,9 +591,9 @@ public class LodestoneWindCoreBlock extends Block {
         return pos.getX() + ", " + pos.getY() + ", " + pos.getZ();
     }
 
-
+    private static final Logger SEND = LoggerFactory.getLogger("TOTVW/Lodestone Wind Core");
     private static void sendToServer(String message) {
-        if (TOTVWConfig.conditionalToggle(TOTVWConfig.get().ADDITIONAL_SERVER_LOG, TOTVWConfig.get().SERVER_BLOCK_UPDATE_LOG)) {
+        if (TOTVWConfig.get().BLOCK_UPDATE_WIND_CORE) {
             LodestoneWindCoreBlock.SEND.info(message);
         }
     }

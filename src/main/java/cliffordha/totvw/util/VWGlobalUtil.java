@@ -29,8 +29,12 @@ import net.minecraft.world.level.Level;
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
 
 public final class VWGlobalUtil {
-    public static int sec(int sec) {return sec * 20;}
-    public static int min(int min) {return min * sec(60);}
+    public static int sec(int sec) {
+        return sec * 20;
+    }
+    public static int min(int min) {
+        return min * sec(60);
+    }
 
     public static float triggerHeal(LivingEntity granter, LivingEntity grantee) {
         float triggerHeal;
@@ -42,18 +46,19 @@ public final class VWGlobalUtil {
     }
     public static void verdantBlessingAfterEffects(ServerLevel level, LivingEntity entity) {
         if (!TOTVWConfig.get().ATTACHMENT_SKILL_CD) return;
-        int cooldown = setDifficultyBasedValue(level, min(3), min(9), min(15), min(21));
+        int minutes = 60;
+        int cooldown = setDifficultyBasedValue(level, minutes * 3, minutes * 9, minutes * 15, minutes * 21);
         if (isHalfHealth(entity)) {
-            addHiddenEffect(entity, MobEffects.WEAKNESS, min(1), 0);
+            addHiddenEffect(entity, MobEffects.WEAKNESS, minutes, 0);
         } else {
-            addHiddenEffect(entity, MobEffects.WEAKNESS, min(1), 1);
+            addHiddenEffect(entity, MobEffects.WEAKNESS, minutes, 1);
         }
         if (entity instanceof Wolf wolf) {
             SkillUtil.startCooldown(wolf, VWWolfBehaviors.VERDANT_BLESSING, cooldown);
-            VWSkillProcessor.sendToChat(wolf, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown / min(1) + " minutes");
+            VWSkillProcessor.sendToChat(wolf, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown + " sec");
         } else if (entity instanceof Player player) {
             SkillUtil.startCooldown(player, VWPlayerBehaviors.VERDANT_BLESSING, cooldown);
-            VWSkillProcessor.sendToChat(player, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown / min(1) + " minutes");
+            VWSkillProcessor.sendToChat(player, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown + " sec");
         }
     }
 
@@ -88,14 +93,24 @@ public final class VWGlobalUtil {
         var random = level.getRandom().nextFloat();
         level.playSound(null, posX, posY, posZ, sound, source, 0.3f + random, 0.5f + random);
     }
+    public static void playSound(LivingEntity entity, SoundEvent sound, SoundSource source, float volume, float pitch) {
+        if (!(entity.level() instanceof ServerLevel level)) return;
+        var posX = entity.getX();
+        var posY = entity.getY();
+        var posZ = entity.getZ();
+        var random = level.getRandom().nextFloat();
+        level.playSound(null, posX, posY, posZ, sound, source, volume, pitch);
+    }
 
     public static boolean isHalfHealth(LivingEntity entity) {
         return entity.getHealth() >= entity.getMaxHealth() * 0.5f;
     }
 
-    public static void addParticle(Level level, BlockPos pos, ParticleOptions particle, int frequency) {
+    public static void addParticle(ServerLevel level, BlockPos pos, ParticleOptions particle, int frequency) {
         for (int i = 0; i < (4 * (frequency + 1)); i++) {
-            level.addParticle(particle, pos.getX(), pos.getY(), pos.getZ(), 0.0D, 0.0D, 0.0D);
+            float randA = level.getRandom().nextFloat();
+            float randB = level.getRandom().nextFloat();
+            level.sendParticles(particle, pos.getX() + randB, pos.getY() + randA, pos.getZ() + randB, 1, 0.0D, 0.0D, 0.0D, 0);
         }
     }
 

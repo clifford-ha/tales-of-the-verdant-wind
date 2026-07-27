@@ -1,19 +1,18 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.VWTrustInteractionData;
 import cliffordha.totvw.registry.*;
-import net.minecraft.network.chat.Component;
+import cliffordha.totvw.tag.VWItemTags;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.decoration.painting.Painting;
@@ -24,7 +23,6 @@ import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -33,8 +31,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
 import static cliffordha.totvw.util.VWGlobalUtil.*;
 
@@ -42,47 +38,9 @@ import static cliffordha.totvw.util.VWGlobalUtil.*;
 public abstract class PlayerEntityMixin {
 
     @Unique
-    private static void sendInfo(Player player, String message) {
-        if (!(player instanceof ServerPlayer server)) return;
-        server.sendSystemMessage(Component.literal(message).withColor(VWColors.DEFAULT), true);
-    }
-
-    // under testing
-    @Inject(method = "die", at = @At("HEAD"), cancellable = true)
-    private void onDeath(DamageSource source, CallbackInfo ci) {
-        Player player = (Player) (Object) this;
-        sendToChat(player, false, "You died test");
-        if (player.level() instanceof ServerLevel level) {
-            List<Wolf> wolves = level.getEntities(EntityType.WOLF, player.getBoundingBox().inflate(128), wolf ->
-                    wolf.getOwner() != null && wolf.getOwner().is(player) && wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0) > 1);
-            Wolf wolf = wolves.getFirst();
-
-            sendToChat(player, false, "You died test 0");
-
-            int benediction = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
-            player.setHealth(1000f);
-            player.removeAllEffects();
-
-            rewriteEffect(player, MobEffects.RESISTANCE, sec(3), 255);
-            rewriteEffect(player, VWEffects.BLESSING_OF_THE_VERDANT_WIND, sec(10), 2);
-            rewriteEffect(player, MobEffects.ABSORPTION, sec(10), 2);
-            wolf.setAttached(VWAttachments.Wolf.WOLF_BENEDICTION, benediction - 1);
-
-            if (wolf.position().distanceTo(player.position()) > 10) {
-                if (wolf.isInLava()) return;
-                player.teleportTo(wolf.getX(), wolf.getY(), wolf.getZ());
-            } else {
-                if (player.isInLava()) return;
-                wolf.tryToTeleportToOwner();
-            }
-
-            level.broadcastEntityEvent(player, (byte) 35);
-
-            String name = wolf.getName().getString();
-            int STACK_AFTER = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
-            TOTVW.sendInfo(name + " your companion shared their Benediction stack! Remaining stacks: " + STACK_AFTER);
-            ci.cancel();
-        }
+    private static void consumeItem(Player player, ItemStack itemStack) {
+        if (player.isCreative()) return;
+        itemStack.shrink(1);
     }
 
     @Inject(method = "interactOn", at = @At("HEAD"), cancellable = true)
@@ -98,7 +56,7 @@ public abstract class PlayerEntityMixin {
 
         if (cannotTrade && entity instanceof Villager || entity instanceof WanderingTrader) {
             int atrocityCount = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
-            sendInfo(player, "Your atrocity count (" + atrocityCount + ") is too high!");
+            sendToChat(player, true, "Your atrocity count (" + atrocityCount + ") is too high!");
             return;
         }
 
@@ -114,11 +72,10 @@ public abstract class PlayerEntityMixin {
             if (isTamedWolf) return;
 
             String targetName = entity.getName().getString();
-            String thisMob = player.getStringUUID();
-            String interactedWith = entity.getStringUUID();
+            String playerUUID = player.getStringUUID();
+            String targetUUID = entity.getStringUUID();
 
-
-            VWTrustInteractionData data = new VWTrustInteractionData(thisMob, interactedWith);
+            VWTrustInteractionData data = new VWTrustInteractionData(playerUUID, targetUUID);
             VWTrustInteractionData empty = new VWTrustInteractionData("", "");
 
             boolean hasTrust = entity.getAttachedOrElse(VWAttachments.ENTITY_TRUSTED_MOB_DATA, empty).equals(data);
@@ -127,9 +84,8 @@ public abstract class PlayerEntityMixin {
                 entity.setAttached(VWAttachments.ENTITY_TRUSTED_MOB_DATA, data);
                 entity.setAttached(VWAttachments.ENTITY_TRUST_POINTS, 2);
                 sendToChat(player,true, "Trusted " + targetName);
+                consumeItem(player, itemStack);
                 cir.setReturnValue(InteractionResult.SUCCESS);
-                if (player.isCreative()) return;
-                itemStack.shrink(1);
             } else if (hasTrust && player.isShiftKeyDown()) {
                 entity.removeAttached(VWAttachments.ENTITY_TRUSTED_MOB_DATA);
                 entity.removeAttached(VWAttachments.ENTITY_TRUST_POINTS);
@@ -140,30 +96,54 @@ public abstract class PlayerEntityMixin {
                 cir.setReturnValue(InteractionResult.PASS);
             }
         }
-        if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_IS_DEV_MODE, false)) return;
         String target = entity.getName().getString();
         if (entity instanceof Villager villager) {
             if (itemStack.is(VWItems.VERIXIUM_PAPER)) {
-                String t = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false) ? " is a " : " is not a ";
-                sendInfo(player, target + t + "verdant type");
+                String sentence = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false) ? " is a " : " is not a ";
+                sendToChat(player, true, target + sentence + "verdant type");
                 cir.setReturnValue(InteractionResult.SUCCESS);
             }
         } else if (entity instanceof Wolf wolf) {
-            if (itemStack.is(VWItems.VERIXIUM_PAPER)) {
-                String t = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false) ? " is a " : " is not a ";
-                sendInfo(player, target + t + "verdant type");
+            boolean convertTotem = wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0;
+            AttachmentType<Integer> BENEDICTION_STACK = VWAttachments.Wolf.WOLF_BENEDICTION;
+
+            if (itemStack.is(Items.TOTEM_OF_UNDYING) && convertTotem) {
+                int stack = wolf.getAttachedOrElse(BENEDICTION_STACK, 0);
+                if (stack < 3) {
+                    wolf.setAttached(BENEDICTION_STACK, stack + 1);
+                    wolf.level().playSound(null, wolf.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.NEUTRAL);
+                    VWParticleEffects.triggerBenedictionParticles(wolf, 4);
+                    sendToChat(player, VWColors.VERDANT_WIND, true, wolf.getPlainTextName() + " Benediction stack " + wolf.getAttachedOrElse(BENEDICTION_STACK, 0));
+                    consumeItem(player, itemStack);
+                    cir.setReturnValue(InteractionResult.SUCCESS);
+                } else {
+                    sendToChat(player, true, target + " already reached Beneficiation stack limit!");
+                    cir.setReturnValue(InteractionResult.PASS);
+                }
+            } else if (itemStack.is(VWItemTags.WOLF_ARMOR_ENCHANTABLE) && !wolf.isTame() && !wolf.isWearingBodyArmor()) {
+                wolf.equipItemIfPossible((ServerLevel) wolf.level(), itemStack);
+                consumeItem(player, itemStack);
                 cir.setReturnValue(InteractionResult.SUCCESS);
+            } else if (itemStack.is(VWItems.VERIXIUM_PAPER)) {
+                if (player.isCrouching()) {
+                    sendToChat(player, true, target + " has " + wolf.getAttachedOrElse(BENEDICTION_STACK, 0) + " remaining Benediction stack(s)");
+                    cir.setReturnValue(InteractionResult.SUCCESS);
+                } else {
+                    String sentence = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false) ? " is a " : " is not a ";
+                    sendToChat(player, true, target + sentence + "verdant type");
+                    cir.setReturnValue(InteractionResult.SUCCESS);
+                }
             } else if (itemStack.is(Items.HONEY_BOTTLE)) {
                 boolean unTame = player.isCrouching()
+                        && player.getAttachedOrElse(VWAttachments.Player.PLAYER_IS_DEV_MODE, false)
                         && wolf.isTame()
                         && wolf.getOwner() == player;
 
-                if (unTame) {
-                    wolf.setTame(false, true);
-                    wolf.setOwner(null);
-                    sendInfo(player, target + " has been un-tamed");
-                }
-                cir.setReturnValue(InteractionResult.SUCCESS);
+                if (!unTame) return;
+                wolf.setOrderedToSit(false);
+                wolf.setTame(false, true);
+                wolf.setOwner(null);
+                sendToChat(player, true, target + " has been un-tamed");
             }
         }
     }
