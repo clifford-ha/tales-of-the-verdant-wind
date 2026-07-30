@@ -138,13 +138,16 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
 
         text.add("death.attack.bloodlust", "%1$s died from the agonizing effects of §cBloodlust§r");
-        text.add("death.attack.bloodlust.player", "%1$s died from the agonizing effects of §cBloodlust§r while fighting %1$s");
+        text.add("death.attack.bloodlust.player", "%1$s died from the agonizing effects of §cBloodlust§r while fighting %2$s");
+
+        text.add("death.attack.scorching_heat", "%1$s died from scorching heat");
+        text.add("death.attack.scorching_heat.player", "%1$s died from scorching heat while fighting %2$s");
 
         text.add("death.attack.bleeding", "%1$s bled to death");
-        text.add("death.attack.bleeding.player", "%1$s bled to death while fighting %1$s");
+        text.add("death.attack.bleeding.player", "%1$s bled to death while fighting %2$s");
 
         text.add("death.attack.wind_core_pulse", "%1$s got incapacitated by the Wind Core's pulse");
-        text.add("death.attack.wind_core_pulse.player", "%1$s got incapacitated by the Wind Core's pulse while fighting %1$s");
+        text.add("death.attack.wind_core_pulse.player", "%1$s got incapacitated by the Wind Core's pulse while fighting %2$s");
 
 
         text.add(VWItems.VERIXIUM_SPEAR, "Verixium Spear");

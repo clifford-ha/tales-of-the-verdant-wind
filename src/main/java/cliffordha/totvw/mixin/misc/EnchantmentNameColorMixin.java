@@ -1,5 +1,6 @@
 package cliffordha.totvw.mixin.misc;
 
+import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.util.VWColorizeTextMixin;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.*;

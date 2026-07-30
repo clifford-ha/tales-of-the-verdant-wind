@@ -8,19 +8,31 @@ import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 @Config(name = "tales-of-the-verdant-wind")
 public class TOTVWConfig implements ConfigData {
 
-    public boolean ENABLE_NEW_LANGUAGE_SET = false;
-    public boolean BLOODLUST_SCREEN_OVERLAY = false;
+    public boolean CLIENT_TRANSLATE_LANGUAGE = false;
+    public boolean CLIENT_BLOODLUST_EFFECT_OVERLAY = false;
+    public boolean CLIENT_ENABLE_NOTIFIERS = true;
+    public boolean CLIENT_MOD_SOUNDS = true;
 
-    public int MAX_WOLF_PLAYER_SCAN_DISTANCE = 16;
-    public boolean WOLF_ARMOR_DMG_DISTRIBUTION = true;
-    public int LOW_HEALTH_THRESHOLD = 30;
-    public boolean ENABLE_NOTIFIERS = true;
-    public boolean ATTACHMENT_SKILL_CD = true;
-    public boolean OTHER_ATTACHMENT_CD = true;
-    public boolean ENABLE_NEW_SOUNDS = true;
+
+
+    public boolean SERVER_WOLF_DMG_DISTRIBUTION = true;
+
+    public int SERVER_WOLF_PLAYER_SCAN_DISTANCE = 16;
+    public int SERVER_BENEDICTION_HEALTH_THRESHOLD = 30;
+    public int SERVER_MAX_WOLF_BENEDICTION_STACK = 3;
+    public boolean SERVER_ALWAYS_TRIGGER_BLESSING = false;
+    public boolean SERVER_WOLF_SHARES_BENEDICTION_STACK = true;
+    public boolean SERVER_TELEPORT_AFTER_SAVE = true;
+
+    public boolean SERVER_SKILL_COOLDOWNS = true;
+    public boolean SERVER_ITEM_COOLDOWNS = true;
+    public boolean SERVER_OTHER_COOLDOWNS = true;
+
+
 
     public boolean DEBUG_PRINT_LOGS = false;
-    public boolean BLOCK_UPDATE_WIND_CORE = false;
+    public boolean BLOCK_UPDATE_WIND_CORE_LOGS = false;
+    public boolean MIXIN_UPDATE_LOGS = false;
 
     public static boolean conditionalToggle(boolean parent, boolean toggle) {
         return parent && toggle;

@@ -2,8 +2,6 @@ package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.entity.VWGlobalEntityBehaviors;
-import cliffordha.totvw.entity.player.VWPlayerBehaviors;
-import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -35,10 +33,7 @@ public class VWEntities {
                     .clientTrackingRange(10).build(VERDANT_SPRUCE_CHEST_BOAT_KEY));
 
     public static void register() {
-        VWPlayerBehaviors.registerModPlayerBehaviors();
-        VWWolfBehaviors.registerModWolfBehaviors();
         VWGlobalEntityBehaviors.register();
-
-        sendClassRegisterLog("Entities and Entity Behaviors");
+        sendClassRegisterLog("Entities");
     }
 }

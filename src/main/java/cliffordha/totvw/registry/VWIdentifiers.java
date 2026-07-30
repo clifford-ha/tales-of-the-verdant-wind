@@ -4,6 +4,10 @@ import cliffordha.totvw.TOTVW;
 import net.minecraft.resources.Identifier;
 
 public class VWIdentifiers {
+    public static final Identifier VERIXIUM_ARMOR_EQUIPPED = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_armor_equipped");
+    public static final Identifier VERIXIUM_WOLF_ARMOR_EQUIPPED = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_wolf_armor_equipped");
+    public static final Identifier VERIXIUM_HORSE_ARMOR_EQUIPPED = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_horse_armor_equipped");
+
     public static final Identifier EFFECT_AMPLIFIED_MIGHT = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "effect_amplified_might");
     public static final Identifier EFFECT_BLESSING_OF_THE_VERDANT_WIND = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "effect_blessing_of_the_verdant_wind");
     public static final Identifier EFFECT_BLOODLUST = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "effect_bloodlust");

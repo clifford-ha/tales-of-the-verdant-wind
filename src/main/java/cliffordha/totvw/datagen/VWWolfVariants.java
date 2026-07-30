@@ -1,8 +1,7 @@
-package cliffordha.totvw.entity.variants;
+package cliffordha.totvw.datagen;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.tag.VWBiomeTags;
-import cliffordha.totvw.world.VWBiomes;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;

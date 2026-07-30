@@ -1,18 +1,20 @@
 package cliffordha.totvw.entity.player;
 
+import cliffordha.totvw.TalesOfTheVerdantWind;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.entity.skill.PlayerSkillDefinition;
 import cliffordha.totvw.entity.skill.SkillUtil;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.item.events.VWItemBlessings;
-import cliffordha.totvw.item.VWItemBlessingsInstance;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWItemTags;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BiomeTags;
@@ -24,16 +26,21 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static cliffordha.totvw.util.VWGlobalUtil.*;
+import static cliffordha.totvw.util.VWUtil.*;
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.*;
 
 public class VWPlayerBehaviors {
+    private static final ResourceKey<Enchantment> BENEDICTION_OF_THE_VERDANT_MOUNTAINS = VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS;
+    private static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND;
+    private static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = VWAttachments.Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND;
+
     private static final List<PlayerBehaviorRule> ON_DAMAGE_RULES = new ArrayList<>();
     private static final List<PlayerBehaviorRule> TICK_RULES = new ArrayList<>();
 
@@ -51,20 +58,21 @@ public class VWPlayerBehaviors {
         ));
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(1, 0)
-                        .and(PlayerCondition.hasArmorWithEnchantment(EquipmentSlot.CHEST, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS))
+                        .and(PlayerCondition.hasArmorWithEnchantment(EquipmentSlot.CHEST, BENEDICTION_OF_THE_VERDANT_MOUNTAINS))
                         .and(PlayerCondition.checkBiomeTag(VWBiomeTags.IS_VERDANT_BIOMES)),
                 ((player, _) -> player.heal(1.0f))
         ));
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(6, 0)
-                        .and(PlayerCondition.hasArmorWithEnchantment(EquipmentSlot.CHEST, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS)),
+                        .and(PlayerCondition.hasArmorWithEnchantment(EquipmentSlot.CHEST, BENEDICTION_OF_THE_VERDANT_MOUNTAINS)),
                 ((player, _) -> player.heal(1.0f))
         ));
         TICK_RULES.add(PlayerBehaviorRule.register(
-                        PlayerCondition.halfTick()
-                        .and(PlayerCondition.checkNoAttached(VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND)),
+                        PlayerCondition.tick()
+                        .and(PlayerCondition.hasArmorWithEnchantment(EquipmentSlot.CHEST, BENEDICTION_OF_THE_VERDANT_MOUNTAINS))
+                        .and(PlayerCondition.checkNoAttached(PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND)),
                 (player, level) -> {
-                            if (playerEnchantmentLVL(player, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) < 1) return;
+                            if (playerEnchantmentLVL(player, BENEDICTION_OF_THE_VERDANT_MOUNTAINS) < 1) return;
                             runWolfBlessing(player, level);
                 }
         ));
@@ -72,17 +80,16 @@ public class VWPlayerBehaviors {
                 PlayerCondition.tick(),
                 (player, _) -> {
                     if (TOTVWConfig.get().DEBUG_PRINT_LOGS) { VWSkillProcessor.setPlayerConfiguration(player, 0); }
-                    if (TOTVWConfig.get().ATTACHMENT_SKILL_CD) {
-                        VWSkillProcessor.depleteCooldown(player, VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND);
-                        VWSkillProcessor.depleteCooldown(player, VWAttachments.ENTITY_TRUST_COOLDOWN);
+                    if (TOTVWConfig.get().SERVER_SKILL_COOLDOWNS) {
+                        VWSkillProcessor.depleteCooldown(player, PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND);
                     } else {
                         VWSkillProcessor.setPlayerConfiguration(player, 1);
                     }
 
                     SkillUtil.notifyReset(player, VERDANT_BLESSING);
                     processCDNotify(player,
-                            VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
-                            VWAttachments.Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+                            PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
+                            PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
                             VWColors.VERDANT_WIND,
                             "§nVerdant Wind's Blessing§f cooldown reset for §r"
                     );
@@ -91,17 +98,16 @@ public class VWPlayerBehaviors {
     }
     private static void runWolfBlessing(Player player, ServerLevel level) {
         if (!(level instanceof ServerLevel serverLevel)) return;
-        if (playerEnchantmentLVL(player, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) <= 0) return;
 
-        double distance = TOTVWConfig.get().MAX_WOLF_PLAYER_SCAN_DISTANCE;
-        float health = TOTVWConfig.get().LOW_HEALTH_THRESHOLD * 0.01f;
+        double SCAN_DISTANCE = TOTVWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
+        float HEALTH_THRESHOLD = TOTVWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD * 0.01f;
 
         List<Wolf> wolves = serverLevel.getEntities(
                 EntityType.WOLF,
-                player.getBoundingBox().inflate(distance * 16),
+                player.getBoundingBox().inflate(SCAN_DISTANCE),
                 wolf -> wolf.isTame()
                         && wolf.getOwner() != null
-                        && wolf.getHealth() <= wolf.getMaxHealth() * health
+                        && wolf.getHealth() <= wolf.getMaxHealth() * HEALTH_THRESHOLD
                         && wolf.getOwner().getUUID().equals(player.getUUID()) );
         if (wolves.isEmpty()) return;
 
@@ -119,7 +125,7 @@ public class VWPlayerBehaviors {
 
             rewriteEffect(wolf, MobEffects.RESISTANCE, sec(6), 254);
             rewriteEffect(wolf, VWEffects.BLESSING_OF_THE_VERDANT_WIND, sec(30), 2);
-            if (wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0) {
+            if (wolfEnchantmentLVL(wolf, BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0) {
                 removeEffect(wolf, MobEffects.POISON);
                 removeEffect(wolf, MobEffects.WITHER);
             }
@@ -135,7 +141,7 @@ public class VWPlayerBehaviors {
         var victim = CURRENT_VICTIM.get();
         if (victim == null) return;
 
-        int BENEDICTION_ACTIVE = playerEnchantmentLVL(player, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
+        int BENEDICTION_ACTIVE = playerEnchantmentLVL(player, BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
         int FIRE_PROTECTION = playerEnchantmentLVL(player, Enchantments.FIRE_PROTECTION);
 
         boolean inVerdantBiomes = player.level().getBiome(player.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
@@ -152,8 +158,8 @@ public class VWPlayerBehaviors {
 
 
     public static final PlayerSkillDefinition VERDANT_BLESSING = new PlayerSkillDefinition(
-            VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
-            VWAttachments.Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+            PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
+            PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
             VWColors.VERDANT_WIND_MUTED,
             "§nVerdant Wind's Blessing§r"
     );
@@ -168,22 +174,29 @@ public class VWPlayerBehaviors {
 
     private static void wireItemUseEvent() {
         UseItemCallback.EVENT.register((player, level, _) -> {
+            if (!TOTVWConfig.get().SERVER_ITEM_COOLDOWNS) return InteractionResult.PASS;
             ItemStack mainHand = player.getItemBySlot(EquipmentSlot.MAINHAND);
             if (level.isClientSide()) return InteractionResult.PASS;
-            if (!player.isShiftKeyDown()) return InteractionResult.PASS;
+            if (!player.isCrouching()) return InteractionResult.PASS;
             if (player.isSpectator()) return InteractionResult.PASS;
             if (playerEnchantmentLVL(player, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) <= 0)
                 return InteractionResult.PASS;
 
             boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS))
+                    || mainHand.tags().anyMatch(Predicate.isEqual(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)));
+
+            /*
+            boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS))
                     || mainHand.tags().anyMatch(Predicate.isEqual(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)))
                     && !(mainHand.getItem() instanceof VWItemBlessingsInstance);
+
+             */
 
             if (!isItem) return InteractionResult.PASS;
 
             if (player.getCooldowns().isOnCooldown(mainHand)) return InteractionResult.PASS;
 
-            boolean applied = VWItemBlessings.tryApply(level, player);
+            boolean applied = VWItemBlessings.tryApply(player);
             if (applied) {
                 return InteractionResult.SUCCESS;
             } else {
@@ -236,22 +249,18 @@ public class VWPlayerBehaviors {
         });
 
         // Debugging
-
+        if (!TalesOfTheVerdantWind.IN_DEVELOPMENT) return;
         ServerTickEvents.START_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
-                serverLevel.getEntities(
-                        EntityType.PLAYER,
-                        _ -> true
-                ).forEach(player -> {
+                serverLevel.getEntities(EntityType.PLAYER, _ -> true).forEach(player -> {
                     if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_IS_DEV_MODE, false)) {
                         player.setAttached(VWAttachments.Player.PLAYER_IS_DEV_MODE, true);
                     }
                     List<Wolf> wolves = serverLevel.getEntities(
                             EntityType.WOLF,
                             player.getBoundingBox().inflate(32),
-                            wolf -> wolf.isTame()
-                                    && !wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VILLAGE_GUARD, false)
-                                    && (wolf.getUUID() != player.getUUID()) );
+                            wolf -> wolf.isTame() && wolf.getUUID() != player.getUUID());
+
                     if (wolves.isEmpty()) return;
                     for (Wolf wolf : wolves) {
                         wolf.setOwner(player);

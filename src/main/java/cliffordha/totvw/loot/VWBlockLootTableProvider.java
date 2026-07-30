@@ -77,5 +77,6 @@ public class VWBlockLootTableProvider extends FabricBlockLootSubProvider {
 
         dropSelf(VWBlocks.IRIDESCENT_GLASS);
         dropSelf(VWBlocks.IRIDESCENT_GLASS_PANE);
+        dropSelf(VWBlocks.LODESTONE_WIND_CORE);
     }
 }

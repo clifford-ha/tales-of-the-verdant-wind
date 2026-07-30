@@ -59,9 +59,6 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
         getOrCreateRawBuilder(BiomeTags.HAS_MINESHAFT)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
-        getOrCreateRawBuilder(BiomeTags.HAS_OCEAN_RUIN_COLD)
-                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
-
         getOrCreateRawBuilder(BiomeTags.HAS_PILLAGER_OUTPOST)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
@@ -78,9 +75,6 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
                 .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
 
         getOrCreateRawBuilder(BiomeTags.HAS_TRIAL_CHAMBERS)
-                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
-
-        getOrCreateRawBuilder(BiomeTags.HAS_WOODLAND_MANSION)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
     }

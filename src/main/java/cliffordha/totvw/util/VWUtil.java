@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -25,10 +26,10 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 
-import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
-
-public final class VWGlobalUtil {
+public final class VWUtil {
     public static int sec(int sec) {
         return sec * 20;
     }
@@ -36,16 +37,23 @@ public final class VWGlobalUtil {
         return min * sec(60);
     }
 
+    public static boolean isInBiomes(LivingEntity entity, TagKey<Biome> biome) {
+        return entity.level().getBiome(entity.blockPosition()).is(biome);
+    }
+    public static boolean isInBiomes(LevelAccessor level,BlockPos pos, TagKey<Biome> biome) {
+        return level.getBiome(pos).is(biome);
+    }
+
     public static float triggerHeal(LivingEntity granter, LivingEntity grantee) {
         float triggerHeal;
-        if (granter.level().getBiome(granter.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES)) {
+        if (isInBiomes(granter, VWBiomeTags.IS_VERDANT_BIOMES)) {
             triggerHeal = Math.round((granter.getHealth() * 0.5f) + (grantee.getMaxHealth() * 0.5f));
         } else {
             triggerHeal = Math.round((granter.getHealth() * 0.5f) + (grantee.getMaxHealth() * 0.3f));}
         return triggerHeal;
     }
-    public static void verdantBlessingAfterEffects(ServerLevel level, LivingEntity entity) {
-        if (!TOTVWConfig.get().ATTACHMENT_SKILL_CD) return;
+    public static void verdantBlessingAfterEffects(LevelAccessor level, LivingEntity entity) {
+        if (!TOTVWConfig.get().SERVER_SKILL_COOLDOWNS) return;
         int minutes = 60;
         int cooldown = setDifficultyBasedValue(level, minutes * 3, minutes * 9, minutes * 15, minutes * 21);
         if (isHalfHealth(entity)) {
@@ -63,7 +71,7 @@ public final class VWGlobalUtil {
     }
 
 
-    public static int setDifficultyBasedValue(ServerLevel level, int peacefulCD, int easyCD, int normalCD, int hardCD) {
+    public static int setDifficultyBasedValue(LevelAccessor level, int peacefulCD, int easyCD, int normalCD, int hardCD) {
         int finalCD;
         switch (level.getDifficulty()) {
             case PEACEFUL -> finalCD = peacefulCD;
@@ -74,7 +82,7 @@ public final class VWGlobalUtil {
         return finalCD;
     }
 
-    public static float setDifficultyBasedValue(ServerLevel level, float peacefulCD, float easyCD, float normalCD, float hardCD) {
+    public static float setDifficultyBasedValue(LevelAccessor level, float peacefulCD, float easyCD, float normalCD, float hardCD) {
         float finalCD;
         switch (level.getDifficulty()) {
             case PEACEFUL -> finalCD = peacefulCD;
@@ -98,7 +106,6 @@ public final class VWGlobalUtil {
         var posX = entity.getX();
         var posY = entity.getY();
         var posZ = entity.getZ();
-        var random = level.getRandom().nextFloat();
         level.playSound(null, posX, posY, posZ, sound, source, volume, pitch);
     }
 
@@ -124,6 +131,23 @@ public final class VWGlobalUtil {
     public static void addEffect( LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {
         if (entity.hasEffect(effect)) return;
         entity.addEffect(new MobEffectInstance(effect, sec, amp));
+    }
+    public static void addOrStackEffect(LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {
+        if (entity.hasEffect(effect)) {
+            int currentAmp = entity.getEffect(effect).getAmplifier();
+            int currentDuration = entity.getEffect(effect).getDuration();
+            int DURATION_STACK;
+
+            if (amp < currentAmp) {
+                DURATION_STACK = currentDuration + sec;
+                rewriteEffect(entity, effect, DURATION_STACK, currentAmp);
+            } else {
+                DURATION_STACK = (int) (currentDuration + Math.ceil(sec * 0.5f));
+                rewriteEffect(entity, effect, DURATION_STACK, currentAmp + 1);
+            }
+        } else {
+            rewriteEffect(entity, effect, sec, amp);
+        }
     }
 
     public static void addHiddenEffect(LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {

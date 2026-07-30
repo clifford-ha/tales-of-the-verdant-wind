@@ -22,7 +22,7 @@ public class VWOverworldBiomes {
             MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
             BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-            spawner.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2));
+            spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2));
             spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 3));
             spawner.addSpawn(MobCategory.CREATURE, 60, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 2, 4));
             spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 4, 4));
@@ -84,7 +84,7 @@ public class VWOverworldBiomes {
         MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
         BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-        spawner.addSpawn(MobCategory.CREATURE, 30, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 3, 4));
+        spawner.addSpawn(MobCategory.CREATURE, 80, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 3, 4));
         spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 1));
         spawner.addSpawn(MobCategory.CREATURE, 80, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 2, 4));
         spawner.addSpawn(MobCategory.CREATURE, 40, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 2, 2));

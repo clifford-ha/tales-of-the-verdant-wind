@@ -11,7 +11,7 @@ public class VWParticleEffects {
                 0x00ffbf,
                 1.0f
         );
-        for (int i = 0; i < (16 * (frequency + 1)); i++) {
+        for (int i = 0; i < (8 * (frequency + 1)); i++) {
             serverLevel.sendParticles(
                     dust,
                     entity.getX(),
@@ -35,6 +35,21 @@ public class VWParticleEffects {
         triggerParticles(entity,
                 VWParticles.MIGHT_PARALYZE_PARTICLE,
                 frequency);
+    }
+    public static void triggerRuptureParticles(LivingEntity entity) {
+        if (!(entity.level() instanceof ServerLevel level)) return;
+        double pos = 0;
+        level.sendParticles(
+                ParticleTypes.EXPLOSION_EMITTER,
+                entity.getX(),
+                entity.getY() - 0.5,
+                entity.getZ(),
+                1,
+                pos,
+                pos,
+                pos,
+                0
+        );
     }
     public static void benedictionEnvironmentParticleEntity(LivingEntity entity) {
         if (!(entity.level() instanceof ServerLevel serverLevel)) return;

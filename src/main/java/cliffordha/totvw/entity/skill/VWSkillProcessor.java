@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -22,7 +23,7 @@ public class VWSkillProcessor {
     }
 
     public static void playNotification(LivingEntity entity) {
-        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
+        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
         if (!(entity.level() instanceof ServerLevel)) return;
         if (entity instanceof Wolf wolf && wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer player) {
             player.level().playLocalSound(player, VWSounds.NOTIFY, SoundSource.PLAYERS, 1.0f, 1.0f);
@@ -32,7 +33,7 @@ public class VWSkillProcessor {
     }
 
     public static void processCDNotify(LivingEntity entity, AttachmentType<Integer> cooldown, AttachmentType<Integer> notify, int color, String... msg) {
-        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
+        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
         int cd = entity.getAttachedOrElse(cooldown, 0);
         int notifyFlag = entity.getAttachedOrElse(notify, 0);
 
@@ -87,44 +88,40 @@ public class VWSkillProcessor {
         }
     }
 
-
-    public static void sendToChat(Player player, boolean b, String... msg) {
-        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
-        if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)), b);
-        }
+    private static void sendToMain(ServerPlayer player, boolean overlay, String msg) {
+        player.sendSystemMessage(Component.literal(msg), overlay);
     }
-    public static void sendToChat(Wolf wolf, boolean b, String... msg) {
-        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
-        if (wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer serverPlayer) {
-            serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)), b);
-        }
+    private static void sendToMain(ServerPlayer player, int color, String msg) {
+        player.sendSystemMessage(Component.literal(msg).withColor(color));
+    }
+    private static void sendToMain(ServerPlayer player, int color, boolean overlay, String msg) {
+        player.sendSystemMessage(Component.literal(msg).withColor(color), overlay);
     }
 
-    public static void sendToChat(Player player, int color, String... msg) {
-        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
-        if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)).withColor(color));
-        }
-    }
-    public static void sendToChat(Wolf wolf, int color, String... msg) {
-        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
-        if (wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer serverPlayer) {
-            serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)).withColor(color));
-        }
+    private static @Nullable ServerPlayer resolveRecipient(LivingEntity entity) {
+        if (entity instanceof ServerPlayer serverPlayer) return serverPlayer;
+        if (entity instanceof Wolf wolf && wolf.getOwner() instanceof ServerPlayer serverPlayer) return serverPlayer;
+        return null;
     }
 
-
-    public static void sendToChat(Player player, int color, boolean overlay, String... msg) {
-        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
-        if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)).withColor(color), overlay);
-        }
+    public static void sendToChat(LivingEntity entity, boolean overlay, String... msg) {
+        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        ServerPlayer player = resolveRecipient(entity);
+        if (player == null) return;
+        sendToMain(player, overlay, String.join("\n", msg));
     }
-    public static void sendToChat(Wolf wolf, int color, boolean overlay, String... msg) {
-        if (!TOTVWConfig.get().ENABLE_NOTIFIERS) return;
-        if (wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer serverPlayer) {
-            serverPlayer.sendSystemMessage(Component.literal(Arrays.toString(msg)).withColor(color), overlay);
-        }
+
+    public static void sendToChat(LivingEntity entity, int color, String... msg) {
+        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        ServerPlayer player = resolveRecipient(entity);
+        if (player == null) return;
+        sendToMain(player, color, String.join("\n", msg));
+    }
+
+    public static void sendToChat(LivingEntity entity, int color, boolean overlay, String... msg) {
+        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        ServerPlayer player = resolveRecipient(entity);
+        if (player == null) return;
+        sendToMain(player, color, overlay, String.join("\n", msg));
     }
 }

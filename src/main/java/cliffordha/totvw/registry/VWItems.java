@@ -1,9 +1,9 @@
 package cliffordha.totvw.registry;
 
+import cliffordha.totvw.TalesOfTheVerdantWind;
 import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import cliffordha.totvw.registry.creativetab.ScatteredPagesTab;
 import cliffordha.totvw.registry.creativetab.TOTVWItemsTab;
-import cliffordha.totvw.item.VWItemBlessingsInstance;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.item.VWArmorMaterials;
 import cliffordha.totvw.item.VWToolMaterials;
@@ -26,7 +26,6 @@ import static cliffordha.totvw.TOTVW.sendClassRegisterLog;
 import static cliffordha.totvw.registry.VWItems.Util.registerItem;
 
 public class VWItems {
-    public static final Identifier VERIXIUM_ARMOR_EQUIPPED = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_armor_equipped");
     public static final Item VERIXIUM_HELMET = registerItem("verixium_helmet",
             properties -> new Item(properties
                     .humanoidArmor(VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL, ArmorType.HELMET)
@@ -36,7 +35,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.OXYGEN_BONUS,
                                             new AttributeModifier(
-                                                    VERIXIUM_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_ARMOR_EQUIPPED,
                                                     0.2F,
                                                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                             ),
@@ -53,7 +52,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.KNOCKBACK_RESISTANCE,
                                             new AttributeModifier(
-                                                    VERIXIUM_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_ARMOR_EQUIPPED,
                                                     0.1F,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
@@ -62,7 +61,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.ARMOR_TOUGHNESS,
                                             new AttributeModifier(
-                                                    VERIXIUM_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_ARMOR_EQUIPPED,
                                                     2,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
@@ -80,7 +79,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.SNEAKING_SPEED,
                                             new AttributeModifier(
-                                                    VERIXIUM_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_ARMOR_EQUIPPED,
                                                     0.15F,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
@@ -89,7 +88,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.KNOCKBACK_RESISTANCE,
                                             new AttributeModifier(
-                                                    VERIXIUM_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_ARMOR_EQUIPPED,
                                                     0.1F,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
@@ -98,7 +97,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.ARMOR_TOUGHNESS,
                                             new AttributeModifier(
-                                                    VERIXIUM_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_ARMOR_EQUIPPED,
                                                     2,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
@@ -115,7 +114,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.MOVEMENT_EFFICIENCY,
                                             new AttributeModifier(
-                                                    VERIXIUM_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_ARMOR_EQUIPPED,
                                                     0.3F,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
@@ -124,7 +123,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.KNOCKBACK_RESISTANCE,
                                             new AttributeModifier(
-                                                    VERIXIUM_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_ARMOR_EQUIPPED,
                                                     0.1F,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
@@ -133,7 +132,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.ARMOR_TOUGHNESS,
                                             new AttributeModifier(
-                                                    VERIXIUM_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_ARMOR_EQUIPPED,
                                                     2,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
@@ -141,10 +140,6 @@ public class VWItems {
                                     )
                     )
             ));
-
-
-    public static final Identifier VERIXIUM_WOLF_ARMOR_EQUIPPED = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_wolf_armor_equipped");
-    public static final Identifier VERIXIUM_HORSE_ARMOR_EQUIPPED = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_horse_armor_equipped");
     public static final Item VERIXIUM_WOLF_ARMOR = registerItem("verixium_wolf_armor",
             properties -> new Item(properties
                     .fireResistant()
@@ -155,7 +150,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.MOVEMENT_SPEED,
                                             new AttributeModifier(
-                                                    VERIXIUM_WOLF_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_WOLF_ARMOR_EQUIPPED,
                                                     0.05,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
@@ -174,7 +169,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.JUMP_STRENGTH,
                                             new AttributeModifier(
-                                                    VERIXIUM_HORSE_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_HORSE_ARMOR_EQUIPPED,
                                                     0.5,
                                                     AttributeModifier.Operation.ADD_VALUE
                                             ),
@@ -183,7 +178,7 @@ public class VWItems {
                                     .withModifierAdded(
                                             Attributes.FALL_DAMAGE_MULTIPLIER,
                                             new AttributeModifier(
-                                                    VERIXIUM_HORSE_ARMOR_EQUIPPED,
+                                                    VWIdentifiers.VERIXIUM_HORSE_ARMOR_EQUIPPED,
                                                     -0.2f,
                                                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                                             ),
@@ -230,7 +225,7 @@ public class VWItems {
                     .fireResistant()
             ));
     public static final Item VERIXIUM_SWORD = registerItem("verixium_sword",
-            properties -> new VWItemBlessingsInstance(properties
+            properties -> new Item(properties
                     .sword(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 3.0F, -2.4f)
                     .fireResistant()
             ));
@@ -273,9 +268,10 @@ public class VWItems {
 
 
     public static void register() {
+        if (TalesOfTheVerdantWind.IN_DEVELOPMENT) {
+            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ScatteredPagesTab.SCATTERED_PAGES_TAB_KEY, ScatteredPagesTab.SCATTERED_PAGES_TAB);
+        }
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TOTVWItemsTab.TOTVW_ITEMS_TAB_KEY, TOTVWItemsTab.TOTVW_ITEMS_TAB);
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ScatteredPagesTab.SCATTERED_PAGES_TAB_KEY, ScatteredPagesTab.SCATTERED_PAGES_TAB);
-
         VWItemsScatteredPage.registerAdditionalItems();
 
         sendClassRegisterLog("Items");

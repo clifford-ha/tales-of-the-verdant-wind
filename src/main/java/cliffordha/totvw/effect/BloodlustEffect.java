@@ -21,7 +21,7 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import java.util.List;
 
 import static cliffordha.totvw.registry.VWEffects.*;
-import static cliffordha.totvw.util.VWGlobalUtil.wolfEnchantmentLVL;
+import static cliffordha.totvw.util.VWUtil.wolfEnchantmentLVL;
 
 public class BloodlustEffect extends MobEffect {
     public BloodlustEffect() {

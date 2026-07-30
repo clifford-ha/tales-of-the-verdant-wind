@@ -18,7 +18,7 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import java.util.List;
 
 import static cliffordha.totvw.registry.VWEffects.*;
-import static cliffordha.totvw.util.VWGlobalUtil.*;
+import static cliffordha.totvw.util.VWUtil.*;
 
 public class AmplifiedMightEffect extends MobEffect {
     public AmplifiedMightEffect() {

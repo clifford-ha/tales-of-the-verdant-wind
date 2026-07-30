@@ -1,15 +1,17 @@
 package cliffordha.totvw.entity.wolf;
 
-import cliffordha.totvw.TOTVW;
-
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.player.PlayerCondition;
+import cliffordha.totvw.registry.VWAttachments;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 import java.util.function.Supplier;
 
@@ -25,19 +27,15 @@ public interface WolfCondition {
 
 
 
-    static WolfCondition alwaysTrue() {return (wolf, level) -> true;}
+    static WolfCondition alwaysTrue() {return (_, _) -> true;}
 
     static WolfCondition isTamed() {
         return (wolf, _) -> wolf.isTame();
     }
 
-    static WolfCondition isWild() {
-        return (wolf, _) -> !wolf.isTame();
+    static WolfCondition healthBelow(float fraction) {
+        return (wolf, _) -> wolf.getHealth() <= wolf.getMaxHealth() * fraction;
     }
-
-    static WolfCondition healthBelow(float fraction) { return (wolf, _) -> wolf.getHealth() <= wolf.getMaxHealth() * fraction; }
-
-    static WolfCondition healthAbove(float fraction) { return (wolf, _) -> wolf.getHealth() >= wolf.getMaxHealth() * fraction; }
 
     static WolfCondition companionIsCritical(Supplier<Float> healthSupplier, Supplier<Integer> distanceSupplier) {
         return (wolf, _) -> {
@@ -49,26 +47,23 @@ public interface WolfCondition {
         };
     }
 
-    static WolfCondition hasBodyArmor() { return (wolf, _) -> wolf.isWearingBodyArmor(); }
+    static WolfCondition hasBodyArmor() {
+        return (wolf, _) -> wolf.isWearingBodyArmor();
+    }
 
-    static WolfCondition ownerInCreative() {
-        return (wolf, _) -> {
-            if (!wolf.isTame()) return false;
-            var owner = wolf.getOwner();
-            if (owner == null) {
-                return false;
-            } else {
-            return owner.isInvulnerable(); }}; }
+    static WolfCondition hasArmorWithEnchantment(ResourceKey<Enchantment> enchantment) {
+        return (wolf, level) -> {
+            ItemStack bodyArmor = wolf.getBodyArmorItem();
+            if (bodyArmor.isEmpty()) return false;
+            Registry<Enchantment> enchantmentRegistry = wolf.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+            int playerHasEnchantment = bodyArmor.getEnchantments().getLevel( enchantmentRegistry.getOrThrow(enchantment));
+            return playerHasEnchantment > 0;
+        };
+    }
 
-    static WolfCondition ownerNotInCreative() { return ownerInCreative().negate(); }
-
-    static WolfCondition isAngry() { return (wolf, _) -> wolf.isAngry(); }
-
-    static WolfCondition isSitting() { return (wolf, _) -> wolf.isOrderedToSit(); }
-
-    static WolfCondition isInWater() { return (wolf, _) -> wolf.isInWater(); }
-
-    static WolfCondition isLeashed() { return (wolf, _) -> wolf.isLeashed(); }
+    static WolfCondition checkConfig(boolean configValue) {
+        return (_, _) -> configValue;
+    }
 
     static WolfCondition isUnderWater() { return (wolf, _) -> wolf.isUnderWater(); }
 
@@ -76,17 +71,12 @@ public interface WolfCondition {
 
     static WolfCondition airSupplyLowerThan(float fraction) { return (wolf, _) -> wolf.getAirSupply() <= wolf.getMaxAirSupply() * fraction; }
 
-    static WolfCondition isPassenger() { return (wolf, _) -> wolf.isPassenger(); }
-
-    static WolfCondition checkBiome(ResourceKey<Biome> biome) { return (wolf, _) -> wolf.level().getBiome(wolf.blockPosition()).is(biome) ;}
-
-    static WolfCondition checkBiomeTag(TagKey<Biome> biomeTag) { return (wolf, _) -> wolf.level().getBiome(wolf.blockPosition()).is(biomeTag) ;}
-
     static WolfCondition tick(int min, int sec) {
-        return (wolf, world) -> TOTVW.getGameTime(world, min, sec);
+        int finalTotal = Math.max(((min * (20 * 60)) + (sec * 20)), 0);
+        return (_, level) -> level.getGameTime() % finalTotal == 0;
     }
     static WolfCondition tick() {
-        return (player, world) -> world.getGameTime() % 20 == 0;
+        return (_, world) -> world.getGameTime() % 20 == 0;
     }
 
     static WolfCondition halfTick() {
@@ -97,16 +87,11 @@ public interface WolfCondition {
         return (_, world) -> world.getGameTime() % 5 == 0;
     }
 
-    static WolfCondition randomChance(float value) {
-        return (wolf, level) -> level.getRandom().nextFloat() == value;
-    }
-
     static WolfCondition newSoundsEnable() {
-        return (wolf, level) -> TOTVWConfig.get().ENABLE_NEW_SOUNDS;
+        return (wolf, level) -> TOTVWConfig.get().CLIENT_MOD_SOUNDS;
     }
 
-
-    static WolfCondition checkNoAttached(AttachmentType<Integer> type) { return (wolf, level) -> wolf.getAttachedOrElse(type, 0) == 0; }
+    static WolfCondition noAttachment(AttachmentType<Integer> type) { return (wolf, level) -> wolf.getAttachedOrElse(type, 0) == 0; }
 
     static WolfCondition ownerWithin(double radius) {
         return (wolf, _) -> {

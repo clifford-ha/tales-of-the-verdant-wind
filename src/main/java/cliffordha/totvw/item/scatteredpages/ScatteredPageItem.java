@@ -32,7 +32,6 @@ public class ScatteredPageItem extends Item {
                 .orElse("Error: Invalid title reference no.");
     }
 
-
     // SPOILER ALERT!!!
     // SPOILER ALERT!!!
     // SPOILER ALERT!!!
@@ -131,11 +130,11 @@ public class ScatteredPageItem extends Item {
                         + dText(20, 9, 726)
                         + "I may not have enough days to fully cover this test."
                         + nextParagraph
-                        + "We tried to outrun this creature in a very pale forest. It didn't look like a creature to be honest because it looked like its skin was made out of wood barks. We weren't sure. Fortunately, we survived by using a boat and followed the river till we arived at a nearby village. According to the locals, distrubing " + fText(ITALIC, "it") + " from its slumber will agitate it and follow us until we meet our demise."
+                        + "We tried to outrun this creature in a very pale forest. It didn't look like a creature to be honest as it looked like its skin was made out of wood barks. We weren't sure. Fortunately, we survived by using a boat and followed the river till we arived at a nearby village. According to the locals, distrubing " + fText(ITALIC, "it") + " from its slumber will agitate it and follow us until we meet our demise."
                         + nextParagraph
                         + "She and I talked about what should happen next considering I broke my left arm when were being chased by the creature. As painful as it is, I insisted on continuing the pursuit in studying the materials we got from that foggy biome I encountered a year ago."
                         + nextParagraph
-                        + "I knew she has... something to say but she didn't. What am I doing..."
+                        + "I knew she has... something to say but she didn't. Anyhow, we found something..."
                         + nextParagraph
                         + nText("Below are frantic scribbles of an ancient text")
                         + nextLine

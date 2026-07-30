@@ -1,21 +1,13 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.entity.VWTrustInteractionData;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.resources.Identifier;
 
 public class VWAttachments {
-    public static final AttachmentType<VWTrustInteractionData> ENTITY_TRUSTED_MOB_DATA = AttachmentRegistry.create(
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "entity_trusted_mob_data"),
-            builder -> builder.persistent(VWTrustInteractionData.CODEC).initializer(VWTrustInteractionData::create)
-    );
-
     public static final AttachmentType<Boolean> ENTITY_IS_PARALYZED = registerBool("entity_is_paralyzed");
-    public static final AttachmentType<Integer> ENTITY_TRUST_POINTS = registerInt("entity_trust_points");
-    public static final AttachmentType<Integer> ENTITY_TRUST_COOLDOWN = registerInt("entity_trust_cooldown");
     public static final AttachmentType<Boolean> ENTITY_HAS_VERDANT_OMEN = registerBool("entity_has_verdant_omen");
 
     public static class WindCore {
@@ -28,7 +20,7 @@ public class VWAttachments {
         public static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_cd_blessing_of_the_verdant_wind");
         public static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_notify_blessing_of_the_verdant_wind");
         public static final AttachmentType<Integer> PLAYER_VILLAGER_ATROCITY_COUNT = registerInt("player_villager_atrocity_count");
-        public static final AttachmentType<Integer> PLAYER_WOLF_ATROCITY_COUNT = registerInt("player_wolf_atrocity_count");
+        public static final AttachmentType<Integer> WOLF_ATROCITY_COUNT = registerInt("player_wolf_atrocity_count");
     }
     public static class Wolf {
         public static final AttachmentType<Boolean> WOLF_IS_VERDANT_TYPE = registerBool("wolf_is_verdant_type");
@@ -90,17 +82,14 @@ public class VWAttachments {
 
     public static void register() {
         AttachmentType<?>[] globalAttachments = {
-                ENTITY_TRUSTED_MOB_DATA,
                 ENTITY_IS_PARALYZED,
-                ENTITY_TRUST_POINTS,
-                ENTITY_TRUST_COOLDOWN,
                 ENTITY_HAS_VERDANT_OMEN,
         };
 
         AttachmentType<?>[] playerAttachments = {
                 Player.PLAYER_IS_DEV_MODE,
                 Player.PLAYER_VILLAGER_ATROCITY_COUNT,
-                Player.PLAYER_WOLF_ATROCITY_COUNT,
+                Player.WOLF_ATROCITY_COUNT,
                 Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
                 Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
         };

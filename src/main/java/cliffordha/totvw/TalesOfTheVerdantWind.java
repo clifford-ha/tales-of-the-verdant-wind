@@ -12,8 +12,11 @@ import terrablender.api.TerraBlenderApi;
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 	public TalesOfTheVerdantWind() {}
 
+	public static boolean IN_DEVELOPMENT = false;
+
 	@Override
 	public void onInitialize() {
+		TOTVW.sendStat(TOTVW.MOD_NAME_LONG + " ( or TOTVW for short) started initializing...");
 		VWItems.register();
 		VWBlocks.register();
 
@@ -35,12 +38,14 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		TOTVWConfig.load();
 		TOTVWConfig.save();
 
-		// Debugging
-		//VWCommands.registerModCommands();
 		LootTableEvents.MODIFY.register(VWLootTableModifier::modifyLootTables);
 
-
-		TOTVW.sendInfo("Mod has been initialized!");
+		if (IN_DEVELOPMENT) {
+			VWCommands.registerModCommands();
+			TOTVW.sendInfo("Mod has been initialized and is in development mode!");
+		} else {
+			TOTVW.sendInfo("Mod has been initialized!");
+		}
 	}
 
 	@Override

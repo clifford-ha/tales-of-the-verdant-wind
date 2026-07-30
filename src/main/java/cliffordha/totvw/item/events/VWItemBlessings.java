@@ -18,14 +18,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.function.Predicate;
 
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.playNotification;
-import static cliffordha.totvw.util.VWGlobalUtil.*;
-import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
+import static cliffordha.totvw.util.VWUtil.*;
 
 public class VWItemBlessings {
     private static final int TICK_SECONDS = 20;
@@ -36,7 +34,7 @@ public class VWItemBlessings {
         ItemStack mainHandItem = player.getItemBySlot(EquipmentSlot.MAINHAND);
         return mainHandItem.tags().anyMatch(Predicate.isEqual(tag));
     }
-    public static boolean tryApply(Level level, Player player) {
+    public static boolean tryApply(Player player) {
         boolean hasSword = isItem(player, ItemTags.SWORDS);
         boolean hasAxe = isItem(player, ItemTags.AXES);
         boolean hasPickaxe = isItem(player, ItemTags.PICKAXES);
@@ -118,7 +116,7 @@ public class VWItemBlessings {
         } else {
             VWSkillProcessor.sendToChat(player, VWColors.VERDANT_WIND, "Granted: §n" + effect.getRegisteredName().replaceAll("^[^:]*:", "").toUpperCase() + "§r for §e" + targetDurationSec + "§r sec");}
         VWParticleEffects.spawnBlessingParticlesEntity(player, 2);
-        //playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
+        playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
         playNotification(player);
 
         player.getMainHandItem().hurtWithoutBreaking(3, player);

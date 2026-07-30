@@ -110,7 +110,7 @@ public class VWPlacedFeatures {
         );
         context.register(VERDANT_SPRUCE_TREE_LOWER_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_SPRUCE_TREE_CONFIGURED_KEY),
                 List.of(
-                        CountPlacement.of(UniformInt.of(0, 7)),
+                        CountPlacement.of(UniformInt.of(0, 9)),
                         InSquarePlacement.spread(),
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(84)),
                         SurfaceWaterDepthFilter.forMaxDepth(0),
@@ -121,7 +121,7 @@ public class VWPlacedFeatures {
         );
         context.register(VERDANT_SPRUCE_TREE_HIGHER_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_SPRUCE_TREE_CONFIGURED_KEY),
                 List.of(
-                        CountPlacement.of(UniformInt.of(0, 2)),
+                        CountPlacement.of(UniformInt.of(0, 5)),
                         InSquarePlacement.spread(),
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(90), VerticalAnchor.absolute(256)),
                         SurfaceWaterDepthFilter.forMaxDepth(0),
@@ -132,7 +132,7 @@ public class VWPlacedFeatures {
         );
         context.register(ANCIENT_VERDANT_SPRUCE_TREE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.ANCIENT_VERDANT_SPRUCE_TREE_CONFIGURED_KEY),
                 List.of(
-                        CountPlacement.of(UniformInt.of(2, 12)),
+                        CountPlacement.of(UniformInt.of(4, 12)),
                         InSquarePlacement.spread(),
                         SurfaceWaterDepthFilter.forMaxDepth(0),
                         PlacementUtils.HEIGHTMAP_TOP_SOLID,

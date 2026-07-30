@@ -76,12 +76,14 @@ public class VWBlockTags extends FabricTagsProvider.BlockTagsProvider {
         valueLookupBuilder(BlockTags.NEEDS_IRON_TOOL)
                 .add(VWBlocks.VERIXIUM_STONE_ORE)
                 .add(VWBlocks.VERIXIUM_DEEPSLATE_ORE)
+                .add(VWBlocks.LODESTONE_WIND_CORE)
                 .add(VWBlocks.IRIDESCENT_GLASS)
                 .add(VWBlocks.IRIDESCENT_GLASS_PANE);
 
         valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(VWBlocks.VERIXIUM_STONE_ORE)
                 .add(VWBlocks.VERIXIUM_DEEPSLATE_ORE)
+                .add(VWBlocks.LODESTONE_WIND_CORE)
                 .add(VWBlocks.IRIDESCENT_GLASS)
                 .add(VWBlocks.IRIDESCENT_GLASS_PANE);
 

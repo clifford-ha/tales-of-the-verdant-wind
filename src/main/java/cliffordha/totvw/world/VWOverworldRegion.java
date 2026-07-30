@@ -63,8 +63,9 @@ public class VWOverworldRegion extends Region {
                 )
                 .depth(ParameterUtils.Depth.SURFACE, ParameterUtils.Depth.FLOOR)
                 .weirdness(
+                        ParameterUtils.Weirdness.LOW_SLICE_VARIANT_ASCENDING,
                         ParameterUtils.Weirdness.MID_SLICE_NORMAL_DESCENDING,
-                        ParameterUtils.Weirdness.HIGH_SLICE_NORMAL_DESCENDING
+                        ParameterUtils.Weirdness.LOW_SLICE_NORMAL_DESCENDING
                 )
 
                 .build().forEach(parameterPoint -> builder.add(parameterPoint, VWBiomes.VERDANT_FOREST));

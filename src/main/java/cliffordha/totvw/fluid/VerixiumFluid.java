@@ -2,7 +2,6 @@ package cliffordha.totvw.fluid;
 
 import java.util.Optional;
 
-import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWFluids;
 import cliffordha.totvw.registry.VWItems;
@@ -48,7 +47,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
-import static cliffordha.totvw.util.VWGlobalUtil.addHiddenEffect;
+import static cliffordha.totvw.util.VWUtil.addHiddenEffect;
 
 @SuppressWarnings("NullableProblems")
 public abstract class VerixiumFluid extends FlowingFluid {
@@ -171,21 +170,21 @@ public abstract class VerixiumFluid extends FlowingFluid {
             whoIsThis(livingEntity);
         }
     }
-
+    public static int setTime(int min,  int sec) {return ((min * (20 * 60)) + (sec * 20));}
     private static void whoIsThis(LivingEntity entity) {
         int bossTime;
         int bossAmp;
         int time;
         int amplifier;
         if (entity.level().getBiome(entity.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES)) {
-            bossTime = TOTVW.setTime(1, 30);
+            bossTime = setTime(1, 30);
             bossAmp = 1;
-            time = TOTVW.setTime(0, 12);
+            time = setTime(0, 12);
             amplifier = 0;
         } else {
-            bossTime = TOTVW.setTime(0, 40);
+            bossTime = setTime(0, 40);
             bossAmp = 0;
-            time = TOTVW.setTime(0, 3);
+            time = setTime(0, 3);
             amplifier = -1;
         }
         switch (entity) {
@@ -231,16 +230,16 @@ public abstract class VerixiumFluid extends FlowingFluid {
         boolean inForest = livingEntity.level().getBiome(livingEntity.blockPosition()).is(BiomeTags.IS_FOREST);
         boolean inEnd = livingEntity.level().getBiome(livingEntity.blockPosition()).is(BiomeTags.IS_END);
         if (inVerdantBiome) {
-            defaultDuration = TOTVW.setTime(0, 3);
+            defaultDuration = setTime(0, 3);
             defaultAmp = 0;
         } else if (inForest) {
-            defaultDuration = TOTVW.setTime(0, 30);
+            defaultDuration = setTime(0, 30);
             defaultAmp = 0;
         } else if (inEnd) {
-            defaultDuration = TOTVW.setTime(0, 12);
+            defaultDuration = setTime(0, 12);
             defaultAmp = 1;
         } else {
-            defaultDuration = TOTVW.setTime(0, 45);
+            defaultDuration = setTime(0, 45);
             defaultAmp = 2;
         }
         addHiddenEffect(livingEntity, MobEffects.SLOWNESS, defaultDuration, defaultAmp);

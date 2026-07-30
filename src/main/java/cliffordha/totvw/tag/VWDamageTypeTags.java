@@ -27,6 +27,8 @@ public class VWDamageTypeTags extends FabricTagsProvider<DamageType> {
         getOrCreateRawBuilder(DamageTypeTags.BYPASSES_ARMOR)
                 .add(TagEntry.element(VWDamageTypes.BLOODLUST.identifier()))
                 .add(TagEntry.element(VWDamageTypes.BLEEDING.identifier()))
+                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
+                .add(TagEntry.element(VWDamageTypes.SCORCHING_HEAT.identifier()))
                 .build();
 
         getOrCreateRawBuilder(DamageTypeTags.BYPASSES_WOLF_ARMOR)
@@ -36,10 +38,28 @@ public class VWDamageTypeTags extends FabricTagsProvider<DamageType> {
 
         getOrCreateRawBuilder(DamageTypeTags.ALWAYS_HURTS_ENDER_DRAGONS)
                 .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
+                .add(TagEntry.element(VWDamageTypes.SCORCHING_HEAT.identifier()))
                 .build();
 
         getOrCreateRawBuilder(DamageTypeTags.BYPASSES_INVULNERABILITY)
                 .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
+                .build();
+
+        getOrCreateRawBuilder(DamageTypeTags.BYPASSES_RESISTANCE)
+                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
+                .add(TagEntry.element(VWDamageTypes.SCORCHING_HEAT.identifier()))
+                .add(TagEntry.element(VWDamageTypes.BLOODLUST.identifier()))
+                .build();
+
+        getOrCreateRawBuilder(DamageTypeTags.BYPASSES_SHIELD)
+                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
+                .add(TagEntry.element(VWDamageTypes.SCORCHING_HEAT.identifier()))
+                .build();
+
+        getOrCreateRawBuilder(DamageTypeTags.BYPASSES_EFFECTS)
+                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
+                .add(TagEntry.element(VWDamageTypes.BLEEDING.identifier()))
+                .add(TagEntry.element(VWDamageTypes.SCORCHING_HEAT.identifier()))
                 .build();
     }
 }

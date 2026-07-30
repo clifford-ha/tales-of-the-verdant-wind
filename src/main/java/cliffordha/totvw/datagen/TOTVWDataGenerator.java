@@ -1,6 +1,5 @@
 package cliffordha.totvw.datagen;
 
-import cliffordha.totvw.entity.variants.VWWolfVariants;
 import cliffordha.totvw.loot.VWBlockLootTableProvider;
 import cliffordha.totvw.loot.VWChestLootProvider;
 import cliffordha.totvw.tag.*;

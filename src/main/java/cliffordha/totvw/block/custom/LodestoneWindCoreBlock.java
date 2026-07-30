@@ -28,6 +28,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
@@ -41,7 +42,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EnchantingTableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -52,14 +52,14 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
-import static cliffordha.totvw.util.VWGlobalUtil.removeEffect;
+import static cliffordha.totvw.util.VWUtil.addOrStackEffect;
+import static cliffordha.totvw.util.VWUtil.removeEffect;
 
 public class LodestoneWindCoreBlock extends Block {
     public static final MapCodec<LodestoneWindCoreBlock> CODEC = simpleCodec(LodestoneWindCoreBlock::new);
@@ -91,9 +91,10 @@ public class LodestoneWindCoreBlock extends Block {
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (state.getValue(ACTIVE)) {
-            if (level.getGameTime() % 20 * 16 == 0) {
+            int bound = random.nextIntBetweenInclusive(14, 18);
+            if (level.getGameTime() % 20 * bound == 0) {
                 float pitch = random.nextIntBetweenInclusive(20, 100) * 0.01f;
-                level.playLocalSound(pos, VWSounds.LODESTONE_WIND_CORE_AMBIENT, SoundSource.BLOCKS, 0.1f, pitch, true);
+                level.playLocalSound(pos, VWSounds.LODESTONE_WIND_CORE_AMBIENT, SoundSource.BLOCKS, 0.1f, pitch, false);
             }
             if (state.getValue(WIND_ENERGY) > 0) {
                 float randomPos = level.getRandom().nextFloat();
@@ -273,8 +274,8 @@ public class LodestoneWindCoreBlock extends Block {
             int amp = wolf.isBaby() ? 2 : 0;
             wolf.heal(heal);
 
-            addEffect(wolf, MobEffects.STRENGTH, duration, 0);
-            addEffect(wolf, MobEffects.RESISTANCE, duration, amp);
+            addOrStackEffect(wolf, MobEffects.STRENGTH, duration, 0);
+            addOrStackEffect(wolf, MobEffects.RESISTANCE, duration, amp);
             maybeClearBadEffects(level, wolf);
 
             VWParticleEffects.spawnBlessingParticlesEntity(wolf, 2);
@@ -282,11 +283,11 @@ public class LodestoneWindCoreBlock extends Block {
 
         List<Player> players = level.getEntitiesOfClass(Player.class, standardRange,
                 test -> test.gameMode() == GameType.SURVIVAL
-                        && test.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0) < 20
+                        && test.getAttachedOrElse(VWAttachments.Player.WOLF_ATROCITY_COUNT, 0) < 20
                         && test.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) < 40
         );
         for (Player player : players) {
-            addEffect(player, MobEffects.STRENGTH, duration, 0);
+            addOrStackEffect(player, MobEffects.STRENGTH, duration, 0);
             maybeClearBadEffects(level, player);
             player.heal(heal);
             VWParticleEffects.spawnBlessingParticlesEntity(player, 0);
@@ -297,8 +298,8 @@ public class LodestoneWindCoreBlock extends Block {
             int amp = villager.isBaby() ? 2 : 0;
             villager.heal(heal);
 
-            addEffect(villager, MobEffects.ABSORPTION, duration, 0);
-            addEffect(villager, MobEffects.RESISTANCE, duration, amp);
+            addOrStackEffect(villager, MobEffects.ABSORPTION, duration, 0);
+            addOrStackEffect(villager, MobEffects.RESISTANCE, duration, amp);
             maybeClearBadEffects(level, villager);
 
             VWParticleEffects.spawnBlessingParticlesEntity(villager, 2);
@@ -312,9 +313,17 @@ public class LodestoneWindCoreBlock extends Block {
             }
         }
 
+        List<IronGolem> golems = level.getEntitiesOfClass(IronGolem.class, shortRange);
+        for (IronGolem golem : golems) {
+            golem.heal(heal);
+            addOrStackEffect(golem, MobEffects.ABSORPTION, duration, 0);
+            maybeClearBadEffects(level, golem);
+            VWParticleEffects.spawnBlessingParticlesEntity(golem, 0);
+        }
+
         List<WanderingTrader> traders = level.getEntitiesOfClass(WanderingTrader.class, shortRange);
         for (WanderingTrader trader : traders) {
-            addEffect(trader, MobEffects.ABSORPTION, duration, 0);
+            addOrStackEffect(trader, MobEffects.ABSORPTION, duration, 0);
             maybeClearBadEffects(level, trader);
             trader.heal(heal);
             VWParticleEffects.spawnBlessingParticlesEntity(trader, 0);
@@ -322,8 +331,8 @@ public class LodestoneWindCoreBlock extends Block {
 
         List<LivingEntity> monsters = level.getEntitiesOfClass(LivingEntity.class, monsterRange, monster -> monster instanceof Enemy);
         for (LivingEntity monster : monsters) {
-
-            if (!monster.getAttachedOrElse(VWAttachments.WindCore.CORE_ENTITY_HAS_IMPLODED, false)) {
+            boolean shouldPressurize = !monster.getAttachedOrElse(VWAttachments.WindCore.CORE_ENTITY_HAS_IMPLODED, false);
+            if (shouldPressurize) {
                 pressurizeEnemy(monster, level, pos, state);
             }
 
@@ -391,9 +400,7 @@ public class LodestoneWindCoreBlock extends Block {
         int wind = level.getRandom().nextIntBetweenInclusive(0, 10);
         int base = hardMode ? 5 : 10;
         int mass;
-        if (monster.getMaxHealth() > 200f) {
-            mass = 10;
-        } else if (monster.getMaxHealth() > 100f) {
+        if (monster.getMaxHealth() > 100f) {
             mass = 7;
         } else if (monster.getMaxHealth() > 50f) {
             mass = 5;
@@ -402,25 +409,29 @@ public class LodestoneWindCoreBlock extends Block {
         }
         int finalPressure = base + wind + additional + mass;
 
-        if (currentPressure > 100) {
-            float tryChance = ((float) currentPressure / 100) - 1.0f;
-            float healthToDMG = hardMode ? monster.getHealth() : monster.getMaxHealth();
-            float baseDMG = hardMode ? 10f : 20f;
+        float baseChance = monster.level().getRandom().nextFloat();
+        float tryChance = ((float) currentPressure * 0.01f) - 1.0f;
+        float healthToDMG = hardMode ? monster.getHealth() : monster.getMaxHealth();
+        float baseDMG = hardMode ? 10f : 20f;
 
-            if (level.getRandom().nextFloat() < tryChance) {
-                monster.hurtServer(level, VWDamageTypes.create(level, VWDamageTypes.LODESTONE_WIND_CORE_PULSE), baseDMG + healthToDMG * 0.3f);
-                monster.setAttached(ATTACHMENT_IMPLODE, true);
-                monster.removeAttached(ATTACHMENT_PRESSURE);
-                monster.forceAddEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 2), null);
-                VWParticleEffects.triggerMightParalyzeParticles(monster, 6);
-                monster.makeSound(SoundEvents.PLAYER_ATTACK_CRIT);
-                depleteEnergy(level, pos, state, 750);
-                sendToServer(monster.getPlainTextName() + " has been imploded by the Lodestone Wind Core.");
-            } else {
-                addEffect(monster, MobEffects.SLOWNESS, 600, 0);
-            }
+        sendToServer("tryChance: " + tryChance);
+
+        if (baseChance < tryChance) {
+            monster.hurtServer(level, VWDamageTypes.create(level, VWDamageTypes.LODESTONE_WIND_CORE_PULSE), baseDMG + healthToDMG * 0.3f);
+            monster.forceAddEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 2), null);
+
+            monster.setAttached(ATTACHMENT_IMPLODE, true);
+            monster.setAttached(ATTACHMENT_PRESSURE, 0);
+
+            VWParticleEffects.triggerMightParalyzeParticles(monster, 6);
+            monster.makeSound(SoundEvents.PLAYER_ATTACK_CRIT);
+            depleteEnergy(level, pos, state, 750);
+
+            sendToServer(monster.getPlainTextName() + " has been imploded by the Lodestone Wind Core.");
+        } else {
+            monster.setAttached(ATTACHMENT_PRESSURE, (currentPressure + finalPressure));
         }
-        monster.setAttached(ATTACHMENT_PRESSURE, (currentPressure + finalPressure));
+        sendToServer(monster.getPlainTextName() + " has a pressure of " + monster.getAttachedOrElse(ATTACHMENT_PRESSURE, 0));
     }
     private static void removeImplodedStatus(ServerLevel level, BlockState state, BlockPos pos) {
         AABB test = scanner(pos, 24);
@@ -436,8 +447,8 @@ public class LodestoneWindCoreBlock extends Block {
         AABB test = scanner(pos, 12);
         List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, test, wolf -> !wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false));
         if (!wolves.isEmpty()) {
-            int random = wolves.size() == 1 ? 0 : level.getRandom().nextIntBetweenInclusive(0, wolves.size());
-            Wolf wolf = wolves.get(Math.min(random, 0));
+            int random = wolves.size() == 1 ? 0 : level.getRandom().nextIntBetweenInclusive(0, wolves.size() - 1);
+            Wolf wolf = wolves.get(Math.max(random, 0));
 
             wolf.setAttached(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, true);
             Identifier verdant = VWIdentifiers.VERDANT_WOLF_PERMANENT_MODIFIERS;
@@ -467,15 +478,14 @@ public class LodestoneWindCoreBlock extends Block {
 
         for (LivingEntity monster : monsters) {
             switch (getRandom) {
-                case 1 -> monster.hurtServer(level, VWDamageTypes.create(level, VWDamageTypes.LODESTONE_WIND_CORE_PULSE), monster.getHealth() * 0.25f);
-                case 2 -> addEffect(monster, MobEffects.WEAKNESS, 20 * 30, 1);
-                case 3 -> addEffect(monster, MobEffects.WITHER, 20 * 15, 1);
-                case 4 -> addEffect(monster, VWEffects.PARALYZE, 20 * 5, 0);
-                case 5 -> addEffect(monster, MobEffects.GLOWING, 20 * 30, 0);
+                case 1 -> addOrStackEffect(monster, MobEffects.SLOWNESS, 20 * 30, 0);
+                case 2 -> addOrStackEffect(monster, MobEffects.WEAKNESS, 20 * 30, 1);
+                case 3 -> addOrStackEffect(monster, MobEffects.WITHER, 20 * 15, 1);
+                case 4 -> addOrStackEffect(monster, VWEffects.PARALYZE, 20 * 5, 0);
+                case 5 -> addOrStackEffect(monster, MobEffects.GLOWING, 20 * 30, 0);
                 default -> {}
             }
 
-            monster.hurtServer(level, VWDamageTypes.create(level, VWDamageTypes.LODESTONE_WIND_CORE_PULSE), monster.getHealth() * 0.25f);
             depleteEnergy(level, pos, state, 15);
         }
     }
@@ -489,12 +499,12 @@ public class LodestoneWindCoreBlock extends Block {
             for (Wolf wolf : wolves) {
                 Holder<MobEffect> effect = level.getRandom().nextBoolean() ? MobEffects.STRENGTH : MobEffects.RESISTANCE;
 
-                addEffect(wolf, effect, randomDuration, randomAMP);
-                addEffect(wolf, VWEffects.AMPLIFIED_MIGHT, randomDuration, 0);
-                addEffect(wolf, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 2);
+                addOrStackEffect(wolf, effect, randomDuration, randomAMP);
+                addOrStackEffect(wolf, VWEffects.AMPLIFIED_MIGHT, randomDuration, 0);
+                addOrStackEffect(wolf, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 2);
 
                 if (wolf.isAngry() && wolf.getHealth() > wolf.getMaxHealth() * 0.5f) {
-                    addEffect(wolf, VWEffects.BLOODLUST, 20 * 15, randomAMP);
+                    addOrStackEffect(wolf, VWEffects.BLOODLUST, 20 * 15, randomAMP);
                 }
             }
         }
@@ -505,32 +515,32 @@ public class LodestoneWindCoreBlock extends Block {
                 int resistanceAMP = (villager.isBaby() || villager.getHealth() < villager.getMaxHealth() * 0.5f) ? 1 : 0;
                 Holder<MobEffect> effect = level.getRandom().nextBoolean() ? MobEffects.ABSORPTION : MobEffects.HEALTH_BOOST;
 
-                addEffect(villager, effect, randomDuration, randomAMP);
-                addEffect(villager, MobEffects.RESISTANCE, randomDuration, resistanceAMP);
-                addEffect(villager, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 2);
+                addOrStackEffect(villager, effect, randomDuration, randomAMP);
+                addOrStackEffect(villager, MobEffects.RESISTANCE, randomDuration, resistanceAMP);
+                addOrStackEffect(villager, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 2);
             }
         }
 
         List<Player> players = level.getEntitiesOfClass(Player.class, test);
         if (!players.isEmpty()) {
             for (Player player : players) {
-                int CHECK_1 = player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0);
+                int CHECK_1 = player.getAttachedOrElse(VWAttachments.Player.WOLF_ATROCITY_COUNT, 0);
                 int CHECK_2 = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
 
                 String omenStamp = String.format("%.8s", player.getStringUUID()) + "-" + player.getPlainTextName() + ":verdantOmen";
 
                 if ((CHECK_1 + CHECK_2) > 60) {
                     if (player.isCreative() || player.isSpectator()) return;
-                    addEffect(player, MobEffects.WEAKNESS, randomDuration, 2);
-                    addEffect(player, MobEffects.SLOWNESS, randomDuration, 0);
+                    addOrStackEffect(player, MobEffects.WEAKNESS, randomDuration, 2);
+                    addOrStackEffect(player, MobEffects.SLOWNESS, randomDuration, 0);
 
                     if (player.entityTags().contains(omenStamp)) return;
                     sendToChat(player, VWColors.INDICATOR_40, true, "A surge of omen carried by the winds washes upon you...");
                     player.entityTags().add(omenStamp);
                 } else {
                     player.entityTags().remove(omenStamp);
-                    addEffect(player, MobEffects.RESISTANCE, randomDuration, randomAMP);
-                    addEffect(player, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 2);
+                    addOrStackEffect(player, MobEffects.RESISTANCE, randomDuration, randomAMP);
+                    addOrStackEffect(player, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 2);
                 }
             }
         }
@@ -538,8 +548,8 @@ public class LodestoneWindCoreBlock extends Block {
         List<WanderingTrader> wanderingTraders = level.getEntitiesOfClass(WanderingTrader.class, test);
         if (!wanderingTraders.isEmpty()) {
             for (WanderingTrader wanderingTrader : wanderingTraders) {
-                addEffect(wanderingTrader, MobEffects.RESISTANCE, randomDuration, randomAMP);
-                addEffect(wanderingTrader, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 2);
+                addOrStackEffect(wanderingTrader, MobEffects.RESISTANCE, randomDuration, randomAMP);
+                addOrStackEffect(wanderingTrader, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 2);
             }
         }
 
@@ -576,25 +586,14 @@ public class LodestoneWindCoreBlock extends Block {
         }
     }
 
-    public static void addEffect(LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {
-        if (entity.hasEffect(effect)) {
-            if (entity.getEffect(effect).getAmplifier() > amp && entity.getEffect(effect).getDuration() > 20 * 30) return;
-            int duration = entity.getEffect(effect).getDuration() + sec;
-            entity.removeEffect(effect);
-            entity.addEffect(new MobEffectInstance(effect, duration, amp));
-        } else {
-            entity.addEffect(new MobEffectInstance(effect, sec, amp));
-        }
-    }
-
     private static String getStringPos(BlockPos pos) {
         return pos.getX() + ", " + pos.getY() + ", " + pos.getZ();
     }
 
     private static final Logger SEND = LoggerFactory.getLogger("TOTVW/Lodestone Wind Core");
     private static void sendToServer(String message) {
-        if (TOTVWConfig.get().BLOCK_UPDATE_WIND_CORE) {
-            LodestoneWindCoreBlock.SEND.info(message);
+        if (TOTVWConfig.get().BLOCK_UPDATE_WIND_CORE_LOGS) {
+            SEND.info(message);
         }
     }
 }
