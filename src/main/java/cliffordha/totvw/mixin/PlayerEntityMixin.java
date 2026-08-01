@@ -2,10 +2,15 @@ package cliffordha.totvw.mixin;
 
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.registry.*;
+import com.mojang.datafixers.util.Either;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.attribute.BedRule;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +19,10 @@ import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,12 +35,6 @@ import static cliffordha.totvw.util.VWUtil.*;
 
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin {
-
-    @Unique
-    private static void consumeItem(Player player, ItemStack itemStack) {
-        if (player.isCreative()) return;
-        itemStack.shrink(1);
-    }
 
     @Inject(method = "interactOn", at = @At("HEAD"), cancellable = true)
     private void onInteract(Entity entity, InteractionHand hand, Vec3 location, CallbackInfoReturnable<InteractionResult> cir) {
@@ -65,6 +67,10 @@ public abstract class PlayerEntityMixin {
                     sendToChat(player, true, target + sentence + "verdant type");
                     cir.setReturnValue(InteractionResult.SUCCESS);
                 }
+            } else if (itemStack.is(Items.PAPER)) {
+                BlockPos pos = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_RESPAWN_POINT, wolf.blockPosition());
+                sendToChat(player, true, target + "'s respawn point is at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+                cir.setReturnValue(InteractionResult.SUCCESS);
             }
         }
     }
@@ -90,6 +96,15 @@ public abstract class PlayerEntityMixin {
                 VWParticleEffects.triggerBenedictionParticles(player, 4);
                 ci.cancel();
             }
+        }
+    }
+
+    @Unique
+    private static final Logger SEND = LoggerFactory.getLogger("TOTVW/PlayerEntityMixin");
+    @Unique
+    private static void sendToServer(String message) {
+        if (TOTVWConfig.get().MIXIN_UPDATE_LOGS) {
+            SEND.info(message);
         }
     }
 }

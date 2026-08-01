@@ -4,6 +4,7 @@ import cliffordha.totvw.TOTVW;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 
 public class VWAttachments {
@@ -11,8 +12,8 @@ public class VWAttachments {
     public static final AttachmentType<Boolean> ENTITY_HAS_VERDANT_OMEN = registerBool("entity_has_verdant_omen");
 
     public static class WindCore {
-        public static final AttachmentType<Integer> CORE_ENTITY_INWARD_PRESSURE = registerInt("core_wind_pressure");
-        public static final AttachmentType<Boolean> CORE_ENTITY_HAS_IMPLODED = registerBool("core_entity_has_implodeed");
+        public static final AttachmentType<Integer> ENTITY_PRESSURE_DIFFERENCE = registerInt("entity_pressure_difference");
+        public static final AttachmentType<Boolean> ENTITY_HAS_IMPLODED = registerBool("entity_has_imploded");
     }
 
     public static class Player {
@@ -21,6 +22,7 @@ public class VWAttachments {
         public static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_notify_blessing_of_the_verdant_wind");
         public static final AttachmentType<Integer> PLAYER_VILLAGER_ATROCITY_COUNT = registerInt("player_villager_atrocity_count");
         public static final AttachmentType<Integer> WOLF_ATROCITY_COUNT = registerInt("player_wolf_atrocity_count");
+        public static final AttachmentType<BlockPos> PLAYER_RESPAWN_POINT = registerBlockPos("player_respawn_point");
     }
     public static class Wolf {
         public static final AttachmentType<Boolean> WOLF_IS_VERDANT_TYPE = registerBool("wolf_is_verdant_type");
@@ -42,6 +44,8 @@ public class VWAttachments {
         public static final AttachmentType<Integer> WOLF_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("wolf_notify_blessing_of_the_verdant_wind");
 
         public static final AttachmentType<Integer> WOLF_BENEDICTION = registerInt("wolf_benediction");
+
+        public static final AttachmentType<BlockPos> WOLF_RESPAWN_POINT = registerBlockPos("wolf_respawn_point");
     }
 
     public static class Villager {
@@ -53,6 +57,13 @@ public class VWAttachments {
         public static final AttachmentType<Integer> VILLAGER_CD_DISCOUNT_REROLL = registerInt("villager_cd_discount_reroll");
 
         public static final AttachmentType<Float> VILLAGER_DISCOUNT_MODIFIER = registerFloat("villager_discount_modifier");
+    }
+
+    private static AttachmentType<BlockPos> registerBlockPos(String name) {
+        return AttachmentRegistry.create(
+                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
+                blockPosBuilder -> blockPosBuilder.persistent(BlockPos.CODEC).initializer( () -> BlockPos.ZERO )
+        );
     }
 
     private static AttachmentType<Integer> registerInt(String name) {
@@ -120,8 +131,8 @@ public class VWAttachments {
         };
 
         AttachmentType<?>[] windCore = {
-                WindCore.CORE_ENTITY_INWARD_PRESSURE,
-                WindCore.CORE_ENTITY_HAS_IMPLODED,
+                WindCore.ENTITY_PRESSURE_DIFFERENCE,
+                WindCore.ENTITY_HAS_IMPLODED,
         };
 
         int total = globalAttachments.length + playerAttachments.length + wolfAttachments.length + villagerAttachments.length + windCore.length;

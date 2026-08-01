@@ -14,6 +14,7 @@ accessible method net/minecraft/world/level/levelgen/structure/pools/SinglePoolE
 accessible method net/minecraft/world/entity/animal/wolf/Wolf setVariant (Lnet/minecraft/core/Holder;)V
 accessible method net/minecraft/world/entity/animal/wolf/Wolf getVariant ()Lnet/minecraft/core/Holder;
 accessible method net/minecraft/world/entity/animal/wolf/Wolf setSoundVariant (Lnet/minecraft/core/Holder;)V
+accessible method net/minecraft/world/entity/TamableAnimal teleportToAroundBlockPos (Lnet/minecraft/core/BlockPos;)V
 
 
 accessible method net/minecraft/world/entity/ai/behavior/VillagerGoalPackages validateBedPoi (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;)Z

@@ -6,14 +6,18 @@ import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWItemTags;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.filefix.access.PlayerData;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -37,6 +41,15 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.NetherPortalBlock;
+import net.minecraft.world.level.block.entity.BedBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.storage.LevelData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
@@ -185,16 +198,23 @@ public abstract class WolfEntityMixin extends LivingEntity {
         if (STACK_BEFORE == 0) return;
         wolf.setHealth(wolf.getMaxHealth() * 0.5f);
         wolf.removeAllEffects();
+        wolf.dropLeash();
+        wolf.unRide();
+        wolf.setOrderedToSit(false);
 
         rewriteEffect(wolf, MobEffects.RESISTANCE, sec(3), 255);
         rewriteEffect(wolf, VWEffects.BLESSING_OF_THE_VERDANT_WIND, sec(10), 2);
         rewriteEffect(wolf, MobEffects.ABSORPTION, sec(10), 2);
         rewriteEffect(wolf, MobEffects.STRENGTH, sec(10), 2);
 
+        if (wolf.level() instanceof ServerLevel level) {
+            level.broadcastEntityEvent(wolf, (byte) 35);
+        }
+
         // main
         wolf.setAttached(WOLF_BENEDICTION_STACK, STACK_BEFORE - 1);
 
-        String name = wolf.getName().getString();
+        String name = wolf.getPlainTextName();
         int STACK_AFTER = wolf.getAttachedOrElse(WOLF_BENEDICTION_STACK, 0);
         if (STACK_AFTER == 0) {
             sendToChat(wolf, VWColors.BLOODLUST_EFFECT_MUTED, name + " used up all Benediction stacks");
@@ -202,8 +222,34 @@ public abstract class WolfEntityMixin extends LivingEntity {
             sendToChat(wolf, VWColors.VERDANT_WIND_MUTED,STACK_AFTER + " Benediction stack remaining for " + name);
         }
 
-        if (wolf.level() instanceof ServerLevel) {
-            wolf.level().broadcastEntityEvent(wolf, (byte) 35);
+        if (TOTVWConfig.get().SERVER_TELL_OWNER_WHO_HURT_WOLF) {
+            if (wolf.getOwner() != null && wolf.getOwner() instanceof Player player) {
+                Entity attacker = source.getEntity();
+                sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, false, attacker.getPlainTextName() + " tried to kill " + name + ".");
+            }
+        }
+
+        if (TOTVWConfig.get().SERVER_TELEPORT_AFTER_SAVE) {
+            if (!wolf.isTame()) return;
+            LivingEntity owner = wolf.getOwner();
+            BlockPos spawn = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_RESPAWN_POINT, wolf.blockPosition());
+
+            if (owner == null) {
+                wolf.teleportToAroundBlockPos(spawn);
+            } else {
+                BlockPos pos = owner.blockPosition();
+                if (wolf.level().dimension() != owner.level().dimension()) {
+                    wolf.teleportToAroundBlockPos(spawn);
+                } else if (wolf.canTeleport(wolf.level(), owner.level())) {
+                    if (wolf.distanceTo(owner) > 16) {
+                        wolf.teleportToAroundBlockPos(pos);
+                    } else {
+                        owner.teleportTo(pos.getX(), pos.getY() + 1, pos.getZ());
+                    }
+                } else {
+                    wolf.teleportToAroundBlockPos(spawn);
+                }
+            }
         }
         ci.cancel();
     }
@@ -220,8 +266,8 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
         if (itemStack.is(Items.TOTEM_OF_UNDYING) && convertTotem) {
             int STACK = wolf.getAttachedOrElse(BENEDICTION_STACK, 0);
-            //int STACK_LIMIT = TOTVWConfig.get().SERVER_MAX_WOLF_BENEDICTION_STACK;
-            int STACK_LIMIT = 3;
+            int STACK_LIMIT = TOTVWConfig.get().SERVER_MAX_WOLF_BENEDICTION_STACK;
+            //int STACK_LIMIT = 3;
 
             if (STACK > STACK_LIMIT) {
                 wolf.setAttached(BENEDICTION_STACK, STACK_LIMIT);
@@ -240,6 +286,16 @@ public abstract class WolfEntityMixin extends LivingEntity {
                 sendToChat(player, true, name + " already reached Beneficiation stack limit!");
                 cir.setReturnValue(InteractionResult.PASS);
             }
+        } else if (itemStack.is(ItemTags.BEDS) && wolf.isTame() && wolf.getOwner() == player) {
+            BlockPos pos = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RESPAWN_POINT, player.blockPosition());
+            if (pos.getX() == 0 && pos.getZ() == 0) {
+                sendToChat(player, true, "Cannot set set a respawn point here");
+                return;
+            }
+            wolf.setAttached(VWAttachments.Wolf.WOLF_RESPAWN_POINT, pos);
+            sendToChat(player, VWColors.VERDANT_WIND, true, name + " has been set to respawn at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+            player.playSound(VWSounds.NOTIFY);
+            cir.setReturnValue(InteractionResult.SUCCESS);
         } else if (itemStack.is(VWItemTags.WOLF_ARMOR_ENCHANTABLE) && !wolf.isTame() && !wolf.isWearingBodyArmor()) {
             if (wolf.level() instanceof ServerLevel) {
                 wolf.equipItemIfPossible((ServerLevel) wolf.level(), itemStack);

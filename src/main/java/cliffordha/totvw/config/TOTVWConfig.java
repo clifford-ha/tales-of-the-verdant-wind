@@ -23,6 +23,7 @@ public class TOTVWConfig implements ConfigData {
     public boolean SERVER_ALWAYS_TRIGGER_BLESSING = false;
     public boolean SERVER_WOLF_SHARES_BENEDICTION_STACK = true;
     public boolean SERVER_TELEPORT_AFTER_SAVE = true;
+    public boolean SERVER_TELL_OWNER_WHO_HURT_WOLF = true;
 
     public boolean SERVER_SKILL_COOLDOWNS = true;
     public boolean SERVER_ITEM_COOLDOWNS = true;

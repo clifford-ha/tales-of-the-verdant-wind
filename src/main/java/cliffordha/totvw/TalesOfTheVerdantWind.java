@@ -12,7 +12,7 @@ import terrablender.api.TerraBlenderApi;
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 	public TalesOfTheVerdantWind() {}
 
-	public static boolean IN_DEVELOPMENT = false;
+	public static boolean IN_DEVELOPMENT = true;
 
 	@Override
 	public void onInitialize() {

@@ -103,7 +103,9 @@ public class TOTVWConfigScreen {
                                 """
                                         Max chunk scan distance to check for
                                         wolf or player for enchantment
-                                        effects to trigger.
+                                        effects to trigger. Note that
+                                        this will still be limited by
+                                        your current game render distance.
                                         
                                         §8§oHigher values may affect performance!"""
                         ))
@@ -136,6 +138,20 @@ public class TOTVWConfigScreen {
                                 + "wolf will consume §b1§r stack to revive owner."
                         ))
                         .setSaveConsumer(value -> TOTVWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK = value)
+                        .build()
+        );
+        benedictionSettings.add(
+                entryBuilder.startBooleanToggle(
+                                Component.literal("Tell Owner Who Attacked Wolf"),
+                                TOTVWConfig.get().SERVER_TELL_OWNER_WHO_HURT_WOLF)
+                        .setDefaultValue(true)
+                        .setTooltip(text(
+                                """
+                                        When enabled, if wolf consume a
+                                        §bBenediction Stack§r, tell owner who last
+                                        attacked wolf."""
+                        ))
+                        .setSaveConsumer(value -> TOTVWConfig.get().SERVER_TELL_OWNER_WHO_HURT_WOLF = value)
                         .build()
         );
         benedictionSettings.add(

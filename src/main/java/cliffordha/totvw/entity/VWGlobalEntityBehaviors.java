@@ -6,8 +6,10 @@ import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.registry.*;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
@@ -16,9 +18,11 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.minecart.Minecart;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -61,6 +65,10 @@ public class VWGlobalEntityBehaviors {
                     wolf.getOwner() != null && wolf.getOwner().is(player) && wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0) > 1);
             if (wolves.isEmpty()) return true;
 
+            if (getLevel.isClientSide()) {
+                //Minecraft.getInstance().setScreen();
+            }
+
             int random = wolves.size() == 1 ? 0 : level.getRandom().nextIntBetweenInclusive(0, wolves.size() - 1);
             Wolf wolf = wolves.get(Math.max(random, 0));
 
@@ -82,7 +90,7 @@ public class VWGlobalEntityBehaviors {
                 if (player.distanceTo(wolf) > 16) {
                     player.teleportTo(wolf.getX(), wolf.getY() + 1, wolf.getZ());
                 } else {
-                    wolf.tryToTeleportToOwner();
+                    wolf.teleportToAroundBlockPos(player.blockPosition());
                 }
             }
 

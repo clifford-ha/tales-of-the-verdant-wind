@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -177,10 +178,14 @@ public class LodestoneWindCoreBlock extends Block {
         return VWColors.INDICATOR_100;
     }
     private static void addEnergy(ServerLevel level, BlockPos pos, BlockState state, int value) {
-        level.setBlockAndUpdate(pos, state.setValue(WIND_ENERGY, Math.min(state.getValue(WIND_ENERGY) + value, ENERGY_LIMIT)));
+        int compute = state.getValue(WIND_ENERGY) + value;
+        int getStat = Math.min(compute, ENERGY_LIMIT);
+        level.setBlockAndUpdate(pos, state.setValue(WIND_ENERGY, getStat));
     }
     private static void depleteEnergy(ServerLevel level, BlockPos pos, BlockState state, int value) {
-        level.setBlockAndUpdate(pos, state.setValue(WIND_ENERGY, Math.max(state.getValue(WIND_ENERGY) - value, 0)));
+        int compute = state.getValue(WIND_ENERGY) - value;
+        int getStat = Math.max(compute, 0);
+        level.setBlockAndUpdate(pos, state.setValue(WIND_ENERGY, getStat));
     }
 
     @Override
@@ -223,7 +228,7 @@ public class LodestoneWindCoreBlock extends Block {
 
             if (tickInterval(level, 5) && state.getValue(WIND_ENERGY) <= 0 && random.nextFloat() < 0.5f) {
                 level.setBlockAndUpdate(pos, state.setValue(ACTIVE, false));
-                sendToServer("A core at " + getStringPos(pos) + " has been deactivated due to lack of energy source.");
+                sendToServer("A core at " + getStringPos(pos) + " has been deactivated due to lack of energy.");
             }
         }
     }
@@ -331,10 +336,11 @@ public class LodestoneWindCoreBlock extends Block {
 
         List<LivingEntity> monsters = level.getEntitiesOfClass(LivingEntity.class, monsterRange, monster -> monster instanceof Enemy);
         for (LivingEntity monster : monsters) {
-            boolean shouldPressurize = !monster.getAttachedOrElse(VWAttachments.WindCore.CORE_ENTITY_HAS_IMPLODED, false);
+            boolean shouldPressurize = !monster.getAttachedOrElse(VWAttachments.WindCore.ENTITY_HAS_IMPLODED, false);
             if (shouldPressurize) {
-                pressurizeEnemy(monster, level, pos, state);
+                addPressureDifferenceToEnemy(monster, level, pos, state);
             }
+            removeEffect(monster, MobEffects.INVISIBILITY);
 
             if (!monster.getAttachedOrElse(VWAttachments.ENTITY_HAS_VERDANT_OMEN, false)) {
                 applyVerdantOmen(monster);
@@ -389,9 +395,9 @@ public class LodestoneWindCoreBlock extends Block {
         monster.setAttached(VWAttachments.ENTITY_HAS_VERDANT_OMEN, true);
         monster.level().playSound(null, monster.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 1.0F, 1.0F);
     }
-    private static void pressurizeEnemy(LivingEntity monster, ServerLevel level, BlockPos pos, BlockState state) {
-        AttachmentType<Boolean> ATTACHMENT_IMPLODE = VWAttachments.WindCore.CORE_ENTITY_HAS_IMPLODED;
-        AttachmentType<Integer> ATTACHMENT_PRESSURE = VWAttachments.WindCore.CORE_ENTITY_INWARD_PRESSURE;
+    private static void addPressureDifferenceToEnemy(LivingEntity monster, ServerLevel level, BlockPos pos, BlockState state) {
+        AttachmentType<Boolean> ATTACHMENT_IMPLODE = VWAttachments.WindCore.ENTITY_HAS_IMPLODED;
+        AttachmentType<Integer> ATTACHMENT_PRESSURE = VWAttachments.WindCore.ENTITY_PRESSURE_DIFFERENCE;
         boolean hardMode = level.getDifficulty() == Difficulty.HARD;
 
         int currentPressure = monster.getAttachedOrElse(ATTACHMENT_PRESSURE, 0);
@@ -422,23 +428,25 @@ public class LodestoneWindCoreBlock extends Block {
 
             monster.setAttached(ATTACHMENT_IMPLODE, true);
             monster.setAttached(ATTACHMENT_PRESSURE, 0);
-
-            VWParticleEffects.triggerMightParalyzeParticles(monster, 6);
-            monster.makeSound(SoundEvents.PLAYER_ATTACK_CRIT);
+            //for (int particle = 0; particle < 3; particle++) {
+                double random = level.getRandom().nextDouble();
+                level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, monster.getX() + random, monster.getY() + random, monster.getZ() + random, 3, random, random, random, 0);
+            //}
+            monster.makeSound(SoundEvents.WIND_CHARGE_BURST.value());
             depleteEnergy(level, pos, state, 750);
 
             sendToServer(monster.getPlainTextName() + " has been imploded by the Lodestone Wind Core.");
         } else {
             monster.setAttached(ATTACHMENT_PRESSURE, (currentPressure + finalPressure));
         }
-        sendToServer(monster.getPlainTextName() + " has a pressure of " + monster.getAttachedOrElse(ATTACHMENT_PRESSURE, 0));
+        sendToServer(monster.getPlainTextName() + " has a pressure difference of " + monster.getAttachedOrElse(ATTACHMENT_PRESSURE, 0));
     }
     private static void removeImplodedStatus(ServerLevel level, BlockState state, BlockPos pos) {
         AABB test = scanner(pos, 24);
-        List<Monster> monsters = level.getEntitiesOfClass(Monster.class, test, mob -> mob.getAttachedOrElse(VWAttachments.WindCore.CORE_ENTITY_HAS_IMPLODED, false));
+        List<Monster> monsters = level.getEntitiesOfClass(Monster.class, test, mob -> mob.getAttachedOrElse(VWAttachments.WindCore.ENTITY_HAS_IMPLODED, false));
         if (monsters.isEmpty()) return;
         for (Monster monster : monsters) {
-            monster.removeAttached(VWAttachments.WindCore.CORE_ENTITY_HAS_IMPLODED);
+            monster.removeAttached(VWAttachments.WindCore.ENTITY_HAS_IMPLODED);
             depleteEnergy(level, pos, state, 50);
         }
     }

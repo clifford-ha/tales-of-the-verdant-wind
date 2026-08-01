@@ -3,6 +3,7 @@
   "package": "cliffordha.totvw.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "BedBlockMixin",
     "BerryBushBlockMixin",
     "IronGolemEntityMixin",
     "PlayerEntityMixin",
