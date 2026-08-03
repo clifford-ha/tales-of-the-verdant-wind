@@ -1,9 +1,9 @@
 package cliffordha.totvw.datagen;
 
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWItems;
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
@@ -47,8 +47,8 @@ public class VWAdvancements extends AdvancementProvider {
                             AdvancementType.TASK,
                             false, false, false)
                     .addCriterion("has_verdant_spruce_log",
-                            hasItems(ItemPredicate.Builder.item().of(items, VWBlocksVerdant.VERDANT_SPRUCE_LOG)))
-                    .save(output, TOTVW.MOD_ID + ":tales-of-the-verdant-wind/root");
+                            hasItems(ItemPredicate.Builder.item().of(items, VWBlocks.VERDANT_SPRUCE_LOG)))
+                    .save(output, TOTVW.MOD_ID + ":root");
 
             AdvancementHolder fullVerixiumArmor = Advancement.Builder.advancement()
                     .parent(root)
@@ -64,7 +64,7 @@ public class VWAdvancements extends AdvancementProvider {
                             ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_CHESTPLATE),
                             ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_LEGGINGS),
                             ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_BOOTS)))
-                    .save(output, TOTVW.MOD_ID + ":tales-of-the-verdant-wind/full_verixium_armor");
+                    .save(output, TOTVW.MOD_ID + ":full_verixium_armor");
 
             Advancement.Builder.advancement()
                     .parent(root)
@@ -78,21 +78,7 @@ public class VWAdvancements extends AdvancementProvider {
                             PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
                                     ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_WOLF_ARMOR),
                                     Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(entityTypes, EntityType.WOLF)))))
-                    .save(output, TOTVW.MOD_ID + ":tales-of-the-verdant-wind/wolf_verixium_armor");
-
-            Advancement.Builder.advancement()
-                    .parent(root)
-                    .display(VWItems.VERIXIUM_POWDER,
-                            Component.literal("We Stand And Stick Together"),
-                            Component.literal("Try to trust inanimate objects"),
-                            null,
-                            AdvancementType.CHALLENGE,
-                            true, true, true)
-                    .addCriterion("trust_inanimate_object",
-                            PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
-                                    ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_POWDER),
-                                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(entityTypes, EntityType.ARMOR_STAND)))))
-                    .save(output, TOTVW.MOD_ID + ":tales-of-the-verdant-wind/trust_inanimate_object");
+                    .save(output, TOTVW.MOD_ID + ":wolf_verixium_armor");
 
             AdvancementHolder verixiumFluidBucket = Advancement.Builder.advancement()
                     .parent(root)
@@ -106,7 +92,7 @@ public class VWAdvancements extends AdvancementProvider {
                             false)
                     .addCriterion("verixium_fluid_bucket",
                             InventoryChangeTrigger.TriggerInstance.hasItems(VWItems.VERIXIUM_FLUID_BUCKET))
-                    .save(output, ":tales-of-the-verdant-wind/verixium_fluid_bucket");
+                    .save(output, TOTVW.MOD_ID + ":verixium_fluid_bucket");
 
             AdvancementHolder verixiumArmorUpgrade = Advancement.Builder.advancement()
                     .parent(root)
@@ -120,7 +106,7 @@ public class VWAdvancements extends AdvancementProvider {
                             true)
                     .addCriterion("verixium_armor_upgrade",
                             InventoryChangeTrigger.TriggerInstance.hasItems(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE))
-                    .save(output, ":tales-of-the-verdant-wind/verixium_armor_upgrade");
+                    .save(output, TOTVW.MOD_ID + ":verixium_armor_upgrade");
 
         }
     }

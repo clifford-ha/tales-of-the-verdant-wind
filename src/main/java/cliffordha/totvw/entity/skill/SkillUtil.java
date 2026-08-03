@@ -2,11 +2,13 @@ package cliffordha.totvw.entity.skill;
 
 import cliffordha.totvw.config.TOTVWConfig;
 
+import cliffordha.totvw.util.VWUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 
 import static cliffordha.totvw.entity.skill.VWSkillProcessor.*;
+import static cliffordha.totvw.util.VWUtil.sendToChat;
 
 public final class SkillUtil {
     private SkillUtil() {}
@@ -30,7 +32,7 @@ public final class SkillUtil {
         if (cooldown <= 0 && notify == 1) {
             wolf.setAttached(skill.notifier(), 0);
             if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
-            VWSkillProcessor.sendToChat(wolf, skill.notifierColor(), true, name(wolf) + skill.skillName() + " is ready!");
+            sendToChat(wolf, skill.notifierColor(), true, name(wolf) + skill.skillName() + " is ready!");
             playNotification(wolf);
         }
     }

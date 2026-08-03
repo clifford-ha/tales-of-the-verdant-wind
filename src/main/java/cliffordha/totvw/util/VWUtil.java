@@ -12,8 +12,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
@@ -27,6 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
+import org.jspecify.annotations.Nullable;
 
 public final class VWUtil {
     public static int sec(int sec) {
@@ -62,10 +65,10 @@ public final class VWUtil {
         }
         if (entity instanceof Wolf wolf) {
             SkillUtil.startCooldown(wolf, VWWolfBehaviors.VERDANT_BLESSING, cooldown);
-            VWSkillProcessor.sendToChat(wolf, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown + " sec");
+            sendToChat(wolf, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown + " sec");
         } else if (entity instanceof Player player) {
             SkillUtil.startCooldown(player, VWPlayerBehaviors.VERDANT_BLESSING, cooldown);
-            VWSkillProcessor.sendToChat(player, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown + " sec");
+            sendToChat(player, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown + " sec");
         }
     }
 
@@ -170,5 +173,42 @@ public final class VWUtil {
         if (player == null) return 0;
         return player.getItemBySlot(EquipmentSlot.CHEST).getEnchantments()
                 .getLevel(player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment));
+    }
+
+    private static void sendToMain(ServerPlayer player, boolean overlay, String msg) {
+        player.sendSystemMessage(Component.literal(msg), overlay);
+    }
+    private static void sendToMain(ServerPlayer player, int color, String msg) {
+        player.sendSystemMessage(Component.literal(msg).withColor(color));
+    }
+    private static void sendToMain(ServerPlayer player, int color, boolean overlay, String msg) {
+        player.sendSystemMessage(Component.literal(msg).withColor(color), overlay);
+    }
+
+    private static @Nullable ServerPlayer resolveRecipient(LivingEntity entity) {
+        if (entity instanceof ServerPlayer serverPlayer) return serverPlayer;
+        if (entity instanceof Wolf wolf && wolf.getOwner() instanceof ServerPlayer serverPlayer) return serverPlayer;
+        return null;
+    }
+
+    public static void sendToChat(LivingEntity entity, boolean overlay, String... msg) {
+        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        ServerPlayer player = resolveRecipient(entity);
+        if (player == null) return;
+        sendToMain(player, overlay, String.join("\n", msg));
+    }
+
+    public static void sendToChat(LivingEntity entity, int color, String... msg) {
+        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        ServerPlayer player = resolveRecipient(entity);
+        if (player == null) return;
+        sendToMain(player, color, String.join("\n", msg));
+    }
+
+    public static void sendToChat(LivingEntity entity, int color, boolean overlay, String... msg) {
+        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        ServerPlayer player = resolveRecipient(entity);
+        if (player == null) return;
+        sendToMain(player, color, overlay, String.join("\n", msg));
     }
 }

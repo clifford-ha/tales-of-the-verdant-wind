@@ -2,6 +2,7 @@ package cliffordha.totvw.config;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.TalesOfTheVerdantWind;
+import cliffordha.totvw.block.custom.LodestoneWindCoreBlock;
 import cliffordha.totvw.registry.VWColors;
 import me.shedaniel.clothconfig2.api.*;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,16 +22,21 @@ public class TOTVWConfigScreen {
 
         ConfigCategory client = builder.getOrCreateCategory(Component.literal("Client"));
 
-        /*
-        general.addEntry(
-                entryBuilder.startBooleanToggle(
-                                Component.literal("Use New Language Set"),
-                                TOTVWConfig.get().useNewLanguageSet)
-                        .setDefaultValue(false)
-                        .setTooltip(text("When circumstances are met, certain item \ntooltips will show untranslated version of the text"))
-                        .setSaveConsumer(value -> TOTVWConfig.get().useNewLanguageSet = value)
-                        .build()
-        );*/
+        if (TOTVW.IN_DEVELOPMENT) {
+            client.addEntry(
+                    entryBuilder.startBooleanToggle(
+                                    Component.literal("Use New Language Set"),
+                                    TOTVWConfig.get().CLIENT_TRANSLATE_LANGUAGE)
+                            .setDefaultValue(false)
+                            .setTooltip(text(
+                                    """
+                                            When circumstances are met, certain item
+                                            tooltips will show untranslated version of the text"""
+                            ))
+                            .setSaveConsumer(value -> TOTVWConfig.get().CLIENT_TRANSLATE_LANGUAGE = value)
+                            .build()
+            );
+        }
         client.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Use New Sounds"),
@@ -52,13 +58,26 @@ public class TOTVWConfigScreen {
                         .setDefaultValue(false)
                         .setTooltip(text(
                                 """
-                                        When enabled, if player has the §cBloodlust Effect§r,
+                                        When enabled, if a player has the §cBloodlust Effect§r,
                                         an overlay will be displayed on the whole screen.
                                         The strength of the overlay depends on the player's health.
                                         
                                         §8§oDisabled by default for safety purposes."""
                         ))
                         .setSaveConsumer(value -> TOTVWConfig.get().CLIENT_BLOODLUST_EFFECT_OVERLAY = value)
+                        .build()
+        );
+        client.addEntry(
+                entryBuilder.startBooleanToggle(
+                                Component.literal("Show Atrocity Counter"),
+                                TOTVWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER)
+                        .setDefaultValue(false)
+                        .setTooltip(text(
+                                """
+                                        When enabled, if a player hits a wolf or villager,
+                                        it will display a counter on the screen."""
+                        ))
+                        .setSaveConsumer(value -> TOTVWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER = value)
                         .build()
         );
 
@@ -187,13 +206,13 @@ public class TOTVWConfigScreen {
                         .setSaveConsumer(value -> TOTVWConfig.get().SERVER_TELEPORT_AFTER_SAVE = value)
                         .build()
         );
-        if (TalesOfTheVerdantWind.IN_DEVELOPMENT) {
+        if (TOTVW.IN_DEVELOPMENT) {
             benedictionSettings.add(
                     entryBuilder.startIntField(
                                     Component.literal("Max Benediction Stack"),
                                     TOTVWConfig.get().SERVER_MAX_WOLF_BENEDICTION_STACK)
                             .setDefaultValue(3)
-                            .setMax(5)
+                            .setMax(10)
                             .setMin(1)
                             .setSaveConsumer(value -> TOTVWConfig.get().SERVER_MAX_WOLF_BENEDICTION_STACK = value)
                             .build()
@@ -228,8 +247,27 @@ public class TOTVWConfigScreen {
         );
         server.addEntry(enchantmentSkillSettings.build());
 
-
+        // DEBUG
         ConfigCategory debug = builder.getOrCreateCategory(Component.literal("Debug"));
+
+        //
+        var logEnchantmentCD = entryBuilder.startSubCategory(Component.literal("Show Enchantment Cooldowns"));
+        logEnchantmentCD.add(
+                entryBuilder.startBooleanToggle(
+                                Component.literal("Wolf CD"),
+                                TOTVWConfig.get().LOG_ENCHANTMENT_SHOW_WOLF_CD)
+                        .setDefaultValue(false)
+                        .setSaveConsumer(value -> TOTVWConfig.get().LOG_ENCHANTMENT_SHOW_WOLF_CD = value)
+                        .build()
+        );
+        logEnchantmentCD.add(
+                entryBuilder.startBooleanToggle(
+                                Component.literal("Player CD"),
+                                TOTVWConfig.get().LOG_ENCHANTMENT_SHOW_PLAYER_CD)
+                        .setDefaultValue(false)
+                        .setSaveConsumer(value -> TOTVWConfig.get().LOG_ENCHANTMENT_SHOW_PLAYER_CD = value)
+                        .build()
+        );
         debug.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("SEND LOGS"),
@@ -246,15 +284,60 @@ public class TOTVWConfigScreen {
                         .setSaveConsumer(value -> TOTVWConfig.get().MIXIN_UPDATE_LOGS = value)
                         .build()
         );
+        debug.addEntry(logEnchantmentCD.build());
+        //
 
+        //
         var debugBlockUpdates = entryBuilder.startSubCategory(Component.literal("Block Updates"));
-        debugBlockUpdates.add(entryBuilder.startBooleanToggle(
-                                Component.literal("Lodestone Wind Core"),
-                                TOTVWConfig.get().BLOCK_UPDATE_WIND_CORE_LOGS)
+        //
+
+        //
+        var debugLodestoneWindCore = entryBuilder.startSubCategory(Component.literal("[Block Updates] Lodestone Wind Core"));
+        debugLodestoneWindCore.add(
+                entryBuilder.startBooleanToggle(
+                        Component.literal(LodestoneWindCoreBlock.LOG_ENERGY_UPDATES),
+                                TOTVWConfig.get().LOG_WINDCORE_ENERGY_CHANGES)
                         .setDefaultValue(false)
-                        .setSaveConsumer(value -> TOTVWConfig.get().BLOCK_UPDATE_WIND_CORE_LOGS = value)
+                        .setTooltip(text(
+                                "On/Off updates, Auto-Recharge"
+                        ))
+                        .setSaveConsumer(value -> TOTVWConfig.get().LOG_WINDCORE_ENERGY_CHANGES = value)
                         .build()
         );
+        debugLodestoneWindCore.add(
+                entryBuilder.startBooleanToggle(
+                                Component.literal(LodestoneWindCoreBlock.LOG_RECORD),
+                                TOTVWConfig.get().LOG_WINDCORE_RECORD)
+                        .setDefaultValue(false)
+                        .setTooltip(text(
+                                "Counters, computed values, etc."
+                        ))
+                        .setSaveConsumer(value -> TOTVWConfig.get().LOG_WINDCORE_RECORD = value)
+                        .build()
+        );
+        debugLodestoneWindCore.add(
+                entryBuilder.startBooleanToggle(
+                                Component.literal(LodestoneWindCoreBlock.LOG_ENTITY_EVENT),
+                                TOTVWConfig.get().LOG_WINDCORE_ENTITY_EVENT)
+                        .setDefaultValue(false)
+                        .setSaveConsumer(value -> TOTVWConfig.get().LOG_WINDCORE_ENTITY_EVENT = value)
+                        .build()
+        );
+        debugLodestoneWindCore.add(
+                entryBuilder.startBooleanToggle(
+                                Component.literal(LodestoneWindCoreBlock.LOG_ENTITY_CONVERSION),
+                                TOTVWConfig.get().LOG_WINDCORE_ENTITY_CONVERSION)
+                        .setDefaultValue(false)
+                        .setTooltip(text(
+                                """
+                                        Wolf and Villager conversion events
+                                        (Verdant Status)"""
+                        ))
+                        .setSaveConsumer(value -> TOTVWConfig.get().LOG_WINDCORE_ENTITY_CONVERSION = value)
+                        .build()
+        );
+        debug.addEntry(debugLodestoneWindCore.build());
+        //
 
         return builder.build();
     }

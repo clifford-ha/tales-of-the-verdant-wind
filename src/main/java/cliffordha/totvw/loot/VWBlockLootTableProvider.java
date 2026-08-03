@@ -1,7 +1,6 @@
 package cliffordha.totvw.loot;
 
 import cliffordha.totvw.registry.VWItems;
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import cliffordha.totvw.registry.VWBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
@@ -47,33 +46,33 @@ public class VWBlockLootTableProvider extends FabricBlockLootSubProvider {
                         )
                 )
         );
-        dropSelf(VWBlocksVerdant.VERDANT_MOSS_BLOCK);
-        add(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES, createLeavesDrops(
-                VWBlocksVerdant.VERDANT_SPRUCE_LEAVES,
-                VWBlocksVerdant.VERDANT_SPRUCE_SAPLING,
+        dropSelf(VWBlocks.VERDANT_MOSS_BLOCK);
+        add(VWBlocks.VERDANT_SPRUCE_LEAVES, createLeavesDrops(
+                VWBlocks.VERDANT_SPRUCE_LEAVES,
+                VWBlocks.VERDANT_SPRUCE_SAPLING,
                 NORMAL_LEAVES_SAPLING_CHANCES
         ));
 
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_SAPLING);
-        dropPottedContents(VWBlocksVerdant.POTTED_VERDANT_SPRUCE_SAPLING);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_SAPLING);
+        dropPottedContents(VWBlocks.POTTED_VERDANT_SPRUCE_SAPLING);
 
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS);
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_LOG);
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_WOOD);
-        dropSelf(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG);
-        dropSelf(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD);
-        add(VWBlocksVerdant.VERDANT_SPRUCE_SLAB, createSlabItemTable(VWBlocksVerdant.VERDANT_SPRUCE_SLAB));
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_STAIRS);
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_FENCE);
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_FENCE_GATE);
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_BUTTON);
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_PRESSURE_PLATE);
-        add(VWBlocksVerdant.VERDANT_SPRUCE_DOOR, createDoorTable(VWBlocksVerdant.VERDANT_SPRUCE_DOOR));
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_TRAPDOOR);
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_SIGN);
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_HANGING_SIGN);
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_SHELF);
-        dropSelf(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_PLANKS);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_LOG);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_WOOD);
+        dropSelf(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
+        dropSelf(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
+        add(VWBlocks.VERDANT_SPRUCE_SLAB, createSlabItemTable(VWBlocks.VERDANT_SPRUCE_SLAB));
+        dropSelf(VWBlocks.VERDANT_SPRUCE_STAIRS);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_FENCE);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_FENCE_GATE);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_BUTTON);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_PRESSURE_PLATE);
+        add(VWBlocks.VERDANT_SPRUCE_DOOR, createDoorTable(VWBlocks.VERDANT_SPRUCE_DOOR));
+        dropSelf(VWBlocks.VERDANT_SPRUCE_TRAPDOOR);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_SIGN);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_HANGING_SIGN);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_SHELF);
+        dropSelf(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX);
 
         dropSelf(VWBlocks.IRIDESCENT_GLASS);
         dropSelf(VWBlocks.IRIDESCENT_GLASS_PANE);

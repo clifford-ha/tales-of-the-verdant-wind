@@ -3,8 +3,8 @@ package cliffordha.totvw.datagen;
 import java.util.concurrent.CompletableFuture;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
-import cliffordha.totvw.registry.items.VWItemsScatteredPage;
+import cliffordha.totvw.registry.VWBlocks;
+import cliffordha.totvw.registry.VWItems.Pages;
 import net.minecraft.core.HolderLookup;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
@@ -21,31 +21,31 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(VWBlocks.VERIXIUM_DEEPSLATE_ORE, "Verixium Deepslate Ore");
         text.add(VWBlocks.VERIXIUM_STONE_ORE, "Verixium Stone Ore");
         text.add(VWBlocks.VERIXIUM_POWDER_BLOCK, "Verixium Powder Block");
-        text.add(VWBlocksVerdant.VERDANT_MOSS_BLOCK, "Verdant Moss Block");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES, "Verdant Spruce Leaves");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_SAPLING, "Verdant Spruce Sapling");
-        text.add(VWBlocksVerdant.POTTED_VERDANT_SPRUCE_SAPLING, "Potted Verdant Spruce Sapling");
+        text.add(VWBlocks.VERDANT_MOSS_BLOCK, "Verdant Moss Block");
+        text.add(VWBlocks.VERDANT_SPRUCE_LEAVES, "Verdant Spruce Leaves");
+        text.add(VWBlocks.VERDANT_SPRUCE_SAPLING, "Verdant Spruce Sapling");
+        text.add(VWBlocks.POTTED_VERDANT_SPRUCE_SAPLING, "Potted Verdant Spruce Sapling");
 
         text.add(VWBlocks.IRIDESCENT_GLASS, "Iridescent Glass");
         text.add(VWBlocks.IRIDESCENT_GLASS_PANE, "Iridescent Glass Pane");
 
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_LOG, "Verdant Spruce Log");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_WOOD, "Verdant Spruce Wood");
-        text.add(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG, "Stripped Verdant Spruce Log");
-        text.add(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD, "Stripped Verdant Spruce Wood");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS, "Verdant Spruce Planks");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_SLAB, "Verdant Spruce Slab");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_STAIRS, "Verdant Spruce Stairs");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_FENCE, "Verdant Spruce Fence");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_FENCE_GATE, "Verdant Spruce Fence Gate");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_BUTTON, "Verdant Spruce Button");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_PRESSURE_PLATE, "Verdant Spruce Pressure Plate");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_DOOR, "Verdant Spruce Door");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_TRAPDOOR, "Verdant Spruce Trapdoor");
+        text.add(VWBlocks.VERDANT_SPRUCE_LOG, "Verdant Spruce Log");
+        text.add(VWBlocks.VERDANT_SPRUCE_WOOD, "Verdant Spruce Wood");
+        text.add(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG, "Stripped Verdant Spruce Log");
+        text.add(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD, "Stripped Verdant Spruce Wood");
+        text.add(VWBlocks.VERDANT_SPRUCE_PLANKS, "Verdant Spruce Planks");
+        text.add(VWBlocks.VERDANT_SPRUCE_SLAB, "Verdant Spruce Slab");
+        text.add(VWBlocks.VERDANT_SPRUCE_STAIRS, "Verdant Spruce Stairs");
+        text.add(VWBlocks.VERDANT_SPRUCE_FENCE, "Verdant Spruce Fence");
+        text.add(VWBlocks.VERDANT_SPRUCE_FENCE_GATE, "Verdant Spruce Fence Gate");
+        text.add(VWBlocks.VERDANT_SPRUCE_BUTTON, "Verdant Spruce Button");
+        text.add(VWBlocks.VERDANT_SPRUCE_PRESSURE_PLATE, "Verdant Spruce Pressure Plate");
+        text.add(VWBlocks.VERDANT_SPRUCE_DOOR, "Verdant Spruce Door");
+        text.add(VWBlocks.VERDANT_SPRUCE_TRAPDOOR, "Verdant Spruce Trapdoor");
         text.add(VWItems.VERDANT_SPRUCE_SIGN, "Verdant Spruce Sign");
         text.add(VWItems.VERDANT_SPRUCE_HANGING_SIGN, "Verdant Spruce Hanging Sign");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_SHELF, "Verdant Spruce Shelf");
-        text.add(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX, "Verdant Spruce Storage Box");
+        text.add(VWBlocks.VERDANT_SPRUCE_SHELF, "Verdant Spruce Shelf");
+        text.add(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX, "Verdant Spruce Storage Box");
 
         text.add("container.tales-of-the-verdant-wind.storage_box", "Storage Box");
         text.add(VWBlocks.LODESTONE_WIND_CORE, "Lodestone Wind Core");
@@ -82,22 +82,33 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(VWItems.VERIXIUM_HORSE_ARMOR, "Verixium Horse Armor");
 
 
+        String SCATTERED_PAGE = "Scattered Page";
+        text.add(Pages.SCATTERED_PAGE, SCATTERED_PAGE);
+        text.add(Pages.SCATTERED_PAGE_VARIANT_1, SCATTERED_PAGE);
+        text.add(Pages.SCATTERED_PAGE_VARIANT_2, SCATTERED_PAGE);
+        text.add(Pages.SCATTERED_PAGE_VARIANT_3, SCATTERED_PAGE);
 
-        text.add(VWItemsScatteredPage.PLAYER_STATS, "Player Stats");
-        text.add(VWItemsScatteredPage.SCATTERED_PAGE, "Scattered Page");
-        text.add(VWItemsScatteredPage.SP_ID_TEST, "Test Page");
-        text.add(VWItemsScatteredPage.SP_ID_1000, SP_1000.getTitle());
+        String OLD_SCATTERED_PAGE = "Old Scattered Page";
+        text.add(Pages.OLD_SCATTERED_PAGE, OLD_SCATTERED_PAGE);
+        text.add(Pages.OLD_SCATTERED_PAGE_VARIANT_1, OLD_SCATTERED_PAGE);
+        text.add(Pages.OLD_SCATTERED_PAGE_VARIANT_2, OLD_SCATTERED_PAGE);
+        text.add(Pages.OLD_SCATTERED_PAGE_VARIANT_3, OLD_SCATTERED_PAGE);
 
-        text.add(VWItemsScatteredPage.SP_ID_1001, SP_1001.getTitle());
-        text.add(VWItemsScatteredPage.SP_ID_1002, SP_1002.getTitle());
-        text.add(VWItemsScatteredPage.SP_ID_1003, SP_1003.getTitle());
-        text.add(VWItemsScatteredPage.SP_ID_1004, SP_1004.getTitle());
 
-        text.add(VWItemsScatteredPage.SP_ID_1005, SP_1005.getTitle());
+        text.add(Pages.PLAYER_STATS, "Player Stats");
+        text.add(Pages.SP_ID_TEST, "Test Page");
+        text.add(Pages.SP_ID_1000, SP_1000.getTitle());
 
-        text.add(VWItemsScatteredPage.SP_ID_1006, SP_1006.getTitle());
+        text.add(Pages.SP_ID_1001, SP_1001.getTitle());
+        text.add(Pages.SP_ID_1002, SP_1002.getTitle());
+        text.add(Pages.SP_ID_1003, SP_1003.getTitle());
+        text.add(Pages.SP_ID_1004, SP_1004.getTitle());
 
-        text.add(VWItemsScatteredPage.LODESTONE_WIND_CORE_MANUAL, LODESTONE_WIND_CORE_MANUAL.getTitle());
+        text.add(Pages.SP_ID_1005, SP_1005.getTitle());
+
+        text.add(Pages.SP_ID_1006, SP_1006.getTitle());
+
+        text.add(Pages.LODESTONE_WIND_CORE_MANUAL, LODESTONE_WIND_CORE_MANUAL.getTitle());
 
 
 
@@ -113,10 +124,10 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.addEnchantment(VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS,"Benediction of the Verdant Mountains");
 
 
-        text.add("effect.tales-of-the-verdant-wind.blessing_of_the_verdant_wind", "Blessing of the Verdant Wind");
-        text.add("effect.tales-of-the-verdant-wind.amplified_might", "Amplified Might");
-        text.add("effect.tales-of-the-verdant-wind.bloodlust", "Bloodlust");
-        text.add("effect.tales-of-the-verdant-wind.paralyze", "Paralyzed");
+        text.add(effectKey("blessing_of_the_verdant_wind"), "Blessing of the Verdant Wind");
+        text.add(effectKey("amplified_might"), "Amplified Might");
+        text.add(effectKey("bloodlust"), "Bloodlust");
+        text.add(effectKey("paralyze"), "Paralyzed");
 
         text.add("effect.tales-of-the-verdant-wind.bloodlust.description", "Gives massive attack buff in exchange for constant damage while the effect is active");
         
@@ -158,8 +169,8 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(VWItems.VERIXIUM_HOE, "Verixium Hoe");
 
 
-        text.add("biome.tales-of-the-verdant-wind.verdant_mountains", "Verdant Mountains");
-        text.add("biome.tales-of-the-verdant-wind.verdant_forest", "Verdant Forest");
+        text.add(biomeKey("verdant_mountains"), "Verdant Mountains");
+        text.add(biomeKey("verdant_forest"), "Verdant Forest");
 
 
         text.add(VWSounds.WOLF_HOWL_A, "Distant wolf howls");
@@ -172,10 +183,13 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add(VWSounds.LODESTONE_WIND_CORE_AMBIENT, "Wind Core whooshes");
 
-
-
         text.add(TOTVW.MOD_ID, "Tales of the Verdant Wind");
-        text.add("creativeTab.verdantItems", "Tales of the Verdant Wind");
-        text.add("creativeTab.scatteredPages", "Scattered Pages");
+    }
+
+    private static String biomeKey(String name) {
+        return "biome." + TOTVW.MOD_ID + "." + name;
+    }
+    private static String effectKey(String name) {
+        return "effect." + TOTVW.MOD_ID + "." + name;
     }
 }

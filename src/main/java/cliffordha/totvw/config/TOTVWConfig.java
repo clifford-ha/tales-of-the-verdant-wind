@@ -12,6 +12,7 @@ public class TOTVWConfig implements ConfigData {
     public boolean CLIENT_BLOODLUST_EFFECT_OVERLAY = false;
     public boolean CLIENT_ENABLE_NOTIFIERS = true;
     public boolean CLIENT_MOD_SOUNDS = true;
+    public boolean CLIENT_SHOW_ATROCITY_COUNTER = false;
 
 
 
@@ -32,8 +33,15 @@ public class TOTVWConfig implements ConfigData {
 
 
     public boolean DEBUG_PRINT_LOGS = false;
-    public boolean BLOCK_UPDATE_WIND_CORE_LOGS = false;
     public boolean MIXIN_UPDATE_LOGS = false;
+
+    public boolean LOG_ENCHANTMENT_SHOW_PLAYER_CD = false;
+    public boolean LOG_ENCHANTMENT_SHOW_WOLF_CD = false;
+
+    public boolean LOG_WINDCORE_ENERGY_CHANGES = false;
+    public boolean LOG_WINDCORE_RECORD = false;
+    public boolean LOG_WINDCORE_ENTITY_EVENT = false;
+    public boolean LOG_WINDCORE_ENTITY_CONVERSION = false;
 
     public static boolean conditionalToggle(boolean parent, boolean toggle) {
         return parent && toggle;

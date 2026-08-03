@@ -6,7 +6,6 @@ import java.util.concurrent.CompletableFuture;
 
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems;
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import cliffordha.totvw.tag.VWItemTags;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
@@ -73,8 +72,8 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         RecipeCategory.MISC,
                         CookingBookCategory.MISC,
                         VWItems.VERIXIUM_POWDER,
-                        1000.0F,
-                        600,
+                        750.0F,
+                        20 * 90,
                         "verixium_raw_materials"
                 );
                 shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_SPEAR, 1)
@@ -204,52 +203,52 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .save(output);
 
 
-                stairBuilder(VWBlocksVerdant.VERDANT_SPRUCE_STAIRS, Ingredient.of(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
-                        .unlockedBy(getHasName(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS), has(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
+                stairBuilder(VWBlocks.VERDANT_SPRUCE_STAIRS, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS))
+                        .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_PLANKS), has(VWBlocks.VERDANT_SPRUCE_PLANKS))
                         .save(output);
 
-                slab(RecipeCategory.BUILDING_BLOCKS, VWBlocksVerdant.VERDANT_SPRUCE_SLAB, VWBlocksVerdant.VERDANT_SPRUCE_PLANKS);
+                slab(RecipeCategory.BUILDING_BLOCKS, VWBlocks.VERDANT_SPRUCE_SLAB, VWBlocks.VERDANT_SPRUCE_PLANKS);
 
-                buttonBuilder(VWBlocksVerdant.VERDANT_SPRUCE_BUTTON, Ingredient.of(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
-                        .unlockedBy(getHasName(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS), has(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
+                buttonBuilder(VWBlocks.VERDANT_SPRUCE_BUTTON, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS))
+                        .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_PLANKS), has(VWBlocks.VERDANT_SPRUCE_PLANKS))
                         .save(output);
 
-                pressurePlate(VWBlocksVerdant.VERDANT_SPRUCE_PRESSURE_PLATE, VWBlocksVerdant.VERDANT_SPRUCE_PLANKS);
+                pressurePlate(VWBlocks.VERDANT_SPRUCE_PRESSURE_PLATE, VWBlocks.VERDANT_SPRUCE_PLANKS);
 
-                fenceBuilder(VWBlocksVerdant.VERDANT_SPRUCE_FENCE, Ingredient.of(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
-                        .unlockedBy(getHasName(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS), has(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
+                fenceBuilder(VWBlocks.VERDANT_SPRUCE_FENCE, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS))
+                        .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_PLANKS), has(VWBlocks.VERDANT_SPRUCE_PLANKS))
                         .save(output);
 
-                fenceGateBuilder(VWBlocksVerdant.VERDANT_SPRUCE_FENCE_GATE, Ingredient.of(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
-                        .unlockedBy(getHasName(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS), has(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
+                fenceGateBuilder(VWBlocks.VERDANT_SPRUCE_FENCE_GATE, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS))
+                        .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_PLANKS), has(VWBlocks.VERDANT_SPRUCE_PLANKS))
                         .save(output);
 
-                trapdoorBuilder(VWBlocksVerdant.VERDANT_SPRUCE_TRAPDOOR, Ingredient.of(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
-                        .unlockedBy(getHasName(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS), has(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
+                trapdoorBuilder(VWBlocks.VERDANT_SPRUCE_TRAPDOOR, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS))
+                        .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_PLANKS), has(VWBlocks.VERDANT_SPRUCE_PLANKS))
                         .save(output);
 
-                doorBuilder(VWBlocksVerdant.VERDANT_SPRUCE_DOOR, Ingredient.of(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
-                        .unlockedBy(getHasName(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS), has(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
+                doorBuilder(VWBlocks.VERDANT_SPRUCE_DOOR, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS))
+                        .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_PLANKS), has(VWBlocks.VERDANT_SPRUCE_PLANKS))
                         .save(output);
 
-                woodFromLogs(VWBlocksVerdant.VERDANT_SPRUCE_WOOD, VWBlocksVerdant.VERDANT_SPRUCE_LOG);
-                woodFromLogs(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD, VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG);
-                planksFromLogs(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS, VWItemTags.VERDANT_SPRUCE_LOGS, 4);
-                woodenBoat(VWItems.VERDANT_SPRUCE_BOAT, VWBlocksVerdant.VERDANT_SPRUCE_PLANKS);
+                woodFromLogs(VWBlocks.VERDANT_SPRUCE_WOOD, VWBlocks.VERDANT_SPRUCE_LOG);
+                woodFromLogs(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD, VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
+                planksFromLogs(VWBlocks.VERDANT_SPRUCE_PLANKS, VWItemTags.VERDANT_SPRUCE_LOGS, 4);
+                woodenBoat(VWItems.VERDANT_SPRUCE_BOAT, VWBlocks.VERDANT_SPRUCE_PLANKS);
                 chestBoat(VWItems.VERDANT_SPRUCE_CHEST_BOAT, VWItems.VERDANT_SPRUCE_BOAT);
 
-                signBuilder(VWItems.VERDANT_SPRUCE_SIGN, Ingredient.of(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS));
-                hangingSign(VWItems.VERDANT_SPRUCE_HANGING_SIGN, VWBlocksVerdant.VERDANT_SPRUCE_PLANKS);
-                shelf(VWBlocksVerdant.VERDANT_SPRUCE_SHELF, VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG);
+                signBuilder(VWItems.VERDANT_SPRUCE_SIGN, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS));
+                hangingSign(VWItems.VERDANT_SPRUCE_HANGING_SIGN, VWBlocks.VERDANT_SPRUCE_PLANKS);
+                shelf(VWBlocks.VERDANT_SPRUCE_SHELF, VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
 
-                shaped(RecipeCategory.REDSTONE, VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX, 1)
+                shaped(RecipeCategory.REDSTONE, VWBlocks.VERDANT_SPRUCE_STORAGE_BOX, 1)
                         .pattern("XPX")
                         .pattern("XCX")
                         .pattern("XPX")
-                        .define('X', VWBlocksVerdant.VERDANT_SPRUCE_LOG)
-                        .define('P', VWBlocksVerdant.VERDANT_SPRUCE_SLAB)
+                        .define('X', VWBlocks.VERDANT_SPRUCE_LOG)
+                        .define('P', VWBlocks.VERDANT_SPRUCE_SLAB)
                         .define('C', Items.CHEST)
-                        .unlockedBy(getHasName(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS), has(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS))
+                        .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_PLANKS), has(VWBlocks.VERDANT_SPRUCE_PLANKS))
                         .save(output);
 
 

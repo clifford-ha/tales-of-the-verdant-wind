@@ -5,7 +5,6 @@ import cliffordha.totvw.block.entity.VWHangingSignBlockEntity;
 import cliffordha.totvw.block.entity.VWShelfBlockEntity;
 import cliffordha.totvw.block.entity.VWSignBlockEntity;
 import cliffordha.totvw.block.entity.custom.StorageBlockEntity;
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -20,19 +19,19 @@ public class VWBlockEntityTypes {
 
     public static final BlockEntityType<VWSignBlockEntity> SIGN = create("sign",
             new BlockEntityType<>(VWSignBlockEntity::new,
-                    Set.of(VWBlocksVerdant.VERDANT_SPRUCE_SIGN, VWBlocksVerdant.VERDANT_SPRUCE_WALL_SIGN)));
+                    Set.of(VWBlocks.VERDANT_SPRUCE_SIGN, VWBlocks.VERDANT_SPRUCE_WALL_SIGN)));
 
     public static final BlockEntityType<VWHangingSignBlockEntity> HANGING_SIGN = create("hanging_sign",
             new BlockEntityType<>(VWHangingSignBlockEntity::new,
-                    Set.of(VWBlocksVerdant.VERDANT_SPRUCE_HANGING_SIGN, VWBlocksVerdant.VERDANT_SPRUCE_WALL_HANGING_SIGN)));
+                    Set.of(VWBlocks.VERDANT_SPRUCE_HANGING_SIGN, VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN)));
 
     public static final BlockEntityType<VWShelfBlockEntity> SHELF = create("shelf",
             new BlockEntityType<>(VWShelfBlockEntity::new,
-                    Set.of(VWBlocksVerdant.VERDANT_SPRUCE_SHELF)));
+                    Set.of(VWBlocks.VERDANT_SPRUCE_SHELF)));
 
     public static final BlockEntityType<StorageBlockEntity> STORAGE_BOX = create("storage_box",
             new BlockEntityType<>(StorageBlockEntity::new,
-                    Set.of(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX)));
+                    Set.of(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX)));
 
     public static <T extends BlockEntityType<?>> T create(String name, T blockEntityType) {
         BLOCK_ENTITY_TYPES.add(new Pair<>(Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), blockEntityType));

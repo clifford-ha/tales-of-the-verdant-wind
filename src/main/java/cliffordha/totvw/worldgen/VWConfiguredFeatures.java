@@ -2,8 +2,6 @@ package cliffordha.totvw.worldgen;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.VWBlocks;
-
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import cliffordha.totvw.tag.VWBlockTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -90,7 +88,7 @@ public class VWConfiguredFeatures {
                                 BlockStateProvider.simple(Blocks.STONE), //INNER MAIN
                                 BlockStateProvider.simple(VWBlocks.VERIXIUM_STONE_ORE), //INNER DECOR
                                 BlockStateProvider.simple(Blocks.CALCITE), //MID LAYER
-                                BlockStateProvider.simple(VWBlocksVerdant.DEEPSLATE), //OUTER
+                                BlockStateProvider.simple(Blocks.DEEPSLATE), //OUTER
                                 List.of(
                                         Blocks.AIR.defaultBlockState(),
                                         Blocks.AIR.defaultBlockState(),
@@ -126,7 +124,7 @@ public class VWConfiguredFeatures {
 
         context.register(VERDANT_PILLARS_CONFIGURED_KEY, new ConfiguredFeature<>(Feature.SPIKE,
                 new SpikeConfiguration(
-                        VWBlocksVerdant.VERDANT_MOSS_BLOCK.defaultBlockState(),
+                        VWBlocks.VERDANT_MOSS_BLOCK.defaultBlockState(),
                         BlockPredicate.matchesBlocks(Blocks.GRASS_BLOCK),
                         BlockPredicate.matchesBlocks(List.of(
                                 Blocks.AIR,
@@ -142,7 +140,7 @@ public class VWConfiguredFeatures {
                 new SimpleBlockConfiguration(new WeightedStateProvider(
                         WeightedList.<BlockState>builder()
                                 .add(Blocks.FERN.defaultBlockState(), 7)
-                                .add(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true), 6)
+                                .add(VWBlocks.VERDANT_SPRUCE_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true), 6)
                                 .add(Blocks.BUSH.defaultBlockState(), 3)
                                 .add(Blocks.SWEET_BERRY_BUSH.defaultBlockState().setValue(SweetBerryBushBlock.AGE, 3), 1)
                                 .build()
@@ -150,7 +148,7 @@ public class VWConfiguredFeatures {
         context.register(VERDANT_MOSS_PATCH_CONFIGURED_KEY, new ConfiguredFeature<>(Feature.VEGETATION_PATCH,
                 new VegetationPatchConfiguration(
                         VWBlockTags.VERDANT_MOSS_REPLACEABLE,
-                        BlockStateProvider.simple(VWBlocksVerdant.VERDANT_MOSS_BLOCK.defaultBlockState()),
+                        BlockStateProvider.simple(VWBlocks.VERDANT_MOSS_BLOCK.defaultBlockState()),
                         placedFeatures.getOrThrow(VWPlacedFeatures.VERDANT_MOSS_VEGETATION_KEY),
                         CaveSurface.FLOOR,
                         UniformInt.of(1, 7),
@@ -171,9 +169,9 @@ public class VWConfiguredFeatures {
         )));
         context.register(VERDANT_SPRUCE_BUSH_TREE_CONFIGURED_KEY, new ConfiguredFeature<>(Feature.TREE,
                 new TreeConfiguration.TreeConfigurationBuilder(
-                        BlockStateProvider.simple(VWBlocksVerdant.VERDANT_SPRUCE_LOG),
+                        BlockStateProvider.simple(VWBlocks.VERDANT_SPRUCE_LOG),
                         new StraightTrunkPlacer(2, 0, 0),
-                        BlockStateProvider.simple(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES.defaultBlockState()),
+                        BlockStateProvider.simple(VWBlocks.VERDANT_SPRUCE_LEAVES.defaultBlockState()),
                         new SpruceFoliagePlacer(
                                 ConstantInt.of(3),
                                 ConstantInt.of(0),
@@ -185,9 +183,9 @@ public class VWConfiguredFeatures {
 
         context.register(VERDANT_SPRUCE_TREE_CONFIGURED_KEY, new ConfiguredFeature<>(Feature.TREE,
                 new TreeConfiguration.TreeConfigurationBuilder(
-                        BlockStateProvider.simple(VWBlocksVerdant.VERDANT_SPRUCE_LOG),
+                        BlockStateProvider.simple(VWBlocks.VERDANT_SPRUCE_LOG),
                         new StraightTrunkPlacer(7, 3, 3),
-                        BlockStateProvider.simple(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES),
+                        BlockStateProvider.simple(VWBlocks.VERDANT_SPRUCE_LEAVES),
                         new SpruceFoliagePlacer(
                                 UniformInt.of(4, 7),
                                 UniformInt.of(0, 1),
@@ -199,9 +197,9 @@ public class VWConfiguredFeatures {
 
         context.register(ANCIENT_VERDANT_SPRUCE_TREE_CONFIGURED_KEY, new ConfiguredFeature<>(Feature.TREE,
                 new TreeConfiguration.TreeConfigurationBuilder(
-                        BlockStateProvider.simple(VWBlocksVerdant.VERDANT_SPRUCE_LOG),
+                        BlockStateProvider.simple(VWBlocks.VERDANT_SPRUCE_LOG),
                         new GiantTrunkPlacer(9, 5, 3),
-                        BlockStateProvider.simple(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES),
+                        BlockStateProvider.simple(VWBlocks.VERDANT_SPRUCE_LEAVES),
                         new SpruceFoliagePlacer(
                                 UniformInt.of(9, 11),
                                 ConstantInt.of(0),

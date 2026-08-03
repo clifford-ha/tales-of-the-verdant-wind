@@ -3,15 +3,18 @@ package cliffordha.totvw.entity.wolf;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.player.PlayerCondition;
 import cliffordha.totvw.registry.VWAttachments;
+import cliffordha.totvw.util.VWUtil;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.biome.Biome;
 
 import java.util.function.Supplier;
 
@@ -59,6 +62,10 @@ public interface WolfCondition {
             int playerHasEnchantment = bodyArmor.getEnchantments().getLevel( enchantmentRegistry.getOrThrow(enchantment));
             return playerHasEnchantment > 0;
         };
+    }
+
+    static WolfCondition isInBiomes(TagKey<Biome> biome) {
+        return (wolf, level) -> VWUtil.isInBiomes(wolf, biome);
     }
 
     static WolfCondition checkConfig(boolean configValue) {

@@ -1,5 +1,6 @@
 package cliffordha.totvw.entity.player;
 
+import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.TalesOfTheVerdantWind;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.skill.VWSkillProcessor;
@@ -14,7 +15,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -32,7 +32,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 import static cliffordha.totvw.util.VWUtil.*;
@@ -81,7 +80,7 @@ public class VWPlayerBehaviors {
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(),
                 (player, _) -> {
-                    if (TOTVWConfig.get().DEBUG_PRINT_LOGS) { VWSkillProcessor.setPlayerConfiguration(player, 0); }
+                    if (TOTVWConfig.get().LOG_ENCHANTMENT_SHOW_PLAYER_CD) VWSkillProcessor.setPlayerConfiguration(player, 0);
                     if (TOTVWConfig.get().SERVER_SKILL_COOLDOWNS) {
                         VWSkillProcessor.depleteCooldown(player, PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND);
                     } else {
@@ -251,7 +250,7 @@ public class VWPlayerBehaviors {
         });
 
         // Debugging
-        if (!TalesOfTheVerdantWind.IN_DEVELOPMENT) return;
+        if (!TOTVW.IN_DEVELOPMENT) return;
         ServerTickEvents.START_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
                 serverLevel.getEntities(EntityType.PLAYER, _ -> true).forEach(player -> {

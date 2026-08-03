@@ -1,36 +1,41 @@
 {
-  "parent": "tales-of-the-verdant-wind:tales-of-the-verdant-wind/root",
+  "parent": "tales-of-the-verdant-wind:root",
   "criteria": {
-    "trust_inanimate_object": {
+    "wolf_verixium_armor": {
       "conditions": {
         "entity": [
           {
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "minecraft:armor_stand"
+              "type": "minecraft:wolf"
             }
           }
         ],
         "item": {
-          "items": "tales-of-the-verdant-wind:verixium_powder"
+          "items": "tales-of-the-verdant-wind:verixium_wolf_armor"
         }
       },
       "trigger": "minecraft:player_interacted_with_entity"
     }
   },
   "display": {
-    "description": "Try to trust inanimate objects",
-    "frame": "challenge",
-    "hidden": true,
-    "icon": {
-      "id": "tales-of-the-verdant-wind:verixium_powder"
+    "description": {
+      "color": "#247D66",
+      "text": "Give your companion Verixium armor"
     },
-    "title": "We Stand And Stick Together"
+    "frame": "challenge",
+    "icon": {
+      "id": "tales-of-the-verdant-wind:verixium_wolf_armor"
+    },
+    "title": {
+      "color": "#00FFD0",
+      "text": "A \"Light\" Companion"
+    }
   },
   "requirements": [
     [
-      "trust_inanimate_object"
+      "wolf_verixium_armor"
     ]
   ],
   "sends_telemetry_event": true

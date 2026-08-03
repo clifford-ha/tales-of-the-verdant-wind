@@ -27,7 +27,20 @@ public class VWDamageTypes {
         return ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name));
     }
 
-    public static DamageSource create(Level level, ResourceKey<DamageType> key) {
+    private static DamageSource create(Level level, ResourceKey<DamageType> key) {
         return new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(key));
+    }
+
+    public static DamageSource bloodlust(Level level) {
+        return create(level, BLOODLUST);
+    }
+    public static DamageSource bleeding(Level level) {
+        return create(level, BLEEDING);
+    }
+    public static DamageSource lodestoneWindCorePulse(Level level) {
+        return create(level, LODESTONE_WIND_CORE_PULSE);
+    }
+    public static DamageSource scorchingHeat(Level level) {
+        return create(level, SCORCHING_HEAT);
     }
 }

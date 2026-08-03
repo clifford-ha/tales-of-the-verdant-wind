@@ -10,6 +10,8 @@ public class TOTVW {
     private static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
     private static final Logger ID_LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+    public static boolean IN_DEVELOPMENT = TalesOfTheVerdantWind.IN_DEVELOPMENT;
+
     public static void sendStat(String stat) {
         ID_LOGGER.info(stat);
     }

@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -33,7 +34,9 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
         if (entity instanceof Monster) return;
-        VWParticleEffects.spawnBlessingParticlesEntity(entity, 1);
+        if (!entity.hasEffect(MobEffects.INVISIBILITY)) {
+            VWParticleEffects.spawnBlessingParticlesEntity(entity, 1);
+        }
         AttributeMap attributes = entity.getAttributes();
 
         double atkDamage = 0.15 + (amplifier * 0.15);
@@ -54,7 +57,7 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
 
     @Override
     public boolean isBeneficial() {
-        return super.isBeneficial();
+        return true;
     }
 
     @Override
@@ -62,7 +65,9 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
         float heal = (entity instanceof Monster) ? 0f : 3.0f + (amplifier * 2.0f);
         if (serverLevel.getRandom().nextInt(60) == 0) {
             entity.heal(heal);
-            VWParticleEffects.benedictionEnvironmentParticleEntity(entity);
+            if (!entity.hasEffect(MobEffects.INVISIBILITY)) {
+                VWParticleEffects.benedictionEnvironmentParticleEntity(entity);
+            }
         }
         return super.applyEffectTick(serverLevel, entity, amplifier);
     }

@@ -29,6 +29,10 @@ public class ParalyzeEffect extends MobEffect {
         onEffectAdded(entity, amplifier);
     }
 
+    @Override
+    public boolean isBeneficial() {
+        return false;
+    }
 
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {

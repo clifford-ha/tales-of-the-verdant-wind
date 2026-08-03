@@ -30,6 +30,10 @@ public class AmplifiedMightEffect extends MobEffect {
         onEffectAdded(entity, amplifier);
     }
 
+    @Override
+    public boolean isBeneficial() {
+        return true;
+    }
 
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {

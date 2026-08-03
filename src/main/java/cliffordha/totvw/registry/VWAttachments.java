@@ -5,7 +5,11 @@ import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.Identifier;
+
+import java.util.List;
+import java.util.UUID;
 
 public class VWAttachments {
     public static final AttachmentType<Boolean> ENTITY_IS_PARALYZED = registerBool("entity_is_paralyzed");
@@ -21,7 +25,7 @@ public class VWAttachments {
         public static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_cd_blessing_of_the_verdant_wind");
         public static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_notify_blessing_of_the_verdant_wind");
         public static final AttachmentType<Integer> PLAYER_VILLAGER_ATROCITY_COUNT = registerInt("player_villager_atrocity_count");
-        public static final AttachmentType<Integer> WOLF_ATROCITY_COUNT = registerInt("player_wolf_atrocity_count");
+        public static final AttachmentType<Integer> PLAYER_WOLF_ATROCITY_COUNT = registerInt("player_wolf_atrocity_count");
         public static final AttachmentType<BlockPos> PLAYER_RESPAWN_POINT = registerBlockPos("player_respawn_point");
     }
     public static class Wolf {
@@ -46,6 +50,7 @@ public class VWAttachments {
         public static final AttachmentType<Integer> WOLF_BENEDICTION = registerInt("wolf_benediction");
 
         public static final AttachmentType<BlockPos> WOLF_RESPAWN_POINT = registerBlockPos("wolf_respawn_point");
+        public static final AttachmentType<String> WOLF_PARENTS_ID = registerString("wolf_parent_a_id");
     }
 
     public static class Villager {
@@ -63,6 +68,20 @@ public class VWAttachments {
         return AttachmentRegistry.create(
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
                 blockPosBuilder -> blockPosBuilder.persistent(BlockPos.CODEC).initializer( () -> BlockPos.ZERO )
+        );
+    }
+
+    private static AttachmentType<UUID> registerUUID(String name) {
+        return AttachmentRegistry.create(
+                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
+                uuidBuilder -> uuidBuilder.persistent(UUIDUtil.CODEC)
+        );
+    }
+
+    private static AttachmentType<String> registerString(String name) {
+        return AttachmentRegistry.create(
+                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
+                stringBuilder -> stringBuilder.persistent(Codec.STRING).initializer(() -> "")
         );
     }
 
@@ -92,20 +111,11 @@ public class VWAttachments {
     }
 
     public static void register() {
-        AttachmentType<?>[] globalAttachments = {
+        final List<AttachmentType<?>> GLOBAL_ATTACHMENTS = List.of(
                 ENTITY_IS_PARALYZED,
-                ENTITY_HAS_VERDANT_OMEN,
-        };
-
-        AttachmentType<?>[] playerAttachments = {
-                Player.PLAYER_IS_DEV_MODE,
-                Player.PLAYER_VILLAGER_ATROCITY_COUNT,
-                Player.WOLF_ATROCITY_COUNT,
-                Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
-                Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
-        };
-
-        AttachmentType<?>[] wolfAttachments = {
+                ENTITY_HAS_VERDANT_OMEN
+        );
+        final List<AttachmentType<?>> WOLF_ATTACHMENTS = List.of(
                 Wolf.WOLF_IS_VERDANT_TYPE,
                 Wolf.WOLF_IS_VILLAGE_GUARD,
                 Wolf.WOLF_TIMER_AIR_SUPPLY,
@@ -119,32 +129,38 @@ public class VWAttachments {
                 Wolf.WOLF_BENEDICTION,
                 Wolf.WOLF_TRY_SAVE_POINTS,
                 Wolf.WOLF_TRY_SAVE_STATUS,
-        };
-
-        AttachmentType<?>[] villagerAttachments = {
+                Wolf.WOLF_PARENTS_ID
+        );
+        final List<AttachmentType<?>> VILLAGER_ATTACHMENTS = List.of(
                 Villager.VILLAGER_IS_VERDANT_TYPE,
                 Villager.VILLAGER_CD_HEAL_OTHERS,
                 Villager.VILLAGER_CD_HEAL_WOLF,
                 Villager.VILLAGER_CD_HEAL_IRON_GOLEM,
                 Villager.VILLAGER_CD_DISCOUNT_REROLL,
-                Villager.VILLAGER_DISCOUNT_MODIFIER,
-        };
-
-        AttachmentType<?>[] windCore = {
+                Villager.VILLAGER_DISCOUNT_MODIFIER
+        );
+        final List<AttachmentType<?>> PLAYER_ATTACHMENTS = List.of(
+                Player.PLAYER_IS_DEV_MODE,
+                Player.PLAYER_VILLAGER_ATROCITY_COUNT,
+                Player.PLAYER_WOLF_ATROCITY_COUNT,
+                Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
+                Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND
+        );
+        final List<AttachmentType<?>> BLOCK_ATTACHMENTS = List.of(
                 WindCore.ENTITY_PRESSURE_DIFFERENCE,
-                WindCore.ENTITY_HAS_IMPLODED,
-        };
+                WindCore.ENTITY_HAS_IMPLODED
+        );
 
-        int total = globalAttachments.length + playerAttachments.length + wolfAttachments.length + villagerAttachments.length + windCore.length;
+        int TOTAL = GLOBAL_ATTACHMENTS.size() + WOLF_ATTACHMENTS.size() + VILLAGER_ATTACHMENTS.size() + PLAYER_ATTACHMENTS.size() + BLOCK_ATTACHMENTS.size();
 
         TOTVW.sendClassRegisterLog(
                 "Custom Attachments (" +
-                        "Global: " + globalAttachments.length + ", " +
-                        "Block/LodestoneWindCore: " + windCore.length + ", " +
-                        "Player: " + playerAttachments.length + ", " +
-                        "Wolf: " + wolfAttachments.length + ", " +
-                        "Villager: " + villagerAttachments.length + " ) " +
-                        total + " in total has been"
+                        "Global: " + GLOBAL_ATTACHMENTS.size() + ", " +
+                        "Wolf: " + WOLF_ATTACHMENTS.size() + ", " +
+                        "Villager: " + VILLAGER_ATTACHMENTS.size() + ", " +
+                        "Player: " + PLAYER_ATTACHMENTS.size() + ", " +
+                        "Blocks: " + BLOCK_ATTACHMENTS.size() + ") " +
+                        TOTAL + " in total has been"
         );
     }
 }

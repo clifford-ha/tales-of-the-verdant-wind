@@ -2,7 +2,6 @@ package cliffordha.totvw.tag;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.VWBlocks;
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
@@ -27,26 +26,26 @@ public class VWBlockTags extends FabricTagsProvider.BlockTagsProvider {
                 .add(VWBlocks.VERIXIUM_STONE_ORE)
                 .add(VWBlocks.VERIXIUM_DEEPSLATE_ORE)
                 .add(VWBlocks.VERIXIUM_POWDER_BLOCK)
-                .add(VWBlocksVerdant.VERDANT_MOSS_BLOCK)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_SAPLING)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_LOG)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_WOOD)
-                .add(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG)
-                .add(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_SLAB)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_STAIRS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_FENCE)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_FENCE_GATE)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_SIGN)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_WALL_SIGN)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_HANGING_SIGN)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_WALL_HANGING_SIGN)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_SHELF)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_BUTTON)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_PRESSURE_PLATE)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_DOOR);
+                .add(VWBlocks.VERDANT_MOSS_BLOCK)
+                .add(VWBlocks.VERDANT_SPRUCE_LEAVES)
+                .add(VWBlocks.VERDANT_SPRUCE_SAPLING)
+                .add(VWBlocks.VERDANT_SPRUCE_PLANKS)
+                .add(VWBlocks.VERDANT_SPRUCE_LOG)
+                .add(VWBlocks.VERDANT_SPRUCE_WOOD)
+                .add(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG)
+                .add(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD)
+                .add(VWBlocks.VERDANT_SPRUCE_SLAB)
+                .add(VWBlocks.VERDANT_SPRUCE_STAIRS)
+                .add(VWBlocks.VERDANT_SPRUCE_FENCE)
+                .add(VWBlocks.VERDANT_SPRUCE_FENCE_GATE)
+                .add(VWBlocks.VERDANT_SPRUCE_SIGN)
+                .add(VWBlocks.VERDANT_SPRUCE_WALL_SIGN)
+                .add(VWBlocks.VERDANT_SPRUCE_HANGING_SIGN)
+                .add(VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN)
+                .add(VWBlocks.VERDANT_SPRUCE_SHELF)
+                .add(VWBlocks.VERDANT_SPRUCE_BUTTON)
+                .add(VWBlocks.VERDANT_SPRUCE_PRESSURE_PLATE)
+                .add(VWBlocks.VERDANT_SPRUCE_DOOR);
 
         valueLookupBuilder(VWBlockTags.VERDANT_MOSS_REPLACEABLE)
                 .add(Blocks.GRASS_BLOCK)
@@ -57,16 +56,16 @@ public class VWBlockTags extends FabricTagsProvider.BlockTagsProvider {
 
 
         valueLookupBuilder(BlockTags.LEAVES)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES);
+                .add(VWBlocks.VERDANT_SPRUCE_LEAVES);
 
         valueLookupBuilder(BlockTags.DIRT)
-                .add(VWBlocksVerdant.VERDANT_MOSS_BLOCK);
+                .add(VWBlocks.VERDANT_MOSS_BLOCK);
 
         valueLookupBuilder(BlockTags.SAPLINGS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_SAPLING);
+                .add(VWBlocks.VERDANT_SPRUCE_SAPLING);
 
         valueLookupBuilder(BlockTags.FLOWER_POTS)
-                .add(VWBlocksVerdant.POTTED_VERDANT_SPRUCE_SAPLING);
+                .add(VWBlocks.POTTED_VERDANT_SPRUCE_SAPLING);
 
 
         valueLookupBuilder(BlockTags.NEEDS_DIAMOND_TOOL)
@@ -87,77 +86,77 @@ public class VWBlockTags extends FabricTagsProvider.BlockTagsProvider {
                 .add(VWBlocks.IRIDESCENT_GLASS_PANE);
 
         valueLookupBuilder(BlockTags.MINEABLE_WITH_AXE)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_LOG)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_WOOD)
-                .add(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG)
-                .add(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_SLAB)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_STAIRS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_SIGN)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_WALL_SIGN)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_HANGING_SIGN)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_WALL_HANGING_SIGN)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_FENCE)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_FENCE_GATE)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_BUTTON)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_PRESSURE_PLATE)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_DOOR);
+                .add(VWBlocks.VERDANT_SPRUCE_PLANKS)
+                .add(VWBlocks.VERDANT_SPRUCE_LOG)
+                .add(VWBlocks.VERDANT_SPRUCE_WOOD)
+                .add(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG)
+                .add(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD)
+                .add(VWBlocks.VERDANT_SPRUCE_SLAB)
+                .add(VWBlocks.VERDANT_SPRUCE_STAIRS)
+                .add(VWBlocks.VERDANT_SPRUCE_SIGN)
+                .add(VWBlocks.VERDANT_SPRUCE_WALL_SIGN)
+                .add(VWBlocks.VERDANT_SPRUCE_HANGING_SIGN)
+                .add(VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN)
+                .add(VWBlocks.VERDANT_SPRUCE_FENCE)
+                .add(VWBlocks.VERDANT_SPRUCE_FENCE_GATE)
+                .add(VWBlocks.VERDANT_SPRUCE_BUTTON)
+                .add(VWBlocks.VERDANT_SPRUCE_PRESSURE_PLATE)
+                .add(VWBlocks.VERDANT_SPRUCE_DOOR);
 
         valueLookupBuilder(BlockTags.MINEABLE_WITH_SHOVEL)
                 .add(VWBlocks.VERIXIUM_POWDER_BLOCK);
 
         valueLookupBuilder(BlockTags.EDIBLE_FOR_SHEEP)
-                .add(VWBlocksVerdant.VERDANT_MOSS_BLOCK);
+                .add(VWBlocks.VERDANT_MOSS_BLOCK);
 
         valueLookupBuilder(BlockTags.DAMPENS_VIBRATIONS)
-                .add(VWBlocksVerdant.VERDANT_MOSS_BLOCK);
+                .add(VWBlocks.VERDANT_MOSS_BLOCK);
 
 
 
 
         valueLookupBuilder(BlockTags.WOODEN_BUTTONS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_BUTTON);
+                .add(VWBlocks.VERDANT_SPRUCE_BUTTON);
 
         valueLookupBuilder(BlockTags.WOODEN_DOORS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_DOOR);
+                .add(VWBlocks.VERDANT_SPRUCE_DOOR);
 
         valueLookupBuilder(BlockTags.WOODEN_FENCES)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_FENCE);
+                .add(VWBlocks.VERDANT_SPRUCE_FENCE);
 
         valueLookupBuilder(BlockTags.WOODEN_STAIRS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_STAIRS);
+                .add(VWBlocks.VERDANT_SPRUCE_STAIRS);
 
         valueLookupBuilder(BlockTags.WOODEN_SLABS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_SLAB);
+                .add(VWBlocks.VERDANT_SPRUCE_SLAB);
 
         valueLookupBuilder(BlockTags.WOODEN_PRESSURE_PLATES)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_PRESSURE_PLATE);
+                .add(VWBlocks.VERDANT_SPRUCE_PRESSURE_PLATE);
 
         valueLookupBuilder(BlockTags.WOODEN_DOORS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_DOOR);
+                .add(VWBlocks.VERDANT_SPRUCE_DOOR);
 
         valueLookupBuilder(BlockTags.STANDING_SIGNS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_SIGN);
+                .add(VWBlocks.VERDANT_SPRUCE_SIGN);
 
         valueLookupBuilder(BlockTags.WALL_SIGNS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_WALL_SIGN);
+                .add(VWBlocks.VERDANT_SPRUCE_WALL_SIGN);
 
         valueLookupBuilder(BlockTags.CEILING_HANGING_SIGNS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_HANGING_SIGN);
+                .add(VWBlocks.VERDANT_SPRUCE_HANGING_SIGN);
 
         valueLookupBuilder(BlockTags.WALL_HANGING_SIGNS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_WALL_HANGING_SIGN);
+                .add(VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN);
 
         valueLookupBuilder(BlockTags.WOODEN_SHELVES)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_SHELF);
+                .add(VWBlocks.VERDANT_SPRUCE_SHELF);
 
 
         valueLookupBuilder(VWBlockTags.VERDANT_SPRUCE_LOGS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_LOG)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_WOOD)
-                .add(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG)
-                .add(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD);
+                .add(VWBlocks.VERDANT_SPRUCE_LOG)
+                .add(VWBlocks.VERDANT_SPRUCE_WOOD)
+                .add(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG)
+                .add(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
 
         valueLookupBuilder(BlockTags.LOGS_THAT_BURN)
                 .addTag(VWBlockTags.VERDANT_SPRUCE_LOGS);

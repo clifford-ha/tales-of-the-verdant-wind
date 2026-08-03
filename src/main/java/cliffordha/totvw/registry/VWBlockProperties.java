@@ -1,35 +1,34 @@
 package cliffordha.totvw.registry;
 
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.minecraft.world.level.block.Block;
 
 public class VWBlockProperties {
     public static void register() {
-        flammable(VWBlocksVerdant.VERDANT_MOSS_BLOCK,   40, 60);
-        flammable(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES,   20, 40);
-        flammable(VWBlocksVerdant.VERDANT_SPRUCE_SAPLING,   40, 60);
+        flammable(VWBlocks.VERDANT_MOSS_BLOCK,   40, 60);
+        flammable(VWBlocks.VERDANT_SPRUCE_LEAVES,   20, 40);
+        flammable(VWBlocks.VERDANT_SPRUCE_SAPLING,   40, 60);
         flammableSet(20, 60,
-                VWBlocksVerdant.VERDANT_SPRUCE_PLANKS,
-                VWBlocksVerdant.VERDANT_SPRUCE_LOG,
-                VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG,
-                VWBlocksVerdant.VERDANT_SPRUCE_WOOD,
-                VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD,
-                VWBlocksVerdant.VERDANT_SPRUCE_STAIRS,
-                VWBlocksVerdant.VERDANT_SPRUCE_SLAB,
-                VWBlocksVerdant.VERDANT_SPRUCE_FENCE,
-                VWBlocksVerdant.VERDANT_SPRUCE_FENCE_GATE,
-                VWBlocksVerdant.VERDANT_SPRUCE_DOOR,
-                VWBlocksVerdant.VERDANT_SPRUCE_TRAPDOOR,
-                VWBlocksVerdant.VERDANT_SPRUCE_SIGN,
-                VWBlocksVerdant.VERDANT_SPRUCE_WALL_SIGN,
-                VWBlocksVerdant.VERDANT_SPRUCE_HANGING_SIGN,
-                VWBlocksVerdant.VERDANT_SPRUCE_WALL_HANGING_SIGN
+                VWBlocks.VERDANT_SPRUCE_PLANKS,
+                VWBlocks.VERDANT_SPRUCE_LOG,
+                VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG,
+                VWBlocks.VERDANT_SPRUCE_WOOD,
+                VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD,
+                VWBlocks.VERDANT_SPRUCE_STAIRS,
+                VWBlocks.VERDANT_SPRUCE_SLAB,
+                VWBlocks.VERDANT_SPRUCE_FENCE,
+                VWBlocks.VERDANT_SPRUCE_FENCE_GATE,
+                VWBlocks.VERDANT_SPRUCE_DOOR,
+                VWBlocks.VERDANT_SPRUCE_TRAPDOOR,
+                VWBlocks.VERDANT_SPRUCE_SIGN,
+                VWBlocks.VERDANT_SPRUCE_WALL_SIGN,
+                VWBlocks.VERDANT_SPRUCE_HANGING_SIGN,
+                VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN
         );
 
-        strippable(VWBlocksVerdant.VERDANT_SPRUCE_LOG, VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG);
-        strippable(VWBlocksVerdant.VERDANT_SPRUCE_WOOD, VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD);
+        strippable(VWBlocks.VERDANT_SPRUCE_LOG, VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
+        strippable(VWBlocks.VERDANT_SPRUCE_WOOD, VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
     }
 
 

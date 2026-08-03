@@ -76,7 +76,7 @@ public class BloodlustEffect extends MobEffect {
             float inflictDMG = 0.10f + (Math.min(amplifier, 0.3f) * 0.10f);
             if (serverLevel.getRandom().nextInt(60) == 0) {
                 float damage = entity.getHealth() * inflictDMG;
-                entity.hurtServer(serverLevel, VWDamageTypes.create(serverLevel, VWDamageTypes.BLOODLUST), damage);
+                entity.hurtServer(serverLevel, VWDamageTypes.bloodlust(serverLevel), damage);
             }
         } else {
             if (!entity.hasEffect(MobEffects.WEAKNESS)) {

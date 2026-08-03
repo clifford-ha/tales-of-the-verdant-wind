@@ -1,7 +1,5 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.TalesOfTheVerdantWind;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.registry.*;
@@ -109,25 +107,20 @@ public class VillagerEntityMixin {
                 if (CD_HEAL_OTHERS <= 0) {
                     List<Villager> villagerList = level.getEntities(EntityType.VILLAGER, scanner(villager, 24),
                             target -> target.isAlive()
-                                    && villager.hasLineOfSight(target)
                                     && target.getHealth() < target.getMaxHealth() * 0.9f);
                     if (!villagerList.isEmpty()) {
                         Villager others = villagerList.getFirst();
 
-                        if (villager.distanceTo(others) > 3) {
-                            villager.getNavigation().moveTo(others, speed);
-                        } else {
-                            others.heal(healStrength);
-                            villager.setAttached(VILLAGER_CD_HEAL_OTHERS, 30);
-                            healEffect(level, villager, others);
-                        }
+                        villager.getNavigation().moveTo(others, speed);
+                        others.heal(healStrength);
+                        villager.setAttached(VILLAGER_CD_HEAL_OTHERS, 30);
+                        healEffect(level, villager, others);
                     }
                 }
 
                 if (CD_HEAL_WOLF <= 0) {
                     List<Wolf> wolves = villager.level().getEntities(EntityType.WOLF, scanner(villager, 16),
                             wolf -> wolf.isAlive()
-                                    && villager.hasLineOfSight(wolf)
                                     && !wolf.isTame()
                                     && wolf.getHealth() < wolf.getMaxHealth() * 0.9f
                                     && wolf.getAttachedOrElse(WOLF_TRY_SAVE_POINTS, 0) > 0);
@@ -135,33 +128,27 @@ public class VillagerEntityMixin {
                         Wolf wolf = wolves.getFirst();
 
                         int currentPoints = wolf.getAttachedOrElse(WOLF_TRY_SAVE_POINTS, 0);
-                        if (villager.distanceTo(wolf) > 3) {
-                            villager.getNavigation().moveTo(wolf.getX(), wolf.getY(), wolf.getZ(), 2, speed);
-                            villager.lookAt(wolf, 10, 10);
-                        } else {
-                            wolf.heal(healStrength);
-                            wolf.setAttached(WOLF_TRY_SAVE_POINTS, currentPoints - 1);
-                            villager.setAttached(VILLAGER_CD_HEAL_WOLF, 60);
-                            healEffect(level, villager, wolf);
-                        }
+
+                        villager.getNavigation().moveTo(wolf.getX(), wolf.getY(), wolf.getZ(), 2, speed);
+                        villager.lookAt(wolf, 10, 10);
+                        wolf.heal(healStrength);
+                        wolf.setAttached(WOLF_TRY_SAVE_POINTS, currentPoints - 1);
+                        villager.setAttached(VILLAGER_CD_HEAL_WOLF, 60);
+                        healEffect(level, villager, wolf);
                     }
                 }
                 if (CD_HEAL_GOLEM <= 0) {
                     List<IronGolem> golems = villager.level().getEntities(EntityType.IRON_GOLEM, scanner(villager, 16),
                             golem -> golem.isAlive()
-                                    && villager.hasLineOfSight(golem)
                                     && golem.getHealth() < golem.getMaxHealth() * 0.75f);
 
                     if (!golems.isEmpty()) {
                         IronGolem golem = golems.getFirst();
 
-                        if (villager.distanceTo(golem) > 3) {
-                            villager.getNavigation().moveTo(golem, speed);
-                        } else {
-                            golem.heal(healStrength * 2f);
-                            villager.setAttached(VILLAGER_CD_HEAL_IRON_GOLEM, 90);
-                            healEffect(level, villager, golem);
-                        }
+                        villager.getNavigation().moveTo(golem, speed);
+                        golem.heal(healStrength * 2f);
+                        villager.setAttached(VILLAGER_CD_HEAL_IRON_GOLEM, 90);
+                        healEffect(level, villager, golem);
                     }
                 }
             }

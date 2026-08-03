@@ -1,15 +1,17 @@
 package cliffordha.totvw.tag;
 
-import cliffordha.totvw.datagen.VWDamageTypes;
+
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.tags.TagEntry;
 import net.minecraft.world.damagesource.DamageType;
 
 import java.util.concurrent.CompletableFuture;
+
+import static cliffordha.totvw.tag.VWTagHelpers.type;
+import static cliffordha.totvw.datagen.VWDamageTypes.*;
 
 public class VWDamageTypeTags extends FabricTagsProvider<DamageType> {
     public VWDamageTypeTags(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
@@ -20,46 +22,46 @@ public class VWDamageTypeTags extends FabricTagsProvider<DamageType> {
     protected void addTags(HolderLookup.Provider registries) {
 
         getOrCreateRawBuilder(DamageTypeTags.NO_KNOCKBACK)
-                .add(TagEntry.element(VWDamageTypes.BLOODLUST.identifier()))
-                .add(TagEntry.element(VWDamageTypes.BLEEDING.identifier()))
+                .add(type(BLOODLUST))
+                .add(type(BLEEDING))
                 .build();
 
         getOrCreateRawBuilder(DamageTypeTags.BYPASSES_ARMOR)
-                .add(TagEntry.element(VWDamageTypes.BLOODLUST.identifier()))
-                .add(TagEntry.element(VWDamageTypes.BLEEDING.identifier()))
-                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
-                .add(TagEntry.element(VWDamageTypes.SCORCHING_HEAT.identifier()))
+                .add(type(BLOODLUST))
+                .add(type(BLEEDING))
+                .add(type(LODESTONE_WIND_CORE_PULSE))
+                .add(type(SCORCHING_HEAT))
                 .build();
 
         getOrCreateRawBuilder(DamageTypeTags.BYPASSES_WOLF_ARMOR)
-                .add(TagEntry.element(VWDamageTypes.BLOODLUST.identifier()))
-                .add(TagEntry.element(VWDamageTypes.BLEEDING.identifier()))
+                .add(type(BLOODLUST))
+                .add(type(BLEEDING))
                 .build();
 
         getOrCreateRawBuilder(DamageTypeTags.ALWAYS_HURTS_ENDER_DRAGONS)
-                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
-                .add(TagEntry.element(VWDamageTypes.SCORCHING_HEAT.identifier()))
+                .add(type(LODESTONE_WIND_CORE_PULSE))
+                .add(type(SCORCHING_HEAT))
                 .build();
 
         getOrCreateRawBuilder(DamageTypeTags.BYPASSES_INVULNERABILITY)
-                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
+                .add(type(LODESTONE_WIND_CORE_PULSE))
                 .build();
 
         getOrCreateRawBuilder(DamageTypeTags.BYPASSES_RESISTANCE)
-                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
-                .add(TagEntry.element(VWDamageTypes.SCORCHING_HEAT.identifier()))
-                .add(TagEntry.element(VWDamageTypes.BLOODLUST.identifier()))
+                .add(type(LODESTONE_WIND_CORE_PULSE))
+                .add(type(SCORCHING_HEAT))
+                .add(type(BLOODLUST))
                 .build();
 
         getOrCreateRawBuilder(DamageTypeTags.BYPASSES_SHIELD)
-                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
-                .add(TagEntry.element(VWDamageTypes.SCORCHING_HEAT.identifier()))
+                .add(type(LODESTONE_WIND_CORE_PULSE))
+                .add(type(SCORCHING_HEAT))
                 .build();
 
         getOrCreateRawBuilder(DamageTypeTags.BYPASSES_EFFECTS)
-                .add(TagEntry.element(VWDamageTypes.LODESTONE_WIND_CORE_PULSE.identifier()))
-                .add(TagEntry.element(VWDamageTypes.BLEEDING.identifier()))
-                .add(TagEntry.element(VWDamageTypes.SCORCHING_HEAT.identifier()))
+                .add(type(LODESTONE_WIND_CORE_PULSE))
+                .add(type(BLEEDING))
+                .add(type(SCORCHING_HEAT))
                 .build();
     }
 }

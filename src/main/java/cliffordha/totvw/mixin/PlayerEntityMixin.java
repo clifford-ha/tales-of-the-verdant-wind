@@ -4,6 +4,7 @@ import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.registry.*;
 import com.mojang.datafixers.util.Either;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Unit;
@@ -14,12 +15,15 @@ import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static cliffordha.totvw.entity.skill.VWSkillProcessor.sendToChat;
+import static cliffordha.totvw.util.VWUtil.sendToChat;
 import static cliffordha.totvw.util.VWUtil.*;
 
 @Mixin(Player.class)
@@ -41,10 +45,9 @@ public abstract class PlayerEntityMixin {
         Player player = (Player) (Object) this;
         ItemStack itemStack = player.getItemInHand(hand);
 
-        boolean cannotTrade = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) > 15;
+        int atrocityCount = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
 
-        if (cannotTrade && entity instanceof Villager || entity instanceof WanderingTrader) {
-            int atrocityCount = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
+        if (atrocityCount > 20 && entity instanceof Villager || entity instanceof WanderingTrader) {
             sendToChat(player, true, "Your atrocity count (" + atrocityCount + ") is too high!");
             return;
         }
@@ -68,8 +71,16 @@ public abstract class PlayerEntityMixin {
                     cir.setReturnValue(InteractionResult.SUCCESS);
                 }
             } else if (itemStack.is(Items.PAPER)) {
-                BlockPos pos = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_RESPAWN_POINT, wolf.blockPosition());
-                sendToChat(player, true, target + "'s respawn point is at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+                if (player.isCrouching()) {
+                    BlockPos pos = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_RESPAWN_POINT, wolf.blockPosition());
+                    sendToChat(player, true, target + "'s respawn point is at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+                } else {
+                    if (wolf.isBaby()) {
+                        sendToChat(player, false, target + " has " + wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_PARENTS_ID, ""));
+                    } else {
+                        sendToChat(player, false, target + " ID: " + wolf.getStringUUID());
+                    }
+                }
                 cir.setReturnValue(InteractionResult.SUCCESS);
             }
         }

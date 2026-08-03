@@ -7,7 +7,6 @@
         "sound": "minecraft:music.overworld.forest"
       }
     },
-    "minecraft:gameplay/increased_fire_burnout": true,
     "minecraft:visual/cloud_color": "#00aefff3",
     "minecraft:visual/fog_color": "#90e1d5",
     "minecraft:visual/fog_end_distance": 128.0,
@@ -18,7 +17,6 @@
     "minecraft:visual/water_fog_end_distance": 32.0
   },
   "carvers": [
-    "minecraft:cave_extra_underground",
     "minecraft:cave",
     "minecraft:cave_extra_underground",
     "minecraft:canyon"
@@ -34,7 +32,7 @@
     [],
     [
       "minecraft:lake_lava_underground",
-      "minecraft:lake_lava_surface"
+      "minecraft:spring_water"
     ],
     [
       "minecraft:amethyst_geode"
@@ -72,6 +70,9 @@
       "minecraft:ore_lapis_buried",
       "minecraft:ore_copper",
       "minecraft:underwater_magma",
+      "minecraft:disk_sand",
+      "minecraft:disk_clay",
+      "minecraft:disk_gravel",
       "tales-of-the-verdant-wind:verixium_ore_large",
       "tales-of-the-verdant-wind:verixium_ore_small",
       "tales-of-the-verdant-wind:verixium_ore_buried"
@@ -84,7 +85,6 @@
     ],
     [
       "minecraft:glow_lichen",
-      "tales-of-the-verdant-wind:verdant_pillars",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "minecraft:vines",
@@ -108,25 +108,25 @@
         "type": "minecraft:wolf",
         "maxCount": 4,
         "minCount": 3,
-        "weight": 80
+        "weight": 10
       },
       {
         "type": "minecraft:sniffer",
         "maxCount": 1,
         "minCount": 1,
-        "weight": 40
+        "weight": 1
       },
       {
         "type": "minecraft:chicken",
         "maxCount": 4,
         "minCount": 2,
-        "weight": 80
+        "weight": 8
       },
       {
         "type": "minecraft:goat",
         "maxCount": 2,
         "minCount": 2,
-        "weight": 40
+        "weight": 6
       }
     ],
     "misc": [],
@@ -141,7 +141,7 @@
         "type": "minecraft:skeleton",
         "maxCount": 2,
         "minCount": 2,
-        "weight": 30
+        "weight": 10
       }
     ],
     "underground_water_creature": [],

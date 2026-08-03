@@ -1,13 +1,9 @@
 package cliffordha.totvw.registry;
 
-import cliffordha.totvw.TalesOfTheVerdantWind;
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
-import cliffordha.totvw.registry.creativetab.ScatteredPagesTab;
-import cliffordha.totvw.registry.creativetab.TOTVWItemsTab;
+import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.item.VWArmorMaterials;
 import cliffordha.totvw.item.VWToolMaterials;
-import cliffordha.totvw.registry.items.VWItemsScatteredPage;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,7 +19,7 @@ import net.minecraft.world.item.equipment.ArmorType;
 import java.util.function.Function;
 
 import static cliffordha.totvw.TOTVW.sendClassRegisterLog;
-import static cliffordha.totvw.registry.VWItems.Util.registerItem;
+import static cliffordha.totvw.registry.VWItems.Util.*;
 
 public class VWItems {
     public static final Item VERIXIUM_HELMET = registerItem("verixium_helmet",
@@ -255,25 +251,60 @@ public class VWItems {
     public static final Item VERDANT_SPRUCE_BOAT = registerItem("verdant_spruce_boat",
             properties -> new BoatItem(VWEntities.VERDANT_SPRUCE_BOAT, properties.stacksTo(1)));
     public static final Item VERDANT_SPRUCE_CHEST_BOAT = registerItem("verdant_spruce_chest_boat",
-            properties -> new BoatItem(VWEntities.VERDANT_SPRUCE_CHEST_BOAT, properties.stacksTo(1)));
-
+            properties -> new BoatItem(VWEntities.VERDANT_SPRUCE_CHEST_BOAT, properties.stacksTo(1)
+            ));
     public static final Item VERDANT_SPRUCE_SIGN = registerItem("verdant_spruce_sign",
-            properties -> new SignItem(VWBlocksVerdant.VERDANT_SPRUCE_SIGN, VWBlocksVerdant.VERDANT_SPRUCE_WALL_SIGN, properties
+            properties -> new SignItem(VWBlocks.VERDANT_SPRUCE_SIGN, VWBlocks.VERDANT_SPRUCE_WALL_SIGN, properties
                     .stacksTo(16)
             ));
     public static final Item VERDANT_SPRUCE_HANGING_SIGN = registerItem("verdant_spruce_hanging_sign",
-            properties -> new HangingSignItem(VWBlocksVerdant.VERDANT_SPRUCE_HANGING_SIGN, VWBlocksVerdant.VERDANT_SPRUCE_WALL_HANGING_SIGN, properties
+            properties -> new HangingSignItem(VWBlocks.VERDANT_SPRUCE_HANGING_SIGN, VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN, properties
                     .stacksTo(16)
             ));
 
+    public static class Pages {
+
+        /** reserved for other testing purposes **/
+        public static final Item SP_ID_TEST = createPage("scattered_page_test", 0);
+
+        /** placeholder items **/
+        public static final Item SCATTERED_PAGE = createPlaceholder("scattered_page");
+        public static final Item SCATTERED_PAGE_VARIANT_1 = createPlaceholder("scattered_page_variant_1");
+        public static final Item SCATTERED_PAGE_VARIANT_2 = createPlaceholder("scattered_page_variant_2");
+        public static final Item SCATTERED_PAGE_VARIANT_3 = createPlaceholder("scattered_page_variant_3");
+
+        public static final Item OLD_SCATTERED_PAGE = createPlaceholder("old_scattered_page");
+        public static final Item OLD_SCATTERED_PAGE_VARIANT_1 = createPlaceholder("old_scattered_page_variant_1");
+        public static final Item OLD_SCATTERED_PAGE_VARIANT_2 = createPlaceholder("old_scattered_page_variant_2");
+        public static final Item OLD_SCATTERED_PAGE_VARIANT_3 = createPlaceholder("old_scattered_page_variant_3");
+
+
+        /** a page to test multiple types of tests at once **/
+        public static final Item SP_ID_1000 = createPage("scattered_page_1000", 1000);
+
+        public static final Item SP_ID_1001 = createPage("scattered_page_1001", 1001);
+        public static final Item SP_ID_1002 = createPage("scattered_page_1002", 1002);
+        public static final Item SP_ID_1003 = createPage("scattered_page_1003", 1003);
+        public static final Item SP_ID_1004 = createPage("scattered_page_1004", 1004);
+
+        public static final Item SP_ID_1005 = createPage("scattered_page_1005", 1005);
+        public static final Item SP_ID_1006 = createPage("scattered_page_1006", 1006);
+        public static final Item SP_ID_1007 = createPage("scattered_page_1007", 1007);
+        public static final Item SP_ID_1008 = createPage("scattered_page_1008", 1008);
+        public static final Item SP_ID_1009 = createPage("scattered_page_1009", 1009);
+
+
+        /** under testing **/
+        public static final Item PLAYER_STATS = createPage("player_stats", -2);
+        public static final Item LODESTONE_WIND_CORE_MANUAL = createPage("lodestone_wind_core_manual", 333);
+
+        public static void register() {}
+    }
+
 
     public static void register() {
-        if (TalesOfTheVerdantWind.IN_DEVELOPMENT) {
-            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ScatteredPagesTab.SCATTERED_PAGES_TAB_KEY, ScatteredPagesTab.SCATTERED_PAGES_TAB);
-        }
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TOTVWItemsTab.TOTVW_ITEMS_TAB_KEY, TOTVWItemsTab.TOTVW_ITEMS_TAB);
-        VWItemsScatteredPage.registerAdditionalItems();
-
+        Pages.register();
+        VWCreativeTabs.register();
         sendClassRegisterLog("Items");
     }
     
@@ -281,6 +312,13 @@ public class VWItems {
         public static Item registerItem(String name, Function<Item.Properties, Item> function) {
             return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
                     function.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)))));
+        }
+
+        public static Item createPage(String name, int id) {
+            return VWItems.Util.registerItem(name, properties -> new ScatteredPageItem(properties.stacksTo(1), id));
+        }
+        public static Item createPlaceholder(String name) {
+            return VWItems.Util.registerItem(name, properties -> new Item(properties.stacksTo(1)));
         }
     }
 }

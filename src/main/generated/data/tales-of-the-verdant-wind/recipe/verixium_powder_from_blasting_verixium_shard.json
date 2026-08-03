@@ -1,8 +1,8 @@
 {
   "type": "minecraft:blasting",
   "category": "misc",
-  "cookingtime": 600,
-  "experience": 1000.0,
+  "cookingtime": 1800,
+  "experience": 750.0,
   "group": "verixium_raw_materials",
   "ingredient": "tales-of-the-verdant-wind:verixium_shard",
   "result": {

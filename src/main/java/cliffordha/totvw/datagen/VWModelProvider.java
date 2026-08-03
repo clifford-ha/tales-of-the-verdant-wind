@@ -3,9 +3,8 @@ package cliffordha.totvw.datagen;
 import cliffordha.totvw.block.custom.LodestoneWindCoreBlock;
 import cliffordha.totvw.block.custom.StorageBlock;
 import cliffordha.totvw.registry.VWItems;
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
+import cliffordha.totvw.registry.VWItems.Pages;
 import cliffordha.totvw.registry.VWBlocks;
-import cliffordha.totvw.registry.items.VWItemsScatteredPage;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.MultiVariant;
@@ -32,41 +31,41 @@ public class VWModelProvider extends FabricModelProvider {
                 .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, topSuffix));
     }
 
-    private static TextureMapping lodestoneWindCoreMapping(Block block, String front) {
+    private static TextureMapping lodestoneWindCoreMapping(Block block, String active) {
         return new TextureMapping()
-                .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block))
-                .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block))
-                .put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(block))
-                .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, "_front" + front));
+                .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
+                .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top"))
+                .put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(block, "_side"))
+                .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, active));
     }
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators block) {
-        var verdantSpruceFamily = block.family(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS);
+        var verdantSpruceFamily = block.family(VWBlocks.VERDANT_SPRUCE_PLANKS);
 
         block.createTrivialCube(VWBlocks.VERIXIUM_STONE_ORE);
         block.createTrivialCube(VWBlocks.VERIXIUM_DEEPSLATE_ORE);
-        block.createColoredBlockWithRandomRotations(TexturedModel.CUBE, VWBlocksVerdant.VERDANT_MOSS_BLOCK);
+        block.createColoredBlockWithRandomRotations(TexturedModel.CUBE, VWBlocks.VERDANT_MOSS_BLOCK);
         block.createColoredBlockWithRandomRotations(TexturedModel.CUBE, VWBlocks.VERIXIUM_POWDER_BLOCK);
 
         block.createGlassBlocks(VWBlocks.IRIDESCENT_GLASS, VWBlocks.IRIDESCENT_GLASS_PANE);
 
-        block.createTrivialBlock(VWBlocksVerdant.VERDANT_SPRUCE_LEAVES, TexturedModel.LEAVES);
-        block.createPlantWithDefaultItem(VWBlocksVerdant.VERDANT_SPRUCE_SAPLING, VWBlocksVerdant.POTTED_VERDANT_SPRUCE_SAPLING, BlockModelGenerators.PlantType.TINTED);
+        block.createTrivialBlock(VWBlocks.VERDANT_SPRUCE_LEAVES, TexturedModel.LEAVES);
+        block.createPlantWithDefaultItem(VWBlocks.VERDANT_SPRUCE_SAPLING, VWBlocks.POTTED_VERDANT_SPRUCE_SAPLING, BlockModelGenerators.PlantType.TINTED);
 
-        verdantSpruceFamily.generateFor(VWBlocksVerdant.VERDANT_SPRUCE_FAMILY);
-        block.createHangingSign(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD, VWBlocksVerdant.VERDANT_SPRUCE_HANGING_SIGN, VWBlocksVerdant.VERDANT_SPRUCE_WALL_HANGING_SIGN);
-        block.createShelf(VWBlocksVerdant.VERDANT_SPRUCE_SHELF, VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG);
-        block.woodProvider(VWBlocksVerdant.VERDANT_SPRUCE_LOG).log(VWBlocksVerdant.VERDANT_SPRUCE_LOG).wood(VWBlocksVerdant.VERDANT_SPRUCE_WOOD);
-        block.woodProvider(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG).log(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG).wood(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD);
+        verdantSpruceFamily.generateFor(VWBlocks.VERDANT_SPRUCE_FAMILY);
+        block.createHangingSign(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD, VWBlocks.VERDANT_SPRUCE_HANGING_SIGN, VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN);
+        block.createShelf(VWBlocks.VERDANT_SPRUCE_SHELF, VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
+        block.woodProvider(VWBlocks.VERDANT_SPRUCE_LOG).log(VWBlocks.VERDANT_SPRUCE_LOG).wood(VWBlocks.VERDANT_SPRUCE_WOOD);
+        block.woodProvider(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG).log(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG).wood(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
 
         MultiVariant OPEN = BlockModelGenerators.plainVariant(
-                ModelTemplates.CUBE_BOTTOM_TOP.createWithSuffix(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX, "_open",
-                        storageBoxTextureMapping(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX, "_top_open"), block.modelOutput)
+                ModelTemplates.CUBE_BOTTOM_TOP.createWithSuffix(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX, "_open",
+                        storageBoxTextureMapping(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX, "_top_open"), block.modelOutput)
         );
         MultiVariant CLOSED = BlockModelGenerators.plainVariant(
-                ModelTemplates.CUBE_BOTTOM_TOP.create(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX,
-                        storageBoxTextureMapping(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX, "_top"), block.modelOutput)
+                ModelTemplates.CUBE_BOTTOM_TOP.create(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX,
+                        storageBoxTextureMapping(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX, "_top"), block.modelOutput)
         );
 
         MultiVariant LODESTONE_WIND_CORE_ACTIVE = BlockModelGenerators.plainVariant(
@@ -87,7 +86,7 @@ public class VWModelProvider extends FabricModelProvider {
                         .select(Direction.EAST,  BlockModelGenerators.Y_ROT_90)
                 ));
 
-        block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VWBlocksVerdant.VERDANT_SPRUCE_STORAGE_BOX)
+        block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX)
                 .with(BlockModelGenerators.createBooleanModelDispatch(StorageBlock.OPEN, OPEN, CLOSED))
                 .with(PropertyDispatch.modify(BlockStateProperties.FACING)
                         .select(Direction.DOWN,  BlockModelGenerators.X_ROT_180)
@@ -143,28 +142,39 @@ public class VWModelProvider extends FabricModelProvider {
         );
         item.generateSpear(VWItems.VERIXIUM_SPEAR);
 
-        item.generateFlatItem(VWItemsScatteredPage.SCATTERED_PAGE, ModelTemplates.FLAT_ITEM);
-        addCopy(item, ModelTemplates.FLAT_ITEM, VWItemsScatteredPage.SCATTERED_PAGE,
-                VWItemsScatteredPage.SP_ID_1000,
+        item.generateFlatItem(Pages.SCATTERED_PAGE, ModelTemplates.FLAT_ITEM);
+        item.generateFlatItem(Pages.SCATTERED_PAGE_VARIANT_1, ModelTemplates.FLAT_ITEM);
+        item.generateFlatItem(Pages.SCATTERED_PAGE_VARIANT_2, ModelTemplates.FLAT_ITEM);
+        item.generateFlatItem(Pages.SCATTERED_PAGE_VARIANT_3, ModelTemplates.FLAT_ITEM);
 
-                VWItemsScatteredPage.SP_ID_1001,
-                VWItemsScatteredPage.SP_ID_1002,
-                VWItemsScatteredPage.SP_ID_1003,
-                VWItemsScatteredPage.SP_ID_1004,
+        item.generateFlatItem(Pages.OLD_SCATTERED_PAGE, ModelTemplates.FLAT_ITEM);
+        item.generateFlatItem(Pages.OLD_SCATTERED_PAGE_VARIANT_1, ModelTemplates.FLAT_ITEM);
+        item.generateFlatItem(Pages.OLD_SCATTERED_PAGE_VARIANT_2, ModelTemplates.FLAT_ITEM);
+        item.generateFlatItem(Pages.OLD_SCATTERED_PAGE_VARIANT_3, ModelTemplates.FLAT_ITEM);
 
-                VWItemsScatteredPage.SP_ID_1005,
-
-                VWItemsScatteredPage.SP_ID_1006,
-
-                VWItemsScatteredPage.SP_ID_1007,
-                VWItemsScatteredPage.SP_ID_1008,
-                VWItemsScatteredPage.SP_ID_1009,
-
-                VWItemsScatteredPage.SP_ID_TEST,
-                VWItemsScatteredPage.PLAYER_STATS
+        addCopy(item, ModelTemplates.FLAT_ITEM, Pages.SCATTERED_PAGE,
+                Pages.PLAYER_STATS,
+                Pages.LODESTONE_WIND_CORE_MANUAL
         );
 
-        item.generateFlatItem(VWItemsScatteredPage.LODESTONE_WIND_CORE_MANUAL, VWItems.VERIXIUM_PAPER, ModelTemplates.FLAT_ITEM);
+        addCopy(item, ModelTemplates.FLAT_ITEM, Pages.OLD_SCATTERED_PAGE,
+                Pages.SP_ID_1000,
+
+                Pages.SP_ID_1001,
+                Pages.SP_ID_1002,
+                Pages.SP_ID_1003,
+                Pages.SP_ID_1004,
+
+                Pages.SP_ID_1005,
+
+                Pages.SP_ID_1006,
+
+                Pages.SP_ID_1007,
+                Pages.SP_ID_1008,
+                Pages.SP_ID_1009,
+
+                Pages.SP_ID_TEST
+        );
     }
 
     @Override

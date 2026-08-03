@@ -3,7 +3,6 @@ package cliffordha.totvw.tag;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems;
-import cliffordha.totvw.registry.blocks.VWBlocksVerdant;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
@@ -64,16 +63,16 @@ public class VWItemTags extends FabricTagsProvider.ItemTagsProvider {
                 .add(VWItems.VERIXIUM_WOLF_ARMOR);
 
         valueLookupBuilder(VWItemTags.VERDANT_SPRUCE_LOGS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_LOG.asItem())
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_WOOD.asItem())
-                .add(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_LOG.asItem())
-                .add(VWBlocksVerdant.STRIPPED_VERDANT_SPRUCE_WOOD.asItem());
+                .add(VWBlocks.VERDANT_SPRUCE_LOG.asItem())
+                .add(VWBlocks.VERDANT_SPRUCE_WOOD.asItem())
+                .add(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG.asItem())
+                .add(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD.asItem());
 
         valueLookupBuilder(ItemTags.LOGS_THAT_BURN)
                 .addTag(VWItemTags.VERDANT_SPRUCE_LOGS);
 
         valueLookupBuilder(ItemTags.PLANKS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_PLANKS.asItem());
+                .add(VWBlocks.VERDANT_SPRUCE_PLANKS.asItem());
 
         valueLookupBuilder(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS)
                 .addTag(ItemTags.SWORDS)
@@ -141,7 +140,7 @@ public class VWItemTags extends FabricTagsProvider.ItemTagsProvider {
                 .add(VWItems.VERIXIUM_SPEAR);
 
         valueLookupBuilder(ItemTags.DOORS)
-                .add(VWBlocksVerdant.VERDANT_SPRUCE_DOOR.asItem());
+                .add(VWBlocks.VERDANT_SPRUCE_DOOR.asItem());
     }
 
     public static final TagKey<Item> VERDANT_ITEMS = create("verdant_items");

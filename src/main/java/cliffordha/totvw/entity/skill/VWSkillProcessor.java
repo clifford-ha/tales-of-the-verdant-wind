@@ -4,16 +4,14 @@ import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.registry.VWAttachments;
 import cliffordha.totvw.registry.VWSounds;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-import org.jspecify.annotations.Nullable;
 
-import java.util.Arrays;
+import static cliffordha.totvw.util.VWUtil.sendToChat;
 
 public class VWSkillProcessor {
     public static void depleteCooldown(LivingEntity entity, AttachmentType<Integer> skillCD) {
@@ -88,40 +86,5 @@ public class VWSkillProcessor {
         }
     }
 
-    private static void sendToMain(ServerPlayer player, boolean overlay, String msg) {
-        player.sendSystemMessage(Component.literal(msg), overlay);
-    }
-    private static void sendToMain(ServerPlayer player, int color, String msg) {
-        player.sendSystemMessage(Component.literal(msg).withColor(color));
-    }
-    private static void sendToMain(ServerPlayer player, int color, boolean overlay, String msg) {
-        player.sendSystemMessage(Component.literal(msg).withColor(color), overlay);
-    }
 
-    private static @Nullable ServerPlayer resolveRecipient(LivingEntity entity) {
-        if (entity instanceof ServerPlayer serverPlayer) return serverPlayer;
-        if (entity instanceof Wolf wolf && wolf.getOwner() instanceof ServerPlayer serverPlayer) return serverPlayer;
-        return null;
-    }
-
-    public static void sendToChat(LivingEntity entity, boolean overlay, String... msg) {
-        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
-        ServerPlayer player = resolveRecipient(entity);
-        if (player == null) return;
-        sendToMain(player, overlay, String.join("\n", msg));
-    }
-
-    public static void sendToChat(LivingEntity entity, int color, String... msg) {
-        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
-        ServerPlayer player = resolveRecipient(entity);
-        if (player == null) return;
-        sendToMain(player, color, String.join("\n", msg));
-    }
-
-    public static void sendToChat(LivingEntity entity, int color, boolean overlay, String... msg) {
-        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
-        ServerPlayer player = resolveRecipient(entity);
-        if (player == null) return;
-        sendToMain(player, color, overlay, String.join("\n", msg));
-    }
 }

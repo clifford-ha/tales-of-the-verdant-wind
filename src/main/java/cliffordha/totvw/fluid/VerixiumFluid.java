@@ -9,6 +9,7 @@ import cliffordha.totvw.registry.VWParticles;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWFluidTags;
 
+import cliffordha.totvw.util.VWUtil;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
@@ -85,7 +86,16 @@ public abstract class VerixiumFluid extends FlowingFluid {
 
     @Override
     public void tick(ServerLevel level, BlockPos pos, BlockState blockState, FluidState fluidState) {
+        level.scheduleTick(pos, this, 20);
         convertToDeepslate(level, pos);
+
+        double randomD = level.getRandom().nextDouble();
+        float randomF = level.getRandom().nextFloat();
+        if (VWUtil.isInBiomes(level, pos, BiomeTags.IS_NETHER) && randomF < 0.33f) {
+            level.destroyBlock(pos, false);
+            level.addParticle(ParticleTypes.SMOKE, (double)pos.getX() + randomD, (double)pos.getY() + randomD, (double)pos.getZ() + randomD, 0.0F, 0.0F, 0.0F);
+            level.playLocalSound(pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2F + randomF * 0.2F, 0.9F + randomF * 0.15F, false);
+        }
         super.tick(level, pos, blockState, fluidState);
     }
 

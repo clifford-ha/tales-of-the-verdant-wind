@@ -9,13 +9,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
-import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
+
+import static cliffordha.totvw.tag.VWTagHelpers.biome;
 
 public class VWBiomeTags extends FabricTagsProvider<Biome> {
     public VWBiomeTags(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
@@ -29,23 +30,29 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
         getOrCreateRawBuilder(IS_VERDANT_BIOMES)
-                .add(TagEntry.element(VWBiomes.VERDANT_MOUNTAINS.identifier()))
-                .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
+                .add(biome(VWBiomes.VERDANT_MOUNTAINS))
+                .add(biome(VWBiomes.VERDANT_FOREST));
+
+        getOrCreateRawBuilder(FOREST_WHERE_WOLVES_HOWL)
+                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location())
+                .add(biome(Biomes.FOREST))
+                .add(biome(Biomes.FLOWER_FOREST))
+                .add(biome(Biomes.DARK_FOREST));
 
         getOrCreateRawBuilder(IS_VERDANT_MOUNTAINS)
-                .add(TagEntry.element(VWBiomes.VERDANT_MOUNTAINS.identifier()));
+                .add(biome(VWBiomes.VERDANT_MOUNTAINS));
 
         getOrCreateRawBuilder(IS_VERDANT_FOREST)
-                .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
+                .add(biome(VWBiomes.VERDANT_FOREST));
 
         getOrCreateRawBuilder(HAS_VERDANT_FOREST_VILLAGE)
-                .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
+                .add(biome(VWBiomes.VERDANT_FOREST));
 
         getOrCreateRawBuilder(HAS_VERDANT_MOUNTAINS_VILLAGE)
-                .add(TagEntry.element(VWBiomes.VERDANT_MOUNTAINS.identifier()));
+                .add(biome(VWBiomes.VERDANT_MOUNTAINS));
 
         getOrCreateRawBuilder(BiomeTags.IS_MOUNTAIN)
-                .add(TagEntry.element(VWBiomes.VERDANT_MOUNTAINS.identifier()));
+                .add(biome(VWBiomes.VERDANT_MOUNTAINS));
 
         getOrCreateRawBuilder(BiomeTags.HAS_ANCIENT_CITY)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
@@ -54,7 +61,7 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
         getOrCreateRawBuilder(BiomeTags.HAS_JUNGLE_TEMPLE)
-                .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
+                .add(biome(VWBiomes.VERDANT_FOREST));
 
         getOrCreateRawBuilder(BiomeTags.HAS_MINESHAFT)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
@@ -63,16 +70,16 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
         getOrCreateRawBuilder(BiomeTags.HAS_RUINED_PORTAL_MOUNTAIN)
-                .add(TagEntry.element(VWBiomes.VERDANT_MOUNTAINS.identifier()));
+                .add(biome(VWBiomes.VERDANT_MOUNTAINS));
 
         getOrCreateRawBuilder(BiomeTags.HAS_RUINED_PORTAL_JUNGLE)
-                .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
+                .add(biome(VWBiomes.VERDANT_FOREST));
 
         getOrCreateRawBuilder(BiomeTags.HAS_STRONGHOLD)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
         getOrCreateRawBuilder(BiomeTags.HAS_SWAMP_HUT)
-                .add(TagEntry.element(VWBiomes.VERDANT_FOREST.identifier()));
+                .add(biome(VWBiomes.VERDANT_FOREST));
 
         getOrCreateRawBuilder(BiomeTags.HAS_TRIAL_CHAMBERS)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
@@ -83,8 +90,7 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
     public static final TagKey<Biome> IS_VERDANT_FOREST = create("is_verdant_forest");
     public static final TagKey<Biome> HAS_VERDANT_FOREST_VILLAGE = create("has_verdant_forest_village");
     public static final TagKey<Biome> HAS_VERDANT_MOUNTAINS_VILLAGE = create("has_verdant_mountains_village");
-    public static final TagKey<Biome> HAS_VERIXIUM_CORE_PILLARS = create("has_verixium_core_pillars");
-    public static final TagKey<Biome> HAS_VERDANT_UNDERGROUND_CAMPS = create("has_verdant_underground_camps");
+    public static final TagKey<Biome> FOREST_WHERE_WOLVES_HOWL = create("forest_where_wolves_howl");
 
     private static TagKey<Biome> create(String name) {
         return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }

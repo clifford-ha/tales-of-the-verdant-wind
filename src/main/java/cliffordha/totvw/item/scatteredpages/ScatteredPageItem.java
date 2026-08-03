@@ -47,11 +47,11 @@ public class ScatteredPageItem extends Item {
                         + nextLine
                         + fText(ITALIC, cText(DARK_GRAY, "If any related incident arises, be it from using this material or its content(s), please notify and report to the Head of Scholars or authorities from the Nolayan people immediately."))
                         + nextParagraph
-                        + "By modifying the Lodestone's attracting energy properties, we essentially create a repulsion field that can be used deter any living things near to it. The proposed name is " + cText(DARK_AQUA, "Lodestone Wind Core") + ". This core will serve as a protection field for the Scholars and Hunters to minimize the risk of increasing the mortality rate when such individuals are sealing the ruptured void rifts, deterring the creatures from beyond, or they are in situations where safety is a concern."
+                        + "By modifying the Lodestone's attracting energy properties, we essentially create a wind field that can be used to deter any living things nearby. The proposed name is " + cText(DARK_AQUA, "Lodestone Wind Core") + ". This core will serve as a protection field for the Scholars and Hunters to minimize the risk of injury as well as mortality rate when such individuals are sealing the ruptured void rifts, deterring the creatures from beyond, or they are in situations where safety is a concern."
                         + nextParagraph
-                        + "To operate the Lodestone Wind Core, an energy source is required. Usable energy types are as follows: " + fText(STRIKETHROUGH, "Block of Redstone") + ", Verixium Powder Block, Verixium Powder, " + fText(STRIKETHROUGH, "Water Fluid") + ", Wind Charge." + cText(DARK_GRAY, "Request for additional information for other energy sources is pending...")
+                        + "To operate the Lodestone Wind Core, an energy source is required. Usable energy types are as follows: " + fText(STRIKETHROUGH, "Block of Redstone") + ", Verixium Powder Block, Verixium Powder, " + fText(STRIKETHROUGH, "Water Fluid") + ", Wind Charge. " + cText(DARK_GRAY, "Request for additional information for other energy sources is pending...")
                         + nextParagraph
-                                + "To activate the wind core, use a Verixium Powder"
+                        + "To activate the wind core, use a special Verixium-based paper"
                         + nextParagraph
                         + fText(ITALIC, "A Research on Usable Energy: To Synthesize an Experimental Energy Type Derived From a Wind-charged Verixium Powder")
                         + nextParagraph
