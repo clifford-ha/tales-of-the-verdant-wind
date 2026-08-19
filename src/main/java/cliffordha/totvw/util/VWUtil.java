@@ -3,8 +3,9 @@ package cliffordha.totvw.util;
 import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.entity.player.VWPlayerBehaviors;
 import cliffordha.totvw.entity.skill.SkillUtil;
-import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
+import cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor;
+import cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.tag.VWBiomeTags;
 
@@ -19,6 +20,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -26,29 +28,50 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import org.jspecify.annotations.Nullable;
 
-public final class VWUtil {
+import java.util.ArrayList;
+import java.util.List;
+
+import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.DARK_GRAY;
+import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.BOLD;
+import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.ITALIC;
+
+public class VWUtil {
     public static int sec(int sec) {
         return sec * 20;
     }
     public static int min(int min) {
         return min * sec(60);
     }
+    public static int duration(int min, int sec) {
+        return min(min) + sec(sec);
+    }
 
-    public static boolean isInBiomes(LivingEntity entity, TagKey<Biome> biome) {
+    public static boolean isInBiome(LivingEntity entity, TagKey<Biome> biome) {
         return entity.level().getBiome(entity.blockPosition()).is(biome);
     }
-    public static boolean isInBiomes(LevelAccessor level,BlockPos pos, TagKey<Biome> biome) {
+    public static boolean isInBiome(LevelAccessor level, BlockPos pos, TagKey<Biome> biome) {
         return level.getBiome(pos).is(biome);
+    }
+
+    public static boolean isDifficulty(LivingEntity entity, Difficulty difficulty) {
+        return entity.level().getDifficulty() == difficulty;
+    }
+    public static boolean isDifficulty(LevelAccessor level, Difficulty difficulty) {
+        return level.getDifficulty() == difficulty;
+    }
+    public static boolean isHardcore(LivingEntity entity) {
+        return entity.level().getLevelData().isHardcore();
     }
 
     public static float triggerHeal(LivingEntity granter, LivingEntity grantee) {
         float triggerHeal;
-        if (isInBiomes(granter, VWBiomeTags.IS_VERDANT_BIOMES)) {
+        if (isInBiome(granter, VWBiomeTags.IS_VERDANT_BIOMES)) {
             triggerHeal = Math.round((granter.getHealth() * 0.5f) + (grantee.getMaxHealth() * 0.5f));
         } else {
             triggerHeal = Math.round((granter.getHealth() * 0.5f) + (grantee.getMaxHealth() * 0.3f));}
@@ -63,12 +86,14 @@ public final class VWUtil {
         } else {
             addHiddenEffect(entity, MobEffects.WEAKNESS, minutes, 1);
         }
+        String name = "[" + entity.getPlainTextName() + "] ";
+        String constructor = name + "Verdant Wind's Blessing is now on cooldown for " + cooldown + " seconds.";
         if (entity instanceof Wolf wolf) {
             SkillUtil.startCooldown(wolf, VWWolfBehaviors.VERDANT_BLESSING, cooldown);
-            sendToChat(wolf, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown + " sec");
+            sendToChat(wolf, VWColors.VERDANT_WIND, constructor);
         } else if (entity instanceof Player player) {
             SkillUtil.startCooldown(player, VWPlayerBehaviors.VERDANT_BLESSING, cooldown);
-            sendToChat(player, VWColors.VERDANT_WIND_MUTED, "Cooldown: " + cooldown + " sec");
+            sendToChat(player, VWColors.VERDANT_WIND, constructor);
         }
     }
 
@@ -165,14 +190,43 @@ public final class VWUtil {
 
 
     public static int wolfEnchantmentLVL(Wolf wolf, ResourceKey<Enchantment> enchantment) {
-        if (!wolf.isWearingBodyArmor()) return 0;
-        return wolf.getItemBySlot(EquipmentSlot.BODY).getEnchantments()
-                .getLevel(wolf.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment));}
+        if (wolf == null) return 0;
+        ItemStack armor = wolf.getItemBySlot(EquipmentSlot.BODY);
+        if (armor.isEmpty()) return 0;
+        return armor.getEnchantments()
+                .getLevel(wolf.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment));
+    }
 
-    public static int playerEnchantmentLVL(LivingEntity player, ResourceKey<Enchantment> enchantment) {
+    public static int entityEnchantmentLVL(LivingEntity player, EquipmentSlot slot, ResourceKey<Enchantment> enchantment) {
         if (player == null) return 0;
-        return player.getItemBySlot(EquipmentSlot.CHEST).getEnchantments()
+        ItemStack itemStack = player.getItemBySlot(slot);
+        if (itemStack.isEmpty()) return 0;
+        return itemStack.getEnchantments()
                 .getLevel(player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment));
+    }
+    public static int entityEnchantmentLVL(LivingEntity player, ResourceKey<Enchantment> enchantment) {
+        if (player == null) return 0;
+        ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
+        ItemStack feet = player.getItemBySlot(EquipmentSlot.FEET);
+        ItemStack body = player.getItemBySlot(EquipmentSlot.BODY);
+        int helmetLVL = 0;
+        int chestLVL = 0;
+        int legsLVL = 0;
+        int feetLVL = 0;
+        int bodyLVL = 0;
+
+        if (!helmet.isEmpty()) helmetLVL = getEnchantment(helmet, player, enchantment);
+        if (!chest.isEmpty()) chestLVL = getEnchantment(chest, player, enchantment);
+        if (!legs.isEmpty()) legsLVL = getEnchantment(legs, player, enchantment);
+        if (!feet.isEmpty()) feetLVL = getEnchantment(feet, player, enchantment);
+        if (!body.isEmpty()) bodyLVL = getEnchantment(body, player, enchantment);
+
+        return helmetLVL + chestLVL + legsLVL + feetLVL + bodyLVL;
+    }
+    private static int getEnchantment(ItemStack stack, LivingEntity player, ResourceKey<Enchantment> enchantment) {
+        return stack.getEnchantments().getLevel(player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment));
     }
 
     private static void sendToMain(ServerPlayer player, boolean overlay, String msg) {
@@ -210,5 +264,101 @@ public final class VWUtil {
         ServerPlayer player = resolveRecipient(entity);
         if (player == null) return;
         sendToMain(player, color, overlay, String.join("\n", msg));
+    }
+
+    public static class TextUtil {
+        // TEXT FORMATTING UTIL
+
+        /** colors text **/
+        public static String cText(ScatteredPageTextColor color, String text) {
+            return color.getColor() + text + "§r";
+        }
+
+        /** a test-dependent text value
+         * note: be careful when using ServerLevel tests **/
+        public static String tText(boolean test, String isTrue, String isFalse) {
+            return test ? isTrue : isFalse;
+        }
+
+        /** like a docx, format text **/
+        public static String fText(ScatteredPageTextStyle formatter, String text) {
+            return formatter.getMarker() + text + "§r";
+        }
+
+        /** date, what else **/
+        public static String dText(int day, int month, int year) {
+            String cDay = day < 10 ? "0" + day : String.valueOf(day);
+            String cMonth = month < 10 ? "0" + month : String.valueOf(month);
+            return cText(DARK_GRAY, fText(ITALIC, cDay + "/" + cMonth + "/" + year)) + nextLine;
+        }
+
+        /** convert and iterate every letter from the input text and turn it into a block **/
+        public static String bText(String text) {
+            return "▌".repeat(text.length());
+        }
+
+        /** a set of predefined text **/
+        public static String pText(int p) {
+            String predefinedText;
+            switch (p) {
+                case 1 -> predefinedText = "Some contents are intentionally omitted";
+                case 2 -> predefinedText = "The text trails and ends here...";
+                case 3 -> predefinedText = "Scribbled gibberish";
+                case 4 -> predefinedText = "Some contents have faded";
+                default -> predefinedText = "Error: Invalid Predefined Text or Null";
+            }
+            return cText(DARK_GRAY, "[" + predefinedText + "]") + nextParagraph;
+        }
+        public static String nText(String text) {
+            return cText(DARK_GRAY, fText(ITALIC, "[" + text + "]"));
+        }
+
+        public static final String nextLine = " §f§f§f§r\n";
+
+        /** why... **/
+        public static final String nextParagraph = " \n §f§f§f§r \n";
+
+        public static final String addSeparator = nextParagraph + nextParagraph;
+
+        public static String addTitle(String title) {
+            return fText(BOLD, title);
+        }
+
+        /** purely made for separating *pages visually, rip brain **/
+        public static String[] addPage(String text) {
+            final int lengthBound = 700;
+            int charCount = text.length();
+            List<String> pages = new ArrayList<>();
+            int start = 0;
+
+            while (start < charCount) {
+                while (start < charCount && Character.isWhitespace(text.charAt(start))) {
+                    start++;
+                }
+
+                if (start >= charCount) {
+                    break;
+                }
+
+                int end = Math.min(start + lengthBound, charCount);
+
+                if (end < charCount) {
+                    int split = end;
+
+                    while (split > start && !Character.isWhitespace(text.charAt(split - 1))) {
+                        split--;
+                    }
+
+                    if (split > start) {
+                        end = split;
+                    }
+                }
+
+                pages.add(text.substring(start, end).trim());
+                start = end;
+            }
+
+            return pages.toArray(new String[0]);
+        }
     }
 }

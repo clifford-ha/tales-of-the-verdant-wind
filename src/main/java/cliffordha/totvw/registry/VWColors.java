@@ -1,6 +1,6 @@
 package cliffordha.totvw.registry;
 
-public final class VWColors {
+public class VWColors {
     private VWColors() {}
 
     public static final int VERDANT_WIND = 0x00FFD0;
@@ -30,4 +30,12 @@ public final class VWColors {
     public static final int BLOCK_VERDANT_WOOD = 0x19281B;
     public static final int BLOCK_VERDANT_LEAVES = 0x0B604B;
     public static final int BLOCK_VERDANT_LOG = 0x517360;
+
+    public static int setColor(int color) {
+        return (0xff << 24) | color;
+    }
+
+    public static int setColor(int color, int alpha) {
+        return (alpha << 24) | color;
+    }
 }

@@ -14,14 +14,13 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
 public final class VWEffectOverlays {
-    private static final int RGB_BLOODLUST = VWColors.BLOODLUST_EFFECT;
     private static final float BLOODLUST_PULSE_SPEED_MS = (float) (Math.PI * 2.0 / 2000.0);
 
     private VWEffectOverlays() {}
 
     public static void register() {
         HudElementRegistry.addFirst(
-                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "bloodlust_effect_overlay"),
+                register("bloodlust_effect_overlay"),
                 VWEffectOverlays::bloodlustEffect
         );
     }
@@ -57,6 +56,10 @@ public final class VWEffectOverlays {
         float alpha = Mth.lerp(t, 0, max);
         int   a     = (int) (alpha * 255) & 0xFF;
 
-        graphics.fill(0, 0, w, h, ARGB.color(a, RGB_BLOODLUST));
+        graphics.fill(0, 0, w, h, ARGB.color(a, VWColors.BLOODLUST_EFFECT));
+    }
+
+    private static Identifier register(String name) {
+        return Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name);
     }
 }

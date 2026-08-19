@@ -1,10 +1,7 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.block.*;
-import cliffordha.totvw.block.custom.LodestoneWindCoreBlock;
-import cliffordha.totvw.block.custom.StorageBlock;
-import cliffordha.totvw.block.custom.VerdantSpruceLeavesBlock;
-import cliffordha.totvw.block.custom.VerixiumPowderBlock;
+import cliffordha.totvw.block.custom.*;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.world.tree.VWTreeGrowers;
 
@@ -26,6 +23,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
 import java.util.function.Consumer;
@@ -34,13 +32,14 @@ import java.util.function.Function;
 import static cliffordha.totvw.registry.VWBlocks.Util.*;
 
 public class VWBlocks {
+
     public static final BlockSetType VERDANT_SPRUCE_SET = registerBlockSetType("verdant_spruce", BlockSetType.SPRUCE);
     public static final WoodType VERDANT_SPRUCE_WOOD_TYPE = registerWoodType("verdant_spruce", WoodType.SPRUCE, VERDANT_SPRUCE_SET);
 
-
     public final static Block VERIXIUM_DEEPSLATE_ORE = registerBlock("verixium_deepslate_ore",
-            properties -> new Block( properties
+            properties -> new VerixiumOreBlock(properties
                     .sound(SoundType.DEEPSLATE)
+                    .mapColor(MapColor.DEEPSLATE)
                     .requiresCorrectToolForDrops()
                     .lightLevel(_ -> 9)
                     .strength(3.5F, 60F)),
@@ -48,8 +47,9 @@ public class VWBlocks {
             true
     );
     public final static Block VERIXIUM_STONE_ORE = registerBlock("verixium_stone_ore",
-            properties -> new Block( properties
+            properties -> new VerixiumOreBlock(properties
                     .sound(SoundType.STONE)
+                    .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
                     .lightLevel(_ -> 9)
                     .strength(3.0F, 30F)),
@@ -59,6 +59,7 @@ public class VWBlocks {
     public final static Block VERIXIUM_POWDER_BLOCK = registerBlock("verixium_powder_block",
             properties -> new VerixiumPowderBlock(new ColorRGBA(VWColors.VERDANT_WIND), properties
                     .sound(SoundType.SAND)
+                    .mapColor(MapColor.DIAMOND)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
                     .lightLevel(_ -> 15)
@@ -77,77 +78,107 @@ public class VWBlocks {
             false
     );
     public static final Block VERDANT_SPRUCE_LEAVES = registerBlock("verdant_spruce_leaves",
-            properties -> new VerdantSpruceLeavesBlock( 0.00f, ParticleTypes.ASH, properties),
+            properties -> new VerdantSpruceLeavesBlock( 0.00f, ParticleTypes.ASH, properties
+                    .mapColor(MapColor.WARPED_WART_BLOCK)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_LEAVES),
             true
     );
     public static final Block VERDANT_SPRUCE_SAPLING = registerBlock("verdant_spruce_sapling",
-            properties -> new VWSaplingBlock(VWTreeGrowers.VERDANT, properties),
+            properties -> new VWSaplingBlock(VWTreeGrowers.VERDANT, properties
+                    .mapColor(MapColor.WARPED_WART_BLOCK)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_SAPLING),
             true
     );
     public static final Block POTTED_VERDANT_SPRUCE_SAPLING = registerBlock( "potted_verdant_spruce_sapling",
-            properties -> new FlowerPotBlock(VERDANT_SPRUCE_SAPLING, properties),
+            properties -> new FlowerPotBlock(VERDANT_SPRUCE_SAPLING, properties
+                    .mapColor(MapColor.WARPED_WART_BLOCK)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_SPRUCE_SAPLING),
             false
     );
     public final static Block VERDANT_MOSS_BLOCK = registerBlock("verdant_moss_block",
-            Block::new,
+            properties -> new GrassBlock(properties
+                    .mapColor(MapColor.WARPED_WART_BLOCK)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.MOSS_BLOCK),
             true
     );
     public final static Block VERDANT_SPRUCE_PLANKS = registerBlock("verdant_spruce_planks",
-            Block::new,
+            properties -> new Block(properties
+                    .mapColor(MapColor.WARPED_STEM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_PLANKS),
             true
     );
     public final static Block VERDANT_SPRUCE_SLAB = registerBlock("verdant_spruce_slab",
-            SlabBlock::new,
+            properties -> new SlabBlock(properties
+                    .mapColor(MapColor.WARPED_STEM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(VERDANT_SPRUCE_PLANKS),
             true
     );
     public final static Block VERDANT_SPRUCE_STAIRS = registerBlock("verdant_spruce_stairs",
-            properties -> new StairBlock(VERDANT_SPRUCE_PLANKS.defaultBlockState(), properties),
+            properties -> new StairBlock(VERDANT_SPRUCE_PLANKS.defaultBlockState(), properties
+                    .mapColor(MapColor.WARPED_STEM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_STAIRS),
             true
     );
     public final static Block VERDANT_SPRUCE_BUTTON = registerBlock("verdant_spruce_button",
-            properties -> new ButtonBlock(VERDANT_SPRUCE_SET, 10, properties),
+            properties -> new ButtonBlock(VERDANT_SPRUCE_SET, 10, properties
+                    .mapColor(MapColor.WARPED_STEM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_BUTTON),
             true
     );
     public final static Block VERDANT_SPRUCE_PRESSURE_PLATE = registerBlock("verdant_spruce_pressure_plate",
-            properties -> new PressurePlateBlock(VERDANT_SPRUCE_SET, properties),
+            properties -> new PressurePlateBlock(VERDANT_SPRUCE_SET, properties
+                    .mapColor(MapColor.WARPED_STEM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_PRESSURE_PLATE),
             true
     );
     public final static Block VERDANT_SPRUCE_FENCE = registerBlock("verdant_spruce_fence",
-            FenceBlock::new,
+            properties -> new FenceBlock(properties
+                    .mapColor(MapColor.WARPED_STEM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_FENCE),
             true
     );
     public final static Block VERDANT_SPRUCE_FENCE_GATE = registerBlock("verdant_spruce_fence_gate",
-            properties -> new FenceGateBlock(VERDANT_SPRUCE_WOOD_TYPE, properties),
+            properties -> new FenceGateBlock(VERDANT_SPRUCE_WOOD_TYPE, properties
+                    .mapColor(MapColor.WARPED_STEM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_FENCE_GATE),
             true
     );
     public final static Block VERDANT_SPRUCE_TRAPDOOR = registerBlock("verdant_spruce_trapdoor",
-            properties -> new TrapDoorBlock(VERDANT_SPRUCE_SET, properties),
+            properties -> new TrapDoorBlock(VERDANT_SPRUCE_SET, properties
+                    .mapColor(MapColor.WARPED_NYLIUM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_TRAPDOOR),
             true
     );
     public final static Block VERDANT_SPRUCE_DOOR = registerBlock("verdant_spruce_door",
-            properties -> new DoorBlock(VERDANT_SPRUCE_SET, properties),
+            properties -> new DoorBlock(VERDANT_SPRUCE_SET, properties
+                    .mapColor(MapColor.WARPED_NYLIUM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_DOOR),
             true
     );
     public final static Block VERDANT_SPRUCE_LOG = registerBlock("verdant_spruce_log",
-            RotatedPillarBlock::new,
+            properties -> new RotatedPillarBlock(properties
+                    .mapColor(MapColor.WARPED_NYLIUM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_LOG),
             true
     );
     public final static Block VERDANT_SPRUCE_WOOD = registerBlock("verdant_spruce_wood",
-            RotatedPillarBlock::new,
+            properties -> new RotatedPillarBlock(properties
+                    .mapColor(MapColor.WARPED_NYLIUM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_WOOD),
             true
     );
@@ -162,12 +193,16 @@ public class VWBlocks {
             true
     );
     public static final Block VERDANT_SPRUCE_SIGN = registerBlock("verdant_spruce_sign",
-            properties -> new VWStandingSignBlock(VERDANT_SPRUCE_WOOD_TYPE, properties),
+            properties -> new VWStandingSignBlock(VERDANT_SPRUCE_WOOD_TYPE, properties
+                    .mapColor(MapColor.WARPED_STEM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_SIGN),
             false
     );
     public static final Block VERDANT_SPRUCE_HANGING_SIGN = registerBlock("verdant_spruce_hanging_sign",
-            properties -> new VWCeilingHangingSignBlock(VERDANT_SPRUCE_WOOD_TYPE, properties),
+            properties -> new VWCeilingHangingSignBlock(VERDANT_SPRUCE_WOOD_TYPE, properties
+                    .mapColor(MapColor.WARPED_STEM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_HANGING_SIGN),
             false
     );
@@ -186,12 +221,16 @@ public class VWBlocks {
             false
     );
     public static final Block VERDANT_SPRUCE_SHELF = registerBlock("verdant_spruce_shelf",
-            VWShelfBlock::new,
+            properties -> new VWShelfBlock(properties
+                    .mapColor(MapColor.WARPED_STEM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_SHELF),
             true
     );
     public static final Block VERDANT_SPRUCE_STORAGE_BOX = registerBlock("verdant_spruce_storage_box",
-            StorageBlock::new,
+            properties -> new StorageBlock(properties
+                    .mapColor(MapColor.WARPED_NYLIUM)
+            ),
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL),
             true
     );
@@ -212,8 +251,9 @@ public class VWBlocks {
     );
     public final static Block LODESTONE_WIND_CORE = registerBlock("lodestone_wind_core",
             properties -> new LodestoneWindCoreBlock(properties
-                    .strength(20.0f, 50.0f)
+                    .strength(50.0f, 100.0f)
                     .sound(SoundType.STONE)
+                    .mapColor(MapColor.STONE)
                     .pushReaction(PushReaction.IGNORE)
                     .lightLevel((state) -> state.getValue(LodestoneWindCoreBlock.ACTIVE) ? 15 : 0)
             ),

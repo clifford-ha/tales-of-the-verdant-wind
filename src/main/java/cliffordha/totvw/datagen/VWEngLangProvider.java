@@ -94,7 +94,8 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(Pages.OLD_SCATTERED_PAGE_VARIANT_2, OLD_SCATTERED_PAGE);
         text.add(Pages.OLD_SCATTERED_PAGE_VARIANT_3, OLD_SCATTERED_PAGE);
 
-
+        text.add(Pages.ENCHANTMENTS_HANDBOOK, "Enchantments Handbook");
+        text.add(Pages.EFFECTS_HANDBOOK, "Effects Handbook");
         text.add(Pages.PLAYER_STATS, "Player Stats");
         text.add(Pages.SP_ID_TEST, "Test Page");
         text.add(Pages.SP_ID_1000, SP_1000.getTitle());

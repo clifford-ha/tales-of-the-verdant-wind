@@ -174,17 +174,8 @@ public class VWEnchantments {
                         new EnchantmentAttributeEffect(
                                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "wolf_effect_bloodlust"),
                                 Attributes.KNOCKBACK_RESISTANCE,
-                                LevelBasedValue.constant(0.2F),
+                                LevelBasedValue.constant(0.1F),
                                 AttributeModifier.Operation.ADD_VALUE
-                        )
-                )
-                .withEffect(
-                        EnchantmentEffectComponents.ATTRIBUTES,
-                        new EnchantmentAttributeEffect(
-                                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "wolf_effect_bloodlust"),
-                                Attributes.FALL_DAMAGE_MULTIPLIER,
-                                LevelBasedValue.perLevel(-0.10f, -0.05f),
-                                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                         )
                 )
                 .build(WOLF_EFFECT_BLOODLUST.identifier())
@@ -207,6 +198,15 @@ public class VWEnchantments {
                                 Attributes.ATTACK_DAMAGE,
                                 LevelBasedValue.perLevel(1.0f, 1.0f),
                                 AttributeModifier.Operation.ADD_VALUE
+                        )
+                )
+                .withEffect(
+                        EnchantmentEffectComponents.ATTRIBUTES,
+                        new EnchantmentAttributeEffect(
+                                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "wolf_effect_might"),
+                                Attributes.FALL_DAMAGE_MULTIPLIER,
+                                LevelBasedValue.perLevel(-0.10f, -0.05f),
+                                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
                         )
                 )
                 .build(WOLF_EFFECT_MIGHT.identifier())

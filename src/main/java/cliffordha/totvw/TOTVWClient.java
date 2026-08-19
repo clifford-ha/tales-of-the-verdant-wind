@@ -1,6 +1,7 @@
 package cliffordha.totvw;
 
 import cliffordha.totvw.client.VWItemBlessingTooltip;
+import cliffordha.totvw.client.VWTooltips;
 import cliffordha.totvw.particle.MightParalyzeParticle;
 import cliffordha.totvw.particle.VerixiumPowderRainParticle;
 import cliffordha.totvw.registry.*;
@@ -26,10 +27,10 @@ import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.wolf.Wolf;
 
 import java.util.List;
+
+import static cliffordha.totvw.registry.VWColors.setColor;
 
 public class TOTVWClient implements ClientModInitializer {
     public void onInitializeClient() {
@@ -58,7 +59,7 @@ public class TOTVWClient implements ClientModInitializer {
         );
         VWColorizeTextMixin.register(
                 "item.minecraft.tipped_arrow.effect.sacred_verdant_potion",
-                VWColors.VERDANT_WIND
+                VWColors.VERDANT_WIND_MUTED
         );
         VWColorizeTextMixin.register(
                 "effect.tales-of-the-verdant-wind.bloodlust",
@@ -80,12 +81,10 @@ public class TOTVWClient implements ClientModInitializer {
         BlockEntityRenderers.register(VWBlockEntityTypes.SHELF, ShelfRenderer::new);
         VWEffectOverlays.register();
         VWItemBlessingTooltip.register();
+        VWTooltips.register();
     }
     private static int getRainbowColor() {
         float hue = (System.currentTimeMillis() % 4000) / 1000.0f;
         return java.awt.Color.HSBtoRGB(hue, 0.75f, 1.0f);
-    }
-    private static int setColor(int color) {
-        return (0xff << 24) | color;
     }
 }

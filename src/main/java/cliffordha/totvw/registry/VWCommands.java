@@ -1,9 +1,10 @@
 package cliffordha.totvw.registry;
 
-import cliffordha.totvw.world.VWBiomes;
+import cliffordha.totvw.TOTVW;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -15,14 +16,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Climate;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
@@ -34,49 +33,141 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import static cliffordha.totvw.util.VWUtil.sendToChat;
+
 public class VWCommands {
-    private static final int MIN_Y = -64;
-    private static final int MAX_Y = 48;
-
-    private static final int SMALL_VEINS_PER_CHUNK = 8;
-    private static final int LARGE_VEINS_PER_CHUNK = 2;
-
-    private static final int SMALL_VEIN_SIZE = 12;
-    private static final int LARGE_VEIN_SIZE = 24;
-
-    public static void registerModCommands() {
+    public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            dispatcher.register(
-                    Commands.literal("totvw")
-                            .then(Commands.literal("repopulate-verixium")
-                            .then(Commands.argument("chunkRadius", IntegerArgumentType.integer(0, 32))
-                                    .executes(context -> {
-                                        int radius = IntegerArgumentType.getInteger(context, "chunkRadius");
-                                        return repopulateVerixium(context.getSource(), radius);
-                                    }))
-            ));
-            dispatcher.register(
-                    Commands.literal("totvw")
-                            .then(Commands.literal("place-village-pools")
-                                    .then(Commands.argument("root", IntegerArgumentType.integer(0, 1))
-                                    .then(Commands.argument("type", BoolArgumentType.bool())
-                                    .then(Commands.argument("folder", StringArgumentType.string())
-                                    .executes(
-                                            context -> {
-                                                boolean type = context.getArgument("type", Boolean.class);
-                                                String folder;
-                                                if (!type) {
-                                                    folder = StringArgumentType.getString(context, "folder");
-                                                } else {
-                                                    folder = "zombie/" + StringArgumentType.getString(context, "folder");
-                                                }
+            dispatcher.register(Commands.literal("totvw")
+                    .then(Commands.literal("enchantments_handbook")
+                            .executes(context -> {
+                                        ServerPlayer player;
+                                        try {
+                                            player = context.getSource().getPlayerOrException();
+                                        } catch (Exception e) {
+                                            context.getSource().sendFailure(Component.literal("This command must be run by a player."));
+                                            return 0;
+                                        }
+                                        int getStat = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK, 0);
+                                        if (getStat < 1) {
+                                            giveOrDropHandbook(player, 0);
+                                        } else {
+                                            if (player.isCreative() || player.isSpectator()) {
+                                                giveOrDropHandbook(player, 0);
+                                            } else {
+                                                context.getSource().sendSuccess(() -> Component.literal("You can request another copy after your next respawn."), true);
+                                            }
+                                        }
+                                        return getStat;
+                                    }
+                            ))
+            );
+            dispatcher.register(Commands.literal("totvw")
+                    .then(Commands.literal("effects_handbook")
+                            .executes(context -> {
+                                        ServerPlayer player;
+                                        try {
+                                            player = context.getSource().getPlayerOrException();
+                                        } catch (Exception e) {
+                                            context.getSource().sendFailure(Component.literal("This command must be run by a player."));
+                                            return 0;
+                                        }
+                                        int getStat = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RECEIVED_EFFECTS_HANDBOOK, 0);
+                                        if (getStat < 1) {
+                                            giveOrDropHandbook(player, 1);
+                                        } else {
+                                            if (player.isCreative() || player.isSpectator()) {
+                                                giveOrDropHandbook(player, 1);
+                                            } else {
+                                                context.getSource().sendSuccess(() -> Component.literal("You can request another copy after your next respawn."), true);
+                                            }
+                                        }
+                                        return getStat;
+                                    }
+                            ))
+            );
+        });
+        if (!TOTVW.IN_DEVELOPMENT) return;
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            dispatcher.register(Commands.literal("totvw")
+                    .then(Commands.literal("place-village-pools")
+                    .then(Commands.argument("root", IntegerArgumentType.integer(0, 1))
+                    .then(Commands.argument("type", BoolArgumentType.bool())
+                    .then(Commands.argument("folder", StringArgumentType.string())
+                            .executes(context -> {
+                                boolean type = context.getArgument("type", Boolean.class);
+                                String folder;
+                                if (!type) {
+                                    folder = StringArgumentType.getString(context, "folder");
+                                } else {
+                                    folder = "zombie/" + StringArgumentType.getString(context, "folder");
+                                }
+                                int root = IntegerArgumentType.getInteger(context, "root");
+                                return placeTaigaVillagePools(context.getSource(), root, folder);
+                            })
+                    ))))
+            );
+            dispatcher.register(Commands.literal("totvw")
+                    .then(Commands.literal("tame_nearby_wolves")
+                            .executes(context -> {
+                                        ServerPlayer player;
+                                        try {
+                                            player = context.getSource().getPlayerOrException();
+                                        } catch (Exception e) {
+                                            context.getSource().sendFailure(Component.literal("This command must be run by a player."));
+                                            return 0;
+                                        }
+                                        ServerLevel level = player.level();
+                                        List<Wolf> wolves = level.getEntities(EntityType.WOLF,
+                                        player.getBoundingBox().inflate(32),
+                                        wolf -> wolf.isTame() && wolf.getUUID() != player.getUUID());
 
-                                                int root = IntegerArgumentType.getInteger(context, "root");
-                                                return placeTaigaVillagePools(context.getSource(), root, folder);
-                                            })
-                                    ))
+                                        if (wolves.isEmpty()) {
+                                            context.getSource().sendFailure(Component.literal("No nearby wolves to tame!"));
+                                            return 0;
+                                        }
+
+                                        for (Wolf wolf : wolves) {
+                                            wolf.setOwner(player);
+                                        }
+                                        context.getSource().sendSuccess(() -> Component.literal("Tamed " + wolves.size() + " nearby wolves."), true);
+                                        return wolves.size();
+                                    }
                             )));
         });
+    }
+
+    private static void giveOrDropHandbook(ServerPlayer player, int toGive) {
+        ItemStack mainHand = player.getItemBySlot(EquipmentSlot.MAINHAND);
+        ItemStack handbook;
+
+        AttachmentType<Integer> handbookType;
+
+        if (toGive == 0) {
+            handbook = new ItemStack(VWItems.Pages.ENCHANTMENTS_HANDBOOK);
+        } else {
+            handbook = new ItemStack(VWItems.Pages.EFFECTS_HANDBOOK);
+        }
+
+        boolean hasItem = player.getInventory().contains(handbook);
+        if (hasItem) {
+            sendToChat(player, false, "You already have the Enchantments Handbook!");
+        } else if (mainHand.isEmpty()) {
+            player.setItemSlot(EquipmentSlot.MAINHAND, handbook);
+        } else {
+            int slot = player.getInventory().getFreeSlot();
+            if (slot < 1) {
+                player.spawnAtLocation(player.level(), handbook);
+            } else {
+                player.getInventory().add(slot, handbook);
+            }
+        }
+        if (toGive == 0) {
+            handbookType = VWAttachments.Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK;
+        } else {
+            handbookType = VWAttachments.Player.PLAYER_RECEIVED_EFFECTS_HANDBOOK;
+        }
+        player.setAttached(handbookType, 1);
     }
 
     private static int placeTaigaVillagePools(CommandSourceStack source, int type, String folder) {
@@ -147,109 +238,5 @@ public class VWCommands {
                 "Placed " + finalPlaced + " structure(s) from " + taigaPools.size() + " taiga village template pool(s)."
         ), true);
         return totalPlaced;
-    }
-
-    private static int repopulateVerixium(CommandSourceStack source, int chunkRadius) {
-        ServerPlayer player;
-        try {
-            player = source.getPlayerOrException();
-        } catch (Exception exception) {
-            source.sendFailure(Component.literal("This command must be run by a player."));
-            return 0; }
-
-        ServerLevel level = player.level();
-        ChunkPos centerChunk = player.chunkPosition();
-
-        int processedChunks = 0;
-        int placedBlocks = 0;
-
-        for (int chunkX = centerChunk.x() - chunkRadius; chunkX <= centerChunk.x() + chunkRadius; chunkX++) {
-            for (int chunkZ = centerChunk.z() - chunkRadius; chunkZ <= centerChunk.z() + chunkRadius; chunkZ++) {
-                if (!level.hasChunk(chunkX, chunkZ)) {
-                    continue;
-                }
-
-                long chunkSeed = ((long) chunkX & 0xffffffffL) | (((long) chunkZ & 0xffffffffL) << 32);
-                RandomSource random = RandomSource.create(level.getSeed() ^ chunkSeed ^ 0x5DEECE66DL);
-
-                placedBlocks += repopulateChunk(level, chunkX, chunkZ, random);
-                processedChunks++;
-            }
-        }
-
-        int finalProcessedChunks = processedChunks;
-        int finalPlacedBlocks = placedBlocks;
-
-        source.sendSuccess(
-                () -> Component.literal(
-                        "Repopulated " + finalProcessedChunks + " chunks and placed " + finalPlacedBlocks + " Verixium ore blocks."
-                ),
-                true
-        );
-
-        return placedBlocks;
-    }
-
-    private static int repopulateChunk(ServerLevel level, int chunkX, int chunkZ, RandomSource random) {
-        int placedBlocks = 0;
-
-        for (int i = 0; i < LARGE_VEINS_PER_CHUNK; i++) {
-            placedBlocks += tryPlaceVein(level, chunkX, chunkZ, random, LARGE_VEIN_SIZE);
-        }
-
-        for (int i = 0; i < SMALL_VEINS_PER_CHUNK; i++) {
-            placedBlocks += tryPlaceVein(level, chunkX, chunkZ, random, SMALL_VEIN_SIZE);
-        }
-
-        return placedBlocks;
-    }
-
-    private static int tryPlaceVein(ServerLevel level, int chunkX, int chunkZ, RandomSource random, int veinSize) {
-        int startX = chunkX * 16 + random.nextInt(16);
-        int startY = MIN_Y + random.nextInt(MAX_Y - MIN_Y + 1);
-        int startZ = chunkZ * 16 + random.nextInt(16);
-
-        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos(startX, startY, startZ);
-        int placedBlocks = 0;
-
-        for (int i = 0; i < veinSize; i++) {
-            mutablePos.set(
-                    startX + random.nextInt(7) - 3,
-                    startY + random.nextInt(5) - 2,
-                    startZ + random.nextInt(7) - 3
-            );
-
-            if (!level.isInWorldBounds(mutablePos)) {
-                continue;
-            }
-
-            BlockState currentState = level.getBlockState(mutablePos);
-
-            if (!canReplaceWithVerixiumOre(currentState)) {
-                continue;
-            }
-
-            BlockState oreState = getOreForTarget(currentState);
-
-            level.setBlock(mutablePos, oreState, Block.UPDATE_CLIENTS);
-            placedBlocks++;
-        }
-
-        return placedBlocks;
-    }
-
-    private static boolean canReplaceWithVerixiumOre(BlockState state) {
-        return state.is(Blocks.STONE)
-                || state.is(Blocks.DEEPSLATE)
-                || state.is(Blocks.TUFF);
-    }
-
-    private static BlockState getOreForTarget(BlockState targetState) {
-        if (targetState.is(Blocks.DEEPSLATE)) {
-            return VWBlocks.VERIXIUM_DEEPSLATE_ORE.defaultBlockState();
-        } else if (targetState.is(Blocks.STONE)) {
-            return VWBlocks.VERIXIUM_STONE_ORE.defaultBlockState();
-        }
-        return null;
     }
 }

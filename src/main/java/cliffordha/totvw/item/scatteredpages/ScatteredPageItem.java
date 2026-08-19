@@ -1,22 +1,27 @@
 package cliffordha.totvw.item.scatteredpages;
 
 import cliffordha.totvw.client.screen.ScatteredPageScreen;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import cliffordha.totvw.registry.VWColors;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
+import static cliffordha.totvw.item.scatteredpages.VWEffectsHandbook.*;
+import static cliffordha.totvw.item.scatteredpages.VWEnchantmentsHandbook.*;
+import static cliffordha.totvw.util.VWUtil.TextUtil.*;
 
 public class ScatteredPageItem extends Item {
     private final int pageID;
@@ -42,19 +47,53 @@ public class ScatteredPageItem extends Item {
 
         switch (contents) {
             case 333 -> {
-                return addPage(
-                        fText(BOLD, fText(UNDERLINED, "USE NOTICE"))
-                        + nextLine
-                        + fText(ITALIC, cText(DARK_GRAY, "If any related incident arises, be it from using this material or its content(s), please notify and report to the Head of Scholars or authorities from the Nolayan people immediately."))
+                return addPage(fText(BOLD, fText(ITALIC, "An Experimental Research on Wind-charged Monster Deterring Field to Combat the Catastrophic Effects of the Creatures from Beyond"))
                         + nextParagraph
-                        + "By modifying the Lodestone's attracting energy properties, we essentially create a wind field that can be used to deter any living things nearby. The proposed name is " + cText(DARK_AQUA, "Lodestone Wind Core") + ". This core will serve as a protection field for the Scholars and Hunters to minimize the risk of injury as well as mortality rate when such individuals are sealing the ruptured void rifts, deterring the creatures from beyond, or they are in situations where safety is a concern."
+
+                        + fText(BOLD, "APPROVAL") + nextLine
+                        + "\"By virtue granted by our god, 'we', the people who reside among the Verdant Forest, grant the qualified Scholars access to resources nurtured by our land for an indefinite period of time. Purpose of access extends only to the following agreed upon use: studying, developing, and manufacturing solutions that may bring end to disasters caused by the creatures from beyond.\""
                         + nextParagraph
-                        + "To operate the Lodestone Wind Core, an energy source is required. Usable energy types are as follows: " + fText(STRIKETHROUGH, "Block of Redstone") + ", Verixium Powder Block, Verixium Powder, " + fText(STRIKETHROUGH, "Water Fluid") + ", Wind Charge. " + cText(DARK_GRAY, "Request for additional information for other energy sources is pending...")
+
+                        + "Grantor(s): Signed by the people's chief." + nextLine
+                        + "Grantee(s): Scholars from the Nation of Erudites"
+
+                        + addSeparator
+                        + fText(BOLD, "ABSTRACT") + nextLine
+                        + "By modifying the Lodestone's attracting energy properties, we essentially create a wind field that can be used to deter any living things nearby. This core will serve as a protection field for the Scholars and hunters to minimize the risk of injury as well as mortality rate when such individuals are within places where safety is a concern."
                         + nextParagraph
-                        + "To activate the wind core, use a special Verixium-based paper"
+                        + "Project's deterring performance showed promising results as it deterred the qualified subjects across different environment, including different variables, with 97% success rate. This has surpassed its prototype's deterring performance by at least 40%. However, its energy efficiency has dropped down to 70% unlike its protype with a staggering 96% at normal conditions. Project has been marked for further testing."
+                        + addSeparator
+                        + fText(BOLD, "METHOD") + nextLine
+                        + "To operate the Lodestone Wind Core (proposed name), an energy source is required before it can be activated by a special Verixium-based paper. Usable energy types are as follows: " + fText(STRIKETHROUGH, "Block of Redstone") + ", Verixium Powder Block, Verixium Powder, " + fText(STRIKETHROUGH, "Water Fluid") + ", Wind Charge. " + cText(GRAY, "Request for additional information for other energy sources is pending...")
                         + nextParagraph
-                        + fText(ITALIC, "A Research on Usable Energy: To Synthesize an Experimental Energy Type Derived From a Wind-charged Verixium Powder")
+                        + "Energy consumption may vary depending on the environment. That being said, the core will operate at stronger frequencies when enough energy is readily available for use."
                         + nextParagraph
+                        + "Normal Parameters: Wind energy < 60000, stable, qualified subjects are scanned at optimal distance." + nextLine
+                        + "High Parameters: Wind energy > 60000, unstable, close contact with the core may cause nausea and fatigue however, qualified subjects are scanned at longer distances."
+                        + nextParagraph
+
+                        + "Once the core is activated, it will immediately start harnessing the surrounding Wind Energy and simultaneously convert it into two separate fields:"
+                        + nextParagraph
+
+                        + fText(BOLD, "PROTECTION FIELD") + nextLine
+                        + "At intervals, the core will grant healing and random effects to nearby wolves (hunters) and scholars. Code 024 shows that when the core enters the " + bText("unstable") + " state, said grantee also receives stronger effects than usual. No consistent records yet."
+                        + nextParagraph
+
+                        + fText(BOLD, "DETERRING FIELD") + nextLine
+                        + "At intervals, the core will deter marked subjects until they get incapacitated. The deterring field will also siphon the subject's internal pressure which will create a pressure difference (PD) point. When such point exceed the standard 100PD point threshold, the subject may suffer from their own implosion. The rate at which PD accumulates depend on the surrounding environment and the subjects mass."
+
+                        + addSeparator
+                        + fText(BOLD, "USE NOTICE") + nextLine
+                        + "• High Priority: If any related incident arises, be it from using this material or its content(s), please notify and report to the Head of Scholars or authorities from the " + bText("Nolayan") + " people immediately." + nextLine
+                        + "• High Priority: DO NOT STAND VERY CLOSELY TO THE CORE WHEN TESTING FOR HIGH ENERGY EFFICIENCY!" + nextLine
+                        + "• Recalibrate the qualified variables every day to prevent unnecessary checks and save energy." + nextLine
+                        + "• Report energy use every 30 minutes." + nextLine
+                        + "• Do not let the core run indefinitely in scorching environments."
+
+                        + addSeparator
+                        + tText(IN_LOWLIGHT,fText(BOLD, "INCIDENT REPORT") + nextLine
+                        + "• " + cText(DARK_GRAY, "023: ") + "Scholars who had altercations with the locals seem to suffer fatigue when near the core. Due to the nature of incident, speculations are dismissed and the investigation is made unavailable to other scholars." + nextLine
+                        + "• " + cText(DARK_GRAY, "024: ") + "The core occasionally enters state where Wind Energy readings are abnormally high despite having shown no negative effects to wolves and scholars.", "")
                 );
             }
             case 1000 -> {
@@ -146,6 +185,7 @@ public class ScatteredPageItem extends Item {
                         tText(IN_LOWLIGHT, "The verdant people once lived in a cave system to avoid and escape the creatures from beyond that terrorized the forest every once in a while. Slowly their eyes transformed and now able to perceive the verixium-based ink. It wasn't much but they thrived."
                         + nextParagraph
                         + "About three years or so, the terrorizing creatures vanished without notice. When the hunters who put their lives at risk returned and broke the news, the people began to resurface and rebuild the structures that was taken away from them. Perhaps, out of curiosity, the neighboring kingdom sent out their regular traders. It was only then that the people who lived in the cave for 3 years found out that only a day has passed."
+                                + nextParagraph
                         + pText(4), "")
                 );
             }
@@ -163,111 +203,16 @@ public class ScatteredPageItem extends Item {
         return new String[] { "Error: Invalid page reference no." };
     }
 
-
-
-
-    // TEXT FORMATTING UTIL
-    private static String addTitle(String title) {
-        return fText(BOLD, title);
-    }
-
-    /** colors text **/
-    private static String cText(ScatteredPageTextColor color, String text) {
-        return color.getColor() + text + "§r";
-    }
-
-    /** a test-dependent text value
-     * note: be careful when using ServerLevel tests **/
-    private static String tText(boolean test, String isTrue, String isFalse) {
-        return test ? isTrue : isFalse;
-    }
-
-    /** like a docx, format text **/
-    private static String fText(ScatteredPageTextStyle formatter, String text) {
-        return formatter.getMarker() + text + "§r";
-    }
-
-    /** date, what else **/
-    private static String dText(int day, int month, int year) {
-        String cDay = day < 10 ? "0" + day : String.valueOf(day);
-        String cMonth = month < 10 ? "0" + month : String.valueOf(month);
-        return cText(GRAY, fText(ITALIC, cDay + "/" + cMonth + "/" + year)) + nextLine;
-    }
-
-    /** convert and iterate every letter from the input text and turn it into a block **/
-    private static String bText(String text) {
-        return "▌".repeat(text.length());
-    }
-
-    /** a set of predefined text **/
-    private static String pText(int p) {
-        String predefinedText;
-        switch (p) {
-            case 1 -> predefinedText = "Some contents are intentionally omitted";
-            case 2 -> predefinedText = "The text trails and ends here...";
-            case 3 -> predefinedText = "Scribbled gibberish";
-            case 4 -> predefinedText = "Some contents have faded";
-            default -> predefinedText = "Error: Invalid Predefined Text or Null";
-        }
-        return cText(DARK_GRAY, "[" + predefinedText + "]") + nextParagraph;
-    }
-    private static String nText(String text) {
-        return cText(DARK_GRAY, fText(ITALIC, "[" + text + "]"));
-    }
-
-    private static final String nextLine = " §f§f§f§r\n";
-
-    /** why... **/
-    private static final String nextParagraph = " \n §f§f§f§r \n";
-
-    /** purely made for separating *pages visually, rip brain **/
-    private static String[] addPage(String text) {
-        final int lengthBound = 700;
-        int charCount = text.length();
-        List<String> pages = new ArrayList<>();
-        int start = 0;
-
-        while (start < charCount) {
-            while (start < charCount && Character.isWhitespace(text.charAt(start))) {
-                start++;
-            }
-
-            if (start >= charCount) {
-                break;
-            }
-
-            int end = Math.min(start + lengthBound, charCount);
-
-            if (end < charCount) {
-                int split = end;
-
-                while (split > start && !Character.isWhitespace(text.charAt(split - 1))) {
-                    split--;
-                }
-
-                if (split > start) {
-                    end = split;
-                }
-            }
-
-            pages.add(text.substring(start, end).trim());
-            start = end;
-        }
-
-        return pages.toArray(new String[0]);
-    }
-
-
-
-
-
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (level.isClientSide()) {
-            openScreen(
-                    getTitle(player, pageID),
-                    getPages(player, pageID)
-            );
+            if (this.pageID == 2006) {
+                openScreen(ENCHANTMENTS_HANDBOOK_TITLE, ENCHANTMENTS_HANDBOOK_CONTENTS());
+            } else if (this.pageID == 2007) {
+                openScreen(EFFECTS_HANDBOOK_TITLE, EFFECTS_HANDBOOK_CONTENTS());
+            } else {
+                openScreen(getTitle(player, pageID), getPages(player, pageID));
+            }
         }
 
         float random = Math.min(player.getRandom().nextFloat() + 0.5f, 1.0f);
@@ -275,8 +220,23 @@ public class ScatteredPageItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
-    @Environment(EnvType.CLIENT)
     private static void openScreen(String title, String[] pages) {
-        Minecraft.getInstance().setScreen(new ScatteredPageScreen(title, pages));
+        if (title.equals(ENCHANTMENTS_HANDBOOK_TITLE)) {
+            Minecraft.getInstance().setScreen(new ScatteredPageScreen(0, ENCHANTMENTS_HANDBOOK_TITLE, pages));
+        } else if (title.equals(EFFECTS_HANDBOOK_TITLE)) {
+            Minecraft.getInstance().setScreen(new ScatteredPageScreen(0, EFFECTS_HANDBOOK_TITLE, pages));
+        } else {
+            Minecraft.getInstance().setScreen(new ScatteredPageScreen(2, title, pages));
+        }
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
+        if (this.pageID == 2006 || this.pageID == 2007) {
+            builder.accept(Component.literal(""));
+            builder.accept(Component.literal("Tales of the Verdant Wind").withColor(VWColors.VERDANT_WIND));
+            builder.accept(Component.literal("By: Clifford HA").withColor(VWColors.GRAY_MUTED));
+        }
+        super.appendHoverText(itemStack, context, display, builder, tooltipFlag);
     }
 }

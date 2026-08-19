@@ -152,6 +152,11 @@ public class VWModelProvider extends FabricModelProvider {
         item.generateFlatItem(Pages.OLD_SCATTERED_PAGE_VARIANT_2, ModelTemplates.FLAT_ITEM);
         item.generateFlatItem(Pages.OLD_SCATTERED_PAGE_VARIANT_3, ModelTemplates.FLAT_ITEM);
 
+        item.generateFlatItem(Pages.ENCHANTMENTS_HANDBOOK, ModelTemplates.FLAT_ITEM);
+        addCopy(item, ModelTemplates.FLAT_ITEM, Pages.ENCHANTMENTS_HANDBOOK,
+                Pages.EFFECTS_HANDBOOK
+        );
+
         addCopy(item, ModelTemplates.FLAT_ITEM, Pages.SCATTERED_PAGE,
                 Pages.PLAYER_STATS,
                 Pages.LODESTONE_WIND_CORE_MANUAL

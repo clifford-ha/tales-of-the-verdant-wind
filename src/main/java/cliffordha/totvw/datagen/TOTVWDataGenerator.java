@@ -24,6 +24,7 @@ public class TOTVWDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(VWFluidTags::new);
 		pack.addProvider(VWEnchantmentTags::new);
 		pack.addProvider(VWDamageTypeTags::new);
+		pack.addProvider(VWEntityTypeTags::new);
 
 		pack.addProvider(VWModelProvider::new);
 		pack.addProvider(VWSoundsProvider::new);
@@ -38,11 +39,13 @@ public class TOTVWDataGenerator implements DataGeneratorEntrypoint {
 
 	@Override
 	public void buildRegistry(RegistrySetBuilder registryBuilder) {
-		registryBuilder.add(Registries.CONFIGURED_FEATURE, VWConfiguredFeatures::configure);
-		registryBuilder.add(Registries.PLACED_FEATURE, VWPlacedFeatures::configure);
-		registryBuilder.add(Registries.BIOME, VWBiomes::bootstrap);
 		registryBuilder.add(Registries.ENCHANTMENT, VWEnchantments::bootstrap);
 		registryBuilder.add(Registries.DAMAGE_TYPE, VWDamageTypes::bootstrap);
+
 		registryBuilder.add(Registries.WOLF_VARIANT, VWWolfVariants::bootstrap);
+
+		registryBuilder.add(Registries.BIOME, VWBiomes::bootstrap);
+		registryBuilder.add(Registries.CONFIGURED_FEATURE, VWConfiguredFeatures::configure);
+		registryBuilder.add(Registries.PLACED_FEATURE, VWPlacedFeatures::configure);
 	}
 }

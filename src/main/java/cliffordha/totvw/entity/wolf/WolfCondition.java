@@ -1,8 +1,6 @@
 package cliffordha.totvw.entity.wolf;
 
 import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.entity.player.PlayerCondition;
-import cliffordha.totvw.registry.VWAttachments;
 import cliffordha.totvw.util.VWUtil;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.Registry;
@@ -10,7 +8,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -65,7 +62,7 @@ public interface WolfCondition {
     }
 
     static WolfCondition isInBiomes(TagKey<Biome> biome) {
-        return (wolf, level) -> VWUtil.isInBiomes(wolf, biome);
+        return (wolf, level) -> VWUtil.isInBiome(wolf, biome);
     }
 
     static WolfCondition checkConfig(boolean configValue) {
@@ -73,6 +70,9 @@ public interface WolfCondition {
     }
 
     static WolfCondition isUnderWater() { return (wolf, _) -> wolf.isUnderWater(); }
+
+    static WolfCondition isInLava() { return (wolf, _) -> wolf.isInLava(); }
+
 
     static WolfCondition unableToTeleport() { return (wolf, _) -> wolf.unableToMoveToOwner(); }
 
@@ -98,7 +98,9 @@ public interface WolfCondition {
         return (wolf, level) -> TOTVWConfig.get().CLIENT_MOD_SOUNDS;
     }
 
-    static WolfCondition noAttachment(AttachmentType<Integer> type) { return (wolf, level) -> wolf.getAttachedOrElse(type, 0) == 0; }
+    static WolfCondition noAttachment(AttachmentType<Integer> type) {
+        return (wolf, level) -> !wolf.hasAttached(type) || wolf.getAttachedOrElse(type, 0) == 0;
+    }
 
     static WolfCondition ownerWithin(double radius) {
         return (wolf, _) -> {

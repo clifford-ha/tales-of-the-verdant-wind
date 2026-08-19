@@ -57,6 +57,14 @@ public class VWSkillProcessor {
         }
     }
 
+    public static void setPlayerOtherConfig(Player player) {
+        int COUNTER_VILLAGER_ATROCITY = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
+        int COUNTER_WOLF_ATROCITY = player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0);
+
+        if (COUNTER_VILLAGER_ATROCITY > 0) player.setAttached(VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+        if (COUNTER_WOLF_ATROCITY > 0) player.setAttached(VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+    }
+
 
     /** 0 = sendLog, 1 = resetCD **/
     public static void setWolfConfiguration(Wolf wolf, int config) {

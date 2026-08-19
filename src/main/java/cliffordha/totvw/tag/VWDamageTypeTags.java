@@ -1,12 +1,17 @@
 package cliffordha.totvw.tag;
 
 
+import cliffordha.totvw.TOTVW;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.level.block.Block;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -63,5 +68,15 @@ public class VWDamageTypeTags extends FabricTagsProvider<DamageType> {
                 .add(type(BLEEDING))
                 .add(type(SCORCHING_HEAT))
                 .build();
+
+        getOrCreateRawBuilder(BENEDICTION_CAN_REDUCE_HIGH_DAMAGE)
+                .add(type(DamageTypes.SONIC_BOOM))
+                .add(type(DamageTypes.WITHER_SKULL))
+                .add(type(DamageTypes.DRAGON_BREATH))
+                .build();
     }
+
+    public static final TagKey<DamageType> BENEDICTION_CAN_REDUCE_HIGH_DAMAGE = create("benediction_can_reduce_high_damage");
+    private static TagKey<DamageType> create(String name) {
+        return TagKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }
 }

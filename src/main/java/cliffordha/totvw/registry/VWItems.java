@@ -297,6 +297,8 @@ public class VWItems {
         /** under testing **/
         public static final Item PLAYER_STATS = createPage("player_stats", -2);
         public static final Item LODESTONE_WIND_CORE_MANUAL = createPage("lodestone_wind_core_manual", 333);
+        public static final Item ENCHANTMENTS_HANDBOOK = createPage("enchantments_handbook", 2006);
+        public static final Item EFFECTS_HANDBOOK = createPage("effects_handbook", 2007);
 
         public static void register() {}
     }

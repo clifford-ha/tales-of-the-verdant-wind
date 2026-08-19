@@ -16,7 +16,7 @@ public enum ScatteredPageTextColor {
     RED("§c"),
     LIGHT_PURPLE("§d"),
     YELLOW("§e"),
-    WHITE("§f")
+    WHITE("§f"),
     ;
 
     private final String color;

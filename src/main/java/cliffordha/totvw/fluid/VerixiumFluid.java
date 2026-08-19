@@ -1,15 +1,13 @@
 package cliffordha.totvw.fluid;
 
-import java.util.Optional;
-
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWFluids;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.VWParticles;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWFluidTags;
-
 import cliffordha.totvw.util.VWUtil;
+
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
@@ -47,6 +45,8 @@ import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+
+import java.util.Optional;
 
 import static cliffordha.totvw.util.VWUtil.addHiddenEffect;
 
@@ -91,7 +91,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
 
         double randomD = level.getRandom().nextDouble();
         float randomF = level.getRandom().nextFloat();
-        if (VWUtil.isInBiomes(level, pos, BiomeTags.IS_NETHER) && randomF < 0.33f) {
+        if (VWUtil.isInBiome(level, pos, BiomeTags.IS_NETHER) && randomF < 0.33f) {
             level.destroyBlock(pos, false);
             level.addParticle(ParticleTypes.SMOKE, (double)pos.getX() + randomD, (double)pos.getY() + randomD, (double)pos.getZ() + randomD, 0.0F, 0.0F, 0.0F);
             level.playLocalSound(pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.2F + randomF * 0.2F, 0.9F + randomF * 0.15F, false);
@@ -101,7 +101,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
 
     @Override
     protected void randomTick(ServerLevel level, BlockPos pos, FluidState fluidState, RandomSource random) {
-        transformAdjacentBlocks(level, pos);
+        if (random.nextFloat() < 0.33f) transformAdjacentBlocks(level, pos);
         super.randomTick(level, pos, fluidState, random);
     }
 
@@ -149,11 +149,16 @@ public abstract class VerixiumFluid extends FlowingFluid {
 
     @Nullable
     @Override
-    public ParticleOptions getDripParticle() { return ParticleTypes.DRIPPING_WATER; }
+    public ParticleOptions getDripParticle() { return VWParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE; }
 
     @Override
     protected boolean canConvertToSource(ServerLevel world) {
-        return world.getGameRules().get(GameRules.WATER_SOURCE_CONVERSION);
+        float random = world.getRandom().nextFloat();
+        if (random < 0.007f) {
+            return world.getGameRules().get(GameRules.WATER_SOURCE_CONVERSION);
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -170,7 +175,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
         if (!(world instanceof ServerLevel) || !(entity instanceof LivingEntity livingEntity)) return;
 
         if (world.getGameTime() % 60 == 0) {
-            if (entity.level().getBiome(entity.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES)) {
+            if (VWUtil.isInBiome(livingEntity, VWBiomeTags.IS_VERDANT_BIOMES)) {
                 if (livingEntity.is(EntityTypeTags.UNDEAD) || livingEntity.is(EntityTypeTags.ILLAGER)) return;
                 if (livingEntity.hasEffect(MobEffects.WITHER)) {
                     livingEntity.removeEffect(MobEffects.POISON);

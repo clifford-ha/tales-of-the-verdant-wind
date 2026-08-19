@@ -5,16 +5,13 @@ import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
-import java.util.UUID;
 
 public class VWAttachments {
     public static final AttachmentType<Boolean> ENTITY_IS_PARALYZED = registerBool("entity_is_paralyzed");
     public static final AttachmentType<Boolean> ENTITY_HAS_VERDANT_OMEN = registerBool("entity_has_verdant_omen");
-
     public static class WindCore {
         public static final AttachmentType<Integer> ENTITY_PRESSURE_DIFFERENCE = registerInt("entity_pressure_difference");
         public static final AttachmentType<Boolean> ENTITY_HAS_IMPLODED = registerBool("entity_has_imploded");
@@ -22,6 +19,10 @@ public class VWAttachments {
 
     public static class Player {
         public static final AttachmentType<Boolean> PLAYER_IS_DEV_MODE = registerBool("player_is_dev_mode");
+
+        public static final AttachmentType<Integer> PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK = registerInt("player_received_enchantments_handbook");
+        public static final AttachmentType<Integer> PLAYER_RECEIVED_EFFECTS_HANDBOOK = registerInt("player_received_effects_handbook");
+
         public static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_cd_blessing_of_the_verdant_wind");
         public static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_notify_blessing_of_the_verdant_wind");
         public static final AttachmentType<Integer> PLAYER_VILLAGER_ATROCITY_COUNT = registerInt("player_villager_atrocity_count");
@@ -50,7 +51,8 @@ public class VWAttachments {
         public static final AttachmentType<Integer> WOLF_BENEDICTION = registerInt("wolf_benediction");
 
         public static final AttachmentType<BlockPos> WOLF_RESPAWN_POINT = registerBlockPos("wolf_respawn_point");
-        public static final AttachmentType<String> WOLF_PARENTS_ID = registerString("wolf_parent_a_id");
+        public static final AttachmentType<String> WOLF_PARENTS_ID = registerString("wolf_parents_id");
+        public static final AttachmentType<String> WOLF_BABY_ID = registerString("wolf_baby_id");
     }
 
     public static class Villager {
@@ -70,31 +72,16 @@ public class VWAttachments {
                 blockPosBuilder -> blockPosBuilder.persistent(BlockPos.CODEC).initializer( () -> BlockPos.ZERO )
         );
     }
-
-    private static AttachmentType<UUID> registerUUID(String name) {
-        return AttachmentRegistry.create(
-                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
-                uuidBuilder -> uuidBuilder.persistent(UUIDUtil.CODEC)
-        );
-    }
-
     private static AttachmentType<String> registerString(String name) {
         return AttachmentRegistry.create(
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
                 stringBuilder -> stringBuilder.persistent(Codec.STRING).initializer(() -> "")
         );
     }
-
     private static AttachmentType<Integer> registerInt(String name) {
         return AttachmentRegistry.create(
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
                 builder -> builder.persistent(Codec.INT).initializer(() -> 0)
-        );
-    }
-    private static AttachmentType<Long> registerLong(String name) {
-        return AttachmentRegistry.create(
-                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
-                builder -> builder.persistent(Codec.LONG).initializer(() -> 0L)
         );
     }
     private static AttachmentType<Boolean> registerBool(String name) {
@@ -129,7 +116,8 @@ public class VWAttachments {
                 Wolf.WOLF_BENEDICTION,
                 Wolf.WOLF_TRY_SAVE_POINTS,
                 Wolf.WOLF_TRY_SAVE_STATUS,
-                Wolf.WOLF_PARENTS_ID
+                Wolf.WOLF_PARENTS_ID,
+                Wolf.WOLF_RESPAWN_POINT
         );
         final List<AttachmentType<?>> VILLAGER_ATTACHMENTS = List.of(
                 Villager.VILLAGER_IS_VERDANT_TYPE,
@@ -141,10 +129,12 @@ public class VWAttachments {
         );
         final List<AttachmentType<?>> PLAYER_ATTACHMENTS = List.of(
                 Player.PLAYER_IS_DEV_MODE,
+                Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK,
                 Player.PLAYER_VILLAGER_ATROCITY_COUNT,
                 Player.PLAYER_WOLF_ATROCITY_COUNT,
                 Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,
-                Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND
+                Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
+                Player.PLAYER_RESPAWN_POINT
         );
         final List<AttachmentType<?>> BLOCK_ATTACHMENTS = List.of(
                 WindCore.ENTITY_PRESSURE_DIFFERENCE,

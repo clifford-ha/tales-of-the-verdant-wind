@@ -22,7 +22,7 @@ public class VWEnchantmentTags extends FabricTagsProvider<Enchantment> {
 
     @Override
     protected void addTags(HolderLookup.@NonNull Provider registries) {
-        getOrCreateRawBuilder(VWEnchantmentTags.WOLF_ENCHANTMENTS)
+        getOrCreateRawBuilder(WOLF_ENCHANTMENTS)
                 .add(enchantment(BENEDICTION_OF_THE_VERDANT_MOUNTAINS))
                 .add(enchantment(WOLF_ARMOR_ENHANCEMENT_KIT))
                 .add(enchantment(WOLF_EFFECT_IGNITION))
@@ -34,12 +34,12 @@ public class VWEnchantmentTags extends FabricTagsProvider<Enchantment> {
                 .add(enchantment(WOLF_EFFECT_OOZING))
                 .add(enchantment(WOLF_EFFECT_GNAWING));
 
-        getOrCreateRawBuilder(VWEnchantmentTags.CONTINUOUS_DAMAGE)
+        getOrCreateRawBuilder(CONTINUOUS_DAMAGE)
                 .add(enchantment(WOLF_EFFECT_IGNITION))
                 .add(enchantment(WOLF_EFFECT_POISONING))
                 .add(enchantment(WOLF_EFFECT_WITHERING));
 
-        getOrCreateRawBuilder(VWEnchantmentTags.IMPAIRING_DAMAGE)
+        getOrCreateRawBuilder(IMPAIRING_DAMAGE)
                 .add(enchantment(WOLF_EFFECT_OOZING))
                 .add(enchantment(WOLF_EFFECT_LIFTING));
 

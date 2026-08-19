@@ -1,5 +1,6 @@
 package cliffordha.totvw.item.events;
 
+import cliffordha.totvw.config.TOTVWConfig;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWItemTags;
@@ -34,6 +35,7 @@ public class VWItemBlessings {
         return mainHandItem.tags().anyMatch(Predicate.isEqual(tag));
     }
     public static boolean tryApply(Player player) {
+        if (player.getCooldowns().isOnCooldown(player.getMainHandItem()) && TOTVWConfig.get().SERVER_ITEM_COOLDOWNS) return false;
         boolean hasSword = isItem(player, ItemTags.SWORDS);
         boolean hasAxe = isItem(player, ItemTags.AXES);
         boolean hasPickaxe = isItem(player, ItemTags.PICKAXES);
@@ -51,11 +53,17 @@ public class VWItemBlessings {
         return true;
     }
     private static void setCooldown(Player player, int cdBiome, int cd) {
-        player.getMainHandItem().hurtWithoutBreaking(3, player);
-        if (!player.isCreative()) {
-            int cooldown = player.level().getBiome(player.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES) ? (cdBiome) : (cd);
-            player.getCooldowns().addCooldown(player.getItemBySlot(EquipmentSlot.MAINHAND), cooldown);
-        }
+        if (player.isCreative()) return;
+        player.getMainHandItem().hurtAndBreak(5, player, EquipmentSlot.MAINHAND);
+        if (!TOTVWConfig.get().SERVER_ITEM_COOLDOWNS) return;
+        int cooldown = isInBiome(player, VWBiomeTags.IS_VERDANT_BIOMES) ? (cdBiome) : (cd);
+        player.getCooldowns().addCooldown(player.getItemBySlot(EquipmentSlot.MAINHAND), cooldown);
+    }
+    private static void setCooldown(Player player, int cd) {
+        if (player.isCreative()) return;
+        player.getMainHandItem().hurtAndBreak(5, player, EquipmentSlot.MAINHAND);
+        if (!TOTVWConfig.get().SERVER_ITEM_COOLDOWNS) return;
+        player.getCooldowns().addCooldown(player.getItemBySlot(EquipmentSlot.MAINHAND), cd);
     }
     private static void grantEffect(Player player, Holder<MobEffect> effect, int inBiome, int enhancedAmp, TagKey<Biome> biomeTag) {
         int notInBiome = (int) Math.floor(inBiome * 0.7);
@@ -118,7 +126,7 @@ public class VWItemBlessings {
         playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
         playNotification(player);
 
-        player.getMainHandItem().hurtWithoutBreaking(3, player);
+        player.getMainHandItem().hurtAndBreak(3, player, EquipmentSlot.MAINHAND);
         setCooldown(player, cdBiome, cd);
     }
     
@@ -248,8 +256,8 @@ public class VWItemBlessings {
                     setDuration(0, 6),
                     1,
                     VWBiomeTags.IS_VERDANT_BIOMES);
-            player.getMainHandItem().consume(1, player);
-            if (!player.isCreative()) {setCooldown(player, setDuration(1, 15), setDuration(2, 0)); }
+            consumeItem(player);
+            setCooldown(player, setDuration(1, 15), setDuration(2, 0));
 
         } else if (itemStack.is(Items.GLOWSTONE_DUST)) {
             grantEffect(player,
@@ -257,8 +265,12 @@ public class VWItemBlessings {
                     TICK_MINUTES,
                     1,
                     BiomeTags.IS_NETHER);
-            player.getMainHandItem().consume(1, player);
-            if (!player.isCreative()) {player.getCooldowns().addCooldown(player.getItemBySlot(EquipmentSlot.MAINHAND), setDuration(1, 30)); }
+            consumeItem(player);
+            setCooldown(player, setDuration(1, 30));
         }
+    }
+
+    private static void consumeItem(Player player) {
+        player.getMainHandItem().shrink(1);
     }
 }

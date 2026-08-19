@@ -12,7 +12,7 @@ import terrablender.api.TerraBlenderApi;
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 	public TalesOfTheVerdantWind() {}
 
-	public static boolean IN_DEVELOPMENT = true;
+	public static boolean IN_DEVELOPMENT = false;
 
 	@Override
 	public void onInitialize() {
@@ -40,12 +40,7 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 
 		LootTableEvents.MODIFY.register(VWLootTableModifier::modifyLootTables);
 
-		if (IN_DEVELOPMENT) {
-			VWCommands.registerModCommands();
-			TOTVW.sendInfo("Mod has been initialized and is in development mode!");
-		} else {
-			TOTVW.sendInfo("Mod has been initialized!");
-		}
+		VWCommands.register();
 	}
 
 	@Override

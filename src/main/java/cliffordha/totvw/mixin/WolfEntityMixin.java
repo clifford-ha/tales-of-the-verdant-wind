@@ -98,12 +98,15 @@ public abstract class WolfEntityMixin extends LivingEntity {
             String parentAUUID = wolf.getStringUUID();
             String parentBUUID = wolfPartner.getStringUUID();
             String constructor = parentAUUID + ":baby " + parentBUUID + ":baby";
+            String parentConstructor = baby.getStringUUID() + ":parent";
             baby.setAttached(VWAttachments.Wolf.WOLF_PARENTS_ID, constructor);
+            wolf.setAttached(VWAttachments.Wolf.WOLF_BABY_ID, parentConstructor);
+            wolfPartner.setAttached(VWAttachments.Wolf.WOLF_BABY_ID, parentConstructor);
 
             if (wolf.getAttachedOrElse(WOLF_IS_VERDANT_TYPE, false)
                     || wolfPartner.getAttachedOrElse(WOLF_IS_VERDANT_TYPE, false)
-                    || isInBiomes(wolf, VWBiomeTags.IS_VERDANT_BIOMES)
-                    || isInBiomes(wolfPartner, VWBiomeTags.IS_VERDANT_BIOMES)) {
+                    || isInBiome(wolf, VWBiomeTags.IS_VERDANT_BIOMES)
+                    || isInBiome(wolfPartner, VWBiomeTags.IS_VERDANT_BIOMES)) {
                 baby.setAttached(WOLF_IS_VERDANT_TYPE, true);
                 setVerdantModifiers(baby);
             }
@@ -131,7 +134,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
     @Inject(method = "finalizeSpawn", at = @At("TAIL"))
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Wolf wolf = (Wolf) (Object) this;
-        boolean inVerdant = isInBiomes(wolf, VWBiomeTags.IS_VERDANT_BIOMES);
+        boolean inVerdant = isInBiome(wolf, VWBiomeTags.IS_VERDANT_BIOMES);
         if (inVerdant) {
             wolf.setAttached(WOLF_IS_VERDANT_TYPE, true);
             setVerdantModifiers(wolf);
@@ -182,6 +185,17 @@ public abstract class WolfEntityMixin extends LivingEntity {
                 }
             }
 
+        }
+
+        if (wolf.isBaby() && wolf.isOnFire() && level.getGameTime() % 20 == 0) {
+            List<Wolf> parents = level.getEntitiesOfClass(Wolf.class, wolf.getBoundingBox().inflate(16), z ->
+                    z.getAttachedOrElse(VWAttachments.Wolf.WOLF_BABY_ID, "").contains(wolf.getStringUUID() + ":parent")
+                            && (wolfEnchantmentLVL(z, VWEnchantments.WOLF_EFFECT_IGNITION) > 0 || wolfEnchantmentLVL(z, VWEnchantments.WOLF_EFFECT_MIGHT) >= 3));
+
+            if (!parents.isEmpty()) {
+                wolf.getNavigation().moveTo(parents.getFirst(), 1.1);
+                wolf.extinguishFire();
+            }
         }
     }
 
@@ -242,9 +256,9 @@ public abstract class WolfEntityMixin extends LivingEntity {
                 if (wolf.level().dimension() != owner.level().dimension()) {
                     wolf.teleportToAroundBlockPos(spawn);
                 } else if (wolf.canTeleport(wolf.level(), owner.level())) {
-                    if (wolf.distanceTo(owner) > 16) {
+                    if (wolf.distanceTo(owner) > 32) {
                         wolf.teleportToAroundBlockPos(pos);
-                    } else {
+                    } else if (wolf.distanceTo(owner) > 4) {
                         owner.teleportTo(pos.getX(), pos.getY() + 1, pos.getZ());
                     }
                 } else {
@@ -284,8 +298,9 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
         if (itemStack.is(Items.TOTEM_OF_UNDYING) &&  wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0) {
             int STACK = wolf.getAttachedOrElse(BENEDICTION_STACK, 0);
-            int STACK_LIMIT = TOTVWConfig.get().SERVER_MAX_WOLF_BENEDICTION_STACK;
-            //int STACK_LIMIT = 3;
+            //int STACK_LIMIT = TOTVWConfig.get().SERVER_MAX_WOLF_BENEDICTION_STACK;
+            //boolean LIMITER = level.getDifficulty() == Difficulty.HARD || level.getLevelData().isHardcore();
+            int STACK_LIMIT = 3;
 
             if (STACK > STACK_LIMIT) {
                 wolf.setAttached(BENEDICTION_STACK, STACK_LIMIT);
@@ -372,22 +387,22 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
         int ACTIVE_BENEDICTION = wolfEnchantmentLVL(wolf, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
         int ACTIVE_ENHANCEMENT_KIT = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_ARMOR_ENHANCEMENT_KIT);
+        int ACTIVE_IGNITION = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_IGNITION);
 
-        if (ACTIVE_BENEDICTION > 0 && !source.is(DamageTypes.GENERIC_KILL) && damage > wolf.getMaxHealth() * 0.5f) {
+        if (source.is(DamageTypeTags.IS_FREEZING) && ACTIVE_IGNITION > 0) {
+            ci.cancel();
+            //return;
+        }
+
+        if (!source.is(DamageTypes.GENERIC_KILL) && damage > wolf.getMaxHealth() * 0.5f && ACTIVE_BENEDICTION > 0) {
             AttachmentType<Integer> IGNORE_DMG_CD = VWAttachments.Wolf.WOLF_CD_IGNORE_HIGH_DAMAGE;
             int IGNORE_DMG = wolf.getAttachedOrElse(IGNORE_DMG_CD, 0);
             if (IGNORE_DMG > 0) return;
             armor.hurtAndBreak(12, wolf, EquipmentSlot.BODY);
             wolf.setAttached(IGNORE_DMG_CD, 15);
-            sendToChat(wolf, false, wolf.getPlainTextName() + " ignored " + damage + " damage");
+            sendToChat(wolf, false, wolf.getPlainTextName() + " ignored " + (double) damage + " damage");
             ci.cancel();
-            return;
-        }
-        if (source.is(VWDamageTypes.BLOODLUST)) {
-            float finalWolfDMG = ACTIVE_BENEDICTION > 0 ? damage * 0.5f : damage;
-            wolf.hurtServer(level, VWDamageTypes.bloodlust(level), finalWolfDMG);
-            ci.cancel();
-            return;
+            //return;
         }
 
         if (TOTVWConfig.get().SERVER_WOLF_DMG_DISTRIBUTION) {
@@ -404,7 +419,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
             armor.hurtAndBreak(finalArmorDMG, wolf, EquipmentSlot.BODY);
             if (Crackiness.WOLF_ARMOR.byDamage(damageBefore, maxDamage) != Crackiness.WOLF_ARMOR.byDamage(wolf.getBodyArmorItem())) {
                 wolf.playSound(SoundEvents.WOLF_ARMOR_CRACK);
-                level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, Items.ARMADILLO_SCUTE), wolf.getX(), wolf.getY() + 1.0, wolf.getZ(), 20, 0.2, 0.1, 0.2, 0.1);
+                level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, VWItems.VERIXIUM_POWDER), wolf.getX(), wolf.getY() + 1.0, wolf.getZ(), 20, 0.2, 0.1, 0.2, 0.1);
             }
 
             super.actuallyHurt(level, source, finalWolfDMG);

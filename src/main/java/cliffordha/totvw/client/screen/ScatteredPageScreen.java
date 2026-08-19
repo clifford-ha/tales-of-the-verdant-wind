@@ -1,124 +1,176 @@
 package cliffordha.totvw.client.screen;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import cliffordha.totvw.registry.VWColors;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public class ScatteredPageScreen extends Screen {
-    private static final int PANEL_WIDTH = 400;
-    private static final int PANEL_HEIGHT = 225;
+    private static final float PADDING_RATIO = 0.05F;
     private static final int PADDING = 10;
 
-    private static final int COLOR_OUTER = 0xFF5C3D1E;
-    private static final int COLOR_BG = 0xFF9C7B52;
-    private static final int COLOR_INNER = 0xFFEDD9A3;
-    private static final int COLOR_LINE = 0xFF7A5230;
-    private static final int COLOR_TEXT = 0xff2c2720;
+    private static final int COLOR_BG = 0x80001822;
+    private static final int COLOR_LINE = 0x66FFFFFF;
+    private static final int COLOR_TEXT = 0xFFFFFFFF;
+    private static final int COLOR_SCROLLBAR_TRACK = 0x33FFFFFF;
+    private static final int COLOR_SCROLLBAR_THUMB = 0xAAFFFFFF;
 
+    private final int type;
     private final String pageTitle;
     private final List<String> pages;
-    private int currentPage = 0;
+    private final List<FormattedCharSequence> allLines = new ArrayList<>();
 
     private int leftPos;
     private int topPos;
+    private int panelWidth;
+    private int panelHeight;
 
-    public ScatteredPageScreen(String pageTitle, String... pages) {
+    private int scrollOffset = 0;
+    private int maxScroll = 0;
+    private int textStartY;
+    private int lineHeight;
+    private int visibleLines;
+
+    private int scrollbarX;
+    private int scrollbarY;
+    private final int scrollbarWidth = 6;
+    private int scrollbarHeight;
+
+    public ScatteredPageScreen(int type, String pageTitle, String... pages) {
         super(Component.literal(pageTitle));
         this.pageTitle = pageTitle;
         this.pages = Arrays.asList(pages);
+        this.type = type;
     }
 
     @Override
     protected void init() {
-        this.leftPos = (this.width  - PANEL_WIDTH)  / 2;
-        this.topPos  = (this.height - PANEL_HEIGHT) / 2;
+        this.panelWidth = Mth.floor(this.width * (1.0F - PADDING_RATIO * 2));
+        this.panelHeight = Mth.floor(this.height * (1.0F - PADDING_RATIO * 2));
+        this.leftPos = Mth.floor(this.width * PADDING_RATIO);
+        this.topPos = Mth.floor(this.height * PADDING_RATIO);
 
         int xySize = 20;
-
-        int xposBTN = this.leftPos + PANEL_WIDTH + 3;
-        int yposBTN = this.topPos - 3;
-
-        if (this.pages.size() > 1 && this.currentPage >= 0) {
-            this.addRenderableWidget(
-                    Button.builder(Component.literal("▼"), b -> {
-                        if (this.currentPage < this.pages.size() - 1) this.currentPage++;
-                    }).bounds(xposBTN, yposBTN + 40, xySize, xySize).build()
-            );
-
-            this.addRenderableWidget(
-                    Button.builder(Component.literal("▲"), b -> {
-                        if (this.currentPage > 0) this.currentPage--;
-                    }).bounds(xposBTN, yposBTN + 20, xySize, xySize).build()
-            );
-        }
+        int xposBTN = this.leftPos + this.panelWidth - xySize - 3;
+        int yposBTN = this.topPos + 3;
 
         this.addRenderableWidget(
                 Button.builder(Component.literal("✖"), b -> this.onClose())
                         .bounds(xposBTN, yposBTN, xySize, xySize)
                         .build()
         );
+
+        int textAreaWidth = this.panelWidth - (PADDING * 2) - this.scrollbarWidth - 6;
+        this.textStartY = this.topPos + 32;
+        int textEndY = this.topPos + this.panelHeight - PADDING;
+        this.lineHeight = this.font.lineHeight + 2;
+        this.visibleLines = Math.max(1, (textEndY - this.textStartY) / this.lineHeight);
+
+        this.allLines.clear();
+        StringBuilder combined = new StringBuilder();
+
+        for (int i = 0; i < this.pages.size(); i++) {
+            combined.append(this.pages.get(i));
+            if (i < this.pages.size() - 1) combined.append(" ");
+        }
+        this.allLines.addAll(this.font.split(Component.literal(combined.toString()), textAreaWidth));
+
+        this.maxScroll = Math.max(0, this.allLines.size() - this.visibleLines);
+        this.scrollOffset = 0;
+
+        this.scrollbarX = this.leftPos + this.panelWidth - PADDING - this.scrollbarWidth;
+        this.scrollbarY = this.textStartY;
+        this.scrollbarHeight = textEndY - this.textStartY;
     }
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         int x = this.leftPos;
         int y = this.topPos;
+        int bgColor;
+        int textColor;
 
-        // can anyone pls make a screen visualizer...?
-
-        // border
-        graphics.fill(x - 3, y - 3, x + PANEL_WIDTH + 3, y + PANEL_HEIGHT + 3, COLOR_OUTER);
-
-        // main bg
-        graphics.fill(x, y, x + PANEL_WIDTH, y + PANEL_HEIGHT, COLOR_BG);
-
-        // inner parchment area
-        graphics.fill(x + 5, y + 5, x + PANEL_WIDTH - 5, y + PANEL_HEIGHT - 5, COLOR_INNER);
-
-        // title separator
-        graphics.fill(x + PADDING, y + 26, x + PANEL_WIDTH - PADDING, y + 27, COLOR_LINE);
-
-        // title
-        graphics.text(this.font, this.pageTitle, x + 10, y + 11, COLOR_TEXT, false);
-
-        // scattered pages
-        if (!this.pages.isEmpty() && this.currentPage < this.pages.size()) {
-            int textAreaWidth = PANEL_WIDTH - (PADDING * 2);
-            int textStartY = y + 32;
-            int textEndY = y + PANEL_HEIGHT;
-
-            String readMore = (this.pages.size() > 1 && this.currentPage == 0) ? " §8......more§r" : "";
-            List<FormattedCharSequence> lines = this.font.split(
-                    Component.literal(this.pages.get(this.currentPage) + readMore), textAreaWidth
-            );
-
-            int lineY = textStartY;
-            int lineHeight = this.font.lineHeight + 2;
-
-            for (FormattedCharSequence line : lines) {
-                if (lineY + this.font.lineHeight > textEndY) break;
-                graphics.text(this.font, line, x + PADDING, lineY, COLOR_TEXT, false);
-                lineY += lineHeight;
+        switch (this.type) {
+            case 1 -> {
+                bgColor = VWColors.setColor(0x241E1C, 90);
+                textColor = VWColors.setColor(0xFBFBFB);
+            }
+            case 2 -> {
+                bgColor = VWColors.setColor(0xF9F6F0, 200);
+                textColor = VWColors.setColor(0x241E1C);
+            }
+            default -> {
+                bgColor = COLOR_BG;
+                textColor = COLOR_TEXT;
             }
         }
 
-        // page indicator
-        if (this.pages.size() > 1 && this.currentPage >= 0) {
-            String pageCount = String.valueOf(this.pages.size());
-            String currentPage = String.valueOf(this.currentPage + 1);
+        // background
+        graphics.fill((int) Math.floor(x * PADDING_RATIO), (int) Math.floor(y * PADDING_RATIO), this.width, this.height, 0x80000000);
+        graphics.fill(x, y, x + this.panelWidth, y + this.panelHeight, bgColor);
 
-            graphics.text(this.font, "§8" + currentPage + " / " + pageCount, ((this.width - Mth.ceil(PANEL_WIDTH * 0.17) - PANEL_WIDTH)  / 2 ) + PANEL_WIDTH, y + PANEL_HEIGHT - Mth.ceil(PANEL_HEIGHT * 0.07), COLOR_TEXT, false);
+        // title separator
+        graphics.fill(x + PADDING, y + 26, x + this.panelWidth - PADDING, y + 27, COLOR_LINE);
+
+        // title
+        graphics.text(this.font, this.pageTitle, x + PADDING, y + 11, textColor, false);
+
+        // text
+        int lineY = this.textStartY;
+        int end = Math.min(this.allLines.size(), this.scrollOffset + this.visibleLines);
+        for (int i = this.scrollOffset; i < end; i++) {
+            graphics.text(this.font, this.allLines.get(i), x + PADDING, lineY, textColor, false);
+            lineY += this.lineHeight;
         }
+
+        // scrollbar
+        if (this.maxScroll > 0) {
+            graphics.fill(this.scrollbarX, this.scrollbarY, this.scrollbarX + this.scrollbarWidth, this.scrollbarY + this.scrollbarHeight, COLOR_SCROLLBAR_TRACK);
+
+            int thumbHeight = Math.max(12, (int) ((float) this.visibleLines / this.allLines.size() * this.scrollbarHeight));
+            int thumbY = this.scrollbarY + (int) ((float) this.scrollOffset / this.maxScroll * (this.scrollbarHeight - thumbHeight));
+
+            graphics.fill(this.scrollbarX, thumbY, this.scrollbarX + this.scrollbarWidth, thumbY + thumbHeight, COLOR_SCROLLBAR_THUMB);
+        }
+
         super.extractRenderState(graphics, mouseX, mouseY, a);
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        return super.mouseClicked(event, doubleClick);
+    }
+
+    @Override
+    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
+        return super.mouseDragged(event, dx, dy);
+    }
+
+    @Override
+    public boolean mouseReleased(MouseButtonEvent event) {
+        return super.mouseReleased(event);
+    }
+
+    @Override
+    public void mouseMoved(double x, double y) {
+        super.mouseMoved(x, y);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (this.maxScroll > 0) {
+            this.scrollOffset = Mth.clamp(this.scrollOffset - (int) Math.signum(scrollY) * 3, 0, this.maxScroll);
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override

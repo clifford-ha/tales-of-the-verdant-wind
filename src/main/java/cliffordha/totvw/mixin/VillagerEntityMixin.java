@@ -7,6 +7,7 @@ import cliffordha.totvw.tag.VWBiomeTags;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -33,6 +34,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static cliffordha.totvw.util.VWUtil.isInBiome;
+
 @Mixin(Villager.class)
 public class VillagerEntityMixin {
     
@@ -40,27 +43,27 @@ public class VillagerEntityMixin {
     private static final AttachmentType<Boolean> VERDANT_TYPE = VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE;
     
     @Unique
-    private static final AttachmentType<Integer> VILLAGER_CD_HEAL_OTHERS = VWAttachments.Villager.VILLAGER_CD_HEAL_OTHERS;
+    private static final AttachmentType<Integer> CD_HEAL_OTHERS = VWAttachments.Villager.VILLAGER_CD_HEAL_OTHERS;
     
     @Unique
-    private static final AttachmentType<Integer> VILLAGER_CD_HEAL_WOLF = VWAttachments.Villager.VILLAGER_CD_HEAL_WOLF;
+    private static final AttachmentType<Integer> CD_HEAL_WOLF = VWAttachments.Villager.VILLAGER_CD_HEAL_WOLF;
     
     @Unique
-    private static final AttachmentType<Integer> VILLAGER_CD_HEAL_IRON_GOLEM = VWAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM;
+    private static final AttachmentType<Integer> CD_HEAL_IRON_GOLEM = VWAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM;
+
+    @Unique
+    private static final AttachmentType<Integer> CD_DISCOUNT_REROLL = VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL;
+
+    @Unique
+    private static final AttachmentType<Float> DISCOUNT_MODIFIER = VWAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER;
     
     @Unique
     private static final AttachmentType<Integer> WOLF_TRY_SAVE_POINTS = VWAttachments.Wolf.WOLF_TRY_SAVE_POINTS;
 
-    @Unique
-    private static final AttachmentType<Integer> VILLAGER_CD_DISCOUNT_REROLL = VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL;
-
-    @Unique
-    private static final AttachmentType<Float> VILLAGER_DISCOUNT_MODIFIER = VWAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER;
-
     @Inject(method = "finalizeSpawn", at = @At("TAIL"))
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         Villager villager = (Villager) (Object) this;
-        boolean inVerdant = villager.level().getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
+        boolean inVerdant = isInBiome(villager, VWBiomeTags.IS_VERDANT_BIOMES);
 
         VillagerData data = villager.getVillagerData();
         Holder<VillagerType> taiga = level.registryAccess()
@@ -84,21 +87,34 @@ public class VillagerEntityMixin {
     private void onTick(CallbackInfo ci) {
         Villager villager = (Villager) (Object) this;
         Level level = villager.level();
-        
-        boolean isCorrectVillager = villager.getAttachedOrElse(VERDANT_TYPE, false) && villager.getVillagerData().profession().is(Predicate.isEqual(VillagerProfession.CLERIC));
+        boolean isVerdant = villager.getAttachedOrElse(VERDANT_TYPE, false);
+        boolean isVerdantCleric = isVerdant && hasProfession(villager, VillagerProfession.CLERIC);
+        boolean hasProfession = !hasProfession(villager, VillagerProfession.NONE) || !hasProfession(villager, VillagerProfession.NITWIT);
 
-        if (isCorrectVillager) {
-            if (level.getGameTime() % 20 == 0) {
-                depleteCD(villager, VILLAGER_CD_HEAL_OTHERS);
-                depleteCD(villager, VILLAGER_CD_HEAL_WOLF);
-                depleteCD(villager, VILLAGER_CD_HEAL_IRON_GOLEM);
-                depleteCD(villager, VILLAGER_CD_DISCOUNT_REROLL);
+        int discountReroll = villager.getAttachedOrElse(CD_DISCOUNT_REROLL, 0);
+
+        if (level.getGameTime() % 20 == 0) {
+            if (hasProfession && isVerdant && discountReroll <= 0) {
+                float MIN_MODIFIER = 0.15f;
+                float MAX_MODIFIER = 0.5f;
+                float BONUS = isInBiome(villager, VWBiomeTags.IS_VERDANT_BIOMES) ? 0.30f : 0.0f;
+
+                float modifier = MIN_MODIFIER + villager.level().getRandom().nextFloat() * (MAX_MODIFIER + BONUS) - MIN_MODIFIER;
+                villager.setAttached(DISCOUNT_MODIFIER, modifier);
+                villager.setAttached(CD_DISCOUNT_REROLL, 1440);
             }
-
+            if (discountReroll > 0) depleteCD(villager, CD_DISCOUNT_REROLL);
+        }
+        if (isVerdantCleric) {
+            if (level.getGameTime() % 20 == 0) {
+                depleteCD(villager, CD_HEAL_OTHERS);
+                depleteCD(villager, CD_HEAL_WOLF);
+                depleteCD(villager, CD_HEAL_IRON_GOLEM);
+            }
             if (level.getGameTime() % 60 == 0) {
-                int CD_HEAL_OTHERS = villager.getAttachedOrElse(VILLAGER_CD_HEAL_OTHERS, 0);
-                int CD_HEAL_WOLF = villager.getAttachedOrElse(VILLAGER_CD_HEAL_WOLF, 0);
-                int CD_HEAL_GOLEM = villager.getAttachedOrElse(VILLAGER_CD_HEAL_IRON_GOLEM, 0);
+                int CD_HEAL_OTHERS = villager.getAttachedOrElse(VillagerEntityMixin.CD_HEAL_OTHERS, 0);
+                int CD_HEAL_WOLF = villager.getAttachedOrElse(VillagerEntityMixin.CD_HEAL_WOLF, 0);
+                int CD_HEAL_GOLEM = villager.getAttachedOrElse(CD_HEAL_IRON_GOLEM, 0);
 
                 int villagerCount = getVillagerCount(villager);
                 float healStrength = villagerCount >= 3 ? villager.getHealth() * 0.3f + (0.1f * villagerCount) : villager.getHealth() * 0.3f;
@@ -113,7 +129,7 @@ public class VillagerEntityMixin {
 
                         villager.getNavigation().moveTo(others, speed);
                         others.heal(healStrength);
-                        villager.setAttached(VILLAGER_CD_HEAL_OTHERS, 30);
+                        villager.setAttached(VillagerEntityMixin.CD_HEAL_OTHERS, 30);
                         healEffect(level, villager, others);
                     }
                 }
@@ -133,7 +149,7 @@ public class VillagerEntityMixin {
                         villager.lookAt(wolf, 10, 10);
                         wolf.heal(healStrength);
                         wolf.setAttached(WOLF_TRY_SAVE_POINTS, currentPoints - 1);
-                        villager.setAttached(VILLAGER_CD_HEAL_WOLF, 60);
+                        villager.setAttached(VillagerEntityMixin.CD_HEAL_WOLF, 60);
                         healEffect(level, villager, wolf);
                     }
                 }
@@ -147,7 +163,7 @@ public class VillagerEntityMixin {
 
                         villager.getNavigation().moveTo(golem, speed);
                         golem.heal(healStrength * 2f);
-                        villager.setAttached(VILLAGER_CD_HEAL_IRON_GOLEM, 90);
+                        villager.setAttached(CD_HEAL_IRON_GOLEM, 90);
                         healEffect(level, villager, golem);
                     }
                 }
@@ -158,7 +174,7 @@ public class VillagerEntityMixin {
     @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
     private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         Villager villager = (Villager) (Object) this;
-        if (player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) > 15) {
+        if (player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) > 20) {
             if (!villager.level().isClientSide()) {
                 villager.makeSound(SoundEvents.VILLAGER_NO);
             }
@@ -171,24 +187,10 @@ public class VillagerEntityMixin {
     @Inject(method = "updateSpecialPrices", at = @At("TAIL"))
     private void villagerVerdantTrades(Player player, CallbackInfo ci) {
         Villager villager = (Villager) (Object) this;
-        boolean isCleric = villager.getVillagerData().profession().is(Predicate.isEqual(VillagerProfession.CLERIC));
-        boolean inVerdant = villager.level().getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
+        if (!villager.getAttachedOrElse(VERDANT_TYPE, false)) return;
+        if (player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) > 20) return;
 
-        if (!isCleric || !inVerdant) return;
-
-        int rerollCD = villager.getAttachedOrElse(VILLAGER_CD_DISCOUNT_REROLL, 0);
-        float modifier = villager.getAttachedOrElse(VILLAGER_DISCOUNT_MODIFIER, 0.0f);
-        float additional = villager.level().getBiome(villager.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES) ? 0.25f : 0.0f;
-
-        float MIN_MODIFIER = 0.0f;
-        float MAX_MODIFIER = 0.75f;
-        int REROLL_INTERVAL = 1440; // 24 minutes
-
-        if (rerollCD <= 0 || modifier <= 0.0f) {
-            modifier = MIN_MODIFIER + villager.level().getRandom().nextFloat() * ((MAX_MODIFIER + additional) - MIN_MODIFIER);
-            villager.setAttached(VILLAGER_DISCOUNT_MODIFIER, modifier);
-            villager.setAttached(VILLAGER_CD_DISCOUNT_REROLL, REROLL_INTERVAL);
-        }
+        float modifier = villager.getAttachedOrElse(DISCOUNT_MODIFIER, 0.0f);
 
         for (MerchantOffer offer : villager.getOffers()) {
             int costReduction = (int) Math.floor(modifier * (double) offer.getBaseCostA().getCount());
@@ -231,5 +233,10 @@ public class VillagerEntityMixin {
     @Unique
     private static AABB scanner(Villager villager, int size) {
         return villager.getBoundingBox().inflate(size);
+    }
+
+    @Unique
+    private static boolean hasProfession(Villager villager, ResourceKey<VillagerProfession> profession) {
+        return villager.getVillagerData().profession().is(Predicate.isEqual(profession));
     }
 }

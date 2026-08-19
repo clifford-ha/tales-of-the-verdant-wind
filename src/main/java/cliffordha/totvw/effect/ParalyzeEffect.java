@@ -42,7 +42,8 @@ public class ParalyzeEffect extends MobEffect {
 
         if (entity instanceof Mob mob && !entity.is(EntityType.PLAYER)) {
             mob.setNoAi(true);
-        } else if (entity instanceof Player) {
+        } else if (entity instanceof Player player) {
+            if (player.isCreative() || player.isSpectator()) return;
             addModifier(attributes, VWIdentifiers.EFFECT_PARALYZE,
                     Attributes.ARMOR, -1000, AttributeModifier.Operation.ADD_VALUE);
 
@@ -68,12 +69,12 @@ public class ParalyzeEffect extends MobEffect {
 
     @Override
     public void onMobRemoved(ServerLevel level, LivingEntity entity, int amplifier, Entity.RemovalReason reason) {
-        removeModifiers(entity);
+        this.removeModifiers(entity);
     }
 
     @Override
     public void onEffectRemoved(MobEffectInstance effectInstance, LivingEntity entity) {
-        removeModifiers(entity);
+        this.removeModifiers(entity);
     }
 
     private void removeModifiers(LivingEntity entity) {

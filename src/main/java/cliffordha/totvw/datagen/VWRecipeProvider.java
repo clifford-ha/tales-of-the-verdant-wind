@@ -37,6 +37,23 @@ public class VWRecipeProvider extends FabricRecipeProvider {
             public void buildRecipes() {
                 HolderLookup.RegistryLookup<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
 
+                shaped(RecipeCategory.MISC, VWBlocks.VERIXIUM_POWDER_BLOCK, 1)
+                        .pattern("XXX")
+                        .pattern("XXX")
+                        .pattern("XXX")
+                        .define('X', VWItems.VERIXIUM_POWDER)
+                        .group("verixium_materials")
+                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .save(output);
+
+                shaped(RecipeCategory.MISC, VWItems.VERIXIUM_POWDER, 1)
+                        .pattern("X")
+                        .define('X', VWBlocks.VERIXIUM_POWDER_BLOCK)
+                        .group("verixium_materials")
+                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .save(output);
+
+
                 shaped(RecipeCategory.MISC, VWItems.VERIXIUM_PAPER, 1)
                         .pattern("X")
                         .pattern("P")
@@ -72,8 +89,17 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         RecipeCategory.MISC,
                         CookingBookCategory.MISC,
                         VWItems.VERIXIUM_POWDER,
-                        750.0F,
+                        650.0F,
                         20 * 90,
+                        "verixium_raw_materials"
+                );
+                oreBlasting(
+                        List.of(VWItems.VERIXIUM_FLUID_BUCKET),
+                        RecipeCategory.MISC,
+                        CookingBookCategory.MISC,
+                        VWItems.VERIXIUM_CHUNK,
+                        900.0F,
+                        20 * 180,
                         "verixium_raw_materials"
                 );
                 shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_SPEAR, 1)

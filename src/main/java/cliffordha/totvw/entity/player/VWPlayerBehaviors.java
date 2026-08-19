@@ -1,9 +1,6 @@
 package cliffordha.totvw.entity.player;
 
-import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.TalesOfTheVerdantWind;
 import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.entity.skill.PlayerSkillDefinition;
 import cliffordha.totvw.entity.skill.SkillUtil;
 import cliffordha.totvw.registry.*;
@@ -73,19 +70,30 @@ public class VWPlayerBehaviors {
                         .and(PlayerCondition.hasArmorWithEnchantment(EquipmentSlot.CHEST, BENEDICTION_OF_THE_VERDANT_MOUNTAINS))
                         .and(PlayerCondition.checkNoAttached(PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND)),
                 (player, level) -> {
-                            if (playerEnchantmentLVL(player, BENEDICTION_OF_THE_VERDANT_MOUNTAINS) < 1) return;
+                            if (entityEnchantmentLVL(player, EquipmentSlot.CHEST, BENEDICTION_OF_THE_VERDANT_MOUNTAINS) < 1) return;
                             runWolfBlessing(player, level);
+                }
+        ));
+        TICK_RULES.add(PlayerBehaviorRule.register(
+                PlayerCondition.tick(0, 30),
+                (player, _) -> {
+                    if (TOTVWConfig.get().SERVER_OTHER_COOLDOWNS) {
+                        depleteCooldown(player, VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT);
+                        depleteCooldown(player, VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT);
+                    }
                 }
         ));
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(),
                 (player, _) -> {
-                    if (TOTVWConfig.get().LOG_ENCHANTMENT_SHOW_PLAYER_CD) VWSkillProcessor.setPlayerConfiguration(player, 0);
+                    if (TOTVWConfig.get().LOG_ENCHANTMENT_SHOW_PLAYER_CD) setPlayerConfiguration(player, 0);
                     if (TOTVWConfig.get().SERVER_SKILL_COOLDOWNS) {
-                        VWSkillProcessor.depleteCooldown(player, PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND);
+                        depleteCooldown(player, PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND);
                     } else {
-                        VWSkillProcessor.setPlayerConfiguration(player, 1);
+                        setPlayerConfiguration(player, 1);
                     }
+
+                    if (!TOTVWConfig.get().SERVER_OTHER_COOLDOWNS) setPlayerOtherConfig(player);
 
                     SkillUtil.notifyReset(player, VERDANT_BLESSING);
                     processCDNotify(player,
@@ -131,7 +139,7 @@ public class VWPlayerBehaviors {
                 removeEffect(wolf, MobEffects.WITHER);
             }
             wolf.heal(triggerHeal);
-            sendToChat(player, VWColors.VERDANT_WIND, true, "Granted §nVerdant Wind's Blessing§r to " + wolfName(wolf));
+            sendToChat(player, VWColors.VERDANT_WIND, true, "You have granted §nVerdant Wind's Blessing§r to " + wolfName(wolf));
 
             VWParticleEffects.triggerBenedictionParticles(player, 1);
             verdantBlessingAfterEffects(level, player);
@@ -142,8 +150,8 @@ public class VWPlayerBehaviors {
         var victim = CURRENT_VICTIM.get();
         if (victim == null) return;
 
-        int BENEDICTION_ACTIVE = playerEnchantmentLVL(player, BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
-        int FIRE_PROTECTION = playerEnchantmentLVL(player, Enchantments.FIRE_PROTECTION);
+        int BENEDICTION_ACTIVE = entityEnchantmentLVL(player, EquipmentSlot.CHEST, BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
+        int FIRE_PROTECTION = entityEnchantmentLVL(player, Enchantments.FIRE_PROTECTION);
 
         boolean inVerdantBiomes = player.level().getBiome(player.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
         boolean inNether = player.level().getBiome(player.blockPosition()).is(BiomeTags.IS_NETHER);
@@ -175,27 +183,17 @@ public class VWPlayerBehaviors {
 
     private static void wireItemUseEvent() {
         UseItemCallback.EVENT.register((player, level, _) -> {
-            if (!TOTVWConfig.get().SERVER_ITEM_COOLDOWNS) return InteractionResult.PASS;
             ItemStack mainHand = player.getItemBySlot(EquipmentSlot.MAINHAND);
             if (level.isClientSide()) return InteractionResult.PASS;
             if (!player.isCrouching()) return InteractionResult.PASS;
             if (player.isSpectator()) return InteractionResult.PASS;
-            if (playerEnchantmentLVL(player, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) <= 0)
+            if (entityEnchantmentLVL(player, EquipmentSlot.CHEST, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) <= 0)
                 return InteractionResult.PASS;
 
             boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS))
                     || mainHand.tags().anyMatch(Predicate.isEqual(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)));
 
-            /*
-            boolean isItem = (mainHand.tags().anyMatch(Predicate.isEqual(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS))
-                    || mainHand.tags().anyMatch(Predicate.isEqual(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)))
-                    && !(mainHand.getItem() instanceof VWItemBlessingsInstance);
-
-             */
-
             if (!isItem) return InteractionResult.PASS;
-
-            if (player.getCooldowns().isOnCooldown(mainHand)) return InteractionResult.PASS;
 
             boolean applied = VWItemBlessings.tryApply(player);
             if (applied) {
@@ -205,9 +203,6 @@ public class VWPlayerBehaviors {
             }
         });
     }
-
-
-
 
     private static final ThreadLocal<LivingEntity> CURRENT_VICTIM = new ThreadLocal<>();
     private static void wireOnDamageEvent() {
@@ -245,29 +240,6 @@ public class VWPlayerBehaviors {
                     for (PlayerBehaviorRule rule : TICK_RULES) {
                         rule.evaluate(player, serverLevel);
                     }
-                });
-            }
-        });
-
-        // Debugging
-        if (!TOTVW.IN_DEVELOPMENT) return;
-        ServerTickEvents.START_SERVER_TICK.register((MinecraftServer server) -> {
-            for (var serverLevel : server.getAllLevels()) {
-                serverLevel.getEntities(EntityType.PLAYER, _ -> true).forEach(player -> {
-                    if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_IS_DEV_MODE, false)) {
-                        player.setAttached(VWAttachments.Player.PLAYER_IS_DEV_MODE, true);
-                    }
-
-                    /*
-                    List<Wolf> wolves = serverLevel.getEntities(
-                            EntityType.WOLF,
-                            player.getBoundingBox().inflate(32),
-                            wolf -> wolf.isTame() && wolf.getUUID() != player.getUUID());
-
-                    if (wolves.isEmpty()) return;
-                    for (Wolf wolf : wolves) {
-                        wolf.setOwner(player);
-                    }*/
                 });
             }
         });

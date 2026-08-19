@@ -15,7 +15,10 @@
       ]
     },
     "state": {
-      "Name": "tales-of-the-verdant-wind:verdant_moss_block"
+      "Name": "tales-of-the-verdant-wind:verdant_moss_block",
+      "Properties": {
+        "snowy": "false"
+      }
     }
   }
 }

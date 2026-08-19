@@ -39,7 +39,7 @@ public interface PlayerCondition {
     }
 
     static PlayerCondition checkNoAttached(AttachmentType<Integer> type) {
-        return (wolf, level) -> wolf.getAttachedOrElse(type, 0) == 0;
+        return (player, level) -> !player.hasAttached(type) || player.getAttachedOrElse(type, 0) == 0;
     }
 
     static PlayerCondition tick(int min, int sec) {

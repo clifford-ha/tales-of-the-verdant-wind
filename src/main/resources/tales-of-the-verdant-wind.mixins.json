@@ -7,6 +7,7 @@
     "BerryBushBlockMixin",
     "IronGolemEntityMixin",
     "PlayerEntityMixin",
+    "PowderSnowBlockMixin",
     "TamableAnimalMixin",
     "VillagerEntityMixin",
     "WolfEntityMixin",

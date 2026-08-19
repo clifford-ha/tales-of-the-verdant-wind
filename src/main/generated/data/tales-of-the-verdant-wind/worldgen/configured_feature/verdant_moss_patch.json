@@ -11,7 +11,10 @@
     "ground_state": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "tales-of-the-verdant-wind:verdant_moss_block"
+        "Name": "tales-of-the-verdant-wind:verdant_moss_block",
+        "Properties": {
+          "snowy": "false"
+        }
       }
     },
     "replaceable": "#tales-of-the-verdant-wind:verdant_moss_replaceable",

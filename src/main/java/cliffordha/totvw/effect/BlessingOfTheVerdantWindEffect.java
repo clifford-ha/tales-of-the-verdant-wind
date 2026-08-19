@@ -14,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 
 import java.util.List;
@@ -34,17 +35,18 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
         if (entity instanceof Monster) return;
+        if (entity instanceof Enemy) return;
         if (!entity.hasEffect(MobEffects.INVISIBILITY)) {
             VWParticleEffects.spawnBlessingParticlesEntity(entity, 1);
         }
         AttributeMap attributes = entity.getAttributes();
 
-        double atkDamage = 0.15 + (amplifier * 0.15);
+        double atkDamage = 2;
         double burnTime = 0.2 + (amplifier * 0.2);
-        double health = 0.2 + (Math.min(amplifier, 4) * 0.2);
+        double health = Math.min(0.2 + (amplifier * 0.2), 0.5);
 
         addModifier(attributes, VWIdentifiers.EFFECT_BLESSING_OF_THE_VERDANT_WIND,
-                Attributes.ATTACK_DAMAGE, atkDamage, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+                Attributes.ATTACK_DAMAGE, atkDamage, AttributeModifier.Operation.ADD_VALUE);
 
         addModifier(attributes, VWIdentifiers.EFFECT_BLESSING_OF_THE_VERDANT_WIND,
                 Attributes.BURNING_TIME, - burnTime, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);

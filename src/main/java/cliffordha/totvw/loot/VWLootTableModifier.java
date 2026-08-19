@@ -1,5 +1,6 @@
 package cliffordha.totvw.loot;
 
+import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWItems;
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
@@ -20,7 +21,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 public class VWLootTableModifier {
     public static void modifyLootTables(ResourceKey<LootTable> key, FabricLootTableBuilder builder, LootTableSource source, HolderLookup.Provider provider) {
 
-        if(BuiltInLootTables.ANCIENT_CITY.equals(key)) {
+        if (BuiltInLootTables.ANCIENT_CITY.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
                     .when(LootItemRandomChanceCondition.randomChance(0.07f))
@@ -29,7 +30,7 @@ public class VWLootTableModifier {
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
             builder.pool(poolBuilder.build());
         }
-        if(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
+        if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
                     .when(LootItemRandomChanceCondition.randomChance(0.1f))
@@ -38,7 +39,7 @@ public class VWLootTableModifier {
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
             builder.pool(poolBuilder.build());
         }
-        if(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
+        if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
                     .when(LootItemRandomChanceCondition.randomChance(0.1f))
@@ -47,7 +48,7 @@ public class VWLootTableModifier {
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
             builder.pool(poolBuilder.build());
         }
-        if(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
+        if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
                     .when(LootItemRandomChanceCondition.randomChance(0.1f))
@@ -56,7 +57,7 @@ public class VWLootTableModifier {
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
             builder.pool(poolBuilder.build());
         }
-        if(BuiltInLootTables.BURIED_TREASURE.equals(key)) {
+        if (BuiltInLootTables.BURIED_TREASURE.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
                     .when(LootItemRandomChanceCondition.randomChance(0.03f))
@@ -65,11 +66,19 @@ public class VWLootTableModifier {
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
             builder.pool(poolBuilder.build());
         }
-        if(BuiltInLootTables.BABY_VILLAGER_GIFT.equals(key)) {
+        if (BuiltInLootTables.BABY_VILLAGER_GIFT.equals(key)) {
             LootPool.Builder poolBuilder = LootPool.lootPool()
                     .setRolls(ConstantValue.exactly(1))
                     .when(LootItemRandomChanceCondition.randomChance(0.07f))
                     .add(LootItem.lootTableItem(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE).apply(new SetEnchantmentsFunction.Builder()))
+                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
+            builder.pool(poolBuilder.build());
+        }
+        if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_UNIQUE.equals(key)) {
+            LootPool.Builder poolBuilder = LootPool.lootPool()
+                    .setRolls(ConstantValue.exactly(1))
+                    .when(LootItemRandomChanceCondition.randomChance(0.03f))
+                    .add(LootItem.lootTableItem(VWBlocks.LODESTONE_WIND_CORE))
                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
             builder.pool(poolBuilder.build());
         }

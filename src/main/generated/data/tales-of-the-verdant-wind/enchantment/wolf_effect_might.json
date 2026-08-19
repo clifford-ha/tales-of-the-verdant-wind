@@ -14,6 +14,16 @@
         "attribute": "minecraft:attack_damage",
         "id": "tales-of-the-verdant-wind:wolf_effect_might",
         "operation": "add_value"
+      },
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": -0.1,
+          "per_level_above_first": -0.05
+        },
+        "attribute": "minecraft:fall_damage_multiplier",
+        "id": "tales-of-the-verdant-wind:wolf_effect_might",
+        "operation": "add_multiplied_total"
       }
     ]
   },

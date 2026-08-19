@@ -227,10 +227,21 @@ public class TOTVWConfigScreen {
                                 TOTVWConfig.get().SERVER_SKILL_COOLDOWNS)
                         .setDefaultValue(true)
                         .setTooltip(text(
-                                "Allow skill and item cooldowns\n"
+                                "Allow skill cooldowns\n"
                                         + "If disabled, active cooldowns will reset."
                         ))
                         .setSaveConsumer(value -> TOTVWConfig.get().SERVER_SKILL_COOLDOWNS = value)
+                        .build()
+        );
+        enchantmentSkillSettings.add(
+                entryBuilder.startBooleanToggle(
+                                Component.literal("Item Cooldowns"),
+                                TOTVWConfig.get().SERVER_ITEM_COOLDOWNS)
+                        .setDefaultValue(true)
+                        .setTooltip(text(
+                                "Allow item-specific cooldowns."
+                        ))
+                        .setSaveConsumer(value -> TOTVWConfig.get().SERVER_ITEM_COOLDOWNS = value)
                         .build()
         );
         enchantmentSkillSettings.add(

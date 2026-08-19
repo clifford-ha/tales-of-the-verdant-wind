@@ -19,7 +19,14 @@ public class TOTVW {
     public static void sendClassRegisterLog(String className) {
         TOTVW.LOGGER.info("{} registered!", className);
     }
+
     public static void sendInfo(String info) {
         TOTVW.LOGGER.info(info);
+    }
+    public static void sendWarning(String info) {
+        TOTVW.LOGGER.warn(info);
+    }
+    public static void sendError(String info) {
+        TOTVW.LOGGER.error(info);
     }
 }
