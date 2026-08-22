@@ -1,7 +1,7 @@
 package cliffordha.totvw.util;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEffects;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
@@ -26,7 +26,7 @@ public final class VWEffectOverlays {
     }
 
     private static void bloodlustEffect(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-        if (!TOTVWConfig.get().CLIENT_BLOODLUST_EFFECT_OVERLAY) return;
+        if (!VWConfig.get().CLIENT_BLOODLUST_EFFECT_OVERLAY) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
         if (mc.player.isCreative()) return;

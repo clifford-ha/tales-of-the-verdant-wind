@@ -1,6 +1,6 @@
 package cliffordha.totvw.item.scatteredpages;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
@@ -41,7 +41,7 @@ public class VWEnchantmentsHandbook {
                 + nextParagraph
                 + "• Your companion can also share their stack through " + fText(UNDERLINED, "Revival by Proxy") + cText(DARK_GRAY, " (Enabled by default)") + dot
                 + nextParagraph
-                + "• When your health drops below " + cText(AQUA, TOTVWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD + "") + ", it will grant " + cText(AQUA, "Blessing of the Verdant Wind (30 sec) and temporary immunity for 10 seconds") + ". This buff also applies to your companion when you have the enchantment and their health drops below said threshold. The duration of cooldown depends on your current game difficulty. This buff is considered a skill."
+                + "• When your health drops below " + cText(AQUA, VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD + "") + ", it will grant " + cText(AQUA, "Blessing of the Verdant Wind (30 sec) and temporary immunity for 10 seconds") + ". This buff also applies to your companion when you have the enchantment and their health drops below said threshold. The duration of cooldown depends on your current game difficulty. This buff is considered a skill."
                 + nextParagraph
                 + "• Passive: If wolf gets hurt and the damage exceeds 50% of their max health, it will be entirely ignored (except if the damage comes from /kill command). This passive has a cooldown of 15 seconds."
                 + nextParagraph

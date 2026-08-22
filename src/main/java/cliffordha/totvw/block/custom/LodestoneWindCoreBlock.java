@@ -1,6 +1,6 @@
 package cliffordha.totvw.block.custom;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWBiomeTags;
@@ -48,9 +48,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -686,19 +684,19 @@ public class LodestoneWindCoreBlock extends Block {
 
     private static final Logger STAT_WINDCORE = LoggerFactory.getLogger("TOTVW/Lodestone Wind Core");
     private static void sendToLogger(String stat, String message) {
-        if (stat.equals(LOG_ENERGY_UPDATES) && TOTVWConfig.get().LOG_WINDCORE_ENERGY_CHANGES) {
+        if (stat.equals(LOG_ENERGY_UPDATES) && VWConfig.get().LOG_WINDCORE_ENERGY_CHANGES) {
             stat = LOG_ENERGY_UPDATES;
             sendToServer(stat, message);
         }
-        if (stat.equals(LOG_RECORD) && TOTVWConfig.get().LOG_WINDCORE_RECORD) {
+        if (stat.equals(LOG_RECORD) && VWConfig.get().LOG_WINDCORE_RECORD) {
             stat = LOG_RECORD;
             sendToServer(stat, message);
         }
-        if (stat.equals(LOG_ENTITY_EVENT) && TOTVWConfig.get().LOG_WINDCORE_ENTITY_EVENT) {
+        if (stat.equals(LOG_ENTITY_EVENT) && VWConfig.get().LOG_WINDCORE_ENTITY_EVENT) {
             stat = LOG_ENTITY_EVENT;
             sendToServer(stat, message);
         }
-        if (stat.equals(LOG_ENTITY_CONVERSION) && TOTVWConfig.get().LOG_WINDCORE_ENTITY_CONVERSION) {
+        if (stat.equals(LOG_ENTITY_CONVERSION) && VWConfig.get().LOG_WINDCORE_ENTITY_CONVERSION) {
             stat = LOG_ENTITY_CONVERSION;
             sendToServer(stat, message);
         }

@@ -54,8 +54,8 @@ public class ScatteredPageItem extends Item {
                         + "\"By virtue granted by our god, 'we', the people who reside among the Verdant Forest, grant the qualified Scholars access to resources nurtured by our land for an indefinite period of time. Purpose of access extends only to the following agreed upon use: studying, developing, and manufacturing solutions that may bring end to disasters caused by the creatures from beyond.\""
                         + nextParagraph
 
-                        + "Grantor(s): Signed by the people's chief." + nextLine
-                        + "Grantee(s): Scholars from the Nation of Erudites"
+                        + "Grantor(s): Signed by " + bText("the people's chief.") + nextLine
+                        + "Grantee(s): Scholars from " + bText("the Nation of Erudites")
 
                         + addSeparator
                         + fText(BOLD, "ABSTRACT") + nextLine

@@ -1,9 +1,19 @@
 {
   "values": [
-    "minecraft:grass_block",
-    "minecraft:dirt",
-    "minecraft:deepslate",
-    "minecraft:coarse_dirt",
-    "minecraft:stone"
+    "#minecraft:dirt",
+    {
+      "id": "#minecraft:stone_ore_replaceables",
+      "required": false
+    },
+    {
+      "id": "#minecraft:deepslate_ore_replaceables",
+      "required": false
+    },
+    {
+      "id": "#minecraft:sand",
+      "required": false
+    },
+    "minecraft:gravel",
+    "minecraft:grass_block"
   ]
 }

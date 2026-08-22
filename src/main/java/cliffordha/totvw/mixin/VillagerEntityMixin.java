@@ -1,6 +1,6 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWBiomeTags;
@@ -200,7 +200,7 @@ public class VillagerEntityMixin {
 
     @Unique
     private static void depleteCD(Villager villager, AttachmentType<Integer> cooldown) {
-        if (TOTVWConfig.get().SERVER_OTHER_COOLDOWNS) {
+        if (VWConfig.get().SERVER_OTHER_COOLDOWNS) {
             VWSkillProcessor.depleteCooldown(villager, cooldown);
         } else {
             villager.setAttached(cooldown, 0);

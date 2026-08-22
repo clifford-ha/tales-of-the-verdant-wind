@@ -1,12 +1,11 @@
 package cliffordha.totvw;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
+import cliffordha.totvw.loot.VWLootTables;
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.loot.VWLootTableModifier;
 import cliffordha.totvw.world.*;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import terrablender.api.TerraBlenderApi;
 
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
@@ -35,12 +34,11 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		VWBiomeModifications.register();
 		VWAttachments.register();
 
-		TOTVWConfig.load();
-		TOTVWConfig.save();
-
-		LootTableEvents.MODIFY.register(VWLootTableModifier::modifyLootTables);
-
+		VWLootTables.registerModifiers();
 		VWCommands.register();
+
+		VWConfig.load();
+		VWConfig.save();
 	}
 
 	@Override

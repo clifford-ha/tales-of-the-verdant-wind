@@ -1,6 +1,6 @@
 package cliffordha.totvw.entity.wolf;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.util.VWUtil;
 import cliffordha.totvw.entity.skill.WolfSkillDefinition;
@@ -195,11 +195,11 @@ public class VWWolfBehaviors {
                 }
         ));
         TICK_RULES.add(WolfBehaviorRule.forAny(WolfCondition.tick(), (wolf, _) -> {
-            if (TOTVWConfig.get().LOG_ENCHANTMENT_SHOW_WOLF_CD) setWolfConfiguration(wolf, 0);
-            if (TOTVWConfig.get().SERVER_OTHER_COOLDOWNS) {
+            if (VWConfig.get().LOG_ENCHANTMENT_SHOW_WOLF_CD) setWolfConfiguration(wolf, 0);
+            if (VWConfig.get().SERVER_OTHER_COOLDOWNS) {
                 depleteCooldown(wolf, TIMER_AIR_SUPPLY);
             }
-            if (TOTVWConfig.get().SERVER_SKILL_COOLDOWNS) {
+            if (VWConfig.get().SERVER_SKILL_COOLDOWNS) {
                 depleteCooldown(wolf, CD_BLESSING_OF_THE_VERDANT_WIND);
                 depleteCooldown(wolf, CD_BLOODLUST_SKILL_PARALYZE);
                 depleteCooldown(wolf, CD_MIGHT_SKILL_RUPTURE);
@@ -237,16 +237,16 @@ public class VWWolfBehaviors {
     }
     private static void runPlayerBlessing(Wolf wolf, ServerLevel level) {
         boolean checkFirst = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0) > 1
-                && TOTVWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK
-                && !TOTVWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING;
+                && VWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK
+                && !VWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING;
         if (checkFirst) return;
 
         LivingEntity player = wolf.getOwner();
         if (player == null) return;
         if (!player.isAlive()) return;
 
-        var SCAN_DISTANCE = TOTVWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
-        var HEALTH_THRESHOLD = TOTVWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD * 0.01f;
+        var SCAN_DISTANCE = VWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
+        var HEALTH_THRESHOLD = VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD * 0.01f;
 
         if (player.getHealth() >= player.getMaxHealth() * HEALTH_THRESHOLD) return;
         if (wolf.distanceTo(player) > SCAN_DISTANCE) return;

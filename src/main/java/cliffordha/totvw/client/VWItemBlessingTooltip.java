@@ -1,6 +1,6 @@
 package cliffordha.totvw.client;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWItems;
@@ -21,8 +21,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,7 +93,7 @@ public final class VWItemBlessingTooltip {
         String LORE_verixiumIngot;
 
 
-        if (!TOTVWConfig.get().CLIENT_TRANSLATE_LANGUAGE) {
+        if (!VWConfig.get().CLIENT_TRANSLATE_LANGUAGE) {
             LORE_verixiumChunk = "\"For the land that they call 'home' and for the people they protect.\"";
             LORE_condensedVerixium0 = "\"For the land that they call 'home' and for the people they protect.";
             LORE_condensedVerixium1 = "O God of the Verdant Winds...\"";

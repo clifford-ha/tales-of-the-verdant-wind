@@ -1,7 +1,6 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.datagen.VWDamageTypes;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWItemTags;
@@ -237,14 +236,14 @@ public abstract class WolfEntityMixin extends LivingEntity {
             sendToChat(wolf, VWColors.VERDANT_WIND_MUTED,STACK_AFTER + " Benediction stack remaining for " + name);
         }
 
-        if (TOTVWConfig.get().SERVER_TELL_OWNER_WHO_HURT_WOLF) {
+        if (VWConfig.get().SERVER_TELL_OWNER_WHO_HURT_WOLF) {
             if (wolf.getOwner() != null && wolf.getOwner() instanceof Player player) {
                 Entity attacker = source.getEntity();
                 sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, false, attacker.getPlainTextName() + " tried to kill " + name + ".");
             }
         }
 
-        if (TOTVWConfig.get().SERVER_TELEPORT_AFTER_SAVE) {
+        if (VWConfig.get().SERVER_TELEPORT_AFTER_SAVE) {
             if (!wolf.isTame()) return;
             LivingEntity owner = wolf.getOwner();
             BlockPos spawn = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_RESPAWN_POINT, wolf.blockPosition());
@@ -405,7 +404,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
             //return;
         }
 
-        if (TOTVWConfig.get().SERVER_WOLF_DMG_DISTRIBUTION) {
+        if (VWConfig.get().SERVER_WOLF_DMG_DISTRIBUTION) {
             if (!wolf.canArmorAbsorb(source)) return;
 
             int damageBefore = armor.getDamageValue();
@@ -424,7 +423,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
             super.actuallyHurt(level, source, finalWolfDMG);
 
-            if (TOTVWConfig.get().DEBUG_PRINT_LOGS) { sendToChat(wolf, VWColors.DEFAULT_MUTED, "TrueDMG: " + damage + " §e| FinalWolfDMG: " + finalWolfDMG + " §d| FinalArmorDMG: " + finalArmorDMG); }
+            if (VWConfig.get().DEBUG_PRINT_LOGS) { sendToChat(wolf, VWColors.DEFAULT_MUTED, "TrueDMG: " + damage + " §e| FinalWolfDMG: " + finalWolfDMG + " §d| FinalArmorDMG: " + finalArmorDMG); }
             ci.cancel();
         }
     }
@@ -439,7 +438,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
     private static final Logger SEND = LoggerFactory.getLogger("TOTVW/WolfEntityMixin");
     @Unique
     private static void sendToServer(String message) {
-        if (TOTVWConfig.get().MIXIN_UPDATE_LOGS) {
+        if (VWConfig.get().MIXIN_UPDATE_LOGS) {
             SEND.info(message);
         }
     }

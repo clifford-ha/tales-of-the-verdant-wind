@@ -1,6 +1,6 @@
 package cliffordha.totvw.entity.player;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.entity.skill.PlayerSkillDefinition;
 import cliffordha.totvw.entity.skill.SkillUtil;
 import cliffordha.totvw.registry.*;
@@ -77,7 +77,7 @@ public class VWPlayerBehaviors {
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(0, 30),
                 (player, _) -> {
-                    if (TOTVWConfig.get().SERVER_OTHER_COOLDOWNS) {
+                    if (VWConfig.get().SERVER_OTHER_COOLDOWNS) {
                         depleteCooldown(player, VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT);
                         depleteCooldown(player, VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT);
                     }
@@ -86,14 +86,14 @@ public class VWPlayerBehaviors {
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(),
                 (player, _) -> {
-                    if (TOTVWConfig.get().LOG_ENCHANTMENT_SHOW_PLAYER_CD) setPlayerConfiguration(player, 0);
-                    if (TOTVWConfig.get().SERVER_SKILL_COOLDOWNS) {
+                    if (VWConfig.get().LOG_ENCHANTMENT_SHOW_PLAYER_CD) setPlayerConfiguration(player, 0);
+                    if (VWConfig.get().SERVER_SKILL_COOLDOWNS) {
                         depleteCooldown(player, PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND);
                     } else {
                         setPlayerConfiguration(player, 1);
                     }
 
-                    if (!TOTVWConfig.get().SERVER_OTHER_COOLDOWNS) setPlayerOtherConfig(player);
+                    if (!VWConfig.get().SERVER_OTHER_COOLDOWNS) setPlayerOtherConfig(player);
 
                     SkillUtil.notifyReset(player, VERDANT_BLESSING);
                     processCDNotify(player,
@@ -108,8 +108,8 @@ public class VWPlayerBehaviors {
     private static void runWolfBlessing(Player player, ServerLevel level) {
         if (!(level instanceof ServerLevel serverLevel)) return;
 
-        double SCAN_DISTANCE = TOTVWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
-        float HEALTH_THRESHOLD = TOTVWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD * 0.01f;
+        double SCAN_DISTANCE = VWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
+        float HEALTH_THRESHOLD = VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD * 0.01f;
 
         List<Wolf> wolves = serverLevel.getEntities(
                 EntityType.WOLF,

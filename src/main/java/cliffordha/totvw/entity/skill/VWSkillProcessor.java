@@ -1,6 +1,6 @@
 package cliffordha.totvw.entity.skill;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.VWAttachments;
 import cliffordha.totvw.registry.VWSounds;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -21,7 +21,7 @@ public class VWSkillProcessor {
     }
 
     public static void playNotification(LivingEntity entity) {
-        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        if (!VWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
         if (!(entity.level() instanceof ServerLevel)) return;
         if (entity instanceof Wolf wolf && wolf.getOwner() != null && wolf.getOwner() instanceof ServerPlayer player) {
             player.level().playLocalSound(player, VWSounds.NOTIFY, SoundSource.PLAYERS, 1.0f, 1.0f);
@@ -31,7 +31,7 @@ public class VWSkillProcessor {
     }
 
     public static void processCDNotify(LivingEntity entity, AttachmentType<Integer> cooldown, AttachmentType<Integer> notify, int color, String... msg) {
-        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        if (!VWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
         int cd = entity.getAttachedOrElse(cooldown, 0);
         int notifyFlag = entity.getAttachedOrElse(notify, 0);
 

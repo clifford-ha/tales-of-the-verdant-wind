@@ -111,11 +111,12 @@ public class VWOverworldBiomes {
         BiomeDefaultFeatures.addDefaultOres(biome);
         BiomeDefaultFeatures.addDefaultSoftDisks(biome);
         biome.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, VWPlacedFeatures.VERDANT_HOLLOWS_KEY);
+        biome.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, VWPlacedFeatures.UNDERGROUND_VERIXIUM_FLUID_POND_KEY);
         biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, VWPlacedFeatures.VERIXIUM_ORE_LARGE_KEY);
         biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, VWPlacedFeatures.VERIXIUM_ORE_SMALL_KEY);
         biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, VWPlacedFeatures.VERIXIUM_ORE_BURIED_KEY);
 
-        biome.addFeature(GenerationStep.Decoration.FLUID_SPRINGS, VWPlacedFeatures.VERIXIUM_FLUID_POND_KEY);
+        biome.addFeature(GenerationStep.Decoration.LAKES, VWPlacedFeatures.VERIXIUM_FLUID_POND_KEY);
         BiomeDefaultFeatures.addDefaultMushrooms(biome);
         BiomeDefaultFeatures.addJungleVines(biome);
 

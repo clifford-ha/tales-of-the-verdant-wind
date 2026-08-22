@@ -48,11 +48,12 @@ public class VWBlockTags extends FabricTagsProvider.BlockTagsProvider {
                 .add(VWBlocks.VERDANT_SPRUCE_DOOR);
 
         valueLookupBuilder(VWBlockTags.VERDANT_MOSS_REPLACEABLE)
-                .add(Blocks.GRASS_BLOCK)
-                .add(Blocks.DIRT)
-                .add(Blocks.DEEPSLATE)
-                .add(Blocks.COARSE_DIRT)
-                .add(Blocks.STONE);
+                .addTag(BlockTags.DIRT)
+                .addOptionalTag(BlockTags.STONE_ORE_REPLACEABLES)
+                .addOptionalTag(BlockTags.DEEPSLATE_ORE_REPLACEABLES)
+                .addOptionalTag(BlockTags.SAND)
+                .add(Blocks.GRAVEL)
+                .add(Blocks.GRASS_BLOCK);
 
 
         valueLookupBuilder(BlockTags.LEAVES)

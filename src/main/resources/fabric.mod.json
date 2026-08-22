@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "tales-of-the-verdant-wind",
-	"version": "1.0.1.200-R",
+	"version": "1.0.2-26.1.2",
 	"name": "Tales of the Verdant Wind",
 	"description": "The verdant mountains—a place where the missing wind rests.",
 	"authors": [
@@ -27,7 +27,7 @@
 			"cliffordha.totvw.TalesOfTheVerdantWind"
 		],
 		"modmenu": [
-			"cliffordha.totvw.config.TOTVWModMenuIntegration"
+          "cliffordha.totvw.config.VWModMenuIntegration"
 		]
 	},
 	"accessWidener": "totvw.classtweaker",
