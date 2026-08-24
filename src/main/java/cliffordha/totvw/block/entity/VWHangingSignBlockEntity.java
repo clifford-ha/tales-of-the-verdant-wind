@@ -15,4 +15,9 @@ public class VWHangingSignBlockEntity extends HangingSignBlockEntity {
     public BlockEntityType<?> getType() {
         return VWBlockEntityTypes.HANGING_SIGN;
     }
+
+    @Override
+    public boolean isValidBlockState(BlockState blockState) {
+        return this.getType().isValid(blockState);
+    }
 }

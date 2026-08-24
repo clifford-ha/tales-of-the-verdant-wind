@@ -43,12 +43,11 @@ public final class VWEffectOverlays {
     }
 
     private static void bloodlustOverlay(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-        if (allowBloodlustOverlay()) return;
+        if (!allowBloodlustOverlay()) return;
         if (player() == null) return;
         if (notSurvival()) return;
 
         if (player().hasEffect(VWEffects.BLOODLUST)) {
-            if (!VWConfig.get().CLIENT_BLOODLUST_EFFECT_OVERLAY) return;
             var playerHealth = player().getHealth();
             float alpha = getAlpha(playerHealth);
             int a = (int) (alpha * 255) & 0xFF;
