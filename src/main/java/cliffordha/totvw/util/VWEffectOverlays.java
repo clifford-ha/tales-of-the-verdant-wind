@@ -12,6 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
+import net.minecraft.world.entity.player.Player;
 
 public final class VWEffectOverlays {
     private static final float BLOODLUST_PULSE_SPEED_MS = (float) (Math.PI * 2.0 / 2000.0);
@@ -20,20 +21,43 @@ public final class VWEffectOverlays {
 
     public static void register() {
         HudElementRegistry.addFirst(
-                register("bloodlust_effect_overlay"),
-                VWEffectOverlays::bloodlustEffect
+                register("bloodlust_overlay"),
+                VWEffectOverlays::bloodlustOverlay
+        );
+        HudElementRegistry.addFirst(
+                register("paralyze_overlay"),
+                VWEffectOverlays::paralyzeOverlay
         );
     }
+    private static int getWidth() {return Minecraft.getInstance().getWindow().getGuiScaledWidth();}
+    private static int getHeight() {return Minecraft.getInstance().getWindow().getGuiScaledHeight();}
 
-    private static void bloodlustEffect(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-        if (!VWConfig.get().CLIENT_BLOODLUST_EFFECT_OVERLAY) return;
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null) return;
-        if (mc.player.isCreative()) return;
-        if (!mc.player.hasEffect(VWEffects.BLOODLUST)) return;
+    private static void paralyzeOverlay(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+        if (overlaysDisabled()) return;
+        if (player() == null) return;
+        if (notSurvival()) return;
 
-        var playerHealth = mc.player.getHealth();
-        var playerMaxHealth = mc.player.getMaxHealth();
+        if (player().hasEffect(VWEffects.PARALYZE)) {
+            graphics.fill(0, 0, getWidth(), getHeight(), ARGB.color(0.75f, 0x000000));
+        }
+    }
+
+    private static void bloodlustOverlay(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+        if (!allowBloodlustOverlay()) return;
+        if (player() == null) return;
+        if (notSurvival()) return;
+
+        if (player().hasEffect(VWEffects.BLOODLUST)) {
+            var playerHealth = player().getHealth();
+            float alpha = getAlpha(playerHealth);
+            int a = (int) (alpha * 255) & 0xFF;
+
+            graphics.fill(0, 0, getWidth(), getHeight(), ARGB.color(a, VWColors.BLOODLUST_EFFECT));
+        }
+    }
+
+    private static float getAlpha(float playerHealth) {
+        var playerMaxHealth = player().getMaxHealth();
 
         float max;
         if (playerHealth <= playerMaxHealth * 0.2) {
@@ -48,15 +72,22 @@ public final class VWEffectOverlays {
             max = 0.2f;
         }
 
-        int w = mc.getWindow().getGuiScaledWidth();
-        int h = mc.getWindow().getGuiScaledHeight();
-
         float sine = Mth.sin(Util.getMillis() * BLOODLUST_PULSE_SPEED_MS);
-        float t    = sine * 0.5f + 0.5f;
-        float alpha = Mth.lerp(t, 0, max);
-        int   a     = (int) (alpha * 255) & 0xFF;
-
-        graphics.fill(0, 0, w, h, ARGB.color(a, VWColors.BLOODLUST_EFFECT));
+        float t = sine * 0.5f + 0.5f;
+        return Mth.lerp(t, 0, max);
+    }
+    private static boolean overlaysDisabled() {
+        return !VWConfig.get().CLIENT_ALLOW_EFFECT_OVERLAYS;
+    }
+    private static boolean allowBloodlustOverlay() {
+        if (overlaysDisabled()) return false;
+        return VWConfig.get().CLIENT_BLOODLUST_EFFECT_OVERLAY;
+    }
+    private static Player player() {
+        return Minecraft.getInstance().player;
+    }
+    private static boolean notSurvival() {
+        return player().isCreative() || player().isSpectator();
     }
 
     private static Identifier register(String name) {

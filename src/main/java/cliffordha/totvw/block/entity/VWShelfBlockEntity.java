@@ -15,4 +15,9 @@ public class VWShelfBlockEntity extends ShelfBlockEntity {
     public BlockEntityType<?> getType() {
         return VWBlockEntityTypes.SHELF;
     }
+
+    @Override
+    public boolean isValidBlockState(BlockState blockState) {
+        return this.getType().isValid(blockState);
+    }
 }
