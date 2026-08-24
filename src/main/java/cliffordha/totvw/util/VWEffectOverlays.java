@@ -43,7 +43,7 @@ public final class VWEffectOverlays {
     }
 
     private static void bloodlustOverlay(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-        if (allowBloodlustOverlay()) return;
+        if (!allowBloodlustOverlay()) return;
         if (player() == null) return;
         if (notSurvival()) return;
 
