@@ -2,6 +2,8 @@ package cliffordha.totvw.item.scatteredpages;
 
 import cliffordha.totvw.client.screen.ScatteredPageScreen;
 import cliffordha.totvw.registry.VWColors;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -220,6 +222,7 @@ public class ScatteredPageItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
+    @Environment(EnvType.CLIENT)
     private static void openScreen(String title, String[] pages) {
         if (title.equals(ENCHANTMENTS_HANDBOOK_TITLE)) {
             Minecraft.getInstance().setScreen(new ScatteredPageScreen(0, ENCHANTMENTS_HANDBOOK_TITLE, pages));

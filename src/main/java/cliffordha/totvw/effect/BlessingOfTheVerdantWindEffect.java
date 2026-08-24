@@ -1,5 +1,6 @@
 package cliffordha.totvw.effect;
 
+import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.VWIdentifiers;
 import cliffordha.totvw.registry.VWParticleEffects;
 import cliffordha.totvw.registry.VWColors;
@@ -69,6 +70,9 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
             entity.heal(heal);
             if (!entity.hasEffect(MobEffects.INVISIBILITY)) {
                 VWParticleEffects.benedictionEnvironmentParticleEntity(entity);
+            }
+            if (entity.hasEffect(PARALYZE)) {
+                entity.removeEffect(PARALYZE);
             }
         }
         return super.applyEffectTick(serverLevel, entity, amplifier);

@@ -2,15 +2,25 @@ package cliffordha.totvw.entity;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.VWConfig;
+import cliffordha.totvw.datagen.VWAdvancements;
 import cliffordha.totvw.entity.player.VWPlayerBehaviors;
 import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.registry.*;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -20,8 +30,11 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +45,7 @@ import static cliffordha.totvw.util.VWUtil.*;
 public class VWGlobalEntityBehaviors {
     public static void register() {
         onDamageOrDeathEvent();
+
         if (TOTVW.IN_DEVELOPMENT) {
             developmentTick();
         }

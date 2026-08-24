@@ -50,22 +50,33 @@ public class VWConfigScreen {
                         .setSaveConsumer(value -> VWConfig.get().CLIENT_MOD_SOUNDS = value)
                         .build()
         );
-        client.addEntry(
+
+        var effectOverlaySettings = entryBuilder.startSubCategory(Component.literal("Effect Screen Overlays"));
+        effectOverlaySettings.add(
                 entryBuilder.startBooleanToggle(
-                                Component.literal("Bloodlust Effect Screen Overlay"),
+                                Component.literal("Allow Effect Overlays"),
+                                VWConfig.get().CLIENT_ALLOW_EFFECT_OVERLAYS)
+                        .setDefaultValue(true)
+                        .setTooltip(text("When enabled, certain mob effects will affect the screen."))
+                        .setSaveConsumer(value -> VWConfig.get().CLIENT_ALLOW_EFFECT_OVERLAYS = value)
+                        .build()
+        );
+        effectOverlaySettings.add(
+                entryBuilder.startBooleanToggle(
+                        Component.literal("Bloodlust Effect Screen Overlay"),
                                 VWConfig.get().CLIENT_BLOODLUST_EFFECT_OVERLAY)
                         .setDefaultValue(false)
-                        .setTooltip(text(
-                                """
-                                        When enabled, if a player has the §cBloodlust Effect§r,
-                                        an overlay will be displayed on the whole screen.
-                                        The strength of the overlay depends on the player's health.
-                                        
-                                        §8§oDisabled by default for safety purposes."""
+                        .setTooltip(text("When enabled, if a player has the §cBloodlust Effect§r,\n" +
+                                "an overlay will be displayed on the whole screen.\n" +
+                                "The strength of the overlay depends on the player's health.\n\n" +
+                                "§8§oDisabled by default for safety purposes.\n" +
+                                "Will also be disabled when Allow Effect Overlays is disabled."
                         ))
                         .setSaveConsumer(value -> VWConfig.get().CLIENT_BLOODLUST_EFFECT_OVERLAY = value)
                         .build()
         );
+        client.addEntry(effectOverlaySettings.build());
+
         client.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Show Atrocity Counter"),

@@ -10,6 +10,7 @@ public class VWConfig implements ConfigData {
 
     public boolean CLIENT_TRANSLATE_LANGUAGE = false;
     public boolean CLIENT_BLOODLUST_EFFECT_OVERLAY = false;
+    public boolean CLIENT_ALLOW_EFFECT_OVERLAYS = true;
     public boolean CLIENT_ENABLE_NOTIFIERS = true;
     public boolean CLIENT_MOD_SOUNDS = true;
     public boolean CLIENT_SHOW_ATROCITY_COUNTER = false;
