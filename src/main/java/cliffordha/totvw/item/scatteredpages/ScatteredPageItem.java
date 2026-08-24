@@ -2,6 +2,8 @@ package cliffordha.totvw.item.scatteredpages;
 
 import cliffordha.totvw.client.screen.ScatteredPageScreen;
 import cliffordha.totvw.registry.VWColors;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -54,8 +56,8 @@ public class ScatteredPageItem extends Item {
                         + "\"By virtue granted by our god, 'we', the people who reside among the Verdant Forest, grant the qualified Scholars access to resources nurtured by our land for an indefinite period of time. Purpose of access extends only to the following agreed upon use: studying, developing, and manufacturing solutions that may bring end to disasters caused by the creatures from beyond.\""
                         + nextParagraph
 
-                        + "Grantor(s): Signed by the people's chief." + nextLine
-                        + "Grantee(s): Scholars from the Nation of Erudites"
+                        + "Grantor(s): Signed by " + bText("the people's chief.") + nextLine
+                        + "Grantee(s): Scholars from " + bText("the Nation of Erudites")
 
                         + addSeparator
                         + fText(BOLD, "ABSTRACT") + nextLine
@@ -220,13 +222,14 @@ public class ScatteredPageItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
+    @Environment(EnvType.CLIENT)
     private static void openScreen(String title, String[] pages) {
         if (title.equals(ENCHANTMENTS_HANDBOOK_TITLE)) {
-            Minecraft.getInstance().setScreen(new ScatteredPageScreen(0, ENCHANTMENTS_HANDBOOK_TITLE, pages));
+            Minecraft.getInstance().setScreenAndShow(new ScatteredPageScreen(0, ENCHANTMENTS_HANDBOOK_TITLE, pages));
         } else if (title.equals(EFFECTS_HANDBOOK_TITLE)) {
-            Minecraft.getInstance().setScreen(new ScatteredPageScreen(0, EFFECTS_HANDBOOK_TITLE, pages));
+            Minecraft.getInstance().setScreenAndShow(new ScatteredPageScreen(0, EFFECTS_HANDBOOK_TITLE, pages));
         } else {
-            Minecraft.getInstance().setScreen(new ScatteredPageScreen(2, title, pages));
+            Minecraft.getInstance().setScreenAndShow(new ScatteredPageScreen(2, title, pages));
         }
     }
 

@@ -1,6 +1,6 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.VWAttachments;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
@@ -38,7 +38,7 @@ public class BedBlockMixin {
     private static final Logger SEND = LoggerFactory.getLogger("TOTVW/WolfEntityMixin");
     @Unique
     private static void sendToServer(String message) {
-        if (TOTVWConfig.get().MIXIN_UPDATE_LOGS) {
+        if (VWConfig.get().MIXIN_UPDATE_LOGS) {
             SEND.info(message);
         }
     }

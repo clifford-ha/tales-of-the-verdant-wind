@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class VWSignBlockEntity extends SignBlockEntity {
     public VWSignBlockEntity(BlockPos worldPosition, BlockState blockState) {
-        super(worldPosition, blockState);
+        super(VWBlockEntityTypes.SIGN, worldPosition, blockState);
     }
 
     @Override

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "shelf",
   "key": {
     "#": "tales-of-the-verdant-wind:stripped_verdant_spruce_log"

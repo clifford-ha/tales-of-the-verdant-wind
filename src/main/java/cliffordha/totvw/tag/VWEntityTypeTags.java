@@ -8,8 +8,10 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 
 import java.util.concurrent.CompletableFuture;
+import static cliffordha.totvw.tag.VWTagHelpers.entity;
 
 public class VWEntityTypeTags extends FabricTagsProvider.EntityTypeTagsProvider {
     public VWEntityTypeTags(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
@@ -18,11 +20,11 @@ public class VWEntityTypeTags extends FabricTagsProvider.EntityTypeTagsProvider 
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
-        valueLookupBuilder(IGNORES_STRONG_WIND_CORE_PULSE)
-                .add(EntityType.WOLF)
-                .add(EntityType.ARMOR_STAND)
-                .add(EntityType.PAINTING)
-                .add(EntityType.ITEM_FRAME);
+        getOrCreateRawBuilder(IGNORES_STRONG_WIND_CORE_PULSE)
+                .add(entity(EntityTypes.WOLF))
+                .add(entity(EntityTypes.ARMOR_STAND))
+                .add(entity(EntityTypes.PAINTING))
+                .add(entity(EntityTypes.ITEM_FRAME));
     }
 
     public static final TagKey<EntityType<?>> IGNORES_STRONG_WIND_CORE_PULSE = create("ignores_strong_wind_core_pulse");

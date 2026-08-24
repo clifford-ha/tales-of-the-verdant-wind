@@ -1,6 +1,6 @@
 package cliffordha.totvw.entity.wolf;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.util.VWUtil;
 import cliffordha.totvw.entity.skill.WolfSkillDefinition;
@@ -195,11 +195,11 @@ public class VWWolfBehaviors {
                 }
         ));
         TICK_RULES.add(WolfBehaviorRule.forAny(WolfCondition.tick(), (wolf, _) -> {
-            if (TOTVWConfig.get().LOG_ENCHANTMENT_SHOW_WOLF_CD) setWolfConfiguration(wolf, 0);
-            if (TOTVWConfig.get().SERVER_OTHER_COOLDOWNS) {
+            if (VWConfig.get().LOG_ENCHANTMENT_SHOW_WOLF_CD) setWolfConfiguration(wolf, 0);
+            if (VWConfig.get().SERVER_OTHER_COOLDOWNS) {
                 depleteCooldown(wolf, TIMER_AIR_SUPPLY);
             }
-            if (TOTVWConfig.get().SERVER_SKILL_COOLDOWNS) {
+            if (VWConfig.get().SERVER_SKILL_COOLDOWNS) {
                 depleteCooldown(wolf, CD_BLESSING_OF_THE_VERDANT_WIND);
                 depleteCooldown(wolf, CD_BLOODLUST_SKILL_PARALYZE);
                 depleteCooldown(wolf, CD_MIGHT_SKILL_RUPTURE);
@@ -237,16 +237,16 @@ public class VWWolfBehaviors {
     }
     private static void runPlayerBlessing(Wolf wolf, ServerLevel level) {
         boolean checkFirst = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0) > 1
-                && TOTVWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK
-                && !TOTVWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING;
+                && VWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK
+                && !VWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING;
         if (checkFirst) return;
 
         LivingEntity player = wolf.getOwner();
         if (player == null) return;
         if (!player.isAlive()) return;
 
-        var SCAN_DISTANCE = TOTVWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
-        var HEALTH_THRESHOLD = TOTVWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD * 0.01f;
+        var SCAN_DISTANCE = VWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
+        var HEALTH_THRESHOLD = VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD * 0.01f;
 
         if (player.getHealth() >= player.getMaxHealth() * HEALTH_THRESHOLD) return;
         if (wolf.distanceTo(player) > SCAN_DISTANCE) return;
@@ -293,7 +293,7 @@ public class VWWolfBehaviors {
         int CD_RUPTURE = wolf.getAttachedOrElse(CD_MIGHT_SKILL_RUPTURE, 0);
 
 
-        List<Wolf> babyWolves = level.getEntities(EntityType.WOLF, wolf.getBoundingBox().inflate(8), test -> test.isBaby() && test.getAttachedOrElse(WOLF_PARENTS_ID , "").contains(wolf.getStringUUID() + ":baby"));
+        List<Wolf> babyWolves = level.getEntities(EntityTypes.WOLF, wolf.getBoundingBox().inflate(8), test -> test.isBaby() && test.getAttachedOrElse(WOLF_PARENTS_ID , "").contains(wolf.getStringUUID() + ":baby"));
 
         if (ACTIVE_MENDING > 0) {
             float conversion = ACTIVE_BENEDICTION > 0 ? 0.25f : 0.1f;
@@ -359,7 +359,7 @@ public class VWWolfBehaviors {
         if (ACTIVE_LIFTING > 0) {
             if (victim.hasEffect(MobEffects.LEVITATION)) {
                 double random = level.getRandom().nextDouble();
-                victim.knockback(ACTIVE_LIFTING, random, random);
+                victim.knockback(random, ACTIVE_LIFTING, random, level.damageSources().flyIntoWall(), ACTIVE_LIFTING);
             } else {
                 addHiddenEffect(victim, MobEffects.LEVITATION, 10, ACTIVE_LIFTING * 3);
             }
@@ -376,7 +376,7 @@ public class VWWolfBehaviors {
                 removeEffect(victim, MobEffects.REGENERATION);
             }
             // change later
-            boolean checkVictim = victim.is(EntityType.PLAYER) || victim.getMaxHealth() > 20.0;
+            boolean checkVictim = victim.is(EntityTypes.PLAYER) || victim.getMaxHealth() > 20.0;
             if (checkVictim && CD_PARALYZE <= 0 && !victim.hasEffect(VWEffects.PARALYZE)) {
                 addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
 
@@ -487,7 +487,7 @@ public class VWWolfBehaviors {
         if (ACTIVE_BENEDICTION > 0 && ACTIVE_IGNITION > 0 && ACTIVE_FIRE_PROTECTION >= 3 && isInBiome(wolf, BiomeTags.IS_NETHER)) {
             addHiddenEffect(wolf, MobEffects.FIRE_RESISTANCE, sec(3), 8);
             if (player != null && isInBiome(player, BiomeTags.IS_NETHER) && wolf.distanceTo(player) < 24) addHiddenEffect(player, MobEffects.FIRE_RESISTANCE, sec(3), 8);
-            List<Wolf> babyWolves = level.getEntities(EntityType.WOLF, wolf.getBoundingBox().inflate(8), test ->
+            List<Wolf> babyWolves = level.getEntities(EntityTypes.WOLF, wolf.getBoundingBox().inflate(8), test ->
                     test.isBaby()
                             && test.getAttachedOrElse(WOLF_PARENTS_ID , "").contains(wolf.getStringUUID() + ":baby")
                             && isInBiome(test, BiomeTags.IS_NETHER)
@@ -567,7 +567,7 @@ public class VWWolfBehaviors {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
                 serverLevel.getEntities(
-                        EntityType.WOLF,
+                        EntityTypes.WOLF,
                         _ -> true
                 ).forEach(wolf -> {
                     for (WolfBehaviorRule rule : TICK_RULES) {

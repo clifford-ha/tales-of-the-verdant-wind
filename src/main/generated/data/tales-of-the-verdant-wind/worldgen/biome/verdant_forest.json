@@ -32,7 +32,8 @@
     [],
     [
       "minecraft:lake_lava_underground",
-      "minecraft:spring_water"
+      "minecraft:spring_water",
+      "tales-of-the-verdant-wind:verixium_fluid_pond"
     ],
     [
       "minecraft:amethyst_geode"
@@ -78,11 +79,10 @@
       "tales-of-the-verdant-wind:verixium_ore_buried"
     ],
     [
-      "tales-of-the-verdant-wind:verdant_hollows"
+      "tales-of-the-verdant-wind:verdant_hollows",
+      "tales-of-the-verdant-wind:underground_verixium_fluid_pond"
     ],
-    [
-      "tales-of-the-verdant-wind:verixium_fluid_pond"
-    ],
+    [],
     [
       "minecraft:glow_lichen",
       "minecraft:brown_mushroom_normal",

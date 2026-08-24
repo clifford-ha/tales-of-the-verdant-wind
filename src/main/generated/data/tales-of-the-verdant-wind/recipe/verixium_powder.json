@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "verixium_materials",
   "key": {
     "X": "tales-of-the-verdant-wind:verixium_powder_block"

@@ -1,7 +1,6 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.config.TOTVWConfig;
-import cliffordha.totvw.datagen.VWDamageTypes;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWItemTags;
@@ -91,7 +90,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
     @Inject(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/wolf/Wolf;", at = @At("RETURN"), cancellable = true)
     private void inheritStat(ServerLevel level, AgeableMob partner, CallbackInfoReturnable<Wolf> cir) {
-        Wolf baby = EntityType.WOLF.create(level, EntitySpawnReason.BREEDING);
+        Wolf baby = EntityTypes.WOLF.create(level, EntitySpawnReason.BREEDING);
         Wolf wolf = (Wolf) (Object) this;
 
         if (baby != null && partner instanceof Wolf wolfPartner) {
@@ -171,7 +170,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
         if (!wolf.isTame() && level.getGameTime() % 60 == 0) {
             if (wolf.getAttachedOrElse(WOLF_IS_VERDANT_TYPE, false)) {
-                List<Monster> monsters = level.getEntitiesOfClass(Monster.class, wolf.getBoundingBox().inflate(12), z -> wolf.getTarget() == null && z.getTarget() != null && z.getTarget().is(EntityType.VILLAGER));
+                List<Monster> monsters = level.getEntitiesOfClass(Monster.class, wolf.getBoundingBox().inflate(12), z -> wolf.getTarget() == null && z.getTarget() != null && z.getTarget().is(EntityTypes.VILLAGER));
                 if (monsters.isEmpty()) {
                     if (!(wolf.getAttachedOrElse(WOLF_TRY_SAVE_STATUS, 0) > 0 && !wolf.isAngry())) return;
                     if (!level.getRandom().nextBoolean()) return;
@@ -237,14 +236,14 @@ public abstract class WolfEntityMixin extends LivingEntity {
             sendToChat(wolf, VWColors.VERDANT_WIND_MUTED,STACK_AFTER + " Benediction stack remaining for " + name);
         }
 
-        if (TOTVWConfig.get().SERVER_TELL_OWNER_WHO_HURT_WOLF) {
+        if (VWConfig.get().SERVER_TELL_OWNER_WHO_HURT_WOLF) {
             if (wolf.getOwner() != null && wolf.getOwner() instanceof Player player) {
                 Entity attacker = source.getEntity();
                 sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, false, attacker.getPlainTextName() + " tried to kill " + name + ".");
             }
         }
 
-        if (TOTVWConfig.get().SERVER_TELEPORT_AFTER_SAVE) {
+        if (VWConfig.get().SERVER_TELEPORT_AFTER_SAVE) {
             if (!wolf.isTame()) return;
             LivingEntity owner = wolf.getOwner();
             BlockPos spawn = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_RESPAWN_POINT, wolf.blockPosition());
@@ -405,7 +404,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
             //return;
         }
 
-        if (TOTVWConfig.get().SERVER_WOLF_DMG_DISTRIBUTION) {
+        if (VWConfig.get().SERVER_WOLF_DMG_DISTRIBUTION) {
             if (!wolf.canArmorAbsorb(source)) return;
 
             int damageBefore = armor.getDamageValue();
@@ -424,7 +423,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
             super.actuallyHurt(level, source, finalWolfDMG);
 
-            if (TOTVWConfig.get().DEBUG_PRINT_LOGS) { sendToChat(wolf, VWColors.DEFAULT_MUTED, "TrueDMG: " + damage + " §e| FinalWolfDMG: " + finalWolfDMG + " §d| FinalArmorDMG: " + finalArmorDMG); }
+            if (VWConfig.get().DEBUG_PRINT_LOGS) { sendToChat(wolf, VWColors.DEFAULT_MUTED, "TrueDMG: " + damage + " §e| FinalWolfDMG: " + finalWolfDMG + " §d| FinalArmorDMG: " + finalArmorDMG); }
             ci.cancel();
         }
     }
@@ -439,7 +438,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
     private static final Logger SEND = LoggerFactory.getLogger("TOTVW/WolfEntityMixin");
     @Unique
     private static void sendToServer(String message) {
-        if (TOTVWConfig.get().MIXIN_UPDATE_LOGS) {
+        if (VWConfig.get().MIXIN_UPDATE_LOGS) {
             SEND.info(message);
         }
     }

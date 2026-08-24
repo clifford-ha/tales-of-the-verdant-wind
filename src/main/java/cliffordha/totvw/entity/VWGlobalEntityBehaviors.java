@@ -1,7 +1,7 @@
 package cliffordha.totvw.entity;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.entity.player.VWPlayerBehaviors;
 import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.registry.*;
@@ -13,7 +13,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
@@ -45,7 +44,7 @@ public class VWGlobalEntityBehaviors {
     private static void developmentTick() {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
-                serverLevel.getEntities(EntityType.PLAYER, _ -> true).forEach(player -> {
+                serverLevel.getEntities(EntityTypes.PLAYER, _ -> true).forEach(player -> {
                     if (!player.entityTags().contains(player.getStringUUID() + "-reminderStamp")) {
                         sendToChat(player, VWColors.VERDANT_WIND, false, "TOTVW mod version is a development build.");
                         player.entityTags().add(player.getStringUUID() + "-reminderStamp");
@@ -71,16 +70,16 @@ public class VWGlobalEntityBehaviors {
     }
 
     private static boolean revivePlayerByProxy(LivingEntity entity, DamageSource damageSource, float v) {
-        if (!TOTVWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK) return true;
+        if (!VWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK) return true;
         if (entity instanceof Player player) {
             if (damageSource.is(DamageTypes.GENERIC_KILL)) return true;
             Level getLevel = player.level();
             ServerLevel level = (ServerLevel) getLevel;
-            double distance = TOTVWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
+            double distance = VWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
 
             AttachmentType<Integer> BENEDICTION_STACK = VWAttachments.Wolf.WOLF_BENEDICTION;
 
-            List<Wolf> wolves = level.getEntities(EntityType.WOLF, player.getBoundingBox().inflate(distance), wolf ->
+            List<Wolf> wolves = level.getEntities(EntityTypes.WOLF, player.getBoundingBox().inflate(distance), wolf ->
                     wolf.getOwner() != null && wolf.getOwner().is(player) && wolf.getAttachedOrElse(BENEDICTION_STACK, 0) > 1);
             if (wolves.isEmpty()) return true;
 
@@ -97,7 +96,7 @@ public class VWGlobalEntityBehaviors {
             addEffect(player, MobEffects.ABSORPTION, 20 * 10, 2);
 
             wolf.setAttached(BENEDICTION_STACK, benediction - 1);
-            if (TOTVWConfig.get().SERVER_TELEPORT_AFTER_SAVE) {
+            if (VWConfig.get().SERVER_TELEPORT_AFTER_SAVE) {
                 wolf.dropLeash();
                 wolf.unRide();
                 wolf.setOrderedToSit(false);
@@ -152,7 +151,7 @@ public class VWGlobalEntityBehaviors {
             int current = player.getAttachedOrElse(WOLF_COUNTER, 0);
             player.setAttached(WOLF_COUNTER, current + finalDeduction);
 
-            if (!TOTVWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER) return;
+            if (!VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER) return;
             sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Wolf atrocity count: " + player.getAttachedOrElse(WOLF_COUNTER, 0));
         } else if (victim instanceof Villager || victim instanceof WanderingTrader) {
             AttachmentType<Integer> VILLAGER_COUNTER = VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT;
@@ -160,7 +159,7 @@ public class VWGlobalEntityBehaviors {
             int current = player.getAttachedOrElse(VILLAGER_COUNTER, 0);
             player.setAttached(VILLAGER_COUNTER, current + finalDeduction);
 
-            if (!TOTVWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER) return;
+            if (!VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER) return;
             sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Villager atrocity count: " + player.getAttachedOrElse(VILLAGER_COUNTER, 0));
         }
     }

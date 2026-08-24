@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": "minecraft:stick",
     "W": "tales-of-the-verdant-wind:verdant_spruce_planks"

@@ -1,10 +1,13 @@
 package cliffordha.totvw.worldgen;
 
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.tag.VWBlockTags;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -22,35 +25,42 @@ import static net.minecraft.resources.Identifier.fromNamespaceAndPath;
 
 public class VWPlacedFeatures {
     // ORES
-    public static final ResourceKey<PlacedFeature> VERIXIUM_ORE_LARGE_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_ore_large"));
-    public static final ResourceKey<PlacedFeature> VERIXIUM_ORE_SMALL_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_ore_small"));
-    public static final ResourceKey<PlacedFeature> VERIXIUM_ORE_BURIED_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_ore_buried"));
+    public static final ResourceKey<PlacedFeature> VERIXIUM_ORE_LARGE_KEY = create("verixium_ore_large");
+    public static final ResourceKey<PlacedFeature> VERIXIUM_ORE_SMALL_KEY = create("verixium_ore_small");
+    public static final ResourceKey<PlacedFeature> VERIXIUM_ORE_BURIED_KEY = create("verixium_ore_buried");
 
     // SURFACE STRUCTURES
-    public static final ResourceKey<PlacedFeature> VERDANT_PILLARS_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_pillars"));
-    public static final ResourceKey<PlacedFeature> VERIXIUM_FLUID_POND_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verixium_fluid_pond"));
+    public static final ResourceKey<PlacedFeature> VERDANT_PILLARS_KEY = create("verdant_pillars");
+    public static final ResourceKey<PlacedFeature> VERIXIUM_FLUID_POND_KEY = create("verixium_fluid_pond");
+    public static final ResourceKey<PlacedFeature> UNDERGROUND_VERIXIUM_FLUID_POND_KEY = create("underground_verixium_fluid_pond");
 
     // UNDERGROUND STRUCTURES
-    public static final ResourceKey<PlacedFeature> VERDANT_HOLLOWS_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_hollows"));
+    public static final ResourceKey<PlacedFeature> VERDANT_HOLLOWS_KEY = create("verdant_hollows");
 
     //TREES
-    public static final ResourceKey<PlacedFeature> VERDANT_SPRUCE_BUSH_TREE_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce_bush_tree"));
-    public static final ResourceKey<PlacedFeature> VERDANT_SPRUCE_TREE_LOWER_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce_tree_lower"));
-    public static final ResourceKey<PlacedFeature> VERDANT_SPRUCE_TREE_HIGHER_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_spruce_tree_higher"));
-    public static final ResourceKey<PlacedFeature> ANCIENT_VERDANT_SPRUCE_TREE_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "ancient_verdant_spruce_tree"));
+    public static final ResourceKey<PlacedFeature> VERDANT_SPRUCE_BUSH_TREE_KEY = create("verdant_spruce_bush_tree");
+    public static final ResourceKey<PlacedFeature> VERDANT_SPRUCE_TREE_LOWER_KEY = create("verdant_spruce_tree_lower");
+    public static final ResourceKey<PlacedFeature> VERDANT_SPRUCE_TREE_HIGHER_KEY = create("verdant_spruce_tree_higher");
+    public static final ResourceKey<PlacedFeature> ANCIENT_VERDANT_SPRUCE_TREE_KEY = create("ancient_verdant_spruce_tree");
 
-    public static final ResourceKey<PlacedFeature> VILLAGE_VERDANT_SPRUCE_TREE_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "village_verdant_spruce_tree"));
+    public static final ResourceKey<PlacedFeature> VILLAGE_VERDANT_SPRUCE_TREE_KEY = create("village_verdant_spruce_tree");
 
     // VEGETATION
-    public static final ResourceKey<PlacedFeature> VERDANT_MOSS_VEGETATION_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_moss_vegetation"));
-    public static final ResourceKey<PlacedFeature> VERDANT_MOSS_PATCH_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_moss_patch"));
-    public static final ResourceKey<PlacedFeature> VERDANT_MOSS_PATCH_HIGH_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_moss_patch_high"));
-    public static final ResourceKey<PlacedFeature> VERDANT_GRASS_PATCH_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_grass_patch"));
-    public static final ResourceKey<PlacedFeature> VERDANT_RIVER_SEAGRASS_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_river_seagrass"));
-    public static final ResourceKey<PlacedFeature> VERDANT_FERN_PATCH_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_fern_patch"));
+    public static final ResourceKey<PlacedFeature> VERDANT_MOSS_VEGETATION_KEY = create("verdant_moss_vegetation");
+    public static final ResourceKey<PlacedFeature> VERDANT_MOSS_PATCH_KEY = create("verdant_moss_patch");
+    public static final ResourceKey<PlacedFeature> VERDANT_MOSS_PATCH_HIGH_KEY = create("verdant_moss_patch_high");
+    public static final ResourceKey<PlacedFeature> VERDANT_GRASS_PATCH_KEY = create("verdant_grass_patch");
+    public static final ResourceKey<PlacedFeature> VERDANT_RIVER_SEAGRASS_KEY = create("verdant_river_seagrass");
+    public static final ResourceKey<PlacedFeature> VERDANT_FERN_PATCH_KEY = create("verdant_fern_patch");
 
-    public static final ResourceKey<PlacedFeature> VERDANT_TORCHFLOWER_PATCH_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_torchflower_patch"));
-    public static final ResourceKey<PlacedFeature> VERDANT_WILD_SNIFFER_EGG_KEY = ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, "verdant_wild_sniffer_egg"));
+    public static final ResourceKey<PlacedFeature> VERDANT_TORCHFLOWER_PATCH_KEY = create("verdant_torchflower_patch");
+    public static final ResourceKey<PlacedFeature> VERDANT_WILD_SNIFFER_EGG_KEY = create("verdant_wild_sniffer_egg");
+
+
+    //helper
+    private static ResourceKey<PlacedFeature> create(String name) {
+        return ResourceKey.create(Registries.PLACED_FEATURE, fromNamespaceAndPath(TOTVW.MOD_ID, name));
+    }
 
 
     public static void configure(BootstrapContext<PlacedFeature> context) {
@@ -154,15 +164,16 @@ public class VWPlacedFeatures {
         context.register(VERDANT_MOSS_VEGETATION_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_MOSS_VEGETATION_CONFIGURED_KEY),
                 List.of(
                         InSquarePlacement.spread(),
+                        SurfaceWaterDepthFilter.forMaxDepth(0),
                         PlacementUtils.HEIGHTMAP_TOP_SOLID,
                         CountPlacement.of(4),
-                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.AIR, Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.STONE))
+                        BlockPredicateFilter.forPredicate(BlockPredicate.anyOf(BlockPredicate.matchesBlocks(Blocks.AIR), BlockPredicate.matchesTag(VWBlockTags.VERDANT_MOSS_REPLACEABLE)))
                 ))
         );
         context.register(VERDANT_MOSS_PATCH_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_MOSS_PATCH_CONFIGURED_KEY),
                 List.of(
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(74)),
-                        PlacementUtils.HEIGHTMAP_TOP_SOLID,
+                        PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                         CountPlacement.of(UniformInt.of(1, 2)),
                         RandomOffsetPlacement.vertical(ConstantInt.of(1)),
                         BiomeFilter.biome()
@@ -171,7 +182,7 @@ public class VWPlacedFeatures {
         context.register(VERDANT_MOSS_PATCH_HIGH_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_MOSS_PATCH_CONFIGURED_KEY),
                 List.of(
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(84), VerticalAnchor.absolute(256)),
-                        PlacementUtils.HEIGHTMAP_TOP_SOLID,
+                        PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                         CountPlacement.of(UniformInt.of(1, 4)),
                         RandomOffsetPlacement.vertical(ConstantInt.of(1)),
                         BiomeFilter.biome()
@@ -195,6 +206,7 @@ public class VWPlacedFeatures {
                 List.of(
                         NoiseThresholdCountPlacement.of(-0.8, 5, 10),
                         InSquarePlacement.spread(),
+                        SurfaceWaterDepthFilter.forMaxDepth(0),
                         PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                         CountPlacement.of(8),
                         RandomOffsetPlacement.of(
@@ -229,9 +241,17 @@ public class VWPlacedFeatures {
         );
         context.register(VERIXIUM_FLUID_POND_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERIXIUM_FLUID_POND_CONFIGURED_KEY),
                 List.of(
-                        RarityFilter.onAverageOnceEvery(100),
+                        RarityFilter.onAverageOnceEvery(200),
                         InSquarePlacement.spread(),
                         PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                        BiomeFilter.biome()
+                ))
+        );
+        context.register(UNDERGROUND_VERIXIUM_FLUID_POND_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERIXIUM_FLUID_POND_CONFIGURED_KEY),
+                List.of(
+                        CountPlacement.of(UniformInt.of(0, 1)),
+                        InSquarePlacement.spread(),
+                        PlacementUtils.FULL_RANGE,
                         BiomeFilter.biome()
                 ))
         );
@@ -246,4 +266,5 @@ public class VWPlacedFeatures {
                 ))
         );*/
     }
+
 }

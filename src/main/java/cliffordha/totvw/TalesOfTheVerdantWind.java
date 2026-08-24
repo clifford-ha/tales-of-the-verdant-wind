@@ -1,19 +1,17 @@
 package cliffordha.totvw;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
+import cliffordha.totvw.loot.VWLootTables;
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.loot.VWLootTableModifier;
 import cliffordha.totvw.world.*;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import terrablender.api.TerraBlenderApi;
 
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 	public TalesOfTheVerdantWind() {}
 
 	public static boolean IN_DEVELOPMENT = false;
-
 	@Override
 	public void onInitialize() {
 		TOTVW.sendStat(TOTVW.MOD_NAME_LONG + " ( or TOTVW for short) started initializing...");
@@ -35,12 +33,11 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		VWBiomeModifications.register();
 		VWAttachments.register();
 
-		TOTVWConfig.load();
-		TOTVWConfig.save();
-
-		LootTableEvents.MODIFY.register(VWLootTableModifier::modifyLootTables);
-
 		VWCommands.register();
+		VWLootTables.registerModifiers();
+
+		VWConfig.load();
+		VWConfig.save();
 	}
 
 	@Override

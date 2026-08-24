@@ -8,10 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -40,7 +37,7 @@ public class ParalyzeEffect extends MobEffect {
 
         entity.setAttached(VWAttachments.ENTITY_IS_PARALYZED, true);
 
-        if (entity instanceof Mob mob && !entity.is(EntityType.PLAYER)) {
+        if (entity instanceof Mob mob && !entity.is(EntityTypes.PLAYER)) {
             mob.setNoAi(true);
         } else if (entity instanceof Player player) {
             if (player.isCreative() || player.isSpectator()) return;
@@ -79,7 +76,7 @@ public class ParalyzeEffect extends MobEffect {
 
     private void removeModifiers(LivingEntity entity) {
         entity.setAttached(VWAttachments.ENTITY_IS_PARALYZED, false);
-        if (entity instanceof Mob mob && !entity.is(EntityType.PLAYER)) {
+        if (entity instanceof Mob mob && !entity.is(EntityTypes.PLAYER)) {
             mob.setNoAi(false);
         } else if (entity instanceof Player) {
             removeAllModifiers(entity, VWIdentifiers.EFFECT_PARALYZE,

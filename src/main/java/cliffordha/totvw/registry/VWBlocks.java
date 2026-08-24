@@ -69,12 +69,13 @@ public class VWBlocks {
             true
     );
     public static final Block VERIXIUM_FLUID = registerBlock("verixium_fluid",
-            (props) -> new LiquidBlock(VWFluids.VERIXIUM_FLUID, props),
-            BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
+            (properties) -> new LiquidBlock(VWFluids.VERIXIUM_FLUID, properties
                     .mapColor(DyeColor.CYAN)
                     .lightLevel(_ -> 14)
                     .noLootTable()
-                    .liquid(),
+                    .liquid()
+            ),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.WATER),
             false
     );
     public static final Block VERDANT_SPRUCE_LEAVES = registerBlock("verdant_spruce_leaves",
@@ -270,6 +271,7 @@ public class VWBlocks {
             .button(VERDANT_SPRUCE_BUTTON)
             .pressurePlate(VERDANT_SPRUCE_PRESSURE_PLATE)
             .sign(VERDANT_SPRUCE_SIGN, VERDANT_SPRUCE_WALL_SIGN)
+            .hangingSign(VERDANT_SPRUCE_HANGING_SIGN, VERDANT_SPRUCE_WALL_HANGING_SIGN)
             .door(VERDANT_SPRUCE_DOOR)
             .trapdoor(VERDANT_SPRUCE_TRAPDOOR)
             .recipeGroupPrefix("wooden")

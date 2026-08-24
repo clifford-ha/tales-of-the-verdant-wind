@@ -19,6 +19,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import java.util.List;
+
 public class VWModelProvider extends FabricModelProvider {
     public VWModelProvider(FabricPackOutput output) {
         super(output);
@@ -45,8 +47,10 @@ public class VWModelProvider extends FabricModelProvider {
 
         block.createTrivialCube(VWBlocks.VERIXIUM_STONE_ORE);
         block.createTrivialCube(VWBlocks.VERIXIUM_DEEPSLATE_ORE);
-        block.createColoredBlockWithRandomRotations(TexturedModel.CUBE, VWBlocks.VERDANT_MOSS_BLOCK);
-        block.createColoredBlockWithRandomRotations(TexturedModel.CUBE, VWBlocks.VERIXIUM_POWDER_BLOCK);
+        block.createColoredBlockWithRandomRotations(TexturedModel.CUBE, List.of(
+                VWBlocks.VERDANT_MOSS_BLOCK,
+                VWBlocks.VERIXIUM_POWDER_BLOCK
+        ));
 
         block.createGlassBlocks(VWBlocks.IRIDESCENT_GLASS, VWBlocks.IRIDESCENT_GLASS_PANE);
 
@@ -54,7 +58,6 @@ public class VWModelProvider extends FabricModelProvider {
         block.createPlantWithDefaultItem(VWBlocks.VERDANT_SPRUCE_SAPLING, VWBlocks.POTTED_VERDANT_SPRUCE_SAPLING, BlockModelGenerators.PlantType.TINTED);
 
         verdantSpruceFamily.generateFor(VWBlocks.VERDANT_SPRUCE_FAMILY);
-        block.createHangingSign(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD, VWBlocks.VERDANT_SPRUCE_HANGING_SIGN, VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN);
         block.createShelf(VWBlocks.VERDANT_SPRUCE_SHELF, VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
         block.woodProvider(VWBlocks.VERDANT_SPRUCE_LOG).log(VWBlocks.VERDANT_SPRUCE_LOG).wood(VWBlocks.VERDANT_SPRUCE_WOOD);
         block.woodProvider(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG).log(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG).wood(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);

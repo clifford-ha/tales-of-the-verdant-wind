@@ -1,7 +1,6 @@
-// 26.1.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Tags for minecraft:item
+// 26.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Tags for minecraft:item
 2e80754c69f2101d4ab8ef60b760894cf9bf81ae data/minecraft/tags/item/axes.json
 c6c853aab2f5938a97eb7a91627e0fd2e009c17b data/minecraft/tags/item/chest_armor.json
-5fd0fdcced8abe663b2284d632d0019b6e745e09 data/minecraft/tags/item/doors.json
 8c586e7c6b3a693df85d4378aa498e3fa12d93f1 data/minecraft/tags/item/enchantable/armor.json
 14419bd18b85cdba387ebc8d84acec2a2b1deb80 data/minecraft/tags/item/enchantable/lunge.json
 bef49c202f353d59020ec031d90c4789784328ec data/minecraft/tags/item/foot_armor.json
@@ -16,6 +15,7 @@ fe20ec3a6faee508751aea16dc40f4c881b8919b data/minecraft/tags/item/planks.json
 14419bd18b85cdba387ebc8d84acec2a2b1deb80 data/minecraft/tags/item/spears.json
 93c6b8c919ce2cdf29ae09d5c79d7534aef1e818 data/minecraft/tags/item/swords.json
 8be66df56e6d9c60c2b1f8c6068d8c437d21da10 data/minecraft/tags/item/trimmable_armor.json
+5fd0fdcced8abe663b2284d632d0019b6e745e09 data/minecraft/tags/item/wooden_doors.json
 12c6aabeb782f9d80b2ec23a51ef30c059085c7b data/tales-of-the-verdant-wind/tags/item/benediction_enchantment_use_qualified_items.json
 327ddfce8f2393220b85129d39f0cde8628f9d36 data/tales-of-the-verdant-wind/tags/item/benediction_enchantment_use_qualified_tools.json
 6faaf05ecebadc5b391ef034f27b5e461a095a80 data/tales-of-the-verdant-wind/tags/item/lodestone_wind_core_energy_sources.json

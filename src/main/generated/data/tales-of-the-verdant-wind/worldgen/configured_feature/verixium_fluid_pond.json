@@ -10,6 +10,17 @@
         }
       }
     },
+    "can_place_feature": {
+      "type": "minecraft:true"
+    },
+    "can_replace_with_air_or_fluid": {
+      "type": "minecraft:matching_block_tag",
+      "tag": "tales-of-the-verdant-wind:verdant_moss_replaceable"
+    },
+    "can_replace_with_barrier": {
+      "type": "minecraft:matching_block_tag",
+      "tag": "tales-of-the-verdant-wind:verdant_moss_replaceable"
+    },
     "fluid": {
       "type": "minecraft:simple_state_provider",
       "state": {

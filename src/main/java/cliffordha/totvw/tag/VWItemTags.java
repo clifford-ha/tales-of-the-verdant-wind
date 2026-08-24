@@ -17,6 +17,8 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
 
+import static cliffordha.totvw.tag.VWTagHelpers.item;
+
 public class VWItemTags extends FabricTagsProvider.ItemTagsProvider {
     public VWItemTags(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
@@ -24,123 +26,123 @@ public class VWItemTags extends FabricTagsProvider.ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.@NonNull Provider wrapperLookup) {
-        valueLookupBuilder(VERDANT_ITEMS)
-                .add(VWItems.VERIXIUM_CHUNK)
-                .add(VWItems.CONDENSED_VERIXIUM)
-                .add(VWItems.VERIXIUM_SHARD)
-                .add(VWItems.VERIXIUM_POWDER)
-                .add(VWItems.VERIXIUM_INGOT)
-                .add(VWItems.VERIXIUM_PAPER)
-                .add(VWItems.VERIXIUM_FLUID_BUCKET)
-                .add(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE)
+        getOrCreateRawBuilder(VERDANT_ITEMS)
+                .add(item(VWItems.VERIXIUM_CHUNK))
+                .add(item(VWItems.CONDENSED_VERIXIUM))
+                .add(item(VWItems.VERIXIUM_SHARD))
+                .add(item(VWItems.VERIXIUM_POWDER))
+                .add(item(VWItems.VERIXIUM_INGOT))
+                .add(item(VWItems.VERIXIUM_PAPER))
+                .add(item(VWItems.VERIXIUM_FLUID_BUCKET))
+                .add(item(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE))
 
-                .addTag(VERIXIUM_ARMOR)
-                .addTag(VERIXIUM_WEAPON)
-                .addTag(VERIXIUM_TOOL);
+                .addTag(VERIXIUM_ARMOR.location())
+                .addTag(VERIXIUM_WEAPON.location())
+                .addTag(VERIXIUM_TOOL.location());
 
-        valueLookupBuilder(VERIXIUM_ARMOR)
-                .add(VWItems.VERIXIUM_WOLF_ARMOR)
-                .add(VWItems.VERIXIUM_HELMET)
-                .add(VWItems.VERIXIUM_CHESTPLATE)
-                .add(VWItems.VERIXIUM_LEGGINGS)
-                .add(VWItems.VERIXIUM_BOOTS);
+        getOrCreateRawBuilder(VERIXIUM_ARMOR)
+                .add(item(VWItems.VERIXIUM_WOLF_ARMOR))
+                .add(item(VWItems.VERIXIUM_HELMET))
+                .add(item(VWItems.VERIXIUM_CHESTPLATE))
+                .add(item(VWItems.VERIXIUM_LEGGINGS))
+                .add(item(VWItems.VERIXIUM_BOOTS));
 
-        valueLookupBuilder(VERIXIUM_WEAPON)
-                .add(VWItems.VERIXIUM_SPEAR)
-                .add(VWItems.VERIXIUM_SWORD)
-                .add(VWItems.VERIXIUM_AXE);
+        getOrCreateRawBuilder(VERIXIUM_WEAPON)
+                .add(item(VWItems.VERIXIUM_SPEAR))
+                .add(item(VWItems.VERIXIUM_SWORD))
+                .add(item(VWItems.VERIXIUM_AXE));
 
-        valueLookupBuilder(VERIXIUM_TOOL)
-                .add(VWItems.VERIXIUM_PICKAXE)
-                .add(VWItems.VERIXIUM_HOE)
-                .add(VWItems.VERIXIUM_SHOVEL);
+        getOrCreateRawBuilder(VERIXIUM_TOOL)
+                .add(item(VWItems.VERIXIUM_PICKAXE))
+                .add(item(VWItems.VERIXIUM_HOE))
+                .add(item(VWItems.VERIXIUM_SHOVEL));
 
-        valueLookupBuilder(REPAIRS_VERIXIUM)
-                .add(VWItems.VERIXIUM_POWDER);
+        getOrCreateRawBuilder(REPAIRS_VERIXIUM)
+                .add(item(VWItems.VERIXIUM_POWDER));
 
-        valueLookupBuilder(WOLF_ARMOR_ENCHANTABLE)
-                .add(Items.WOLF_ARMOR)
-                .add(VWItems.VERIXIUM_WOLF_ARMOR);
+        getOrCreateRawBuilder(WOLF_ARMOR_ENCHANTABLE)
+                .add(item(Items.WOLF_ARMOR))
+                .add(item(VWItems.VERIXIUM_WOLF_ARMOR));
 
-        valueLookupBuilder(VWItemTags.VERDANT_SPRUCE_LOGS)
-                .add(VWBlocks.VERDANT_SPRUCE_LOG.asItem())
-                .add(VWBlocks.VERDANT_SPRUCE_WOOD.asItem())
-                .add(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG.asItem())
-                .add(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD.asItem());
+        getOrCreateRawBuilder(VERDANT_SPRUCE_LOGS)
+                .add(item(VWBlocks.VERDANT_SPRUCE_LOG.asItem()))
+                .add(item(VWBlocks.VERDANT_SPRUCE_WOOD.asItem()))
+                .add(item(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG.asItem()))
+                .add(item(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD.asItem()));
 
-        valueLookupBuilder(ItemTags.LOGS_THAT_BURN)
-                .addTag(VWItemTags.VERDANT_SPRUCE_LOGS);
+        getOrCreateRawBuilder(ItemTags.LOGS_THAT_BURN)
+                .addTag(VERDANT_SPRUCE_LOGS.location());
 
-        valueLookupBuilder(ItemTags.PLANKS)
-                .add(VWBlocks.VERDANT_SPRUCE_PLANKS.asItem());
+        getOrCreateRawBuilder(ItemTags.PLANKS)
+                .add(item(VWBlocks.VERDANT_SPRUCE_PLANKS.asItem()));
 
-        valueLookupBuilder(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS)
-                .addTag(ItemTags.SWORDS)
-                .addTag(ItemTags.AXES)
-                .addTag(ItemTags.PICKAXES)
-                .addTag(ItemTags.SHOVELS)
-                .addTag(ItemTags.HOES);
+        getOrCreateRawBuilder(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS)
+                .addTag(ItemTags.SWORDS.location())
+                .addTag(ItemTags.AXES.location())
+                .addTag(ItemTags.PICKAXES.location())
+                .addTag(ItemTags.SHOVELS.location())
+                .addTag(ItemTags.HOES.location());
 
-        valueLookupBuilder(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)
-                .add(Items.GLOWSTONE_DUST)
-                .add(VWItems.VERIXIUM_POWDER);
+        getOrCreateRawBuilder(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)
+                .add(item(Items.GLOWSTONE_DUST))
+                .add(item(VWItems.VERIXIUM_POWDER));
 
-        valueLookupBuilder(VWItemTags.SCATTERED_PAGES)
-                .add(Items.PAPER)
-                .add(VWItems.VERIXIUM_PAPER);
+        getOrCreateRawBuilder(VWItemTags.SCATTERED_PAGES)
+                .add(item(Items.PAPER))
+                .add(item(VWItems.VERIXIUM_PAPER));
 
-        valueLookupBuilder(VWItemTags.LODESTONE_WIND_CORE_ENERGY_SOURCES)
-                .add(VWItems.VERIXIUM_POWDER)
-                .add(VWBlocks.VERIXIUM_POWDER_BLOCK.asItem())
-                .add(Items.WIND_CHARGE);
+        getOrCreateRawBuilder(VWItemTags.LODESTONE_WIND_CORE_ENERGY_SOURCES)
+                .add(item(VWItems.VERIXIUM_POWDER))
+                .add(item(VWBlocks.VERIXIUM_POWDER_BLOCK.asItem()))
+                .add(item(Items.WIND_CHARGE));
 
 
 
-        valueLookupBuilder(ItemTags.ARMOR_ENCHANTABLE)
-                .addTag(VWItemTags.WOLF_ARMOR_ENCHANTABLE);
+        getOrCreateRawBuilder(ItemTags.ARMOR_ENCHANTABLE)
+                .addTag(WOLF_ARMOR_ENCHANTABLE.location());
 
-        valueLookupBuilder(ItemTags.HEAD_ARMOR)
-                .add(VWItems.VERIXIUM_HELMET);
+        getOrCreateRawBuilder(ItemTags.HEAD_ARMOR)
+                .add(item(VWItems.VERIXIUM_HELMET));
 
-        valueLookupBuilder(ItemTags.CHEST_ARMOR)
-                .add(VWItems.VERIXIUM_CHESTPLATE)
-                .addTag(WOLF_ARMOR_ENCHANTABLE);
+        getOrCreateRawBuilder(ItemTags.CHEST_ARMOR)
+                .add(item(VWItems.VERIXIUM_CHESTPLATE))
+                .addTag(WOLF_ARMOR_ENCHANTABLE.location());
 
-        valueLookupBuilder(ItemTags.LEG_ARMOR)
-                .add(VWItems.VERIXIUM_LEGGINGS);
+        getOrCreateRawBuilder(ItemTags.LEG_ARMOR)
+                .add(item(VWItems.VERIXIUM_LEGGINGS));
 
-        valueLookupBuilder(ItemTags.FOOT_ARMOR)
-                .add(VWItems.VERIXIUM_BOOTS);
+        getOrCreateRawBuilder(ItemTags.FOOT_ARMOR)
+                .add(item(VWItems.VERIXIUM_BOOTS));
 
-        valueLookupBuilder(ItemTags.SPEARS)
-                .add(VWItems.VERIXIUM_SPEAR);
+        getOrCreateRawBuilder(ItemTags.SPEARS)
+                .add(item(VWItems.VERIXIUM_SPEAR));
 
-        valueLookupBuilder(ItemTags.SWORDS)
-                .add(VWItems.VERIXIUM_SWORD);
+        getOrCreateRawBuilder(ItemTags.SWORDS)
+                .add(item(VWItems.VERIXIUM_SWORD));
 
-        valueLookupBuilder(ItemTags.AXES)
-                .add(VWItems.VERIXIUM_AXE);
+        getOrCreateRawBuilder(ItemTags.AXES)
+                .add(item(VWItems.VERIXIUM_AXE));
 
-        valueLookupBuilder(ItemTags.PICKAXES)
-                .add(VWItems.VERIXIUM_PICKAXE);
+        getOrCreateRawBuilder(ItemTags.PICKAXES)
+                .add(item(VWItems.VERIXIUM_PICKAXE));
 
-        valueLookupBuilder(ItemTags.HOES)
-                .add(VWItems.VERIXIUM_HOE);
+        getOrCreateRawBuilder(ItemTags.HOES)
+                .add(item(VWItems.VERIXIUM_HOE));
 
-        valueLookupBuilder(ItemTags.SHOVELS)
-                .add(VWItems.VERIXIUM_SHOVEL);
+        getOrCreateRawBuilder(ItemTags.SHOVELS)
+                .add(item(VWItems.VERIXIUM_SHOVEL));
 
-        valueLookupBuilder(ItemTags.TRIMMABLE_ARMOR)
-                .addTag(VERIXIUM_ARMOR);
+        getOrCreateRawBuilder(ItemTags.TRIMMABLE_ARMOR)
+                .addTag(VERIXIUM_ARMOR.location());
 
-        valueLookupBuilder(ItemTags.REPAIRS_DIAMOND_ARMOR)
-                .add(VWItems.VERIXIUM_POWDER);
+        getOrCreateRawBuilder(ItemTags.REPAIRS_DIAMOND_ARMOR)
+                .add(item(VWItems.VERIXIUM_POWDER));
 
-        valueLookupBuilder(ItemTags.LUNGE_ENCHANTABLE)
-                .add(VWItems.VERIXIUM_SPEAR);
+        getOrCreateRawBuilder(ItemTags.LUNGE_ENCHANTABLE)
+                .add(item(VWItems.VERIXIUM_SPEAR));
 
-        valueLookupBuilder(ItemTags.DOORS)
-                .add(VWBlocks.VERDANT_SPRUCE_DOOR.asItem());
+        getOrCreateRawBuilder(ItemTags.WOODEN_DOORS)
+                .add(item(VWBlocks.VERDANT_SPRUCE_DOOR.asItem()));
     }
 
     public static final TagKey<Item> VERDANT_ITEMS = create("verdant_items");

@@ -70,6 +70,9 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
             if (!entity.hasEffect(MobEffects.INVISIBILITY)) {
                 VWParticleEffects.benedictionEnvironmentParticleEntity(entity);
             }
+            if (entity.hasEffect(PARALYZE)) {
+                entity.removeEffect(PARALYZE);
+            }
         }
         return super.applyEffectTick(serverLevel, entity, amplifier);
     }

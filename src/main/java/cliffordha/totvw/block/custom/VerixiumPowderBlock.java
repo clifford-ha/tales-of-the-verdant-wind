@@ -9,6 +9,7 @@ import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.SandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -41,5 +42,16 @@ public class VerixiumPowderBlock extends SandBlock {
             }
         }
         super.animateTick(state, level, pos, random);
+    }
+
+    @Override
+    public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
+        if (level.isClientSide()) {
+            double value = 0;
+            for (int i = 0; i < 24; i++) {
+                level.addParticle(VWParticles.BENEDICTION_TRIGGER_PARTICLE, pos.getX() + level.getRandom().nextFloat(), pos.getY(), pos.getZ() + level.getRandom().nextFloat(), value, value, value);
+            }
+        }
+        super.destroy(level, pos, state);
     }
 }

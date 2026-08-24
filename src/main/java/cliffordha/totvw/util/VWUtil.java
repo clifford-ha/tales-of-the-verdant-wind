@@ -1,6 +1,6 @@
 package cliffordha.totvw.util;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.entity.player.VWPlayerBehaviors;
 import cliffordha.totvw.entity.skill.SkillUtil;
 import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
@@ -78,7 +78,7 @@ public class VWUtil {
         return triggerHeal;
     }
     public static void verdantBlessingAfterEffects(LevelAccessor level, LivingEntity entity) {
-        if (!TOTVWConfig.get().SERVER_SKILL_COOLDOWNS) return;
+        if (!VWConfig.get().SERVER_SKILL_COOLDOWNS) return;
         int minutes = 60;
         int cooldown = setDifficultyBasedValue(level, minutes * 3, minutes * 9, minutes * 15, minutes * 21);
         if (isHalfHealth(entity)) {
@@ -246,21 +246,21 @@ public class VWUtil {
     }
 
     public static void sendToChat(LivingEntity entity, boolean overlay, String... msg) {
-        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        if (!VWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
         ServerPlayer player = resolveRecipient(entity);
         if (player == null) return;
         sendToMain(player, overlay, String.join("\n", msg));
     }
 
     public static void sendToChat(LivingEntity entity, int color, String... msg) {
-        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        if (!VWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
         ServerPlayer player = resolveRecipient(entity);
         if (player == null) return;
         sendToMain(player, color, String.join("\n", msg));
     }
 
     public static void sendToChat(LivingEntity entity, int color, boolean overlay, String... msg) {
-        if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+        if (!VWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
         ServerPlayer player = resolveRecipient(entity);
         if (player == null) return;
         sendToMain(player, color, overlay, String.join("\n", msg));

@@ -6,9 +6,10 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 
 @Config(name = "tales-of-the-verdant-wind")
-public class TOTVWConfig implements ConfigData {
+public class VWConfig implements ConfigData {
 
     public boolean CLIENT_TRANSLATE_LANGUAGE = false;
+    public boolean CLIENT_ALLOW_EFFECT_OVERLAYS = true;
     public boolean CLIENT_BLOODLUST_EFFECT_OVERLAY = false;
     public boolean CLIENT_ENABLE_NOTIFIERS = true;
     public boolean CLIENT_MOD_SOUNDS = true;
@@ -47,15 +48,15 @@ public class TOTVWConfig implements ConfigData {
         return parent && toggle;
     }
 
-    public static TOTVWConfig get() {
-        return AutoConfig.getConfigHolder(TOTVWConfig.class).getConfig();
+    public static VWConfig get() {
+        return AutoConfig.getConfigHolder(VWConfig.class).getConfig();
     }
 
     public static void load() {
-        AutoConfig.register(TOTVWConfig.class, Toml4jConfigSerializer::new);
+        AutoConfig.register(VWConfig.class, Toml4jConfigSerializer::new);
     }
 
     public static void save() {
-        AutoConfig.getConfigHolder(TOTVWConfig.class).save();
+        AutoConfig.getConfigHolder(VWConfig.class).save();
     }
 }

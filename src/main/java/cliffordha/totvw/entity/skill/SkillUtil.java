@@ -1,8 +1,7 @@
 package cliffordha.totvw.entity.skill;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 
-import cliffordha.totvw.util.VWUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
@@ -14,12 +13,12 @@ public final class SkillUtil {
     private SkillUtil() {}
 
     public static void startCooldown(Wolf wolf, WolfSkillDefinition skill, int duration) {
-        if (!TOTVWConfig.get().SERVER_SKILL_COOLDOWNS) return;
+        if (!VWConfig.get().SERVER_SKILL_COOLDOWNS) return;
         wolf.setAttached(skill.cooldown(), duration);
         wolf.setAttached(skill.notifier(), 1);
     }
     public static void startCooldown(Player player, PlayerSkillDefinition skill, int duration) {
-        if (!TOTVWConfig.get().SERVER_SKILL_COOLDOWNS) return;
+        if (!VWConfig.get().SERVER_SKILL_COOLDOWNS) return;
         player.setAttached(skill.cooldown(), duration);
         player.setAttached(skill.notifier(), 1);
     }
@@ -31,7 +30,7 @@ public final class SkillUtil {
 
         if (cooldown <= 0 && notify == 1) {
             wolf.setAttached(skill.notifier(), 0);
-            if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+            if (!VWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
             sendToChat(wolf, skill.notifierColor(), true, name(wolf) + skill.skillName() + " is ready!");
             playNotification(wolf);
         }
@@ -42,7 +41,7 @@ public final class SkillUtil {
 
         if (cooldown <= 0 && notify == 1) {
             player.setAttached(skill.notifier(), 0);
-            if (!TOTVWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
+            if (!VWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
             sendToChat(player, skill.notifierColor(), true, name(player) + skill.skillName() + " is ready!");
             playNotification(player);
         }

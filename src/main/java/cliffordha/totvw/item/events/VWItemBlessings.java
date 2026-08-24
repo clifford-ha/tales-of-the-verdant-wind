@@ -1,6 +1,6 @@
 package cliffordha.totvw.item.events;
 
-import cliffordha.totvw.config.TOTVWConfig;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWItemTags;
@@ -35,7 +35,7 @@ public class VWItemBlessings {
         return mainHandItem.tags().anyMatch(Predicate.isEqual(tag));
     }
     public static boolean tryApply(Player player) {
-        if (player.getCooldowns().isOnCooldown(player.getMainHandItem()) && TOTVWConfig.get().SERVER_ITEM_COOLDOWNS) return false;
+        if (player.getCooldowns().isOnCooldown(player.getMainHandItem()) && VWConfig.get().SERVER_ITEM_COOLDOWNS) return false;
         boolean hasSword = isItem(player, ItemTags.SWORDS);
         boolean hasAxe = isItem(player, ItemTags.AXES);
         boolean hasPickaxe = isItem(player, ItemTags.PICKAXES);
@@ -55,14 +55,14 @@ public class VWItemBlessings {
     private static void setCooldown(Player player, int cdBiome, int cd) {
         if (player.isCreative()) return;
         player.getMainHandItem().hurtAndBreak(5, player, EquipmentSlot.MAINHAND);
-        if (!TOTVWConfig.get().SERVER_ITEM_COOLDOWNS) return;
+        if (!VWConfig.get().SERVER_ITEM_COOLDOWNS) return;
         int cooldown = isInBiome(player, VWBiomeTags.IS_VERDANT_BIOMES) ? (cdBiome) : (cd);
         player.getCooldowns().addCooldown(player.getItemBySlot(EquipmentSlot.MAINHAND), cooldown);
     }
     private static void setCooldown(Player player, int cd) {
         if (player.isCreative()) return;
         player.getMainHandItem().hurtAndBreak(5, player, EquipmentSlot.MAINHAND);
-        if (!TOTVWConfig.get().SERVER_ITEM_COOLDOWNS) return;
+        if (!VWConfig.get().SERVER_ITEM_COOLDOWNS) return;
         player.getCooldowns().addCooldown(player.getItemBySlot(EquipmentSlot.MAINHAND), cd);
     }
     private static void grantEffect(Player player, Holder<MobEffect> effect, int inBiome, int enhancedAmp, TagKey<Biome> biomeTag) {

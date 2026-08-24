@@ -1,6 +1,7 @@
 package cliffordha.totvw.world;
 
 import cliffordha.totvw.tag.VWBiomeTags;
+import cliffordha.totvw.worldgen.VWPlacedFeatures;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.data.worldgen.placement.CavePlacements;

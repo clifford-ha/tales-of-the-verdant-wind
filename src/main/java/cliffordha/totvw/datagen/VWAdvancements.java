@@ -7,10 +7,10 @@ import cliffordha.totvw.registry.VWItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.PlayerInteractTrigger;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.InventoryChangeTrigger;
+import net.minecraft.advancements.triggers.PlayerInteractTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -19,13 +19,14 @@ import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import static net.minecraft.advancements.criterion.InventoryChangeTrigger.TriggerInstance.hasItems;
+import static net.minecraft.advancements.triggers.InventoryChangeTrigger.TriggerInstance.hasItems;
 
 public class VWAdvancements extends AdvancementProvider {
     public VWAdvancements(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
@@ -77,7 +78,7 @@ public class VWAdvancements extends AdvancementProvider {
                     .addCriterion("wolf_verixium_armor",
                             PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
                                     ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_WOLF_ARMOR),
-                                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(entityTypes, EntityType.WOLF)))))
+                                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(entityTypes, EntityTypes.WOLF)))))
                     .save(output, TOTVW.MOD_ID + ":wolf_verixium_armor");
 
             AdvancementHolder verixiumFluidBucket = Advancement.Builder.advancement()
