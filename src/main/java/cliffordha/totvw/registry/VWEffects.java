@@ -43,6 +43,13 @@ public class VWEffects {
             map.getInstance(name).addOrReplacePermanentModifier(new AttributeModifier(id, value, operation));
         }
     }
+    public static void addMultipleModifier(AttributeMap map, Identifier id, double value, AttributeModifier.Operation operation, List<Holder<Attribute>> list) {
+        for (Holder<Attribute> name : list) {
+            if (map.hasAttribute(name)) {
+                map.getInstance(name).addOrReplacePermanentModifier(new AttributeModifier(id, value, operation));
+            }
+        }
+    }
 
     public static void removeAllModifiers(LivingEntity entity, Identifier id, List<Holder<Attribute>> list) {
         AttributeMap attributes = entity.getAttributes();

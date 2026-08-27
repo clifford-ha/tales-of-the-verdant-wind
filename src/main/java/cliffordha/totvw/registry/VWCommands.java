@@ -18,7 +18,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
@@ -29,6 +31,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +41,33 @@ import static cliffordha.totvw.util.VWUtil.sendToChat;
 public class VWCommands {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            dispatcher.register(Commands.literal("totvw")
+                    .then(Commands.literal("summon-wolf")
+                            .executes(context -> {
+                                        ServerPlayer player;
+                                        try {
+                                            player = context.getSource().getPlayerOrException();
+                                        } catch (Exception e) {
+                                            context.getSource().sendFailure(Component.literal("This command must be run by a player."));
+                                            return 0;
+                                        }
+
+                                        List<EntityType<?>> souls = player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_SPIRIT, List.of());
+                                        int getStat = souls.size();
+                                        if (getStat < 1) {
+                                            context.getSource().sendFailure(Component.literal("You don't have any souls to summon a wolf!"));
+                                            return 0;
+                                        } else {
+                                            souls.forEach(soul -> {
+                                                soul.spawn(player.level(), player.blockPosition(), EntitySpawnReason.MOB_SUMMONED);
+                                            });
+                                            souls.clear();
+                                            context.getSource().sendSuccess(() -> Component.literal("Summoned " + souls.size() + " wolf/wolves.)"), true);
+                                        }
+                                        return getStat;
+                                    }
+                            ))
+            );
             dispatcher.register(Commands.literal("totvw")
                     .then(Commands.literal("enchantments_handbook")
                             .executes(context -> {
@@ -118,7 +148,7 @@ public class VWCommands {
                                             return 0;
                                         }
                                         ServerLevel level = player.level();
-                                        List<Wolf> wolves = level.getEntities(EntityType.WOLF,
+                                        List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
                                         player.getBoundingBox().inflate(32),
                                         wolf -> wolf.isTame() && wolf.getUUID() != player.getUUID());
 

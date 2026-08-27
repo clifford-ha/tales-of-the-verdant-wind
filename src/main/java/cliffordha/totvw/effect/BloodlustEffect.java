@@ -31,8 +31,8 @@ import static cliffordha.totvw.util.VWUtil.entityEnchantmentLVL;
 import static cliffordha.totvw.util.VWUtil.wolfEnchantmentLVL;
 
 public class BloodlustEffect extends MobEffect {
-    private static final Identifier ID = VWIdentifiers.EFFECT_BLOODLUST;
-    private static final Identifier ID_ADDITIONAL = VWIdentifiers.EFFECT_BLOODLUST_ADDITIONAL;
+    private final Identifier ID = VWIdentifiers.EFFECT_BLOODLUST;
+    private final Identifier ID_ADDITIONAL = VWIdentifiers.EFFECT_BLOODLUST_ADDITIONAL;
 
     public BloodlustEffect() {
         super(MobEffectCategory.HARMFUL, VWColors.BLOODLUST_EFFECT);
@@ -52,8 +52,10 @@ public class BloodlustEffect extends MobEffect {
         double speedMultiplier = Math.min(0.15 + (amplifier * 0.15), 0.45);
         double armorReduction = (entity instanceof Wolf wolf && wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_MIGHT) > 0) ? -(0.10 + (amplifier * 0.10)) : -(0.30 + (amplifier * 0.30));
 
-        addModifier(attributes, ID_ADDITIONAL,
-                Attributes.ATTACK_DAMAGE, baseAtkAdditional, AttributeModifier.Operation.ADD_VALUE);
+        if (amplifier > 1) {
+            addModifier(attributes, ID_ADDITIONAL,
+                    Attributes.ATTACK_DAMAGE, baseAtkAdditional, AttributeModifier.Operation.ADD_VALUE);
+        }
 
         addModifier(attributes, ID,
                 Attributes.ATTACK_DAMAGE, atkMultiplier, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
@@ -63,11 +65,6 @@ public class BloodlustEffect extends MobEffect {
 
         addModifier(attributes, ID,
                 Attributes.ARMOR, armorReduction, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    }
-
-    @Override
-    public boolean isBeneficial() {
-        return false;
     }
 
     @Override

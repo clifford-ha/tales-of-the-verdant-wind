@@ -6,11 +6,14 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 
 import java.util.List;
 
 public class VWAttachments {
-    public static final AttachmentType<Boolean> ENTITY_IS_PARALYZED = registerBool("entity_is_paralyzed");
     public static final AttachmentType<Boolean> ENTITY_HAS_VERDANT_OMEN = registerBool("entity_has_verdant_omen");
     public static class WindCore {
         public static final AttachmentType<Integer> ENTITY_PRESSURE_DIFFERENCE = registerInt("entity_pressure_difference");
@@ -19,6 +22,8 @@ public class VWAttachments {
 
     public static class Player {
         public static final AttachmentType<Boolean> PLAYER_IS_DEV_MODE = registerBool("player_is_dev_mode");
+
+        public static final AttachmentType<List<EntityType<?>>> PLAYER_WOLF_SPIRIT = registerEntityList("player_wolf_spirit");
 
         public static final AttachmentType<Integer> PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK = registerInt("player_received_enchantments_handbook");
         public static final AttachmentType<Integer> PLAYER_RECEIVED_EFFECTS_HANDBOOK = registerInt("player_received_effects_handbook");
@@ -66,6 +71,18 @@ public class VWAttachments {
         public static final AttachmentType<Float> VILLAGER_DISCOUNT_MODIFIER = registerFloat("villager_discount_modifier");
     }
 
+    private static AttachmentType<List<EntityType<?>>> registerEntityList(String name) {
+        return AttachmentRegistry.create(
+                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
+                listBuilder -> listBuilder.persistent(EntityType.CODEC.listOf()).initializer(List::of)
+        );
+    }
+    private static AttachmentType<EntityType<?>> registerWolf(String name) {
+        return AttachmentRegistry.create(
+                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
+                blockPosBuilder -> blockPosBuilder.persistent(EntityType.CODEC).initializer( () -> EntityTypes.WOLF)
+        );
+    }
     private static AttachmentType<BlockPos> registerBlockPos(String name) {
         return AttachmentRegistry.create(
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
@@ -99,7 +116,6 @@ public class VWAttachments {
 
     public static void register() {
         final List<AttachmentType<?>> GLOBAL_ATTACHMENTS = List.of(
-                ENTITY_IS_PARALYZED,
                 ENTITY_HAS_VERDANT_OMEN
         );
         final List<AttachmentType<?>> WOLF_ATTACHMENTS = List.of(
@@ -129,6 +145,7 @@ public class VWAttachments {
         );
         final List<AttachmentType<?>> PLAYER_ATTACHMENTS = List.of(
                 Player.PLAYER_IS_DEV_MODE,
+                Player.PLAYER_WOLF_SPIRIT,
                 Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK,
                 Player.PLAYER_VILLAGER_ATROCITY_COUNT,
                 Player.PLAYER_WOLF_ATROCITY_COUNT,
