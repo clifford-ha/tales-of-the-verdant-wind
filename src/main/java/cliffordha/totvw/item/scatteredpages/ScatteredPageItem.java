@@ -36,7 +36,7 @@ public class ScatteredPageItem extends Item {
     private static String getTitle(Player player, int title) {
         return ScatteredPageTitle.fromId(title)
                 .map(t -> addTitle(t.getTitle()))
-                .orElse("Error: Invalid title reference no.");
+                .orElse(addTitle(ScatteredPageTitle.SP_0.getTitle()));
     }
 
     // SPOILER ALERT!!!
@@ -171,7 +171,7 @@ public class ScatteredPageItem extends Item {
                         + dText(20, 9, 726)
                         + "I may not have enough days to fully cover this test."
                         + nextParagraph
-                        + "We tried to outrun this creature in a very pale forest. It didn't look like a creature to be honest as it looked like its skin was made out of wood barks. We weren't sure. Fortunately, we survived by using a boat and followed the river till we arived at a nearby village. According to the locals, distrubing " + fText(ITALIC, "it") + " from its slumber will agitate it and follow us until we meet our demise."
+                        + "We tried to outrun this creature in a very pale forest. It didn't look like a creature to be honest as it looked like its skin was made out of wood barks. We weren't sure. Fortunately, we survived by using a boat and followed the river till we arived at a nearby village. According to the locals, disturbing " + fText(ITALIC, "it") + " from its slumber will agitate it and follow us until we meet our demise."
                         + nextParagraph
                         + "She and I talked about what should happen next considering I broke my left arm when were being chased by the creature. As painful as it is, I insisted on continuing the pursuit in studying the materials we got from that foggy biome I encountered a year ago."
                         + nextParagraph
@@ -179,7 +179,7 @@ public class ScatteredPageItem extends Item {
                         + nextParagraph
                         + nText("Below are frantic scribbles of an ancient text")
                         + nextLine
-                        + fText(ITALIC, "A nature's carcass, a defiled creature devoid of " + bText("meaning") + " and mercy to life. When its gaze fall upon those unfortunate, they shall see that a \"destined\" fate is nothing short of a miracle but a deep void of unending malice. O " + bText("Nature's Whisper") + ", what fate has thou chosen for us?")
+                        + fText(ITALIC, "A nature's carcass, a defiled creature devoid of " + bText("meaning") + " and mercy to life. When its gaze falls upon those unfortunates, they shall see that a \"destined\" fate is nothing short of a miracle but a deep void of unending malice. O " + bText("Nature's Whisper") + ", what fate has thou chosen for us?")
                 );
             }
             case 1005 -> {
@@ -194,7 +194,7 @@ public class ScatteredPageItem extends Item {
             case 1006 -> {
                 return addPage(
                         pText(4)
-                        + "The remaining stock has been successfully transferred to the affected bunkers to alleviate the situation caused by starvation. The creatures from beyond, or what our scholars call the " + fText(ITALIC, "ongtan(s)") + ", have multiplied in numbers since the rift appeared. Threat level remain the same."
+                        + "The remaining stock has been successfully transferred to the affected bunkers to alleviate the situation caused by starvation. The creatures from beyond, or what our scholars call the " + fText(ITALIC, "ongtan(s)") + ", have multiplied in numbers since the rift appeared. Threat level remains the same."
                         + nextParagraph
                         + "My companions and I have failed to secure the scholars' defense pillar... Fortunately, all of them have been rescued on time, including their papers that may help us in formulating an offensive strategy. Second problem, due to said failure of securing the defense pillar, we had to prioritize evacuation and halt the reconstruction of another core to prevent further casualty."
                         + nextParagraph
@@ -202,7 +202,9 @@ public class ScatteredPageItem extends Item {
                 );
             }
         }
-        return new String[] { "Error: Invalid page reference no." };
+        return addPage(
+                cText(RED, "Oopsies! The reference no. appears to be invalid. Please report this to the mod author :)")
+        );
     }
 
     @Override
