@@ -13,7 +13,7 @@ public class VWConfigScreen {
     public static Screen create(Screen parent) {
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Component.literal(TOTVW.MOD_NAME).withColor(VWColors.VERDANT_WIND))
+                .setTitle(Component.literal(TOTVW.MOD_NAME_LONG).withColor(VWColors.VERDANT_WIND))
                 .transparentBackground()
                 .setSavingRunnable(VWConfig::save);
 
