@@ -4,6 +4,7 @@ import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWIdentifiers;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -21,6 +22,10 @@ import static cliffordha.totvw.registry.VWEffects.*;
 import static cliffordha.totvw.util.VWUtil.*;
 
 public class AmplifiedMightEffect extends MobEffect {
+    private final Identifier ID = VWIdentifiers.EFFECT_AMPLIFIED_MIGHT;
+    private final AttributeModifier.Operation ADD_VALUE = AttributeModifier.Operation.ADD_VALUE;
+    private final AttributeModifier.Operation ADD_MULTIPLIED_TOTAL = AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL;
+
     public AmplifiedMightEffect() {
         super(MobEffectCategory.BENEFICIAL, VWColors.MIGHT_EFFECT);
     }
@@ -31,34 +36,27 @@ public class AmplifiedMightEffect extends MobEffect {
     }
 
     @Override
-    public boolean isBeneficial() {
-        return true;
-    }
-
-    @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
         AttributeMap attributes = entity.getAttributes();
         if (entity instanceof Wolf wolf && wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_MIGHT) > 0) {
-            addModifier(attributes, VWIdentifiers.EFFECT_AMPLIFIED_MIGHT,
-                    Attributes.ARMOR,  4 + (2 * amplifier), AttributeModifier.Operation.ADD_VALUE);
+            addModifier(attributes, ID, Attributes.ARMOR,  4 + (2 * amplifier), ADD_VALUE);
 
-            addModifier(attributes, VWIdentifiers.EFFECT_AMPLIFIED_MIGHT,
-                    Attributes.JUMP_STRENGTH, 0.05 + (amplifier * 0.05), AttributeModifier.Operation.ADD_VALUE);
+            addModifier(attributes, ID, Attributes.JUMP_STRENGTH, 0.05 + (amplifier * 0.05), ADD_VALUE);
 
-            addModifier(attributes, VWIdentifiers.EFFECT_AMPLIFIED_MIGHT,
-                    Attributes.FALL_DAMAGE_MULTIPLIER, -(0.20 + (amplifier * 0.20)), AttributeModifier.Operation.ADD_VALUE);
+            addModifier(attributes, ID, Attributes.FALL_DAMAGE_MULTIPLIER, -(0.20 + (amplifier * 0.20)), ADD_VALUE);
+
+            if (amplifier > 1) {
+                addModifier(attributes, ID, Attributes.ENTITY_INTERACTION_RANGE, 2, ADD_VALUE);
+            }
         }
 
         double armorToughness = 0.3 + (amplifier * 0.2);
 
-        addModifier(attributes, VWIdentifiers.EFFECT_AMPLIFIED_MIGHT,
-                Attributes.ARMOR_TOUGHNESS, armorToughness + 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        addModifier(attributes, ID, Attributes.ARMOR_TOUGHNESS, armorToughness + 1, ADD_MULTIPLIED_TOTAL);
 
-        addModifier(attributes, VWIdentifiers.EFFECT_AMPLIFIED_MIGHT,
-                Attributes.KNOCKBACK_RESISTANCE, 1.25 + (amplifier * 1.25), AttributeModifier.Operation.ADD_VALUE);
+        addModifier(attributes, ID, Attributes.KNOCKBACK_RESISTANCE, 1.25 + (amplifier * 1.25), ADD_VALUE);
 
-        addModifier(attributes, VWIdentifiers.EFFECT_AMPLIFIED_MIGHT,
-                Attributes.MAX_ABSORPTION, 1.15 + (amplifier * 0.15), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        addModifier(attributes, ID, Attributes.MAX_ABSORPTION, 1.15 + (amplifier * 0.15), ADD_MULTIPLIED_TOTAL);
     }
 
     @Override
@@ -72,10 +70,11 @@ public class AmplifiedMightEffect extends MobEffect {
     }
 
     private void removeModifiers(LivingEntity entity) {
-        removeAllModifiers(entity, VWIdentifiers.EFFECT_AMPLIFIED_MIGHT,
+        removeAllModifiers(entity, ID,
                 List.of(
                         Attributes.ARMOR_TOUGHNESS,
                         Attributes.KNOCKBACK_RESISTANCE,
+                        Attributes.ENTITY_INTERACTION_RANGE,
                         Attributes.ARMOR,
                         Attributes.MAX_ABSORPTION,
                         Attributes.JUMP_STRENGTH,

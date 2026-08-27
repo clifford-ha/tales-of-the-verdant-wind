@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,6 +23,7 @@ import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,8 +33,7 @@ import static cliffordha.totvw.util.VWUtil.*;
 public class VWGlobalEntityBehaviors {
     public static void register() {
         onDamageOrDeathEvent();
-        configSync();
-
+        wolfAfterDeathSoulRetrieval();
         if (TOTVW.IN_DEVELOPMENT) {
             developmentTick();
         }
@@ -44,9 +43,17 @@ public class VWGlobalEntityBehaviors {
         sendClassRegisterLog("Custom Entity Behaviors");
     }
 
-    private static void configSync() {
+    private static void wolfAfterDeathSoulRetrieval() {
+        ServerLivingEntityEvents.AFTER_DEATH.register(
+                (victim, damageSource) -> {
+                    if (victim instanceof Wolf wolf && wolf.getOwner() instanceof Player player) {
+                        List<EntityType<?>> souls = new ArrayList<>(player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_SPIRIT, List.of()));
+                        souls.add(wolf.getType());
+                        player.setAttached(VWAttachments.Player.PLAYER_WOLF_SPIRIT, souls);
+                    }
+                }
+        );
     }
-
 
     private static void developmentTick() {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
@@ -114,7 +121,7 @@ public class VWGlobalEntityBehaviors {
                     wolf.teleportToAroundBlockPos(player.blockPosition());
                 }
             }
-            String name = wolf.getName().getString();
+            String name = wolf.getPlainTextName();
             int STACK_AFTER = wolf.getAttachedOrElse(BENEDICTION_STACK, 0);
             if (STACK_AFTER == 0) {
                 sendToChat(wolf, VWColors.BLOODLUST_EFFECT_MUTED, name + " used up all Benediction stacks");
@@ -137,22 +144,18 @@ public class VWGlobalEntityBehaviors {
             player.removeAttached(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT);
             player.removeAttached(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT);
             player.removeAttached(VWAttachments.Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK);
-            player.removeAttached(VWAttachments.Player.PLAYER_RECEIVED_EFFECTS_HANDBOOK);
-            player.removeAttached(VWAttachments.Player.PLAYER_RECEIVED_ITEMS_HANDBOOK);
             return;
         }
 
         Entity attacker = damageSource.getEntity();
         if (!(attacker instanceof Player player)) return;
-        Level level = player.level();
+        if (!(player.level() instanceof ServerLevel level)) return;
 
         float multiplier = setDifficultyBasedValue(level, 0.5f, 0.75f, 1.0f, 2.0f);
 
         int maybeAddMore = level.getRandom().nextIntBetweenInclusive(0, 3);
         int deduction = Mth.ceil(3 * multiplier) + maybeAddMore;
         int finalDeduction = death ? deduction * 4 : deduction;
-
-        ServerPlayer serverPlayer = (ServerPlayer) player;
 
         if (victim instanceof Wolf wolf) {
             AttachmentType<Integer> WOLF_COUNTER = VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT;
@@ -162,26 +165,18 @@ public class VWGlobalEntityBehaviors {
             int current = player.getAttachedOrElse(WOLF_COUNTER, 0);
             player.setAttached(WOLF_COUNTER, current + finalDeduction);
 
-            showAtrocityCounter(serverPlayer, wolf, player.getAttachedOrElse(WOLF_COUNTER, 0));
+            if (!VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER) return;
+            sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Wolf atrocity count: " + player.getAttachedOrElse(WOLF_COUNTER, 0));
         } else if (victim instanceof Villager || victim instanceof WanderingTrader) {
             AttachmentType<Integer> VILLAGER_COUNTER = VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT;
 
             int current = player.getAttachedOrElse(VILLAGER_COUNTER, 0);
             player.setAttached(VILLAGER_COUNTER, current + finalDeduction);
 
-            showAtrocityCounter(serverPlayer, victim, player.getAttachedOrElse(VILLAGER_COUNTER, 0));
+            if (!VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER) return;
+            sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Villager atrocity count: " + player.getAttachedOrElse(VILLAGER_COUNTER, 0));
         }
     }
-
-    private static void showAtrocityCounter(Player player, LivingEntity victim, int count) {
-        if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_SHOW_ATROCITY_COUNTER, false)) return;
-        if (victim instanceof Wolf) {
-            sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Wolf atrocity count: " + count);
-        } else if (victim instanceof Villager || victim instanceof WanderingTrader) {
-            sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Villager atrocity count: " + count);
-        }
-    }
-
 
     private VWGlobalEntityBehaviors() {}
 }

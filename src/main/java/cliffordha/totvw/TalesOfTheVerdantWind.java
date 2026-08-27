@@ -15,10 +15,10 @@ import terrablender.api.TerraBlenderApi;
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 	public TalesOfTheVerdantWind() {}
 
-	public static boolean IN_DEVELOPMENT = false;
+	public static boolean IN_DEVELOPMENT = true;
 	@Override
 	public void onInitialize() {
-		TOTVW.sendStat(TOTVW.MOD_NAME_LONG + " ( or TOTVW for short) started initializing...");
+		TOTVW.sendStat(TOTVW.MOD_NAME_LONG + " (or TOTVW for short) started initializing...");
 		VWItems.register();
 		VWBlocks.register();
 
