@@ -1,4 +1,4 @@
-// 26.1.1	-999999999-01-01T00:00:00	Tales of the Verdant Wind/VWRecipeProvider
+// 26.1.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/VWRecipeProvider
 f87a3813366806c92c91de1f75365a9b9556c684 data/tales-of-the-verdant-wind/advancement/recipes/building_blocks/stripped_verdant_spruce_wood.json
 52e95999d61bc324f855e29a9d805450855ebb5d data/tales-of-the-verdant-wind/advancement/recipes/building_blocks/verdant_spruce_planks.json
 c64f7c129dd161630dfb8297b4f1abc790428b34 data/tales-of-the-verdant-wind/advancement/recipes/building_blocks/verdant_spruce_slab.json
@@ -18,6 +18,7 @@ c4e29442bb6a170af45bc08ab5bf1bee5683af1a data/tales-of-the-verdant-wind/advancem
 a73e00f6c5564aab5611b26fb5b12bf41ad81633 data/tales-of-the-verdant-wind/advancement/recipes/misc/condensed_verixium.json
 ec08ffb799d29f4d232e9afc2de7bb71dd9227c3 data/tales-of-the-verdant-wind/advancement/recipes/misc/firework_rocket.json
 e93d20f0322e006488b178d9cf25022031a36030 data/tales-of-the-verdant-wind/advancement/recipes/misc/iridescent_glass_pane.json
+98b5f49de9c2594f396bd45d53fe0b75630c499b data/tales-of-the-verdant-wind/advancement/recipes/misc/soul_runestone_plate.json
 4e287130d4fb55f3f48b4a241199301ea842363c data/tales-of-the-verdant-wind/advancement/recipes/misc/stonecutting_iridescent_glass_pane_to_black_dye.json
 121299b47fe604b9b2e842abcdfffc2530a501df data/tales-of-the-verdant-wind/advancement/recipes/misc/stonecutting_iridescent_glass_pane_to_blue_dye.json
 3f231d48982266186b5a3e74f4dd5aae3535c916 data/tales-of-the-verdant-wind/advancement/recipes/misc/stonecutting_iridescent_glass_pane_to_brown_dye.json
@@ -72,6 +73,7 @@ b68ad7393ccae562aa4fd4493a87d370773dec7a data/tales-of-the-verdant-wind/advancem
 6bceb43fdee5d448d5111a7ef071cb5745c3e5c7 data/tales-of-the-verdant-wind/recipe/condensed_verixium.json
 52751ed40046671e67fb70bd7c9a064a0b982701 data/tales-of-the-verdant-wind/recipe/firework_rocket.json
 96ec105047035e9813297118b5ef7fc788cd9044 data/tales-of-the-verdant-wind/recipe/iridescent_glass_pane.json
+6f7548683190b5bb83f8121c70de9c98411a4e36 data/tales-of-the-verdant-wind/recipe/soul_runestone_plate.json
 490b639556dee65524668354f1b5a2e191607ca9 data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_pane_to_black_dye.json
 08d44435b6d52809e6b64a9e927108eafdd5a6bd data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_pane_to_blue_dye.json
 302f4b53570deb473fe7b7540e27e6566b9afb7d data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_pane_to_brown_dye.json

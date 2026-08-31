@@ -1,4 +1,4 @@
-// 26.1.1	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Tags for minecraft:damage_type
+// 26.1.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Tags for minecraft:damage_type
 880c67ab06b8a762b205515b1f8c5b36a20a0122 data/minecraft/tags/damage_type/always_hurts_ender_dragons.json
 9d3431a74acfaeaca8a53e63215257d37204de62 data/minecraft/tags/damage_type/bypasses_armor.json
 39b3849b7dabe8941189bdcc5e5529630c0ffd0c data/minecraft/tags/damage_type/bypasses_effects.json

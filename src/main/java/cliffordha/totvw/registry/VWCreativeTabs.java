@@ -106,8 +106,6 @@ public class VWCreativeTabs {
 
     public static void register() {
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VWCreativeTabs.TOTVW_ITEMS_TAB_KEY, VWCreativeTabs.TOTVW_ITEMS_TAB);
-        if (TOTVW.IN_DEVELOPMENT) {
-            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VWCreativeTabs.TOTVW_SCATTERED_PAGES_TAB_KEY, VWCreativeTabs.TOTVW_SCATTERED_PAGES_TAB);
-        }
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VWCreativeTabs.TOTVW_SCATTERED_PAGES_TAB_KEY, VWCreativeTabs.TOTVW_SCATTERED_PAGES_TAB);
     }
 }
