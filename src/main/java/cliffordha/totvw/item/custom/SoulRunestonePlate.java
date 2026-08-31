@@ -14,7 +14,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
@@ -66,7 +66,7 @@ public class SoulRunestonePlate extends Item {
                         soul.put("Pos", setPosition);
 
                         TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), soul);
-                        Wolf wolf = EntityTypes.WOLF.spawn(serverLevel, player.blockPosition(), EntitySpawnReason.MOB_SUMMONED);
+                        Wolf wolf = EntityType.WOLF.spawn(serverLevel, player.blockPosition(), EntitySpawnReason.MOB_SUMMONED);
                         if (wolf != null) {
                             wolf.load(input);
                             if (input.getFloatOr("Health", 0.0f) < 2.0f) {
