@@ -81,6 +81,11 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add(VWItems.VERIXIUM_HORSE_ARMOR, "Verixium Horse Armor");
 
+        text.add(VWItems.SOUL_RUNESTONE_PLATE, "Soul Runestone Plate");
+        text.add(VWItems.SOUL_RUNESTONE_FRAGMENT_1, "Soul Runestone Fragment (TL)");
+        text.add(VWItems.SOUL_RUNESTONE_FRAGMENT_2, "Soul Runestone Fragment (TR)");
+        text.add(VWItems.SOUL_RUNESTONE_FRAGMENT_3, "Soul Runestone Fragment (BL)");
+        text.add(VWItems.SOUL_RUNESTONE_FRAGMENT_4, "Soul Runestone Fragment (BR)");
 
         String SCATTERED_PAGE = "Scattered Page";
         text.add(Pages.SCATTERED_PAGE, SCATTERED_PAGE);
@@ -96,6 +101,7 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add(Pages.ENCHANTMENTS_HANDBOOK, "Enchantments Handbook");
         text.add(Pages.EFFECTS_HANDBOOK, "Effects Handbook");
+        text.add(Pages.ITEMS_HANDBOOK, "Items Handbook");
         text.add(Pages.PLAYER_STATS, "Player Stats");
         text.add(Pages.SP_ID_TEST, "Test Page");
         text.add(Pages.SP_ID_1000, SP_1000.getTitle());

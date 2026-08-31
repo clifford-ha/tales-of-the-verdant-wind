@@ -17,12 +17,12 @@ public enum ScatteredPageTitle {
     SP_1000(1000,"Multi-test Page"),
 
 
-    SP_1001(1001,"An Alchemist's Torn Anecdotes"),
+    SP_1001(1001,"An Alchemist's Anecdotes"),
     SP_1002(1002,SP_1001.getTitle() + "#2"),
     SP_1003(1003,SP_1001.getTitle() + "#3"),
     SP_1004(1004,SP_1001.getTitle() + "#4"),
 
-    SP_1005(1005,"A Torn Page"),
+    SP_1005(1005,"An Unknown Page"),
 
     SP_1006(1006, "A Hunter's Torn Anecdotes"),
 

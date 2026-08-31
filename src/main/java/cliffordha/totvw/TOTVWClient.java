@@ -1,17 +1,19 @@
 package cliffordha.totvw;
 
-import cliffordha.totvw.client.VWItemBlessingTooltip;
 import cliffordha.totvw.client.VWTooltips;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.particle.MightParalyzeParticle;
 import cliffordha.totvw.particle.VerixiumPowderRainParticle;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.client.VWModelLayerProvider;
 import cliffordha.totvw.particle.BenedictionTriggerParticle;
 import cliffordha.totvw.particle.VerdantBiomesEnvironmentAmbiance;
+import cliffordha.totvw.client.ClientPrefsPayload;
 import cliffordha.totvw.util.VWEffectOverlays;
 import cliffordha.totvw.util.VWColorizeTextMixin;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
@@ -80,8 +82,13 @@ public class TOTVWClient implements ClientModInitializer {
         BlockEntityRenderers.register(VWBlockEntityTypes.HANGING_SIGN, HangingSignRenderer::new);
         BlockEntityRenderers.register(VWBlockEntityTypes.SHELF, ShelfRenderer::new);
         VWEffectOverlays.register();
-        VWItemBlessingTooltip.register();
         VWTooltips.register();
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
+                sender.sendPacket(new ClientPrefsPayload(
+                        VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER,
+                        VWConfig.get().CLIENT_ENABLE_NOTIFIERS
+                ))
+        );
     }
     private static int getRainbowColor() {
         float hue = (System.currentTimeMillis() % 4000) / 1000.0f;

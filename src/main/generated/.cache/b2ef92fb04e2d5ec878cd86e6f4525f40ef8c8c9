@@ -1,6 +1,8 @@
-// 26.1	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Advancements
-9434ae2d43ca538c69a090087def7bd5464beb28 data/tales-of-the-verdant-wind/advancement/full_verixium_armor.json
-2b17e4e88923284d1a4cfea56c3faa6a308e1426 data/tales-of-the-verdant-wind/advancement/root.json
-c2429b6523ca94a315c264dc4b206ced0e99a3d3 data/tales-of-the-verdant-wind/advancement/verixium_armor_upgrade.json
-75653732c0d21f8c95c38e79de108694a0ff9dc9 data/tales-of-the-verdant-wind/advancement/verixium_fluid_bucket.json
-21e74f302cca0ab57ab147d3d034ec3377f7fa08 data/tales-of-the-verdant-wind/advancement/wolf_verixium_armor.json
+// 26.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Advancements
+9f0c5345d1d70d5ece8d83830faa782477ce9e81 data/minecraft/advancement/tales-of-the-verdant-winda_light_companion.json
+572a01b0512da2a83f43df2329b0eb5dd5bb2e32 data/minecraft/advancement/tales-of-the-verdant-winda_wolf_accompanied_by_the_winds.json
+5aa6a2ae82829cc0ad8ef7537d8fdb3fcd2a1cef data/minecraft/advancement/tales-of-the-verdant-windcondensed_wind.json
+1c01e032875b22c51a53fb44124338f3ffb7485c data/minecraft/advancement/tales-of-the-verdant-windlight_as_the_wind.json
+b6abd4a0ff74a1f22a3baf8855bed4e83806db89 data/minecraft/advancement/tales-of-the-verdant-windtales_of_the_verdant_wind.json
+cf20ddb98dca2fbd81eaccfe5eb1c6d00e46f9cd data/minecraft/advancement/tales-of-the-verdant-windtastes_like_ink.json
+53a4986c79c8990d9e4ace4f86b5101ed08e74c7 data/minecraft/advancement/tales-of-the-verdant-windweightless_minerals.json
