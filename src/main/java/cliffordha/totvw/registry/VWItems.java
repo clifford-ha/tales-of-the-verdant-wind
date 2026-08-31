@@ -1,5 +1,6 @@
 package cliffordha.totvw.registry;
 
+import cliffordha.totvw.item.custom.SoulRunestonePlate;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.item.VWArmorMaterials;
@@ -261,6 +262,32 @@ public class VWItems {
             properties -> new HangingSignItem(VWBlocks.VERDANT_SPRUCE_HANGING_SIGN, VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN, properties
                     .stacksTo(16)
             ));
+    public static final Item SOUL_RUNESTONE_PLATE = registerItem("soul_runestone_plate",
+            properties -> new SoulRunestonePlate(properties
+                    .stacksTo(1)
+                    .rarity(Rarity.EPIC)
+                    .fireResistant()
+            ));
+    public static final Item SOUL_RUNESTONE_FRAGMENT_1 = registerItem("soul_runestone_fragment_1",
+            properties -> new Item(properties
+                    .stacksTo(1)
+                    .rarity(Rarity.RARE)
+            ));
+    public static final Item SOUL_RUNESTONE_FRAGMENT_2 = registerItem("soul_runestone_fragment_2",
+            properties -> new Item(properties
+                    .stacksTo(1)
+                    .rarity(Rarity.RARE)
+            ));
+    public static final Item SOUL_RUNESTONE_FRAGMENT_3 = registerItem("soul_runestone_fragment_3",
+            properties -> new Item(properties
+                    .stacksTo(1)
+                    .rarity(Rarity.RARE)
+            ));
+    public static final Item SOUL_RUNESTONE_FRAGMENT_4 = registerItem("soul_runestone_fragment_4",
+            properties -> new Item(properties
+                    .stacksTo(1)
+                    .rarity(Rarity.RARE)
+            ));
 
     public static class Pages {
 
@@ -296,9 +323,11 @@ public class VWItems {
 
         /** under testing **/
         public static final Item PLAYER_STATS = createPage("player_stats", -2);
+
         public static final Item LODESTONE_WIND_CORE_MANUAL = createPage("lodestone_wind_core_manual", 333);
-        public static final Item ENCHANTMENTS_HANDBOOK = createPage("enchantments_handbook", 2006);
-        public static final Item EFFECTS_HANDBOOK = createPage("effects_handbook", 2007);
+        public static final Item ENCHANTMENTS_HANDBOOK = createHandbook("enchantments_handbook", 2006);
+        public static final Item EFFECTS_HANDBOOK = createHandbook("effects_handbook", 2007);
+        public static final Item ITEMS_HANDBOOK = createHandbook("items_handbook", 2008);
 
         public static void register() {}
     }
@@ -318,6 +347,9 @@ public class VWItems {
 
         public static Item createPage(String name, int id) {
             return VWItems.Util.registerItem(name, properties -> new ScatteredPageItem(properties.stacksTo(1), id));
+        }
+        public static Item createHandbook(String name, int id) {
+            return VWItems.Util.registerItem(name, properties -> new ScatteredPageItem(properties.stacksTo(1).rarity(Rarity.RARE), id));
         }
         public static Item createPlaceholder(String name) {
             return VWItems.Util.registerItem(name, properties -> new Item(properties.stacksTo(1)));

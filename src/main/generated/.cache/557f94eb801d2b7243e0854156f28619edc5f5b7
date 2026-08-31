@@ -1,4 +1,4 @@
-// 26.1.1	-999999999-01-01T00:00:00	Tales of the Verdant Wind/VWRecipeProvider
+// 26.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/VWRecipeProvider
 f87a3813366806c92c91de1f75365a9b9556c684 data/tales-of-the-verdant-wind/advancement/recipes/building_blocks/stripped_verdant_spruce_wood.json
 52e95999d61bc324f855e29a9d805450855ebb5d data/tales-of-the-verdant-wind/advancement/recipes/building_blocks/verdant_spruce_planks.json
 c64f7c129dd161630dfb8297b4f1abc790428b34 data/tales-of-the-verdant-wind/advancement/recipes/building_blocks/verdant_spruce_slab.json
@@ -13,11 +13,11 @@ cf12c49a4ec12226065924551039da27ab0eb222 data/tales-of-the-verdant-wind/advancem
 5c98b2dd7a08952c91dffbc3f93f93bd7a5101f4 data/tales-of-the-verdant-wind/advancement/recipes/combat/verixium_spear.json
 0bc81016c0aa787d6096d35f0de55b44b744685c data/tales-of-the-verdant-wind/advancement/recipes/combat/verixium_sword.json
 4e852e23b62d92e7268ac0173c3ec2c4a8033462 data/tales-of-the-verdant-wind/advancement/recipes/decorations/verdant_spruce_fence.json
-1a6618a3a012c473bd8ee18f5c447e6da52544d4 data/tales-of-the-verdant-wind/advancement/recipes/decorations/verdant_spruce_hanging_sign.json
 c4e29442bb6a170af45bc08ab5bf1bee5683af1a data/tales-of-the-verdant-wind/advancement/recipes/decorations/verdant_spruce_shelf.json
 a73e00f6c5564aab5611b26fb5b12bf41ad81633 data/tales-of-the-verdant-wind/advancement/recipes/misc/condensed_verixium.json
 ec08ffb799d29f4d232e9afc2de7bb71dd9227c3 data/tales-of-the-verdant-wind/advancement/recipes/misc/firework_rocket.json
 e93d20f0322e006488b178d9cf25022031a36030 data/tales-of-the-verdant-wind/advancement/recipes/misc/iridescent_glass_pane.json
+98b5f49de9c2594f396bd45d53fe0b75630c499b data/tales-of-the-verdant-wind/advancement/recipes/misc/soul_runestone_plate.json
 4e287130d4fb55f3f48b4a241199301ea842363c data/tales-of-the-verdant-wind/advancement/recipes/misc/stonecutting_iridescent_glass_pane_to_black_dye.json
 121299b47fe604b9b2e842abcdfffc2530a501df data/tales-of-the-verdant-wind/advancement/recipes/misc/stonecutting_iridescent_glass_pane_to_blue_dye.json
 3f231d48982266186b5a3e74f4dd5aae3535c916 data/tales-of-the-verdant-wind/advancement/recipes/misc/stonecutting_iridescent_glass_pane_to_brown_dye.json
@@ -69,9 +69,10 @@ e8347a1048b46f8afbdc20ac3cee106801120c77 data/tales-of-the-verdant-wind/advancem
 840c7dca0e5d279fd329836c60c8f739b9f52ec0 data/tales-of-the-verdant-wind/advancement/recipes/tools/verixium_shovel.json
 0518d650992d8c48b89c2c19dd98cce8dee75539 data/tales-of-the-verdant-wind/advancement/recipes/transportation/verdant_spruce_boat.json
 b68ad7393ccae562aa4fd4493a87d370773dec7a data/tales-of-the-verdant-wind/advancement/recipes/transportation/verdant_spruce_chest_boat.json
-6bceb43fdee5d448d5111a7ef071cb5745c3e5c7 data/tales-of-the-verdant-wind/recipe/condensed_verixium.json
-52751ed40046671e67fb70bd7c9a064a0b982701 data/tales-of-the-verdant-wind/recipe/firework_rocket.json
-96ec105047035e9813297118b5ef7fc788cd9044 data/tales-of-the-verdant-wind/recipe/iridescent_glass_pane.json
+643da1fc57fc1c7f469845a7e19a41671974c73d data/tales-of-the-verdant-wind/recipe/condensed_verixium.json
+4ce1f6c8b2e37bba567bba53da5c08d2fa622785 data/tales-of-the-verdant-wind/recipe/firework_rocket.json
+675465547c3da5ffd71d35913c7d07a696a1afa2 data/tales-of-the-verdant-wind/recipe/iridescent_glass_pane.json
+622914f9c814eb09588ef86276440e11face04ea data/tales-of-the-verdant-wind/recipe/soul_runestone_plate.json
 490b639556dee65524668354f1b5a2e191607ca9 data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_pane_to_black_dye.json
 08d44435b6d52809e6b64a9e927108eafdd5a6bd data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_pane_to_blue_dye.json
 302f4b53570deb473fe7b7540e27e6566b9afb7d data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_pane_to_brown_dye.json
@@ -105,16 +106,15 @@ e90eba72a6703d54f411977992b2b8755b4a8931 data/tales-of-the-verdant-wind/recipe/s
 9cf2d5a53169060839d91f5656c5c8a45e100f6e data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_to_white_dye.json
 276437be6ec1c4240a2c2e3e698c44a025c9c51e data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_to_yellow_dye.json
 57a2dcf852cb1d86226dfa4b09532c3ee8d31d59 data/tales-of-the-verdant-wind/recipe/stripped_verdant_spruce_wood.json
-2a0406a6f89a2a9638f8c4d45107278dd157f53b data/tales-of-the-verdant-wind/recipe/verdant_spruce_boat.json
+3c1ac3ddf8d852b7ead046909900bc641de8eb3b data/tales-of-the-verdant-wind/recipe/verdant_spruce_boat.json
 77fca5e91f6d9374cbb36e9c26b751d13fe0c710 data/tales-of-the-verdant-wind/recipe/verdant_spruce_button.json
-63290949122ed994a80cddff7b5b8728a11e241f data/tales-of-the-verdant-wind/recipe/verdant_spruce_chest_boat.json
+181e462937e512687a940afa89b4769f8cccc4b0 data/tales-of-the-verdant-wind/recipe/verdant_spruce_chest_boat.json
 2e675cdbf63b18d418d1ce6cf951afaf3a6994d7 data/tales-of-the-verdant-wind/recipe/verdant_spruce_door.json
-df841b98a77a1c06b2d9140d45f7ed4b2bf0fefd data/tales-of-the-verdant-wind/recipe/verdant_spruce_fence.json
+99d16b8056f40a62e6b9df577cfccca8e1807350 data/tales-of-the-verdant-wind/recipe/verdant_spruce_fence.json
 b0d7ac9bacb0703ba1ca3b059b84646603fb4421 data/tales-of-the-verdant-wind/recipe/verdant_spruce_fence_gate.json
-8310042d1d856ebeae123aab7b82d20264c80454 data/tales-of-the-verdant-wind/recipe/verdant_spruce_hanging_sign.json
 18acada8ae3580e887d6df2ba450e9c1f3727079 data/tales-of-the-verdant-wind/recipe/verdant_spruce_planks.json
 102b3d02415232c2036c5b5467d996a80320002f data/tales-of-the-verdant-wind/recipe/verdant_spruce_pressure_plate.json
-dd35e331bbe91b7e53bcf78c69d5adde4a9edd3f data/tales-of-the-verdant-wind/recipe/verdant_spruce_shelf.json
+ef3422c28752cf0dceea6567dbe75b8ebf23094d data/tales-of-the-verdant-wind/recipe/verdant_spruce_shelf.json
 b6757729065babf0b8ff8a2b6d3e950dee05be81 data/tales-of-the-verdant-wind/recipe/verdant_spruce_slab.json
 6a8be293f8f4e9a7c8d284c0a25ac658909314f2 data/tales-of-the-verdant-wind/recipe/verdant_spruce_stairs.json
 dca5122ba4a04d0d91ed14815e7584d2c2871283 data/tales-of-the-verdant-wind/recipe/verdant_spruce_storage_box.json
@@ -124,17 +124,17 @@ aee3569eb5e7469d232e60eaa35fcb49acc6e5be data/tales-of-the-verdant-wind/recipe/v
 91c06a26c62911ec8d6f0f01bef5dea75d25dfbf data/tales-of-the-verdant-wind/recipe/verixium_axe.json
 4f1df506b424d00e945dac2d9764da681ba92c91 data/tales-of-the-verdant-wind/recipe/verixium_boots.json
 4cd9bd509096a6942b990b6f67947ed5dd1b7fd8 data/tales-of-the-verdant-wind/recipe/verixium_chestplate.json
-c9536669e786f9c5e772124c9e16f069a4ca8ece data/tales-of-the-verdant-wind/recipe/verixium_chunk_from_blasting_verixium_fluid_bucket.json
+f9e47108dc69110a79a807c44786a30ff07ade87 data/tales-of-the-verdant-wind/recipe/verixium_chunk_from_blasting_verixium_fluid_bucket.json
 014dd55dd2418b10829cdee6329ac0fa286c5b06 data/tales-of-the-verdant-wind/recipe/verixium_fluid_bucket.json
 facf1fd222561c1b5041e89d939888210f85bae0 data/tales-of-the-verdant-wind/recipe/verixium_helmet.json
 c375d76b178e62160a5f2369fe3f5fda78251094 data/tales-of-the-verdant-wind/recipe/verixium_hoe.json
-1b44127c6f9f81267e3457f6ae62ecab1d251cc5 data/tales-of-the-verdant-wind/recipe/verixium_ingot.json
+dc17ecd471d923d127e08ec8d76c1ef80696da3a data/tales-of-the-verdant-wind/recipe/verixium_ingot.json
 9f5d97dbe6eaae05eb5acb8a00286cc44a62a6a8 data/tales-of-the-verdant-wind/recipe/verixium_leggings.json
-72f91680c3001accc6a4682a72f3e19003e1962e data/tales-of-the-verdant-wind/recipe/verixium_paper.json
+eca8e945387b3b02a664a9a8fe0acf11e91c8772 data/tales-of-the-verdant-wind/recipe/verixium_paper.json
 cd3c2c89b315fcfc1b84673549700e1cdfd80853 data/tales-of-the-verdant-wind/recipe/verixium_pickaxe.json
-63ebfeb5d2e3ce2a7f21c6ba8c1586f702a0ca4d data/tales-of-the-verdant-wind/recipe/verixium_powder.json
-d96c112da53e5a4ca1cf7b438b2a00bce81a1358 data/tales-of-the-verdant-wind/recipe/verixium_powder_block.json
-fd3697807ccd2acb92bf46f0fcbcaed438a5deaa data/tales-of-the-verdant-wind/recipe/verixium_powder_from_blasting_verixium_shard.json
+4834cb41f5fc2b824dc14006d139c3ce5c9bb4aa data/tales-of-the-verdant-wind/recipe/verixium_powder.json
+bdd5ce1e1a8b9ba9a13803753490754112db73c2 data/tales-of-the-verdant-wind/recipe/verixium_powder_block.json
+d6b5ed1ae523ecc03648953473b9700dd7d757cf data/tales-of-the-verdant-wind/recipe/verixium_powder_from_blasting_verixium_shard.json
 d4d31fc20f7fb0af72c1d3fb2b5541cd6be64cf7 data/tales-of-the-verdant-wind/recipe/verixium_shard.json
 54c550211fa9ff4aacb840479629faa9b654f938 data/tales-of-the-verdant-wind/recipe/verixium_shovel.json
 19f97f1eed3b5caa632aeb4fe0cef54a501476c3 data/tales-of-the-verdant-wind/recipe/verixium_spear.json
