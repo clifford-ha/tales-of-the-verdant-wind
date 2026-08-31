@@ -6,6 +6,7 @@ import cliffordha.totvw.entity.skill.SkillUtil;
 import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle;
+import cliffordha.totvw.registry.VWAttachments;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.tag.VWBiomeTags;
 
@@ -86,7 +87,7 @@ public class VWUtil {
         } else {
             addHiddenEffect(entity, MobEffects.WEAKNESS, minutes, 1);
         }
-        String name = "[" + entity.getPlainTextName() + "] ";
+        String name = "[" + entity.getName().getString() + "] ";
         String constructor = name + "Verdant Wind's Blessing is now on cooldown for " + cooldown + " seconds.";
         if (entity instanceof Wolf wolf) {
             SkillUtil.startCooldown(wolf, VWWolfBehaviors.VERDANT_BLESSING, cooldown);
@@ -246,23 +247,23 @@ public class VWUtil {
     }
 
     public static void sendToChat(LivingEntity entity, boolean overlay, String... msg) {
-        if (!VWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
         ServerPlayer player = resolveRecipient(entity);
         if (player == null) return;
+        if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_ENABLE_NOTIFIERS, false)) return;
         sendToMain(player, overlay, String.join("\n", msg));
     }
 
     public static void sendToChat(LivingEntity entity, int color, String... msg) {
-        if (!VWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
         ServerPlayer player = resolveRecipient(entity);
         if (player == null) return;
+        if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_ENABLE_NOTIFIERS, false)) return;
         sendToMain(player, color, String.join("\n", msg));
     }
 
     public static void sendToChat(LivingEntity entity, int color, boolean overlay, String... msg) {
-        if (!VWConfig.get().CLIENT_ENABLE_NOTIFIERS) return;
         ServerPlayer player = resolveRecipient(entity);
         if (player == null) return;
+        if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_ENABLE_NOTIFIERS, false)) return;
         sendToMain(player, color, overlay, String.join("\n", msg));
     }
 

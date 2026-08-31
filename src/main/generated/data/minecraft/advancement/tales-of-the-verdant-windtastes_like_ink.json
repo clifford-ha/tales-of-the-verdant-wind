@@ -1,7 +1,7 @@
 {
-  "parent": "tales-of-the-verdant-wind:root",
+  "parent": "minecraft:tales-of-the-verdant-windtales_of_the_verdant_wind",
   "criteria": {
-    "verixium_fluid_bucket": {
+    "tastes_like_ink": {
       "conditions": {
         "items": [
           {
@@ -17,11 +17,11 @@
     "icon": {
       "id": "tales-of-the-verdant-wind:verixium_fluid_bucket"
     },
-    "title": "Is It Drinkable?"
+    "title": "Tastes Like Ink"
   },
   "requirements": [
     [
-      "verixium_fluid_bucket"
+      "tastes_like_ink"
     ]
   ],
   "sends_telemetry_event": true

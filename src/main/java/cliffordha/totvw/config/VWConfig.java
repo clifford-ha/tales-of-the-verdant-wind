@@ -14,6 +14,7 @@ public class VWConfig implements ConfigData {
     public boolean CLIENT_ENABLE_NOTIFIERS = true;
     public boolean CLIENT_MOD_SOUNDS = true;
     public boolean CLIENT_SHOW_ATROCITY_COUNTER = false;
+    public boolean CLIENT_ALLOW_LORE_SPOILERS = false;
 
 
 
@@ -21,7 +22,7 @@ public class VWConfig implements ConfigData {
 
     public int SERVER_WOLF_PLAYER_SCAN_DISTANCE = 16;
     public int SERVER_BENEDICTION_HEALTH_THRESHOLD = 30;
-    public int SERVER_MAX_WOLF_BENEDICTION_STACK = 3;
+    //public int SERVER_MAX_WOLF_BENEDICTION_STACK = 3;
     public boolean SERVER_ALWAYS_TRIGGER_BLESSING = false;
     public boolean SERVER_WOLF_SHARES_BENEDICTION_STACK = true;
     public boolean SERVER_TELEPORT_AFTER_SAVE = true;

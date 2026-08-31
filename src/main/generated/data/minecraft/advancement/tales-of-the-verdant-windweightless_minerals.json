@@ -1,11 +1,11 @@
 {
-  "parent": "tales-of-the-verdant-wind:root",
+  "parent": "minecraft:tales-of-the-verdant-windtales_of_the_verdant_wind",
   "criteria": {
-    "verixium_armor_upgrade": {
+    "weightless_minerals": {
       "conditions": {
         "items": [
           {
-            "items": "tales-of-the-verdant-wind:verixium_armor_upgrade_template"
+            "items": "tales-of-the-verdant-wind:verixium_chunk"
           }
         ]
       },
@@ -15,21 +15,21 @@
   "display": {
     "description": {
       "color": "#247D66",
-      "text": "Obtain a Verixium Armor Upgrade Template"
+      "text": "Obtain a Verixium Ingot"
     },
     "frame": "challenge",
-    "hidden": true,
     "icon": {
-      "id": "tales-of-the-verdant-wind:verixium_armor_upgrade_template"
+      "id": "tales-of-the-verdant-wind:verixium_chestplate"
     },
+    "show_toast": false,
     "title": {
       "color": "#00FFD0",
-      "text": "Condensed Wind"
+      "text": "Weightless Minerals"
     }
   },
   "requirements": [
     [
-      "verixium_armor_upgrade"
+      "weightless_minerals"
     ]
   ],
   "sends_telemetry_event": true

@@ -23,7 +23,6 @@ public class ScatteredPageScreen extends Screen {
     private static final int COLOR_SCROLLBAR_TRACK = 0x33FFFFFF;
     private static final int COLOR_SCROLLBAR_THUMB = 0xAAFFFFFF;
 
-    private final int type;
     private final String pageTitle;
     private final List<String> pages;
     private final List<FormattedCharSequence> allLines = new ArrayList<>();
@@ -44,11 +43,10 @@ public class ScatteredPageScreen extends Screen {
     private final int scrollbarWidth = 6;
     private int scrollbarHeight;
 
-    public ScatteredPageScreen(int type, String pageTitle, String... pages) {
+    public ScatteredPageScreen(String pageTitle, String... pages) {
         super(Component.literal(pageTitle));
         this.pageTitle = pageTitle;
         this.pages = Arrays.asList(pages);
-        this.type = type;
     }
 
     @Override
@@ -95,27 +93,11 @@ public class ScatteredPageScreen extends Screen {
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         int x = this.leftPos;
         int y = this.topPos;
-        int bgColor;
-        int textColor;
-
-        switch (this.type) {
-            case 1 -> {
-                bgColor = VWColors.setColor(0x241E1C, 90);
-                textColor = VWColors.setColor(0xFBFBFB);
-            }
-            case 2 -> {
-                bgColor = VWColors.setColor(0xF9F6F0, 200);
-                textColor = VWColors.setColor(0x241E1C);
-            }
-            default -> {
-                bgColor = COLOR_BG;
-                textColor = COLOR_TEXT;
-            }
-        }
+        int textColor = COLOR_TEXT;
 
         // background
         graphics.fill((int) Math.floor(x * PADDING_RATIO), (int) Math.floor(y * PADDING_RATIO), this.width, this.height, 0x80000000);
-        graphics.fill(x, y, x + this.panelWidth, y + this.panelHeight, bgColor);
+        graphics.fill(x, y, x + this.panelWidth, y + this.panelHeight, COLOR_BG);
 
         // title separator
         graphics.fill(x + PADDING, y + 26, x + this.panelWidth - PADDING, y + 27, COLOR_LINE);

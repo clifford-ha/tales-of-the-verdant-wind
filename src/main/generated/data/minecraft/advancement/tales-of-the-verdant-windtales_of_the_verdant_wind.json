@@ -1,6 +1,6 @@
 {
   "criteria": {
-    "has_verdant_spruce_log": {
+    "tales_of_the_verdant_wind": {
       "conditions": {
         "items": [
           {
@@ -29,7 +29,7 @@
   },
   "requirements": [
     [
-      "has_verdant_spruce_log"
+      "tales_of_the_verdant_wind"
     ]
   ],
   "sends_telemetry_event": true

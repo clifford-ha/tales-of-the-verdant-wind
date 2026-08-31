@@ -3,7 +3,9 @@ package cliffordha.totvw.config;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.block.custom.LodestoneWindCoreBlock;
 import cliffordha.totvw.registry.VWColors;
+import cliffordha.totvw.client.ClientPrefsPayload;
 import me.shedaniel.clothconfig2.api.*;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -15,7 +17,15 @@ public class VWConfigScreen {
                 .setParentScreen(parent)
                 .setTitle(Component.literal(TOTVW.MOD_NAME).withColor(VWColors.VERDANT_WIND))
                 .transparentBackground()
-                .setSavingRunnable(VWConfig::save);
+                .setSavingRunnable(() -> {
+                    VWConfig.save();
+                    if (ClientPlayNetworking.canSend(ClientPrefsPayload.TYPE)) {
+                        ClientPlayNetworking.send(new ClientPrefsPayload(
+                                VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER,
+                                VWConfig.get().CLIENT_ENABLE_NOTIFIERS
+                        ));
+                    }
+                });
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
@@ -36,6 +46,18 @@ public class VWConfigScreen {
                             .build()
             );
         }
+        client.addEntry(
+                entryBuilder.startBooleanToggle(
+                                Component.literal("Use Notifiers"),
+                                VWConfig.get().CLIENT_ENABLE_NOTIFIERS)
+                        .setDefaultValue(true)
+                        .setTooltip(text(
+                                "When enabled, notifications will\n"
+                                        + "be sent to chat or overlay"
+                        ))
+                        .setSaveConsumer(value -> VWConfig.get().CLIENT_ENABLE_NOTIFIERS = value)
+                        .build()
+        );
         client.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Use New Sounds"),
@@ -85,9 +107,26 @@ public class VWConfigScreen {
                         .setTooltip(text(
                                 """
                                         When enabled, if a player hits a wolf or villager,
-                                        it will display a counter on the screen."""
+                                        it will display a counter on the screen.
+                                        
+                                        You can also know this by using the command:
+                                        /totvw get_atrocity_count"""
                         ))
                         .setSaveConsumer(value -> VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER = value)
+                        .build()
+        );
+        client.addEntry(
+                entryBuilder.startBooleanToggle(
+                                Component.literal("Allow Lore Spoilers"),
+                                VWConfig.get().CLIENT_ALLOW_LORE_SPOILERS)
+                        .setDefaultValue(false)
+                        .setTooltip(text(
+                                """
+                                        When enabled, show texts on pages that
+                                        contain lore regardless if the player
+                                        is not in survival mode."""
+                        ))
+                        .setSaveConsumer(value -> VWConfig.get().CLIENT_ALLOW_LORE_SPOILERS = value)
                         .build()
         );
 
@@ -106,18 +145,6 @@ public class VWConfigScreen {
                                         to both the armor and wolf."""
                         ))
                         .setSaveConsumer(value -> VWConfig.get().SERVER_WOLF_DMG_DISTRIBUTION = value)
-                        .build()
-        );
-        server.addEntry(
-                entryBuilder.startBooleanToggle(
-                                Component.literal("Use Notifiers"),
-                                VWConfig.get().CLIENT_ENABLE_NOTIFIERS)
-                        .setDefaultValue(true)
-                        .setTooltip(text(
-                                "When enabled, notifications will\n"
-                                + "be sent to chat or overlay"
-                        ))
-                        .setSaveConsumer(value -> VWConfig.get().CLIENT_ENABLE_NOTIFIERS = value)
                         .build()
         );
 
@@ -216,6 +243,7 @@ public class VWConfigScreen {
                         .setSaveConsumer(value -> VWConfig.get().SERVER_TELEPORT_AFTER_SAVE = value)
                         .build()
         );
+        /*
         if (TOTVW.IN_DEVELOPMENT) {
             benedictionSettings.add(
                     entryBuilder.startIntField(
@@ -227,7 +255,7 @@ public class VWConfigScreen {
                             .setSaveConsumer(value -> VWConfig.get().SERVER_MAX_WOLF_BENEDICTION_STACK = value)
                             .build()
             );
-        }
+        }*/
         server.addEntry(benedictionSettings.build());
 
         var enchantmentSkillSettings = entryBuilder.startSubCategory(Component.literal("Enchantment Skills"));

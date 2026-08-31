@@ -61,6 +61,7 @@ public class VWCreativeTabs {
                 output.accept(VWItems.VERIXIUM_FLUID_BUCKET);
                 output.accept(VWItems.VERIXIUM_PAPER);
                 output.accept(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE);
+                output.accept(VWItems.SOUL_RUNESTONE_PLATE);
 
                 output.accept(VWItems.VERIXIUM_HELMET);
                 output.accept(VWItems.VERIXIUM_CHESTPLATE);
@@ -76,14 +77,19 @@ public class VWCreativeTabs {
                 output.accept(VWItems.VERIXIUM_PICKAXE);
                 output.accept(VWItems.VERIXIUM_HOE);
                 output.accept(VWItems.VERIXIUM_SHOVEL);
+
+                output.accept(VWItems.SOUL_RUNESTONE_FRAGMENT_1);
+                output.accept(VWItems.SOUL_RUNESTONE_FRAGMENT_2);
+                output.accept(VWItems.SOUL_RUNESTONE_FRAGMENT_3);
+                output.accept(VWItems.SOUL_RUNESTONE_FRAGMENT_4);
             }).build();
 
     public static final CreativeModeTab TOTVW_SCATTERED_PAGES_TAB = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(Pages.OLD_SCATTERED_PAGE))
             .title(Component.literal("Scattered Pages"))
             .displayItems((params, output) -> {
+                /*
                 if (TOTVW.IN_DEVELOPMENT) {
-                    output.accept(Pages.SP_ID_TEST);
                     output.accept(Pages.SCATTERED_PAGE);
                     output.accept(Pages.SCATTERED_PAGE_VARIANT_1);
                     output.accept(Pages.SCATTERED_PAGE_VARIANT_2);
@@ -92,15 +98,25 @@ public class VWCreativeTabs {
                     output.accept(Pages.OLD_SCATTERED_PAGE_VARIANT_1);
                     output.accept(Pages.OLD_SCATTERED_PAGE_VARIANT_2);
                     output.accept(Pages.OLD_SCATTERED_PAGE_VARIANT_3);
+
                     output.accept(Pages.PLAYER_STATS);
+                    output.accept(Pages.SP_ID_TEST);
                     output.accept(Pages.SP_ID_1000);
                 }
+                */
+                output.accept(Pages.ENCHANTMENTS_HANDBOOK);
+                output.accept(Pages.EFFECTS_HANDBOOK);
+                output.accept(Pages.ITEMS_HANDBOOK);
+
                 output.accept(Pages.SP_ID_1001);
                 output.accept(Pages.SP_ID_1002);
                 output.accept(Pages.SP_ID_1003);
                 output.accept(Pages.SP_ID_1004);
                 output.accept(Pages.SP_ID_1005);
                 output.accept(Pages.SP_ID_1006);
+
+                output.accept(Pages.LODESTONE_WIND_CORE_MANUAL);
+
             }).build();
 
 

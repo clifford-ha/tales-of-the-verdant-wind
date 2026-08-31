@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "tales-of-the-verdant-wind:item/old_scattered_page"
+    "layer0": "tales-of-the-verdant-wind:item/scattered_page"
   }
 }
