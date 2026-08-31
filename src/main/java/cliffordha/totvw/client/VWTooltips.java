@@ -176,8 +176,7 @@ public class VWTooltips {
     }
 
     private static void addVWItem(List<Component> out, String... text) {
-        if (hasBenediction()) return;
-        if (VWTooltips.mc.hasShiftDown()) {
+        if (mc.hasShiftDown()) {
             out.add(Component.literal(Arrays.toString(text)).withColor(VWColors.VERDANT_WIND));
         } else {
             out.add(Component.literal("[VW] Active"));
