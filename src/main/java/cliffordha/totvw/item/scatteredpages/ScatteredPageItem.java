@@ -127,7 +127,7 @@ public class ScatteredPageItem extends Item {
                         pText(1)
                         + "...3 days later, the village cleric successfully healed the wounded villagers. The relocation to the deep forest was a success but not without problems. " + fText(STRIKETHROUGH, "Fog") + " is quite a big problem in this forest making us vulnerable to to hidden enemies and the environment itself. There was one time one of the kids nearly fell into a ravine."
                         + nextParagraph +
-                        "The berry bushes also seem to behave " + bText("strangely") + " when within the this specific biome. We keep hearing distant howls too especially during the dead of the night."
+                        "The berry bushes also seem to behave " + bText("strangely") + " when within this specific biome. We keep hearing distant howls too especially during the dead of the night."
                         + nextParagraph
                         + dText(20, 9, 723)
                         + "A day later after the final relocation, some folks claim to have witnessed a " + bText("wolf") + " tearing down a zombie that chased them. Of course, with how thick the fog is, some are skeptical about the incident and are saying they probably saw a wild animal's silhouette. As for me, I'll " + fText(UNDERLINED, "ask later...")

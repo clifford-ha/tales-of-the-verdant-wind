@@ -7,18 +7,18 @@ import cliffordha.totvw.registry.VWItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.PlayerInteractTrigger;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.criterion.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +38,6 @@ public class VWAdvancements extends AdvancementProvider {
             var items = registries.lookupOrThrow(Registries.ITEM);
             HolderLookup<EntityType<?>> entityTypes = registries.lookupOrThrow(Registries.ENTITY_TYPE);
 
-            String talesOfTheVerdantWindID = "tales_of_the_verdant_wind";
             AdvancementHolder root = Advancement.Builder.advancement()
                     .display(
                             VWItems.VERIXIUM_PICKAXE,
@@ -47,88 +46,55 @@ public class VWAdvancements extends AdvancementProvider {
                             Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "block/verdant_moss_block"),
                             AdvancementType.TASK,
                             false, false, false)
-                    .addCriterion(talesOfTheVerdantWindID,
+                    .addCriterion("has_verdant_spruce_log",
                             hasItems(ItemPredicate.Builder.item().of(items, VWBlocks.VERDANT_SPRUCE_LOG)))
-                    .save(output, TOTVW.MOD_ID + talesOfTheVerdantWindID);
+                    .save(output, TOTVW.MOD_ID + ":root");
 
-            String weightlessMineralsID = "weightless_minerals";
-            AdvancementHolder weightlessMinerals = Advancement.Builder.advancement()
+            AdvancementHolder fullVerixiumArmor = Advancement.Builder.advancement()
                     .parent(root)
                     .display(
                             VWItems.VERIXIUM_CHESTPLATE,
-                            Component.literal("Weightless Minerals").withColor(VWColors.VERDANT_WIND),
-                            Component.literal("Obtain a Verixium Ingot").withColor(VWColors.VERDANT_WIND_MUTED),
-                            null,
-                            AdvancementType.CHALLENGE,
-                            false, true, false)
-                    .addCriterion(weightlessMineralsID, hasItems(
-                            ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_CHUNK)))
-                    .save(output, TOTVW.MOD_ID + weightlessMineralsID);
-
-            String lightAsTheWindID = "light_as_the_wind";
-            Advancement.Builder.advancement()
-                    .parent(weightlessMinerals)
-                    .display(
-                            VWItems.VERIXIUM_HELMET,
                             Component.literal("Light As The Wind").withColor(VWColors.VERDANT_WIND),
                             Component.literal("Equip a full set of Verixium armor").withColor(VWColors.VERDANT_WIND_MUTED),
                             null,
                             AdvancementType.CHALLENGE,
                             true, true, false)
-                    .addCriterion(lightAsTheWindID, hasItems(
+                    .addCriterion("full_verixium_armor_set", hasItems(
                             ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_HELMET),
                             ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_CHESTPLATE),
                             ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_LEGGINGS),
                             ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_BOOTS)))
-                    .save(output, TOTVW.MOD_ID + lightAsTheWindID);
+                    .save(output, TOTVW.MOD_ID + ":full_verixium_armor");
 
-            String aWolfAccompaniedByTheWindsID = "a_wolf_accompanied_by_the_winds";
-            AdvancementHolder aWolfAccompaniedByTheWinds = Advancement.Builder.advancement()
+            Advancement.Builder.advancement()
                     .parent(root)
                     .display(VWItems.VERIXIUM_WOLF_ARMOR,
-                            Component.literal("A Wolf Accompanied by The Winds").withColor(VWColors.VERDANT_WIND),
+                            Component.literal("A \"Light\" Companion").withColor(VWColors.VERDANT_WIND),
                             Component.literal("Give your companion Verixium armor").withColor(VWColors.VERDANT_WIND_MUTED),
                             null,
                             AdvancementType.CHALLENGE,
                             true, true, false)
-                    .addCriterion(aWolfAccompaniedByTheWindsID,
+                    .addCriterion("wolf_verixium_armor",
                             PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
                                     ItemPredicate.Builder.item().of(items, VWItems.VERIXIUM_WOLF_ARMOR),
                                     Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(entityTypes, EntityType.WOLF)))))
-                    .save(output, TOTVW.MOD_ID + aWolfAccompaniedByTheWindsID);
+                    .save(output, TOTVW.MOD_ID + ":wolf_verixium_armor");
 
-            String aLightCompanionID = "a_light_companion";
-            Advancement.Builder.advancement()
-                    .parent(aWolfAccompaniedByTheWinds)
-                    .display(VWItems.SOUL_RUNESTONE_PLATE,
-                            Component.literal("A \"Light\" Companion").withColor(VWColors.VERDANT_WIND),
-                            Component.literal("Use a Soul Runestone Plate to store your companion's soul within you").withColor(VWColors.VERDANT_WIND_MUTED),
-                            null,
-                            AdvancementType.CHALLENGE,
-                            true, true, true)
-                    .addCriterion(aLightCompanionID,
-                            PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
-                                    ItemPredicate.Builder.item().of(items, VWItems.SOUL_RUNESTONE_PLATE),
-                                    Optional.of(EntityPredicate.wrap(EntityPredicate.Builder.entity().of(entityTypes, EntityType.WOLF)))))
-                    .save(output, TOTVW.MOD_ID + aLightCompanionID);
-
-            String tastesLikeInkID = "tastes_like_ink";
-            Advancement.Builder.advancement()
+            AdvancementHolder verixiumFluidBucket = Advancement.Builder.advancement()
                     .parent(root)
                     .display(VWItems.VERIXIUM_FLUID_BUCKET,
-                            Component.literal("Tastes Like Ink"),
+                            Component.literal("Is It Drinkable?"),
                             Component.literal("Fill a bucked with Verixium fluid"),
                             null,
                             AdvancementType.TASK,
                             true,
                             true,
                             false)
-                    .addCriterion(tastesLikeInkID,
+                    .addCriterion("verixium_fluid_bucket",
                             InventoryChangeTrigger.TriggerInstance.hasItems(VWItems.VERIXIUM_FLUID_BUCKET))
-                    .save(output, TOTVW.MOD_ID + tastesLikeInkID);
+                    .save(output, TOTVW.MOD_ID + ":verixium_fluid_bucket");
 
-            String condensedWindID = "condensed_wind";
-            Advancement.Builder.advancement()
+            AdvancementHolder verixiumArmorUpgrade = Advancement.Builder.advancement()
                     .parent(root)
                     .display(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE,
                             Component.literal("Condensed Wind").withColor(VWColors.VERDANT_WIND),
@@ -138,9 +104,9 @@ public class VWAdvancements extends AdvancementProvider {
                             true,
                             true,
                             true)
-                    .addCriterion(condensedWindID,
+                    .addCriterion("verixium_armor_upgrade",
                             InventoryChangeTrigger.TriggerInstance.hasItems(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE))
-                    .save(output, TOTVW.MOD_ID + condensedWindID);
+                    .save(output, TOTVW.MOD_ID + ":verixium_armor_upgrade");
 
         }
     }
