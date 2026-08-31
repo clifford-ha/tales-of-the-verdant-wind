@@ -380,7 +380,7 @@ public class VWWolfBehaviors {
             if (checkVictim && CD_PARALYZE <= 0 && !victim.hasEffect(VWEffects.PARALYZE)) {
                 addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
 
-                sendToChat(wolf, VWColors.MIGHT_EFFECT, victim.getPlainTextName() + " has been paralyzed for " + (paralyzeTime / sec(1)) + " seconds by " + wolfName(wolf) + "!");
+                sendToChat(wolf, VWColors.MIGHT_EFFECT, victim.getName().getString() + " has been paralyzed for " + (paralyzeTime / sec(1)) + " seconds by " + wolfName(wolf) + "!");
                 SkillUtil.startCooldown(wolf, PARALYZER,
                         setDifficultyBasedValue(level, minutes(1), minutes(12), minutes(18), minutes(24)));
 
@@ -541,13 +541,13 @@ public class VWWolfBehaviors {
 
     private static String wolfName(Wolf wolf) {
         String wolfName;
-        if (wolf.getPlainTextName().equals("Wolf")) {wolfName = "§dWolf§r";} else {wolfName = "§d" + wolf.getPlainTextName() + "§r";}
+        if (wolf.getName().getString().equals("Wolf")) {wolfName = "§dWolf§r";} else {wolfName = "§d" + wolf.getName().getString() + "§r";}
         return wolfName;
     }
 
     private static String playerName(Wolf wolf) {
         if (wolf.getOwner() != null) {
-            return "§d" + wolf.getOwner().getPlainTextName() + "§r";
+            return "§d" + wolf.getOwner().getName().getString() + "§r";
         } else return null;
     }
 

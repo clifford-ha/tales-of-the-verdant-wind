@@ -17,6 +17,7 @@ c4e29442bb6a170af45bc08ab5bf1bee5683af1a data/tales-of-the-verdant-wind/advancem
 a73e00f6c5564aab5611b26fb5b12bf41ad81633 data/tales-of-the-verdant-wind/advancement/recipes/misc/condensed_verixium.json
 ec08ffb799d29f4d232e9afc2de7bb71dd9227c3 data/tales-of-the-verdant-wind/advancement/recipes/misc/firework_rocket.json
 e93d20f0322e006488b178d9cf25022031a36030 data/tales-of-the-verdant-wind/advancement/recipes/misc/iridescent_glass_pane.json
+98b5f49de9c2594f396bd45d53fe0b75630c499b data/tales-of-the-verdant-wind/advancement/recipes/misc/soul_runestone_plate.json
 4e287130d4fb55f3f48b4a241199301ea842363c data/tales-of-the-verdant-wind/advancement/recipes/misc/stonecutting_iridescent_glass_pane_to_black_dye.json
 121299b47fe604b9b2e842abcdfffc2530a501df data/tales-of-the-verdant-wind/advancement/recipes/misc/stonecutting_iridescent_glass_pane_to_blue_dye.json
 3f231d48982266186b5a3e74f4dd5aae3535c916 data/tales-of-the-verdant-wind/advancement/recipes/misc/stonecutting_iridescent_glass_pane_to_brown_dye.json
@@ -71,6 +72,7 @@ b68ad7393ccae562aa4fd4493a87d370773dec7a data/tales-of-the-verdant-wind/advancem
 643da1fc57fc1c7f469845a7e19a41671974c73d data/tales-of-the-verdant-wind/recipe/condensed_verixium.json
 4ce1f6c8b2e37bba567bba53da5c08d2fa622785 data/tales-of-the-verdant-wind/recipe/firework_rocket.json
 675465547c3da5ffd71d35913c7d07a696a1afa2 data/tales-of-the-verdant-wind/recipe/iridescent_glass_pane.json
+622914f9c814eb09588ef86276440e11face04ea data/tales-of-the-verdant-wind/recipe/soul_runestone_plate.json
 490b639556dee65524668354f1b5a2e191607ca9 data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_pane_to_black_dye.json
 08d44435b6d52809e6b64a9e927108eafdd5a6bd data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_pane_to_blue_dye.json
 302f4b53570deb473fe7b7540e27e6566b9afb7d data/tales-of-the-verdant-wind/recipe/stonecutting_iridescent_glass_pane_to_brown_dye.json

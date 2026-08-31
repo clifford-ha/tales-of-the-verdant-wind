@@ -1,6 +1,8 @@
 package cliffordha.totvw.item.scatteredpages;
 
+import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.client.screen.ScatteredPageScreen;
+import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.VWColors;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,6 +25,8 @@ import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
 import static cliffordha.totvw.item.scatteredpages.VWEffectsHandbook.*;
 import static cliffordha.totvw.item.scatteredpages.VWEnchantmentsHandbook.*;
+import static cliffordha.totvw.item.scatteredpages.VWItemsHandbook.ITEMS_HANDBOOK_CONTENTS;
+import static cliffordha.totvw.item.scatteredpages.VWItemsHandbook.ITEMS_HANDBOOK_TITLE;
 import static cliffordha.totvw.util.VWUtil.TextUtil.*;
 
 public class ScatteredPageItem extends Item {
@@ -43,6 +47,14 @@ public class ScatteredPageItem extends Item {
     // SPOILER ALERT!!!
     // SPOILER ALERT!!!
     public static String[] getPages(Player player, int contents) {
+        if (player.isCreative() && !VWConfig.get().CLIENT_ALLOW_LORE_SPOILERS) {
+            return addPage(
+                    "Oops! The contents of this page are not available in creative mode :3"
+                    + nextLine
+                    + fText(UNDERLINED, cText(GRAY,"You can disable this feature (Allow Lore Spoilers) in the config file."))
+            );
+        }
+
         boolean HAS_ARMOR = !player.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
         boolean IS_UNDERWATER = player.isInWater() || player.isUnderWater() || player.isInWaterOrRain();
         boolean IN_LOWLIGHT = player.level().getMaxLocalRawBrightness(player.blockPosition(), 0) < 9;
@@ -210,12 +222,11 @@ public class ScatteredPageItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (level.isClientSide()) {
-            if (this.pageID == 2006) {
-                openScreen(ENCHANTMENTS_HANDBOOK_TITLE, ENCHANTMENTS_HANDBOOK_CONTENTS());
-            } else if (this.pageID == 2007) {
-                openScreen(EFFECTS_HANDBOOK_TITLE, EFFECTS_HANDBOOK_CONTENTS());
-            } else {
-                openScreen(getTitle(player, pageID), getPages(player, pageID));
+            switch (this.pageID) {
+                case 2006 -> openScreen(ENCHANTMENTS_HANDBOOK_TITLE, ENCHANTMENTS_HANDBOOK_CONTENTS());
+                case 2007 -> openScreen(EFFECTS_HANDBOOK_TITLE, EFFECTS_HANDBOOK_CONTENTS());
+                case 2008 -> openScreen(ITEMS_HANDBOOK_TITLE, ITEMS_HANDBOOK_CONTENTS());
+                default -> openScreen(getTitle(player, pageID), getPages(player, pageID));
             }
         }
 
@@ -224,20 +235,26 @@ public class ScatteredPageItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
-    @Environment(EnvType.CLIENT)
     private static void openScreen(String title, String[] pages) {
         if (title.equals(ENCHANTMENTS_HANDBOOK_TITLE)) {
-            Minecraft.getInstance().setScreenAndShow(new ScatteredPageScreen(0, ENCHANTMENTS_HANDBOOK_TITLE, pages));
+            setScreen(ENCHANTMENTS_HANDBOOK_TITLE, pages);
         } else if (title.equals(EFFECTS_HANDBOOK_TITLE)) {
-            Minecraft.getInstance().setScreenAndShow(new ScatteredPageScreen(0, EFFECTS_HANDBOOK_TITLE, pages));
+            setScreen(EFFECTS_HANDBOOK_TITLE, pages);
+        } else if (title.equals(ITEMS_HANDBOOK_TITLE)) {
+            setScreen(ITEMS_HANDBOOK_TITLE, pages);
         } else {
-            Minecraft.getInstance().setScreenAndShow(new ScatteredPageScreen(2, title, pages));
+            setScreen(title, pages);
         }
+    }
+
+    @Environment(EnvType.CLIENT)
+    private static void setScreen(String title, String[] pages) {
+        Minecraft.getInstance().setScreenAndShow(new ScatteredPageScreen(title, pages));
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
-        if (this.pageID == 2006 || this.pageID == 2007) {
+        if (this.pageID == 2006 || this.pageID == 2007 || this.pageID == 2008) {
             builder.accept(Component.literal(""));
             builder.accept(Component.literal("Tales of the Verdant Wind").withColor(VWColors.VERDANT_WIND));
             builder.accept(Component.literal("By: Clifford HA").withColor(VWColors.GRAY_MUTED));

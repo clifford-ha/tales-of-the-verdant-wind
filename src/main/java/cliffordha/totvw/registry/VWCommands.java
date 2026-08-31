@@ -16,9 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -40,52 +37,93 @@ public class VWCommands {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(Commands.literal("totvw")
-                    .then(Commands.literal("enchantments_handbook")
-                            .executes(context -> {
-                                        ServerPlayer player;
-                                        try {
-                                            player = context.getSource().getPlayerOrException();
-                                        } catch (Exception e) {
-                                            context.getSource().sendFailure(Component.literal("This command must be run by a player."));
-                                            return 0;
-                                        }
-                                        int getStat = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK, 0);
-                                        if (getStat < 1) {
-                                            giveOrDropHandbook(player, 0);
-                                        } else {
-                                            if (player.isCreative() || player.isSpectator()) {
-                                                giveOrDropHandbook(player, 0);
-                                            } else {
-                                                context.getSource().sendSuccess(() -> Component.literal("You can request another copy after your next respawn."), true);
-                                            }
-                                        }
-                                        return getStat;
-                                    }
-                            ))
+                    .then(Commands.literal("enchantments_handbook").executes(context -> {
+                        ServerPlayer player;
+                        try {
+                            player = context.getSource().getPlayerOrException();
+                        } catch (Exception e) {
+                            context.getSource().sendFailure(Component.literal("This command must be run by a player."));
+                            return 0;
+                        }
+                        int getStat = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK, 0);
+                        if (getStat < 1) {
+                            giveOrDropHandbook(player, 0);
+                        } else {
+                            if (player.isCreative() || player.isSpectator()) {
+                                giveOrDropHandbook(player, 0);
+                            } else {
+                                context.getSource().sendSuccess(() -> Component.literal("You can request another copy after your next respawn."), true);
+                            }
+                        }
+                        return getStat;
+                    }
+                    ))
             );
             dispatcher.register(Commands.literal("totvw")
-                    .then(Commands.literal("effects_handbook")
-                            .executes(context -> {
-                                        ServerPlayer player;
-                                        try {
-                                            player = context.getSource().getPlayerOrException();
-                                        } catch (Exception e) {
-                                            context.getSource().sendFailure(Component.literal("This command must be run by a player."));
-                                            return 0;
-                                        }
-                                        int getStat = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RECEIVED_EFFECTS_HANDBOOK, 0);
-                                        if (getStat < 1) {
-                                            giveOrDropHandbook(player, 1);
-                                        } else {
-                                            if (player.isCreative() || player.isSpectator()) {
-                                                giveOrDropHandbook(player, 1);
-                                            } else {
-                                                context.getSource().sendSuccess(() -> Component.literal("You can request another copy after your next respawn."), true);
-                                            }
-                                        }
-                                        return getStat;
+                    .then(Commands.literal("effects_handbook").executes(context -> {
+                        ServerPlayer player;
+                        try {
+                            player = context.getSource().getPlayerOrException();
+                        } catch (Exception e) {
+                            context.getSource().sendFailure(Component.literal("This command must be run by a player."));
+                            return 0;
+                        }
+                        int getStat = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RECEIVED_EFFECTS_HANDBOOK, 0);
+                        if (getStat < 1) {
+                            giveOrDropHandbook(player, 1);
+                        } else {
+                            if (player.isCreative() || player.isSpectator()) {
+                                giveOrDropHandbook(player, 1);
+                            } else {
+                                context.getSource().sendSuccess(() -> Component.literal("You can request another copy after your next respawn."), true);
+                            }
+                        }
+                        return getStat;
+                    }
+                    ))
+            );
+            dispatcher.register(Commands.literal("totvw")
+                    .then(Commands.literal("items_handbook").executes(context -> {
+                                ServerPlayer player;
+                                try {
+                                    player = context.getSource().getPlayerOrException();
+                                } catch (Exception e) {
+                                    context.getSource().sendFailure(Component.literal("This command must be run by a player."));
+                                    return 0;
+                                }
+                                int getStat = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RECEIVED_ITEMS_HANDBOOK, 0);
+                                if (getStat < 1) {
+                                    giveOrDropHandbook(player, 2);
+                                } else {
+                                    if (player.isCreative() || player.isSpectator()) {
+                                        giveOrDropHandbook(player, 2);
+                                    } else {
+                                        context.getSource().sendSuccess(() -> Component.literal("You can request another copy after your next respawn."), true);
                                     }
-                            ))
+                                }
+                                return getStat;
+                            }
+                    ))
+            );
+            dispatcher.register(Commands.literal("totvw")
+                    .then(Commands.literal("get_atrocity_count").executes(context -> {
+                                ServerPlayer player;
+                                try {
+                                    player = context.getSource().getPlayerOrException();
+                                } catch (Exception e) {
+                                    context.getSource().sendFailure(Component.literal("This command must be run by a player."));
+                                    return 0;
+                                }
+                                int villager = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
+                                int wolf = player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0);
+                                if ((villager + wolf) < 1) {
+                                    context.getSource().sendSystemMessage(Component.literal("You don't have any atrocity count."));
+                                } else {
+                                    context.getSource().sendSuccess(() -> Component.literal("Wolf: " + wolf + "  |  Villager: " + villager), true);
+                                }
+                                return 1;
+                            }
+                    ))
             );
         });
         if (!TOTVW.IN_DEVELOPMENT) return;
@@ -109,50 +147,61 @@ public class VWCommands {
                     ))))
             );
             dispatcher.register(Commands.literal("totvw")
-                    .then(Commands.literal("tame_nearby_wolves")
-                            .executes(context -> {
-                                        ServerPlayer player;
-                                        try {
-                                            player = context.getSource().getPlayerOrException();
-                                        } catch (Exception e) {
-                                            context.getSource().sendFailure(Component.literal("This command must be run by a player."));
-                                            return 0;
-                                        }
-                                        ServerLevel level = player.level();
-                                        List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
-                                        player.getBoundingBox().inflate(32),
-                                        wolf -> wolf.isTame() && wolf.getUUID() != player.getUUID());
+                    .then(Commands.literal("tame_nearby_wolves").executes(context -> {
+                        ServerPlayer player;
+                        try {
+                            player = context.getSource().getPlayerOrException();
+                        } catch (Exception e) {
+                            context.getSource().sendFailure(Component.literal("This command must be run by a player."));
+                            return 0;
+                        }
+                        ServerLevel level = player.level();
+                        List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
+                                player.getBoundingBox().inflate(32),
+                                wolf -> wolf.isTame() && wolf.getUUID() != player.getUUID());
 
-                                        if (wolves.isEmpty()) {
-                                            context.getSource().sendFailure(Component.literal("No nearby wolves to tame!"));
-                                            return 0;
-                                        }
+                        if (wolves.isEmpty()) {
+                            context.getSource().sendFailure(Component.literal("No nearby wolves to tame!"));
+                            return 0;
+                        }
 
-                                        for (Wolf wolf : wolves) {
-                                            wolf.setOwner(player);
-                                        }
-                                        context.getSource().sendSuccess(() -> Component.literal("Tamed " + wolves.size() + " nearby wolves."), true);
-                                        return wolves.size();
-                                    }
-                            )));
+                        for (Wolf wolf : wolves) {
+                            wolf.setOwner(player);
+                        }
+                        context.getSource().sendSuccess(() -> Component.literal("Tamed " + wolves.size() + " nearby wolves."), true);
+                        return wolves.size();
+                    }
+                    )));
         });
     }
 
     private static void giveOrDropHandbook(ServerPlayer player, int toGive) {
         ItemStack mainHand = player.getItemBySlot(EquipmentSlot.MAINHAND);
         ItemStack handbook;
-
         AttachmentType<Integer> handbookType;
+        String handbookName;
 
-        if (toGive == 0) {
-            handbook = new ItemStack(VWItems.Pages.ENCHANTMENTS_HANDBOOK);
-        } else {
-            handbook = new ItemStack(VWItems.Pages.EFFECTS_HANDBOOK);
+        switch (toGive) {
+            case 0 -> {
+                handbook = new ItemStack(VWItems.Pages.ENCHANTMENTS_HANDBOOK);
+                handbookType = VWAttachments.Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK;
+                handbookName = "Enchantments";
+            }
+            case 1 -> {
+                handbook = new ItemStack(VWItems.Pages.EFFECTS_HANDBOOK);
+                handbookType = VWAttachments.Player.PLAYER_RECEIVED_EFFECTS_HANDBOOK;
+                handbookName = "Effects";
+            }
+            default -> {
+                handbook = new ItemStack(VWItems.Pages.ITEMS_HANDBOOK);
+                handbookType = VWAttachments.Player.PLAYER_RECEIVED_ITEMS_HANDBOOK;
+                handbookName = "Items";
+            }
         }
 
         boolean hasItem = player.getInventory().contains(handbook);
         if (hasItem) {
-            sendToChat(player, false, "You already have the Enchantments Handbook!");
+            sendToChat(player, false, "You already have the " + handbookName + " Handbook!");
         } else if (mainHand.isEmpty()) {
             player.setItemSlot(EquipmentSlot.MAINHAND, handbook);
         } else {
@@ -163,11 +212,7 @@ public class VWCommands {
                 player.getInventory().add(slot, handbook);
             }
         }
-        if (toGive == 0) {
-            handbookType = VWAttachments.Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK;
-        } else {
-            handbookType = VWAttachments.Player.PLAYER_RECEIVED_EFFECTS_HANDBOOK;
-        }
+
         player.setAttached(handbookType, 1);
     }
 

@@ -133,7 +133,13 @@ public class VWModelProvider extends FabricModelProvider {
 
                 VWItems.VERIXIUM_FLUID_BUCKET,
                 VWItems.VERDANT_SPRUCE_BOAT,
-                VWItems.VERDANT_SPRUCE_CHEST_BOAT
+                VWItems.VERDANT_SPRUCE_CHEST_BOAT,
+
+                VWItems.SOUL_RUNESTONE_PLATE,
+                VWItems.SOUL_RUNESTONE_FRAGMENT_1,
+                VWItems.SOUL_RUNESTONE_FRAGMENT_2,
+                VWItems.SOUL_RUNESTONE_FRAGMENT_3,
+                VWItems.SOUL_RUNESTONE_FRAGMENT_4
         );
 
         add(item, ModelTemplates.FLAT_HANDHELD_ITEM,
@@ -157,23 +163,25 @@ public class VWModelProvider extends FabricModelProvider {
 
         item.generateFlatItem(Pages.ENCHANTMENTS_HANDBOOK, ModelTemplates.FLAT_ITEM);
         addCopy(item, ModelTemplates.FLAT_ITEM, Pages.ENCHANTMENTS_HANDBOOK,
-                Pages.EFFECTS_HANDBOOK
+                Pages.EFFECTS_HANDBOOK,
+                Pages.ITEMS_HANDBOOK
         );
 
         addCopy(item, ModelTemplates.FLAT_ITEM, Pages.SCATTERED_PAGE,
                 Pages.PLAYER_STATS,
-                Pages.LODESTONE_WIND_CORE_MANUAL
-        );
-
-        addCopy(item, ModelTemplates.FLAT_ITEM, Pages.OLD_SCATTERED_PAGE,
-                Pages.SP_ID_1000,
+                Pages.LODESTONE_WIND_CORE_MANUAL,
 
                 Pages.SP_ID_1001,
                 Pages.SP_ID_1002,
                 Pages.SP_ID_1003,
                 Pages.SP_ID_1004,
 
-                Pages.SP_ID_1005,
+                Pages.SP_ID_1005
+
+        );
+
+        addCopy(item, ModelTemplates.FLAT_ITEM, Pages.OLD_SCATTERED_PAGE,
+                Pages.SP_ID_1000,
 
                 Pages.SP_ID_1006,
 

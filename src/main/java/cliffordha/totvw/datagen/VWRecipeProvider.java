@@ -227,6 +227,17 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
                         .save(output);
 
+                shaped(RecipeCategory.MISC, VWItems.SOUL_RUNESTONE_PLATE, 1)
+                        .pattern("AB")
+                        .pattern("CD")
+                        .define('A', VWItems.SOUL_RUNESTONE_FRAGMENT_1)
+                        .define('B', VWItems.SOUL_RUNESTONE_FRAGMENT_2)
+                        .define('C', VWItems.SOUL_RUNESTONE_FRAGMENT_3)
+                        .define('D', VWItems.SOUL_RUNESTONE_FRAGMENT_4)
+                        .group("soul_runestone_materials")
+                        .unlockedBy(getHasName(VWItems.SOUL_RUNESTONE_FRAGMENT_1), has(VWItems.SOUL_RUNESTONE_FRAGMENT_3))
+                        .save(output);
+
 
                 stairBuilder(VWBlocks.VERDANT_SPRUCE_STAIRS, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS))
                         .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_PLANKS), has(VWBlocks.VERDANT_SPRUCE_PLANKS))

@@ -3,31 +3,21 @@ package cliffordha.totvw.registry;
 import cliffordha.totvw.TOTVW;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
 public class VWAttachments {
-    public static final AttachmentType<Boolean> ENTITY_IS_PARALYZED = registerBool("entity_is_paralyzed");
     public static final AttachmentType<Boolean> ENTITY_HAS_VERDANT_OMEN = registerBool("entity_has_verdant_omen");
+
     public static class WindCore {
         public static final AttachmentType<Integer> ENTITY_PRESSURE_DIFFERENCE = registerInt("entity_pressure_difference");
         public static final AttachmentType<Boolean> ENTITY_HAS_IMPLODED = registerBool("entity_has_imploded");
-    }
-
-    public static class Player {
-        public static final AttachmentType<Boolean> PLAYER_IS_DEV_MODE = registerBool("player_is_dev_mode");
-
-        public static final AttachmentType<Integer> PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK = registerInt("player_received_enchantments_handbook");
-        public static final AttachmentType<Integer> PLAYER_RECEIVED_EFFECTS_HANDBOOK = registerInt("player_received_effects_handbook");
-
-        public static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_cd_blessing_of_the_verdant_wind");
-        public static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_notify_blessing_of_the_verdant_wind");
-        public static final AttachmentType<Integer> PLAYER_VILLAGER_ATROCITY_COUNT = registerInt("player_villager_atrocity_count");
-        public static final AttachmentType<Integer> PLAYER_WOLF_ATROCITY_COUNT = registerInt("player_wolf_atrocity_count");
-        public static final AttachmentType<BlockPos> PLAYER_RESPAWN_POINT = registerBlockPos("player_respawn_point");
     }
     public static class Wolf {
         public static final AttachmentType<Boolean> WOLF_IS_VERDANT_TYPE = registerBool("wolf_is_verdant_type");
@@ -54,7 +44,25 @@ public class VWAttachments {
         public static final AttachmentType<String> WOLF_PARENTS_ID = registerString("wolf_parents_id");
         public static final AttachmentType<String> WOLF_BABY_ID = registerString("wolf_baby_id");
     }
+    public static class Player {
+        public static final AttachmentType<Boolean> PLAYER_IS_DEV_MODE = registerBool("player_is_dev_mode");
+        public static final AttachmentType<Boolean> PLAYER_SHOW_ATROCITY_COUNTER = registerBool("player_show_atrocity_counter");
+        public static final AttachmentType<Boolean> PLAYER_ENABLE_NOTIFIERS = registerBool("player_enable_notifiers");
 
+        /** Sync copy for PLAYER_WOLF_SOULS_COUNTER to avoid lag spikes **/
+        public static final AttachmentType<List<CompoundTag>> PLAYER_WOLF_SOULS = registerCompoundList("player_wolf_souls");
+        public static final AttachmentType<Integer> PLAYER_WOLF_SOULS_COUNTER = registerInt("player_wolf_souls_counter");
+
+        public static final AttachmentType<Integer> PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK = registerInt("player_received_enchantments_handbook");
+        public static final AttachmentType<Integer> PLAYER_RECEIVED_EFFECTS_HANDBOOK = registerInt("player_received_effects_handbook");
+        public static final AttachmentType<Integer> PLAYER_RECEIVED_ITEMS_HANDBOOK = registerInt("player_received_items_handbook");
+
+        public static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_cd_blessing_of_the_verdant_wind");
+        public static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = registerInt("player_notify_blessing_of_the_verdant_wind");
+        public static final AttachmentType<Integer> PLAYER_VILLAGER_ATROCITY_COUNT = registerInt("player_villager_atrocity_count");
+        public static final AttachmentType<Integer> PLAYER_WOLF_ATROCITY_COUNT = registerInt("player_wolf_atrocity_count");
+        public static final AttachmentType<BlockPos> PLAYER_RESPAWN_POINT = registerBlockPos("player_respawn_point");
+    }
     public static class Villager {
         public static final AttachmentType<Boolean> VILLAGER_IS_VERDANT_TYPE = registerBool("villager_is_verdant_type");
 
@@ -66,40 +74,69 @@ public class VWAttachments {
         public static final AttachmentType<Float> VILLAGER_DISCOUNT_MODIFIER = registerFloat("villager_discount_modifier");
     }
 
+
+    private static AttachmentType<List<CompoundTag>> registerCompoundList(String name) {
+        return AttachmentRegistry.create(
+                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
+                builder -> builder
+                        .persistent(CompoundTag.CODEC.listOf())
+                        .copyOnDeath()
+                        .initializer(List::of)
+        );
+    }
     private static AttachmentType<BlockPos> registerBlockPos(String name) {
         return AttachmentRegistry.create(
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
-                blockPosBuilder -> blockPosBuilder.persistent(BlockPos.CODEC).initializer( () -> BlockPos.ZERO )
+                blockPosBuilder -> blockPosBuilder
+                        .persistent(BlockPos.CODEC)
+                        .syncWith(BlockPos.STREAM_CODEC, AttachmentSyncPredicate.all())
+                        .copyOnDeath()
+                        .initializer( () -> BlockPos.ZERO)
         );
     }
     private static AttachmentType<String> registerString(String name) {
         return AttachmentRegistry.create(
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
-                stringBuilder -> stringBuilder.persistent(Codec.STRING).initializer(() -> "")
+                stringBuilder -> stringBuilder
+                        .persistent(Codec.STRING)
+                        .syncWith(ByteBufCodecs.STRING_UTF8, AttachmentSyncPredicate.all())
+                        .copyOnDeath()
+                        .initializer(() -> "")
         );
     }
     private static AttachmentType<Integer> registerInt(String name) {
         return AttachmentRegistry.create(
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
-                builder -> builder.persistent(Codec.INT).initializer(() -> 0)
+                builder -> builder
+                        .persistent(Codec.INT)
+                        .syncWith(ByteBufCodecs.INT, AttachmentSyncPredicate.all())
+                        .copyOnDeath()
+                        .initializer(() -> 0)
         );
     }
     private static AttachmentType<Boolean> registerBool(String name) {
         return AttachmentRegistry.create(
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
-                builder -> builder.persistent(Codec.BOOL).initializer(() -> false)
+                builder -> builder
+                        .persistent(Codec.BOOL)
+                        .syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all())
+                        .copyOnDeath()
+                        .initializer(() -> false)
         );
     }
     private static AttachmentType<Float> registerFloat(String name) {
         return AttachmentRegistry.create(
                 Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
-                builder -> builder.persistent(Codec.FLOAT).initializer(() -> 0.0f)
+                builder -> builder
+                        .persistent(Codec.FLOAT)
+                        .syncWith(ByteBufCodecs.FLOAT, AttachmentSyncPredicate.all())
+                        .copyOnDeath()
+                        .initializer(() -> 0.0f)
         );
     }
 
     public static void register() {
         final List<AttachmentType<?>> GLOBAL_ATTACHMENTS = List.of(
-                ENTITY_IS_PARALYZED,
                 ENTITY_HAS_VERDANT_OMEN
         );
         final List<AttachmentType<?>> WOLF_ATTACHMENTS = List.of(
@@ -129,7 +166,15 @@ public class VWAttachments {
         );
         final List<AttachmentType<?>> PLAYER_ATTACHMENTS = List.of(
                 Player.PLAYER_IS_DEV_MODE,
+                Player.PLAYER_SHOW_ATROCITY_COUNTER,
+                Player.PLAYER_ENABLE_NOTIFIERS,
+
                 Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK,
+                Player.PLAYER_RECEIVED_EFFECTS_HANDBOOK,
+                Player.PLAYER_RECEIVED_ITEMS_HANDBOOK,
+
+                Player.PLAYER_WOLF_SOULS,
+                Player.PLAYER_WOLF_SOULS_COUNTER,
                 Player.PLAYER_VILLAGER_ATROCITY_COUNT,
                 Player.PLAYER_WOLF_ATROCITY_COUNT,
                 Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND,

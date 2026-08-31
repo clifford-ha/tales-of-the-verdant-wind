@@ -1,7 +1,7 @@
 {
-  "parent": "tales-of-the-verdant-wind:root",
+  "parent": "minecraft:tales-of-the-verdant-winda_wolf_accompanied_by_the_winds",
   "criteria": {
-    "wolf_verixium_armor": {
+    "a_light_companion": {
       "conditions": {
         "entity": [
           {
@@ -13,7 +13,7 @@
           }
         ],
         "item": {
-          "items": "tales-of-the-verdant-wind:verixium_wolf_armor"
+          "items": "tales-of-the-verdant-wind:soul_runestone_plate"
         }
       },
       "trigger": "minecraft:player_interacted_with_entity"
@@ -22,11 +22,12 @@
   "display": {
     "description": {
       "color": "#247D66",
-      "text": "Give your companion Verixium armor"
+      "text": "Use a Soul Runestone Plate to store your companion's soul within you"
     },
     "frame": "challenge",
+    "hidden": true,
     "icon": {
-      "id": "tales-of-the-verdant-wind:verixium_wolf_armor"
+      "id": "tales-of-the-verdant-wind:soul_runestone_plate"
     },
     "title": {
       "color": "#00FFD0",
@@ -35,7 +36,7 @@
   },
   "requirements": [
     [
-      "wolf_verixium_armor"
+      "a_light_companion"
     ]
   ],
   "sends_telemetry_event": true

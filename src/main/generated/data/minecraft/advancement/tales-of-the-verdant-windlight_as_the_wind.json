@@ -1,7 +1,7 @@
 {
-  "parent": "tales-of-the-verdant-wind:root",
+  "parent": "minecraft:tales-of-the-verdant-windweightless_minerals",
   "criteria": {
-    "full_verixium_armor_set": {
+    "light_as_the_wind": {
       "conditions": {
         "items": [
           {
@@ -28,7 +28,7 @@
     },
     "frame": "challenge",
     "icon": {
-      "id": "tales-of-the-verdant-wind:verixium_chestplate"
+      "id": "tales-of-the-verdant-wind:verixium_helmet"
     },
     "title": {
       "color": "#00FFD0",
@@ -37,7 +37,7 @@
   },
   "requirements": [
     [
-      "full_verixium_armor_set"
+      "light_as_the_wind"
     ]
   ],
   "sends_telemetry_event": true

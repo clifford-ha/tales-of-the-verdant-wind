@@ -293,7 +293,7 @@ public class LodestoneWindCoreBlock extends Block {
 
             if (entity instanceof Player player) {
                 if (player.isCreative() || player.isSpectator()) return;
-                String dangerousPulseStamp = String.format("%.8s", player.getStringUUID()) + "-" + player.getPlainTextName() + "-dangerousPulse";
+                String dangerousPulseStamp = String.format("%.8s", player.getStringUUID()) + "-" + player.getName().getString() + "-dangerousPulse";
                 if (!player.entityTags().contains(dangerousPulseStamp)) {
                     sendToChat(player, VWColors.BLOODLUST_EFFECT, false, "You are dangerously close to a strongly energized Wind Core!");
                     player.entityTags().add(dangerousPulseStamp);
@@ -471,7 +471,7 @@ public class LodestoneWindCoreBlock extends Block {
         float healthToDMG = hardMode ? monster.getHealth() : monster.getMaxHealth();
         float baseDMG = hardMode ? 10f : 20f;
 
-        String name = monster.getPlainTextName();
+        String name = monster.getName().getString();
 
         sendToLogger(LOG_RECORD, name + " implosion chance: " + tryChance);
 
@@ -552,13 +552,16 @@ public class LodestoneWindCoreBlock extends Block {
     }
     private static void randomPositiveEffects(ServerLevel level, BlockState state, BlockPos pos) {
         AABB test = scanner(pos, 24);
-        int randomAMP = level.getDifficulty() == Difficulty.HARD ? 0 : 1;
-        int randomDuration = level.getRandom().nextBoolean() ? (20 * 45) : (20 * 30);
+
+        RandomSource random = level.getRandom();
+
+        int randomAMP = random.nextIntBetweenInclusive(0, 2);
+        int randomDuration = random.nextBoolean() ? (20 * 45) : (20 * 30);
 
         List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, test);
         if (!wolves.isEmpty()) {
             for (Wolf wolf : wolves) {
-                Holder<MobEffect> effect = level.getRandom().nextBoolean() ? MobEffects.STRENGTH : MobEffects.RESISTANCE;
+                Holder<MobEffect> effect = random.nextBoolean() ? MobEffects.STRENGTH : MobEffects.RESISTANCE;
 
                 addOrStackEffect(wolf, effect, randomDuration, randomAMP);
                 addOrStackEffect(wolf, VWEffects.AMPLIFIED_MIGHT, randomDuration, 0);
@@ -574,7 +577,7 @@ public class LodestoneWindCoreBlock extends Block {
         if (!villagers.isEmpty()) {
             for (Villager villager : villagers) {
                 int resistanceAMP = (villager.isBaby() || villager.getHealth() < villager.getMaxHealth() * 0.5f) ? 1 : 0;
-                Holder<MobEffect> effect = level.getRandom().nextBoolean() ? MobEffects.ABSORPTION : MobEffects.HEALTH_BOOST;
+                Holder<MobEffect> effect = random.nextBoolean() ? MobEffects.ABSORPTION : MobEffects.HEALTH_BOOST;
 
                 addOrStackEffect(villager, effect, randomDuration, randomAMP);
                 addOrStackEffect(villager, MobEffects.RESISTANCE, randomDuration, resistanceAMP);
@@ -588,7 +591,7 @@ public class LodestoneWindCoreBlock extends Block {
                 int CHECK_1 = player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0);
                 int CHECK_2 = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
 
-                String omenStamp = String.format("%.8s", player.getStringUUID()) + "-" + player.getPlainTextName() + "-verdantOmen";
+                String omenStamp = String.format("%.8s", player.getStringUUID()) + "-" + player.getName().getString() + "-verdantOmen";
 
                 if ((CHECK_1 + CHECK_2) > 60) {
                     if (player.isCreative() || player.isSpectator()) return;

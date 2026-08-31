@@ -33,6 +33,7 @@ e89ff4fd0940b1f5d09951e98acca8c58a4513ec assets/tales-of-the-verdant-wind/items/
 812372759ad37cf11aa6ac636b3cdd51bebd5878 assets/tales-of-the-verdant-wind/items/enchantments_handbook.json
 34fe068eab08c63f377b8e25e565a7631c16bd40 assets/tales-of-the-verdant-wind/items/iridescent_glass.json
 b4a874c2edd33cdd0fb90e0cadc9b023b331fdb5 assets/tales-of-the-verdant-wind/items/iridescent_glass_pane.json
+3346798b4ecae93a8fb3d15d0c56c33fbdecde7f assets/tales-of-the-verdant-wind/items/items_handbook.json
 623dde0ae5dcb7f4172746465df56607376cd754 assets/tales-of-the-verdant-wind/items/lodestone_wind_core.json
 b9842a0a4a4489a7e48b81bead37ec33f2c53aee assets/tales-of-the-verdant-wind/items/lodestone_wind_core_manual.json
 10bdb09064e38709868eda843edd2fe8c0836dbf assets/tales-of-the-verdant-wind/items/old_scattered_page.json
@@ -55,6 +56,11 @@ e7ec8c60ac916fcac8a02c5ddbde58fc12b453a6 assets/tales-of-the-verdant-wind/items/
 1d117b64317ea9a6e08d214a46f67b0e1e34525b assets/tales-of-the-verdant-wind/items/scattered_page_variant_1.json
 ad52a7d8b3adebfbe00fc4bf02db65c0c8236b1e assets/tales-of-the-verdant-wind/items/scattered_page_variant_2.json
 c5788baa90987aa59f30c8bf5f9ed360f07832a1 assets/tales-of-the-verdant-wind/items/scattered_page_variant_3.json
+80dfea1fed3598a7d8eb0b1a9bee833852b62528 assets/tales-of-the-verdant-wind/items/soul_runestone_fragment_1.json
+a972c44839b1297bc047ac84d6e354d522968939 assets/tales-of-the-verdant-wind/items/soul_runestone_fragment_2.json
+fb287141b122016c1c3a853e81d9663deaabc78f assets/tales-of-the-verdant-wind/items/soul_runestone_fragment_3.json
+7d320d2c5ea7ad4c6c121eb5d344dcc968b17784 assets/tales-of-the-verdant-wind/items/soul_runestone_fragment_4.json
+12b9f0c767ae4b47f726eead261359c606ce2c69 assets/tales-of-the-verdant-wind/items/soul_runestone_plate.json
 a69324e10e008e712ddc16644f833c95c5e417d2 assets/tales-of-the-verdant-wind/items/stripped_verdant_spruce_log.json
 f10b9fc7d3c4ee3b09d2b287c5f2cadf41547c36 assets/tales-of-the-verdant-wind/items/stripped_verdant_spruce_wood.json
 59ff776103e94fe052c6ce46f0dd3a02db8140c8 assets/tales-of-the-verdant-wind/items/verdant_moss_block.json
@@ -174,6 +180,7 @@ adc19c63fd9650edaf30d18c33ace661edd149f0 assets/tales-of-the-verdant-wind/models
 fb165794e8da5e2805cbde46eecc6762c5deb789 assets/tales-of-the-verdant-wind/models/item/effects_handbook.json
 fb165794e8da5e2805cbde46eecc6762c5deb789 assets/tales-of-the-verdant-wind/models/item/enchantments_handbook.json
 021f97e38ef2ea146ef502809bb21a4efbe85205 assets/tales-of-the-verdant-wind/models/item/iridescent_glass_pane.json
+fb165794e8da5e2805cbde46eecc6762c5deb789 assets/tales-of-the-verdant-wind/models/item/items_handbook.json
 75f942d65c09e2341a687e2bcb7a64ac38231466 assets/tales-of-the-verdant-wind/models/item/lodestone_wind_core_manual.json
 9074a5a2ad53ba9c0625fa46f99431e25675f063 assets/tales-of-the-verdant-wind/models/item/old_scattered_page.json
 30a5dd8b7ee8950d16b7a82d02cd8b751e07cc0f assets/tales-of-the-verdant-wind/models/item/old_scattered_page_variant_1.json
@@ -182,11 +189,11 @@ aa2b12cc1d857e8a27dc4079d0d6cf03af03e909 assets/tales-of-the-verdant-wind/models
 75f942d65c09e2341a687e2bcb7a64ac38231466 assets/tales-of-the-verdant-wind/models/item/player_stats.json
 75f942d65c09e2341a687e2bcb7a64ac38231466 assets/tales-of-the-verdant-wind/models/item/scattered_page.json
 9074a5a2ad53ba9c0625fa46f99431e25675f063 assets/tales-of-the-verdant-wind/models/item/scattered_page_1000.json
-9074a5a2ad53ba9c0625fa46f99431e25675f063 assets/tales-of-the-verdant-wind/models/item/scattered_page_1001.json
-9074a5a2ad53ba9c0625fa46f99431e25675f063 assets/tales-of-the-verdant-wind/models/item/scattered_page_1002.json
-9074a5a2ad53ba9c0625fa46f99431e25675f063 assets/tales-of-the-verdant-wind/models/item/scattered_page_1003.json
-9074a5a2ad53ba9c0625fa46f99431e25675f063 assets/tales-of-the-verdant-wind/models/item/scattered_page_1004.json
-9074a5a2ad53ba9c0625fa46f99431e25675f063 assets/tales-of-the-verdant-wind/models/item/scattered_page_1005.json
+75f942d65c09e2341a687e2bcb7a64ac38231466 assets/tales-of-the-verdant-wind/models/item/scattered_page_1001.json
+75f942d65c09e2341a687e2bcb7a64ac38231466 assets/tales-of-the-verdant-wind/models/item/scattered_page_1002.json
+75f942d65c09e2341a687e2bcb7a64ac38231466 assets/tales-of-the-verdant-wind/models/item/scattered_page_1003.json
+75f942d65c09e2341a687e2bcb7a64ac38231466 assets/tales-of-the-verdant-wind/models/item/scattered_page_1004.json
+75f942d65c09e2341a687e2bcb7a64ac38231466 assets/tales-of-the-verdant-wind/models/item/scattered_page_1005.json
 9074a5a2ad53ba9c0625fa46f99431e25675f063 assets/tales-of-the-verdant-wind/models/item/scattered_page_1006.json
 9074a5a2ad53ba9c0625fa46f99431e25675f063 assets/tales-of-the-verdant-wind/models/item/scattered_page_1007.json
 9074a5a2ad53ba9c0625fa46f99431e25675f063 assets/tales-of-the-verdant-wind/models/item/scattered_page_1008.json
@@ -195,6 +202,11 @@ aa2b12cc1d857e8a27dc4079d0d6cf03af03e909 assets/tales-of-the-verdant-wind/models
 8efe207e8d1e24de819700fead15d3f030126d51 assets/tales-of-the-verdant-wind/models/item/scattered_page_variant_1.json
 371278dab4e931c18aa2337fe826a3b450aabff3 assets/tales-of-the-verdant-wind/models/item/scattered_page_variant_2.json
 c15f8d4c34f2acf831844f18a6d21ac7c2217439 assets/tales-of-the-verdant-wind/models/item/scattered_page_variant_3.json
+43d0d9e5d66805d5f4d6e948a71ef2a8da051b0c assets/tales-of-the-verdant-wind/models/item/soul_runestone_fragment_1.json
+2c3754afd7f8cf4426d4573e934a8ed3e6a2410b assets/tales-of-the-verdant-wind/models/item/soul_runestone_fragment_2.json
+1a95c72cae0fc9ddff2bd9cea83d1d87168085a1 assets/tales-of-the-verdant-wind/models/item/soul_runestone_fragment_3.json
+4846fa6a5b9adaae3f535ffbc4be29f8f7822d55 assets/tales-of-the-verdant-wind/models/item/soul_runestone_fragment_4.json
+883703464e124949e813c54eb511e9330f5e1470 assets/tales-of-the-verdant-wind/models/item/soul_runestone_plate.json
 f57f1f19042d2f4e05c44f89f15ab1cd4e4836d3 assets/tales-of-the-verdant-wind/models/item/verdant_spruce_boat.json
 24e42689b904ca7f0c14b3ceb37ef34aa9cec688 assets/tales-of-the-verdant-wind/models/item/verdant_spruce_chest_boat.json
 7f79e71e6d700ee60e6f63fb8ceb33620cbd183e assets/tales-of-the-verdant-wind/models/item/verdant_spruce_door.json
