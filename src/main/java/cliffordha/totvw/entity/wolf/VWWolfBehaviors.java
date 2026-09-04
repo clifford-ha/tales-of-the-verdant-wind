@@ -2,12 +2,13 @@ package cliffordha.totvw.entity.wolf;
 
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.datagen.VWDamageTypes;
+import cliffordha.totvw.registry.attachments.VWPlayerPrefs;
 import cliffordha.totvw.util.VWUtil;
 import cliffordha.totvw.entity.skill.WolfSkillDefinition;
 import cliffordha.totvw.entity.skill.SkillUtil;
 import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.VWEnchantments;
-import cliffordha.totvw.registry.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.VWParticleEffects;
 import cliffordha.totvw.registry.VWSounds;
 import cliffordha.totvw.tag.VWBiomeTags;
@@ -51,18 +52,18 @@ public class VWWolfBehaviors {
     private static final List<WolfBehaviorRule> ON_DAMAGE_RULES = new ArrayList<>();
     private static final List<WolfBehaviorRule> TICK_RULES = new ArrayList<>();
     
-    private static final AttachmentType<Integer> CD_BLESSING_OF_THE_VERDANT_WIND = VWAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND;
-    private static final AttachmentType<Integer> CD_BLOODLUST_SKILL_PARALYZE = VWAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE;
-    private static final AttachmentType<Integer> CD_MIGHT_SKILL_RUPTURE = VWAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE;
-    private static final AttachmentType<Integer> CD_IGNORE_HIGH_DAMAGE = VWAttachments.Wolf.WOLF_CD_IGNORE_HIGH_DAMAGE;
-    private static final AttachmentType<Integer> WOLF_TRY_SAVE_STATUS = VWAttachments.Wolf.WOLF_TRY_SAVE_STATUS;
-    private static final AttachmentType<Integer> WOLF_TRY_SAVE_POINTS = VWAttachments.Wolf.WOLF_TRY_SAVE_POINTS;
-    private static final AttachmentType<Integer> TIMER_AIR_SUPPLY = VWAttachments.Wolf.WOLF_TIMER_AIR_SUPPLY;
-    private static final AttachmentType<Integer> NOTIFY_AIR_SUPPLY = VWAttachments.Wolf.WOLF_NOTIFY_AIR_SUPPLY;
-    private static final AttachmentType<Integer> NOTIFY_BLESSING_OF_THE_VERDANT_WIND = VWAttachments.Wolf.WOLF_NOTIFY_BLESSING_OF_THE_VERDANT_WIND;
-    private static final AttachmentType<Integer> NOTIFY_BLOODLUST_SKILL_PARALYZE = VWAttachments.Wolf.WOLF_NOTIFY_BLOODLUST_SKILL_PARALYZE;
-    private static final AttachmentType<Integer> NOTIFY_MIGHT_SKILL_RUPTURE = VWAttachments.Wolf.WOLF_NOTIFY_MIGHT_SKILL_RUPTURE;
-    private static final AttachmentType<String> WOLF_PARENTS_ID = VWAttachments.Wolf.WOLF_PARENTS_ID;
+    private static final AttachmentType<Integer> CD_BLESSING_OF_THE_VERDANT_WIND = VWAttachments.wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND;
+    private static final AttachmentType<Integer> CD_BLOODLUST_SKILL_PARALYZE = VWAttachments.wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE;
+    private static final AttachmentType<Integer> CD_MIGHT_SKILL_RUPTURE = VWAttachments.wolf.WOLF_CD_MIGHT_SKILL_RUPTURE;
+    private static final AttachmentType<Integer> CD_IGNORE_HIGH_DAMAGE = VWAttachments.wolf.WOLF_CD_IGNORE_HIGH_DAMAGE;
+    private static final AttachmentType<Integer> WOLF_TRY_SAVE_STATUS = VWAttachments.wolf.WOLF_TRY_SAVE_STATUS;
+    private static final AttachmentType<Integer> WOLF_TRY_SAVE_POINTS = VWAttachments.wolf.WOLF_TRY_SAVE_POINTS;
+    private static final AttachmentType<Integer> TIMER_AIR_SUPPLY = VWAttachments.wolf.WOLF_TIMER_AIR_SUPPLY;
+    private static final AttachmentType<Integer> NOTIFY_AIR_SUPPLY = VWAttachments.wolf.WOLF_NOTIFY_AIR_SUPPLY;
+    private static final AttachmentType<Integer> NOTIFY_BLESSING_OF_THE_VERDANT_WIND = VWAttachments.wolf.WOLF_NOTIFY_BLESSING_OF_THE_VERDANT_WIND;
+    private static final AttachmentType<Integer> NOTIFY_BLOODLUST_SKILL_PARALYZE = VWAttachments.wolf.WOLF_NOTIFY_BLOODLUST_SKILL_PARALYZE;
+    private static final AttachmentType<Integer> NOTIFY_MIGHT_SKILL_RUPTURE = VWAttachments.wolf.WOLF_NOTIFY_MIGHT_SKILL_RUPTURE;
+    private static final AttachmentType<String> WOLF_PARENTS_ID = VWAttachments.wolf.WOLF_PARENTS_ID;
 
     public static void registerModWolfBehaviors() {
         registerTamedRules();
@@ -236,17 +237,18 @@ public class VWWolfBehaviors {
         wolf.setAttached(NOTIFY_AIR_SUPPLY, 1);
     }
     private static void runPlayerBlessing(Wolf wolf, ServerLevel level) {
-        boolean checkFirst = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0) > 1
-                && VWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK
-                && !VWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING;
-        if (checkFirst) return;
-
         LivingEntity player = wolf.getOwner();
         if (player == null) return;
         if (!player.isAlive()) return;
 
+        boolean checkFirst = wolf.getAttachedOrElse(VWAttachments.wolf.WOLF_BENEDICTION, 0) > 1
+                && player.getAttachedOrElse(VWPlayerPrefs.BENEDICTION_SHARE_STACK, VWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK)
+                && !player.getAttachedOrElse(VWPlayerPrefs.BENEDICTION_ALWAYS_TRIGGER_BLESSING, VWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING);
+
+        if (checkFirst) return;
+
         var SCAN_DISTANCE = VWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
-        var HEALTH_THRESHOLD = VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD * 0.01f;
+        var HEALTH_THRESHOLD = player.getAttachedOrElse(VWPlayerPrefs.BENEDICTION_HEALTH_THRESHOLD, VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;
 
         if (player.getHealth() >= player.getMaxHealth() * HEALTH_THRESHOLD) return;
         if (wolf.distanceTo(player) > SCAN_DISTANCE) return;

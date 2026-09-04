@@ -88,25 +88,18 @@ public class VWCreativeTabs {
             .icon(() -> new ItemStack(Pages.OLD_SCATTERED_PAGE))
             .title(Component.literal("Scattered Pages"))
             .displayItems((params, output) -> {
-                /*
                 if (TOTVW.IN_DEVELOPMENT) {
                     output.accept(Pages.SCATTERED_PAGE);
-                    output.accept(Pages.SCATTERED_PAGE_VARIANT_1);
-                    output.accept(Pages.SCATTERED_PAGE_VARIANT_2);
-                    output.accept(Pages.SCATTERED_PAGE_VARIANT_3);
                     output.accept(Pages.OLD_SCATTERED_PAGE);
-                    output.accept(Pages.OLD_SCATTERED_PAGE_VARIANT_1);
-                    output.accept(Pages.OLD_SCATTERED_PAGE_VARIANT_2);
-                    output.accept(Pages.OLD_SCATTERED_PAGE_VARIANT_3);
 
                     output.accept(Pages.PLAYER_STATS);
                     output.accept(Pages.SP_ID_TEST);
                     output.accept(Pages.SP_ID_1000);
                 }
-                */
                 output.accept(Pages.ENCHANTMENTS_HANDBOOK);
                 output.accept(Pages.EFFECTS_HANDBOOK);
                 output.accept(Pages.ITEMS_HANDBOOK);
+                output.accept(Pages.FEATURES_HANDBOOK);
 
                 output.accept(Pages.SP_ID_1001);
                 output.accept(Pages.SP_ID_1002);

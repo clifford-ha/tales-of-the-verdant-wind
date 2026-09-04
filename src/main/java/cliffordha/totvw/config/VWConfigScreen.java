@@ -22,7 +22,15 @@ public class VWConfigScreen {
                     if (ClientPlayNetworking.canSend(ClientPrefsPayload.TYPE)) {
                         ClientPlayNetworking.send(new ClientPrefsPayload(
                                 VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER,
-                                VWConfig.get().CLIENT_ENABLE_NOTIFIERS
+                                VWConfig.get().CLIENT_ENABLE_NOTIFIERS,
+
+                                VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD,
+                                VWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK,
+                                VWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING,
+                                VWConfig.get().SERVER_TELEPORT_AFTER_SAVE,
+                                VWConfig.get().SERVER_WOLF_TP_METHOD,
+                                VWConfig.get().SERVER_PLAYER_TP_METHOD,
+                                VWConfig.get().SERVER_WOLF_TP_ALL
                         ));
                     }
                 });
@@ -173,7 +181,7 @@ public class VWConfigScreen {
                                 Component.literal("Low Health Threshold"),
                                 VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD)
                         .setDefaultValue(30)
-                        .setMax(90)
+                        .setMax(50)
                         .setMin(10)
                         .setTooltip(text(
                                 "Grant §bBlessing of the Verdant Wind§r when\n"
@@ -198,20 +206,6 @@ public class VWConfigScreen {
         );
         benedictionSettings.add(
                 entryBuilder.startBooleanToggle(
-                                Component.literal("Tell Owner Who Attacked Wolf"),
-                                VWConfig.get().SERVER_TELL_OWNER_WHO_HURT_WOLF)
-                        .setDefaultValue(true)
-                        .setTooltip(text(
-                                """
-                                        When enabled, if wolf consume a
-                                        §bBenediction Stack§r, tell owner who last
-                                        attacked wolf."""
-                        ))
-                        .setSaveConsumer(value -> VWConfig.get().SERVER_TELL_OWNER_WHO_HURT_WOLF = value)
-                        .build()
-        );
-        benedictionSettings.add(
-                entryBuilder.startBooleanToggle(
                                 Component.literal("Always Trigger Blessing"),
                                 VWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING)
                         .setDefaultValue(false)
@@ -228,34 +222,68 @@ public class VWConfigScreen {
                         .setSaveConsumer(value -> VWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING = value)
                         .build()
         );
-        benedictionSettings.add(
-                entryBuilder.startBooleanToggle(
-                                Component.literal("Teleport After Revival"),
-                                VWConfig.get().SERVER_TELEPORT_AFTER_SAVE)
-                        .setDefaultValue(true)
-                        .setTooltip(text(
-                                """
-                                        When enabled, teleport to the nearest wolf
-                                        or owner after revival through Blessing.
-                                        
-                                        Only works if both are in the same dimension."""
-                        ))
-                        .setSaveConsumer(value -> VWConfig.get().SERVER_TELEPORT_AFTER_SAVE = value)
-                        .build()
+        var benedictionTPSettings = entryBuilder.startSubCategory(Component.literal("Benediction TP Settings"));
+        benedictionTPSettings.add(entryBuilder.startBooleanToggle(
+                Component.literal("Teleport After Revival"), VWConfig.get().SERVER_TELEPORT_AFTER_SAVE)
+                .setDefaultValue(true)
+                .setTooltip(text("""
+                        When enabled, teleport to the nearest wolf
+                        or owner after revival through Blessing.
+                        For wolves: if player is inaccessible,
+                        teleport to the saved spawn if valid.
+                        
+                        Only works if both are in the same dimension."""
+                ))
+                .setSaveConsumer(value -> VWConfig.get().SERVER_TELEPORT_AFTER_SAVE = value)
+                .build()
         );
-        /*
-        if (TOTVW.IN_DEVELOPMENT) {
-            benedictionSettings.add(
-                    entryBuilder.startIntField(
-                                    Component.literal("Max Benediction Stack"),
-                                    VWConfig.get().SERVER_MAX_WOLF_BENEDICTION_STACK)
-                            .setDefaultValue(3)
-                            .setMax(10)
-                            .setMin(1)
-                            .setSaveConsumer(value -> VWConfig.get().SERVER_MAX_WOLF_BENEDICTION_STACK = value)
-                            .build()
-            );
-        }*/
+        benedictionTPSettings.add(entryBuilder.startBooleanToggle(
+                        Component.literal("All Wolf Gets TP"), VWConfig.get().SERVER_WOLF_TP_ALL)
+                .setDefaultValue(false)
+                .setTooltip(text("""
+                        When enabled, teleport ALL tamed
+                        wolves to player's location if one
+                        of the wolves is able to revive them.
+                        This option only affects the Player
+                        TP Method. Have fun with this :3
+                        
+                        Enable Teleport After Revival
+                        to work."""
+                ))
+                .setSaveConsumer(value -> VWConfig.get().SERVER_WOLF_TP_ALL = value)
+                .build()
+        );
+        benedictionSettings.add(entryBuilder.startIntField(
+                        Component.literal("Wolf TP Method"), VWConfig.get().SERVER_WOLF_TP_METHOD)
+                .setDefaultValue(0)
+                .setMin(0)
+                .setMax(1)
+                .setTooltip(text("""
+                        If 0, wolf will be teleport to player.
+                        Otherwise, do reverse.
+                        
+                        Enable Teleport After Revival
+                        to work."""
+                ))
+                .setSaveConsumer(value -> VWConfig.get().SERVER_WOLF_TP_METHOD = value)
+                .build()
+        );
+        benedictionSettings.add(entryBuilder.startIntField(
+                        Component.literal("Player TP Method"), VWConfig.get().SERVER_PLAYER_TP_METHOD)
+                .setDefaultValue(0)
+                .setMin(0)
+                .setMax(1)
+                .setTooltip(text("""
+                        If 0, player will will be teleported
+                        to wolf. Otherwise, do reverse.
+                        
+                        Enable Teleport After Revival
+                        to work."""
+                ))
+                .setSaveConsumer(value -> VWConfig.get().SERVER_PLAYER_TP_METHOD = value)
+                .build()
+        );
+        benedictionSettings.add(benedictionTPSettings.build());
         server.addEntry(benedictionSettings.build());
 
         var enchantmentSkillSettings = entryBuilder.startSubCategory(Component.literal("Enchantment Skills"));
@@ -298,6 +326,16 @@ public class VWConfigScreen {
 
         // DEBUG
         ConfigCategory debug = builder.getOrCreateCategory(Component.literal("Debug"));
+
+        debug.addEntry(
+                entryBuilder.startBooleanToggle(
+                        Component.literal("HOVER HERE"),
+                        VWConfig.get().DUMMY)
+                        .setDefaultValue(false)
+                        .setTooltip(text("Certain settings inside the DEBUG is\n"
+                                + "only visible in server log terminal."))
+                        .build()
+        );
 
         //
         var logEnchantmentCD = entryBuilder.startSubCategory(Component.literal("Show Enchantment Cooldowns"));

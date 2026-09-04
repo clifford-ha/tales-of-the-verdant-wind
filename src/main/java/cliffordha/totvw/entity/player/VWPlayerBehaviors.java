@@ -5,6 +5,8 @@ import cliffordha.totvw.entity.skill.PlayerSkillDefinition;
 import cliffordha.totvw.entity.skill.SkillUtil;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.item.events.VWItemBlessings;
+import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWPlayerPrefs;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWItemTags;
 
@@ -16,6 +18,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -36,8 +39,8 @@ import static cliffordha.totvw.entity.skill.VWSkillProcessor.*;
 
 public class VWPlayerBehaviors {
     private static final ResourceKey<Enchantment> BENEDICTION_OF_THE_VERDANT_MOUNTAINS = VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS;
-    private static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND;
-    private static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = VWAttachments.Player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND;
+    private static final AttachmentType<Integer> PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND = VWAttachments.player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND;
+    private static final AttachmentType<Integer> PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND = VWAttachments.player.PLAYER_NOTIFY_BLESSING_OF_THE_VERDANT_WIND;
 
     private static final List<PlayerBehaviorRule> ON_DAMAGE_RULES = new ArrayList<>();
     private static final List<PlayerBehaviorRule> TICK_RULES = new ArrayList<>();
@@ -55,10 +58,16 @@ public class VWPlayerBehaviors {
                 VWPlayerBehaviors::runEnchantmentsOnDamage
         ));
         TICK_RULES.add(PlayerBehaviorRule.register(
-                PlayerCondition.tick(1, 0)
-                        .and(PlayerCondition.hasArmorWithEnchantment(EquipmentSlot.CHEST, BENEDICTION_OF_THE_VERDANT_MOUNTAINS))
-                        .and(PlayerCondition.checkBiomeTag(VWBiomeTags.IS_VERDANT_BIOMES)),
-                ((player, _) -> player.heal(1.0f))
+                PlayerCondition.tick(1, 0),
+                ((player, level) -> {
+                    RandomSource random = level.getRandom();
+                    player.setAttached(VWAttachments.player.PLAYER_RANDOM_INT_10, random.nextIntBetweenInclusive(1, 10));
+
+                    if (entityEnchantmentLVL(player, EquipmentSlot.CHEST, BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0
+                    && isInBiome(player, VWBiomeTags.IS_VERDANT_BIOMES)) {
+                        player.heal(1.0f);
+                    }
+                })
         ));
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(6, 0)
@@ -78,8 +87,8 @@ public class VWPlayerBehaviors {
                 PlayerCondition.tick(0, 30),
                 (player, _) -> {
                     if (VWConfig.get().SERVER_OTHER_COOLDOWNS) {
-                        depleteCooldown(player, VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT);
-                        depleteCooldown(player, VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT);
+                        depleteCooldown(player, VWAttachments.player.PLAYER_VILLAGER_ATROCITY_COUNT);
+                        depleteCooldown(player, VWAttachments.player.PLAYER_WOLF_ATROCITY_COUNT);
                     }
                 }
         ));
@@ -109,7 +118,8 @@ public class VWPlayerBehaviors {
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         double SCAN_DISTANCE = VWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
-        float HEALTH_THRESHOLD = VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD * 0.01f;
+        float HEALTH_THRESHOLD = player.getAttachedOrElse(VWPlayerPrefs.BENEDICTION_HEALTH_THRESHOLD,
+                VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;
 
         List<Wolf> wolves = serverLevel.getEntities(
                 EntityTypes.WOLF,
@@ -122,7 +132,7 @@ public class VWPlayerBehaviors {
 
         for (Wolf wolf : wolves) {
             if (!wolf.isAlive()) return;
-            int wolfBenediction = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0);
+            int wolfBenediction = wolf.getAttachedOrElse(VWAttachments.wolf.WOLF_BENEDICTION, 0);
             if (wolfBenediction > 0) return;
 
             float triggerHeal;
@@ -153,8 +163,8 @@ public class VWPlayerBehaviors {
         int BENEDICTION_ACTIVE = entityEnchantmentLVL(player, EquipmentSlot.CHEST, BENEDICTION_OF_THE_VERDANT_MOUNTAINS);
         int FIRE_PROTECTION = entityEnchantmentLVL(player, Enchantments.FIRE_PROTECTION);
 
-        boolean inVerdantBiomes = player.level().getBiome(player.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
-        boolean inNether = player.level().getBiome(player.blockPosition()).is(BiomeTags.IS_NETHER);
+        boolean inVerdantBiomes = isInBiome(player, VWBiomeTags.IS_VERDANT_BIOMES);
+        boolean inNether = isInBiome(player, BiomeTags.IS_NETHER);
 
         if (BENEDICTION_ACTIVE > 0 && inVerdantBiomes) {
             victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, sec(3), 0));

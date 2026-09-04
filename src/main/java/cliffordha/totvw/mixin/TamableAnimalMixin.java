@@ -1,6 +1,6 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.registry.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +13,7 @@ public class TamableAnimalMixin {
     @Inject(method = "die", at = @At("HEAD"), cancellable = true)
     private void onDeath(CallbackInfo ci) {
         if ((Object) this instanceof Wolf wolf) {
-            if (wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_BENEDICTION, 0) < 1) return;
+            if (wolf.getAttachedOrElse(VWAttachments.wolf.WOLF_BENEDICTION, 0) < 1) return;
             ci.cancel();
         }
     }
