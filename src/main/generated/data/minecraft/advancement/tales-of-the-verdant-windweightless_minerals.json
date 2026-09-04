@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:tales-of-the-verdant-windtales_of_the_verdant_wind",
+  "criteria": {
+    "weightless_minerals": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tales-of-the-verdant-wind:verixium_chunk"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "color": "#247D66",
+      "text": "Obtain a Verixium Ingot"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "tales-of-the-verdant-wind:verixium_chestplate"
+    },
+    "show_toast": false,
+    "title": {
+      "color": "#00FFD0",
+      "text": "Weightless Minerals"
+    }
+  },
+  "requirements": [
+    [
+      "weightless_minerals"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

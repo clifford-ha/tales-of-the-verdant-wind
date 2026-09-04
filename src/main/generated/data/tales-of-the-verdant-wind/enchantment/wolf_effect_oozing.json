@@ -1,0 +1,21 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.tales-of-the-verdant-wind.wolf_effect_oozing"
+  },
+  "max_cost": {
+    "base": 55,
+    "per_level_above_first": 15
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 55,
+    "per_level_above_first": 15
+  },
+  "primary_items": "#tales-of-the-verdant-wind:wolf_armor_enchantable",
+  "slots": [
+    "body"
+  ],
+  "supported_items": "#tales-of-the-verdant-wind:wolf_armor_enchantable",
+  "weight": 2
+}

@@ -1,0 +1,7 @@
+// 26.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Tags for minecraft:enchantment
+e77cf29cc4dac846cf88952c655f7cb417b30ed5 data/minecraft/tags/enchantment/in_enchanting_table.json
+ca6f9ebf3e1fb87dcd91384d39e0a4e730724f8b data/minecraft/tags/enchantment/on_random_loot.json
+a6ecec2e8a4c9d0cd94ab89760f1eac840f1f565 data/minecraft/tags/enchantment/treasure.json
+423c9b9d055b9ffc6a61941661b2dcf9ae0c04f9 data/tales-of-the-verdant-wind/tags/enchantment/continuous_damage.json
+d10f025de2dc91e07d41552015d7c274f9abf85c data/tales-of-the-verdant-wind/tags/enchantment/impairing_damage.json
+100cf135b53db27c317ab1903c9d1de549de5663 data/tales-of-the-verdant-wind/tags/enchantment/wolf_enchantments.json

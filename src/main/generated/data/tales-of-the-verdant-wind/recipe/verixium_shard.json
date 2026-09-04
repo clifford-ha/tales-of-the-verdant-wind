@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "tales-of-the-verdant-wind:condensed_verixium",
+  "result": {
+    "id": "tales-of-the-verdant-wind:verixium_shard"
+  }
+}

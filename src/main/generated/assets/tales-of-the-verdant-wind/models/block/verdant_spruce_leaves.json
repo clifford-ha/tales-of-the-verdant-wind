@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "tales-of-the-verdant-wind:block/verdant_spruce_leaves"
+  }
+}

@@ -135,7 +135,7 @@ public class VWTooltips {
             if (ACTIVE_SOULS > 0) {
                 int randomInt10 = player.getAttachedOrElse(VWAttachments.player.PLAYER_RANDOM_INT_10, 0);
 
-                String wolf = ACTIVE_SOULS < 2 ? "A " + fText(BOLD, cText(AQUA, "wolf")) + " is " : "The " + fText(BOLD, cText(AQUA, ACTIVE_SOULS + "")) + " wolves are ";
+                String wolf = ACTIVE_SOULS < 2 ? "The " + cText(AQUA, "wolf") + " is " : "The " + cText(AQUA, ACTIVE_SOULS + "") + " wolves are ";
                 addText(out, wolf + soulRunestoneIdle(randomInt10, ACTIVE_SOULS));
             }
             addEmpty(out);
@@ -251,8 +251,7 @@ public class VWTooltips {
                     .splitLines(Component.translatable(key), 150, Style.EMPTY);
             for (FormattedText line : wrapped) {
                 out.add(Component.literal(line.getString())
-                        .withColor(VWColors.GRAY)
-                        .withStyle(ChatFormatting.ITALIC));
+                        .withColor(VWColors.GRAY));
             }
         }
     }

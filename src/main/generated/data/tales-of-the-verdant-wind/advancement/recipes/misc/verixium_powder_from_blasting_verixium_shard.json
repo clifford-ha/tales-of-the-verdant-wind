@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tales-of-the-verdant-wind:verixium_powder_from_blasting_verixium_shard"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_verixium_shard": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tales-of-the-verdant-wind:verixium_shard"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_verixium_shard"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tales-of-the-verdant-wind:verixium_powder_from_blasting_verixium_shard"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    "tales-of-the-verdant-wind:verdant_spruce_planks"
+  ],
+  "result": {
+    "id": "tales-of-the-verdant-wind:verdant_spruce_button"
+  }
+}

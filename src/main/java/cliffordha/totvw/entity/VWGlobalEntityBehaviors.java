@@ -254,7 +254,6 @@ public class VWGlobalEntityBehaviors {
         if (player.level().isClientSide()) {
             player.makeSound(SoundEvents.ANVIL_BREAK);
         }
-        sendToChat(player, false, "Breaking chance: " + chance);
 
         applyBenedictionBlessings(player);
         level.broadcastEntityEvent(player, (byte) 35);
