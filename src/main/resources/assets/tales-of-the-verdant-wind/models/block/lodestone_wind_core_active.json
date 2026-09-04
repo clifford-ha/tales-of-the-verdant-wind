@@ -1,0 +1,12 @@
+{
+  "format_version": "1.21.11",
+  "credit"        : "Made with Blockbench",
+  "parent": "tales-of-the-verdant-wind:block/lodestone_wind_core",
+  "textures"      : {
+    "bottom"  : "tales-of-the-verdant-wind:block/lodestone_wind_core_side",
+    "front"   : "tales-of-the-verdant-wind:block/lodestone_wind_core_active",
+    "side"    : "tales-of-the-verdant-wind:block/lodestone_wind_core_side",
+    "top"     : "tales-of-the-verdant-wind:block/lodestone_wind_core_top",
+    "particle": "tales-of-the-verdant-wind:block/lodestone_wind_core_side"
+  }
+}

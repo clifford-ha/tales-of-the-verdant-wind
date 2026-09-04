@@ -2,6 +2,7 @@ package cliffordha.totvw.client;
 
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.*;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.tag.VWItemTags;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -90,7 +91,11 @@ public class VWTooltips {
         String itemVerixiumArmor = "A light yet durable armor";
         String itemVerixium = "A subtle hint of wind emanates from this item...";
 
+        String LORE_soulRunestonePlate;
         String LORE_soulRunestoneFragment1;
+        String LORE_soulRunestoneFragment2;
+        String LORE_soulRunestoneFragment3;
+        String LORE_soulRunestoneFragment4;
         String LORE_verixiumChunk;
         String LORE_condensedVerixium0;
         String LORE_condensedVerixium1;
@@ -100,7 +105,11 @@ public class VWTooltips {
 
 
         if (!VWConfig.get().CLIENT_TRANSLATE_LANGUAGE) {
-            LORE_soulRunestoneFragment1 = "There will always be those who try to defy the absolute limit of this world. Though sacrifices were uncomfortably high, the ingenuity always take precedence to overcome the obstacles that stand in the way of the living.";
+            LORE_soulRunestonePlate = "My only regret is that I won't be able to be by your side as you grow up... and, do so forgive me for entrusting you with a heavy burden.";
+            LORE_soulRunestoneFragment1 = "\"There will always be those who try to defy the absolute limit of this world. Though sacrifices were uncomfortably high, the ingenuity always take precedence to overcome the obstacles that stand in the way of the living.\"";
+            LORE_soulRunestoneFragment2 = "\"But what good does constantly defying the very principles of nature have?\"";
+            LORE_soulRunestoneFragment3 = "\"Prior to the Wind's ascent, the people of ∎∎∎∎ tried to preserve the memories from the stream of time. Only then did they realize that a soul can be ∎∎∎∎∎ and ∎∎∎∎∎∎∎∎.\"";
+            LORE_soulRunestoneFragment4 = "\"Perhaps... my authority will quench their hatred. Onward, I shall entrust the duties of taking care of our people to each and everyone of you till the day 'I' return.\"";
             LORE_verixiumChunk = "\"For the land that they call 'home' and for the people they protect.\"";
             LORE_condensedVerixium0 = "\"For the land that they call 'home' and for the people they protect.";
             LORE_condensedVerixium1 = "O God of the Verdant Winds...\"";
@@ -108,7 +117,11 @@ public class VWTooltips {
             LORE_verixiumPowder = "\"Guide us, so we may never be swept by the floods of fiery lies.\"";
             LORE_verixiumIngot = "\"Protect us, so we may defend your land and people from the perils of the creatures from beyond.\"";
         } else {
+            LORE_soulRunestonePlate = unset;
             LORE_soulRunestoneFragment1 = unset;
+            LORE_soulRunestoneFragment2 = unset;
+            LORE_soulRunestoneFragment3 = unset;
+            LORE_soulRunestoneFragment4 = unset;
             LORE_verixiumChunk = unset;
             LORE_condensedVerixium0 = unset;
             LORE_condensedVerixium1 = unset;
@@ -118,12 +131,20 @@ public class VWTooltips {
         }
 
         if (stack.is(VWItems.SOUL_RUNESTONE_PLATE)) {
-            int ACTIVE_SOULS = player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_SOULS_COUNTER, 0);
-            if (ACTIVE_SOULS < 1) return;
-            String wolf = ACTIVE_SOULS < 2 ? "A " + fText(BOLD, cText(AQUA, "wolf")) + " is" : "The " + fText(BOLD, cText(AQUA, ACTIVE_SOULS + "")) + " wolves are";
-            addText(out, wolf + " sleeping...");
+            int ACTIVE_SOULS = player.getAttachedOrElse(VWAttachments.player.PLAYER_WOLF_SOULS_COUNTER, 0);
+            if (ACTIVE_SOULS > 0) {
+                int randomInt10 = player.getAttachedOrElse(VWAttachments.player.PLAYER_RANDOM_INT_10, 0);
+
+                String wolf = ACTIVE_SOULS < 2 ? "The " + cText(AQUA, "wolf") + " is " : "The " + cText(AQUA, ACTIVE_SOULS + "") + " wolves are ";
+                addText(out, wolf + soulRunestoneIdle(randomInt10, ACTIVE_SOULS));
+            }
+            addEmpty(out);
+            addExpandingText(out, "Fragmented Memory:", LORE_soulRunestonePlate);
         }
         if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_1)) addExpandingText(out, LORE_soulRunestoneFragment1);
+        if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_2)) addExpandingText(out, LORE_soulRunestoneFragment2);
+        if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_3)) addExpandingText(out, LORE_soulRunestoneFragment3);
+        if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_4)) addExpandingText(out, LORE_soulRunestoneFragment4);
 
         if (stack.is(VWItems.VERIXIUM_CHUNK)) {
             addExpandingText(out, LORE_verixiumChunk);
@@ -158,6 +179,22 @@ public class VWTooltips {
             }
             if (stack.is(VWBlocks.LODESTONE_WIND_CORE.asItem())) addText(out, "The core seem to respond with your armor...");
         }
+    }
+    private static String soulRunestoneIdle(int randomInt10, int souls) {
+        String sleeping = souls > 1 ? "resting together..." : "resting...";
+        List<String> actions = List.of(
+                sleeping,
+                "waiting for your call...",
+                "snoozing...",
+                "idling around...",
+                "lazing...",
+                "taking a nap...",
+                "chilling...",
+                "dozing off...",
+                "in deep peaceful slumber...",
+                "in standby..."
+        );
+        return actions.get(Math.clamp(randomInt10 - 1, 0, actions.size() - 1));
     }
 
     private static void addWolfArmorBenedictionLore(List<Component> out) {
@@ -214,8 +251,7 @@ public class VWTooltips {
                     .splitLines(Component.translatable(key), 150, Style.EMPTY);
             for (FormattedText line : wrapped) {
                 out.add(Component.literal(line.getString())
-                        .withColor(VWColors.GRAY)
-                        .withStyle(ChatFormatting.ITALIC));
+                        .withColor(VWColors.GRAY));
             }
         }
     }
@@ -234,5 +270,11 @@ public class VWTooltips {
         } else {
             out.add(Component.literal("Read lore...").withColor(VWColors.GRAY));
         }
+    }
+    private static void addETForSurvival(List<Component> out, String... keys) {
+        Player player = mc.player;
+        if (player == null) return;
+        if (player.isCreative() && !VWConfig.get().CLIENT_ALLOW_LORE_SPOILERS) return;
+        addExpandingText(out, keys);
     }
 }
