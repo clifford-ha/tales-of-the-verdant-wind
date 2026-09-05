@@ -62,7 +62,7 @@ public class VWGlobalEntityBehaviors {
     private static void developmentTick() {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
-                serverLevel.getEntities(EntityTypes.PLAYER, _ -> true).forEach(player -> {
+                serverLevel.getEntities(EntityType.PLAYER, _ -> true).forEach(player -> {
                     if (!player.entityTags().contains(player.getStringUUID() + "-reminderStamp")) {
                         sendToChat(player, VWColors.VERDANT_WIND, false, "TOTVW mod version is a development build.");
                         player.entityTags().add(player.getStringUUID() + "-reminderStamp");
@@ -102,7 +102,7 @@ public class VWGlobalEntityBehaviors {
             double distance = VWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
             AttachmentType<Integer> BENEDICTION_STACK = VWAttachments.wolf.WOLF_BENEDICTION;
 
-            List<Wolf> wolves = level.getEntities(EntityTypes.WOLF, player.getBoundingBox().inflate(distance), wolf ->
+            List<Wolf> wolves = level.getEntities(EntityType.WOLF, player.getBoundingBox().inflate(distance), wolf ->
                     wolf.getOwner() != null && wolf.getOwner().is(player));
 
             if (!wolves.isEmpty()) {

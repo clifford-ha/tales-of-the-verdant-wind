@@ -1,7 +1,7 @@
 package cliffordha.totvw.entity.skill;
 
 import cliffordha.totvw.config.VWConfig;
-import cliffordha.totvw.registry.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.VWSounds;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.server.level.ServerLevel;
@@ -48,31 +48,31 @@ public class VWSkillProcessor {
 
     public static void setPlayerConfiguration(Player player, int config) {
         String name = player.getName().getString();
-        int CD_VERDANT_BLESSING = player.getAttachedOrElse(VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+        int CD_VERDANT_BLESSING = player.getAttachedOrElse(VWAttachments.player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
 
         if (config == 0) {
             if (CD_VERDANT_BLESSING > 0) showLog(player, name + " | VerdantBlessingCD", CD_VERDANT_BLESSING);
         } else if (config == 1) {
-            if (CD_VERDANT_BLESSING > 0) player.setAttached(VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+            if (CD_VERDANT_BLESSING > 0) player.setAttached(VWAttachments.player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
         }
     }
 
     public static void setPlayerOtherConfig(Player player) {
-        int COUNTER_VILLAGER_ATROCITY = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
-        int COUNTER_WOLF_ATROCITY = player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0);
+        int COUNTER_VILLAGER_ATROCITY = player.getAttachedOrElse(VWAttachments.player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
+        int COUNTER_WOLF_ATROCITY = player.getAttachedOrElse(VWAttachments.player.PLAYER_WOLF_ATROCITY_COUNT, 0);
 
-        if (COUNTER_VILLAGER_ATROCITY > 0) player.setAttached(VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-        if (COUNTER_WOLF_ATROCITY > 0) player.setAttached(VWAttachments.Player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+        if (COUNTER_VILLAGER_ATROCITY > 0) player.setAttached(VWAttachments.player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+        if (COUNTER_WOLF_ATROCITY > 0) player.setAttached(VWAttachments.player.PLAYER_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
     }
 
 
     /** 0 = sendLog, 1 = resetCD **/
     public static void setWolfConfiguration(Wolf wolf, int config) {
         String name = wolf.getName().getString();
-        int CD_VERDANT_BLESSING = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-        int CD_BLOODLUST_SKILL_PARALYZE = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE, 0);
-        int CD_MIGHT_RUPTURE = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE, 0);
-        int CD_IGNORE_DMG = wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_CD_IGNORE_HIGH_DAMAGE, 0);
+        int CD_VERDANT_BLESSING = wolf.getAttachedOrElse(VWAttachments.wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+        int CD_BLOODLUST_SKILL_PARALYZE = wolf.getAttachedOrElse(VWAttachments.wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE, 0);
+        int CD_MIGHT_RUPTURE = wolf.getAttachedOrElse(VWAttachments.wolf.WOLF_CD_MIGHT_SKILL_RUPTURE, 0);
+        int CD_IGNORE_DMG = wolf.getAttachedOrElse(VWAttachments.wolf.WOLF_CD_IGNORE_HIGH_DAMAGE, 0);
 
         if (config == 0) {
             if (CD_VERDANT_BLESSING > 0) showLog(wolf, name + " | VerdantBlessingCD", CD_VERDANT_BLESSING);
@@ -80,10 +80,10 @@ public class VWSkillProcessor {
             if (CD_MIGHT_RUPTURE > 0) showLog(wolf, name + " | MightCD", CD_MIGHT_RUPTURE);
             if (CD_IGNORE_DMG > 0) showLog(wolf, name + " | IgnoreDMG", CD_IGNORE_DMG);
         } else if (config == 1) {
-            if (CD_VERDANT_BLESSING > 0) wolf.setAttached(VWAttachments.Wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-            if (CD_BLOODLUST_SKILL_PARALYZE > 0) wolf.setAttached(VWAttachments.Wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE, 0);
-            if (CD_MIGHT_RUPTURE > 0) wolf.setAttached(VWAttachments.Wolf.WOLF_CD_MIGHT_SKILL_RUPTURE, 0);
-            if (CD_IGNORE_DMG > 0) wolf.setAttached(VWAttachments.Wolf.WOLF_CD_IGNORE_HIGH_DAMAGE, 0);
+            if (CD_VERDANT_BLESSING > 0) wolf.setAttached(VWAttachments.wolf.WOLF_CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+            if (CD_BLOODLUST_SKILL_PARALYZE > 0) wolf.setAttached(VWAttachments.wolf.WOLF_CD_BLOODLUST_SKILL_PARALYZE, 0);
+            if (CD_MIGHT_RUPTURE > 0) wolf.setAttached(VWAttachments.wolf.WOLF_CD_MIGHT_SKILL_RUPTURE, 0);
+            if (CD_IGNORE_DMG > 0) wolf.setAttached(VWAttachments.wolf.WOLF_CD_IGNORE_HIGH_DAMAGE, 0);
         }
     }
     private static void showLog(LivingEntity entity, String value, int attachment) {

@@ -3,6 +3,7 @@ package cliffordha.totvw.block.custom;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.registry.*;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWEntityTypeTags;
 import cliffordha.totvw.tag.VWItemTags;
@@ -327,8 +328,8 @@ public class LodestoneWindCoreBlock extends Block {
 
         List<Player> players = level.getEntitiesOfClass(Player.class, standardRange,
                 test -> test.gameMode() == GameType.SURVIVAL
-                        && test.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0) < 20
-                        && test.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) < 40
+                        && test.getAttachedOrElse(VWAttachments.player.PLAYER_WOLF_ATROCITY_COUNT, 0) < 20
+                        && test.getAttachedOrElse(VWAttachments.player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) < 40
         );
         for (Player player : players) {
             addEffect(player, MobEffects.STRENGTH, duration, 0);
@@ -348,14 +349,14 @@ public class LodestoneWindCoreBlock extends Block {
 
             VWParticleEffects.spawnBlessingParticlesEntity(villager, 2);
 
-            boolean isCorrectVillager = villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false)
+            boolean isCorrectVillager = villager.getAttachedOrElse(VWAttachments.villager.VILLAGER_IS_VERDANT_TYPE, false)
                     && villager.getVillagerData().profession().is(Predicate.isEqual(VillagerProfession.CLERIC));
             if (isCorrectVillager) {
                 float tryChance = villager.level().getRandom().nextBoolean() ? 0.15f : 0.3f;
                 float randomizer = villager.level().getRandom().nextFloat() + tryChance;
-                if (randomizer < 0.5f) helpHealer(villager, VWAttachments.Villager.VILLAGER_CD_HEAL_OTHERS);
-                if (randomizer < 0.33f) helpHealer(villager, VWAttachments.Villager.VILLAGER_CD_HEAL_WOLF);
-                if (randomizer < 0.33f) helpHealer(villager, VWAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM);
+                if (randomizer < 0.5f) helpHealer(villager, VWAttachments.villager.VILLAGER_CD_HEAL_OTHERS);
+                if (randomizer < 0.33f) helpHealer(villager, VWAttachments.villager.VILLAGER_CD_HEAL_WOLF);
+                if (randomizer < 0.33f) helpHealer(villager, VWAttachments.villager.VILLAGER_CD_HEAL_IRON_GOLEM);
             }
         }
 
@@ -377,7 +378,7 @@ public class LodestoneWindCoreBlock extends Block {
 
         List<LivingEntity> monsters = level.getEntitiesOfClass(LivingEntity.class, monsterRange, monster -> monster instanceof Enemy);
         for (LivingEntity monster : monsters) {
-            boolean shouldPressurize = !monster.getAttachedOrElse(VWAttachments.WindCore.ENTITY_HAS_IMPLODED, false);
+            boolean shouldPressurize = !monster.getAttachedOrElse(VWAttachments.windCore.ENTITY_HAS_IMPLODED, false);
             if (shouldPressurize) {
                 addPressureDifferenceToEnemy(monster, level, pos, state);
             }
@@ -444,8 +445,8 @@ public class LodestoneWindCoreBlock extends Block {
         monster.level().playSound(null, monster.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 1.0F, 1.0F);
     }
     private static void addPressureDifferenceToEnemy(LivingEntity monster, ServerLevel level, BlockPos pos, BlockState state) {
-        AttachmentType<Boolean> ATTACHMENT_IMPLODE = VWAttachments.WindCore.ENTITY_HAS_IMPLODED;
-        AttachmentType<Integer> ATTACHMENT_PRESSURE = VWAttachments.WindCore.ENTITY_PRESSURE_DIFFERENCE;
+        AttachmentType<Boolean> ATTACHMENT_IMPLODE = VWAttachments.windCore.ENTITY_HAS_IMPLODED;
+        AttachmentType<Integer> ATTACHMENT_PRESSURE = VWAttachments.windCore.ENTITY_PRESSURE_DIFFERENCE;
         boolean hardMode = level.getDifficulty() == Difficulty.HARD;
 
         int currentPressure = monster.getAttachedOrElse(ATTACHMENT_PRESSURE, 0);
@@ -494,37 +495,45 @@ public class LodestoneWindCoreBlock extends Block {
     }
     private static void removeImplodedStatus(ServerLevel level, BlockState state, BlockPos pos) {
         AABB test = scanner(pos, 24);
-        List<Monster> monsters = level.getEntitiesOfClass(Monster.class, test, mob -> mob.getAttachedOrElse(VWAttachments.WindCore.ENTITY_HAS_IMPLODED, false));
+        List<Monster> monsters = level.getEntitiesOfClass(Monster.class, test, mob -> mob.getAttachedOrElse(VWAttachments.windCore.ENTITY_HAS_IMPLODED, false));
         if (monsters.isEmpty()) return;
         for (Monster monster : monsters) {
-            monster.removeAttached(VWAttachments.WindCore.ENTITY_HAS_IMPLODED);
+            monster.removeAttached(VWAttachments.windCore.ENTITY_HAS_IMPLODED);
             depleteEnergy(level, pos, state, 50);
         }
     }
 
     private static void transformToVerdantType(ServerLevel level, BlockPos pos, BlockState state) {
         AABB test = scanner(pos, 12);
-        List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, test, wolf -> !wolf.getAttachedOrElse(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, false));
+        List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, test, wolf -> !wolf.getAttachedOrElse(VWAttachments.wolf.WOLF_IS_VERDANT_TYPE, false));
         if (!wolves.isEmpty()) {
             int random = wolves.size() == 1 ? 0 : level.getRandom().nextIntBetweenInclusive(0, wolves.size() - 1);
             Wolf wolf = wolves.get(Math.max(random, 0));
 
-            wolf.setAttached(VWAttachments.Wolf.WOLF_IS_VERDANT_TYPE, true);
+            AttributeModifier.Operation ADD = AttributeModifier.Operation.ADD_VALUE;
+
+            wolf.setAttached(VWAttachments.wolf.WOLF_IS_VERDANT_TYPE, true);
             Identifier verdant = VWIdentifiers.VERDANT_WOLF_PERMANENT_MODIFIERS;
-            addAttributeModifier(wolf, verdant, Attributes.ATTACK_DAMAGE, 2, AttributeModifier.Operation.ADD_VALUE);
-            addAttributeModifier(wolf, verdant, Attributes.MOVEMENT_SPEED, 0.075, AttributeModifier.Operation.ADD_VALUE);
-            addAttributeModifier(wolf, verdant, Attributes.SCALE, 0.2, AttributeModifier.Operation.ADD_VALUE);
+            addAttributeModifier(wolf, verdant, Attributes.ATTACK_DAMAGE, 2, ADD);
+            addAttributeModifier(wolf, verdant, Attributes.MOVEMENT_SPEED, 0.075, ADD);
+            addAttributeModifier(wolf, verdant, Attributes.SCALE, 0.2, ADD);
 
             VWParticleEffects.triggerBenedictionParticles(wolf, 4);
+
+            if (wolf.getOwner() instanceof Player player) {
+                int amount = player.experienceLevel < 12 ? 9 : 3;
+                player.giveExperienceLevels(amount);
+                sendToChat(player, true, wolf.getPlainTextName() + " has been transformed into a verdant wolf!");
+            }
             sendToLogger(LOG_ENTITY_CONVERSION, "A core at " + getStringPos(pos) + " converted a nearby wolf into a verdant type.");
         }
 
-        List<Villager> villagers = level.getEntitiesOfClass(Villager.class, test, villager -> !villager.getAttachedOrElse(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, false));
+        List<Villager> villagers = level.getEntitiesOfClass(Villager.class, test, villager -> !villager.getAttachedOrElse(VWAttachments.villager.VILLAGER_IS_VERDANT_TYPE, false));
         if (!villagers.isEmpty()) {
             int random = villagers.size() == 1 ? 0 : level.getRandom().nextIntBetweenInclusive(0, villagers.size());
             Villager villager = villagers.get(Math.min(random, 0));
 
-            villager.setAttached(VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE, true);
+            villager.setAttached(VWAttachments.villager.VILLAGER_IS_VERDANT_TYPE, true);
             VWParticleEffects.triggerBenedictionParticles(villager, 4);
             sendToLogger(LOG_ENTITY_CONVERSION, "A core at " + getStringPos(pos) + " converted a nearby villager into a verdant type.");
         }
@@ -586,8 +595,8 @@ public class LodestoneWindCoreBlock extends Block {
         List<Player> players = level.getEntitiesOfClass(Player.class, test);
         if (!players.isEmpty()) {
             for (Player player : players) {
-                int CHECK_1 = player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0);
-                int CHECK_2 = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
+                int CHECK_1 = player.getAttachedOrElse(VWAttachments.player.PLAYER_WOLF_ATROCITY_COUNT, 0);
+                int CHECK_2 = player.getAttachedOrElse(VWAttachments.player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
 
                 String omenStamp = String.format("%.8s", player.getStringUUID()) + "-" + player.getName().getString() + "-verdantOmen";
 

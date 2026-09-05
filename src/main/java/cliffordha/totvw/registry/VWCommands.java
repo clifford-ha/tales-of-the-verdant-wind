@@ -1,6 +1,7 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -45,7 +46,7 @@ public class VWCommands {
                             context.getSource().sendFailure(Component.literal("This command must be run by a player."));
                             return 0;
                         }
-                        int getStat = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK, 0);
+                        int getStat = player.getAttachedOrElse(VWAttachments.player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK, 0);
                         if (getStat < 1) {
                             giveOrDropHandbook(player, 0);
                         } else {
@@ -68,7 +69,7 @@ public class VWCommands {
                             context.getSource().sendFailure(Component.literal("This command must be run by a player."));
                             return 0;
                         }
-                        int getStat = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RECEIVED_EFFECTS_HANDBOOK, 0);
+                        int getStat = player.getAttachedOrElse(VWAttachments.player.PLAYER_RECEIVED_EFFECTS_HANDBOOK, 0);
                         if (getStat < 1) {
                             giveOrDropHandbook(player, 1);
                         } else {
@@ -91,12 +92,35 @@ public class VWCommands {
                                     context.getSource().sendFailure(Component.literal("This command must be run by a player."));
                                     return 0;
                                 }
-                                int getStat = player.getAttachedOrElse(VWAttachments.Player.PLAYER_RECEIVED_ITEMS_HANDBOOK, 0);
+                                int getStat = player.getAttachedOrElse(VWAttachments.player.PLAYER_RECEIVED_ITEMS_HANDBOOK, 0);
                                 if (getStat < 1) {
                                     giveOrDropHandbook(player, 2);
                                 } else {
                                     if (player.isCreative() || player.isSpectator()) {
                                         giveOrDropHandbook(player, 2);
+                                    } else {
+                                        context.getSource().sendSuccess(() -> Component.literal("You can request another copy after your next respawn."), true);
+                                    }
+                                }
+                                return getStat;
+                            }
+                    ))
+            );
+            dispatcher.register(Commands.literal("totvw")
+                    .then(Commands.literal("features_handbook").executes(context -> {
+                                ServerPlayer player;
+                                try {
+                                    player = context.getSource().getPlayerOrException();
+                                } catch (Exception e) {
+                                    context.getSource().sendFailure(Component.literal("This command must be run by a player."));
+                                    return 0;
+                                }
+                                int getStat = player.getAttachedOrElse(VWAttachments.player.PLAYER_RECEIVED_FEATURES_HANDBOOK, 0);
+                                if (getStat < 1) {
+                                    giveOrDropHandbook(player, 3);
+                                } else {
+                                    if (player.isCreative() || player.isSpectator()) {
+                                        giveOrDropHandbook(player, 3);
                                     } else {
                                         context.getSource().sendSuccess(() -> Component.literal("You can request another copy after your next respawn."), true);
                                     }
@@ -114,8 +138,8 @@ public class VWCommands {
                                     context.getSource().sendFailure(Component.literal("This command must be run by a player."));
                                     return 0;
                                 }
-                                int villager = player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
-                                int wolf = player.getAttachedOrElse(VWAttachments.Player.PLAYER_WOLF_ATROCITY_COUNT, 0);
+                                int villager = player.getAttachedOrElse(VWAttachments.player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
+                                int wolf = player.getAttachedOrElse(VWAttachments.player.PLAYER_WOLF_ATROCITY_COUNT, 0);
                                 if ((villager + wolf) < 1) {
                                     context.getSource().sendSystemMessage(Component.literal("You don't have any atrocity count."));
                                 } else {
@@ -184,18 +208,23 @@ public class VWCommands {
         switch (toGive) {
             case 0 -> {
                 handbook = new ItemStack(VWItems.Pages.ENCHANTMENTS_HANDBOOK);
-                handbookType = VWAttachments.Player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK;
+                handbookType = VWAttachments.player.PLAYER_RECEIVED_ENCHANTMENTS_HANDBOOK;
                 handbookName = "Enchantments";
             }
             case 1 -> {
                 handbook = new ItemStack(VWItems.Pages.EFFECTS_HANDBOOK);
-                handbookType = VWAttachments.Player.PLAYER_RECEIVED_EFFECTS_HANDBOOK;
+                handbookType = VWAttachments.player.PLAYER_RECEIVED_EFFECTS_HANDBOOK;
                 handbookName = "Effects";
             }
-            default -> {
+            case 2 -> {
                 handbook = new ItemStack(VWItems.Pages.ITEMS_HANDBOOK);
-                handbookType = VWAttachments.Player.PLAYER_RECEIVED_ITEMS_HANDBOOK;
+                handbookType = VWAttachments.player.PLAYER_RECEIVED_ITEMS_HANDBOOK;
                 handbookName = "Items";
+            }
+            default -> {
+                handbook = new ItemStack(VWItems.Pages.FEATURES_HANDBOOK);
+                handbookType = VWAttachments.player.PLAYER_RECEIVED_FEATURES_HANDBOOK;
+                handbookName = "Features";
             }
         }
 

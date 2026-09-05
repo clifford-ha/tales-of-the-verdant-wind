@@ -86,7 +86,15 @@ public class TOTVWClient implements ClientModInitializer {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
                 sender.sendPacket(new ClientPrefsPayload(
                         VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER,
-                        VWConfig.get().CLIENT_ENABLE_NOTIFIERS
+                        VWConfig.get().CLIENT_ENABLE_NOTIFIERS,
+
+                        VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD,
+                        VWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK,
+                        VWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING,
+                        VWConfig.get().SERVER_TELEPORT_AFTER_SAVE,
+                        VWConfig.get().SERVER_WOLF_TP_METHOD,
+                        VWConfig.get().SERVER_PLAYER_TP_METHOD,
+                        VWConfig.get().SERVER_WOLF_TP_ALL
                 ))
         );
     }

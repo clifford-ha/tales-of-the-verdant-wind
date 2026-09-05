@@ -89,19 +89,15 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         String SCATTERED_PAGE = "Scattered Page";
         text.add(Pages.SCATTERED_PAGE, SCATTERED_PAGE);
-        text.add(Pages.SCATTERED_PAGE_VARIANT_1, SCATTERED_PAGE);
-        text.add(Pages.SCATTERED_PAGE_VARIANT_2, SCATTERED_PAGE);
-        text.add(Pages.SCATTERED_PAGE_VARIANT_3, SCATTERED_PAGE);
 
         String OLD_SCATTERED_PAGE = "Old Scattered Page";
         text.add(Pages.OLD_SCATTERED_PAGE, OLD_SCATTERED_PAGE);
-        text.add(Pages.OLD_SCATTERED_PAGE_VARIANT_1, OLD_SCATTERED_PAGE);
-        text.add(Pages.OLD_SCATTERED_PAGE_VARIANT_2, OLD_SCATTERED_PAGE);
-        text.add(Pages.OLD_SCATTERED_PAGE_VARIANT_3, OLD_SCATTERED_PAGE);
 
         text.add(Pages.ENCHANTMENTS_HANDBOOK, "Enchantments Handbook");
         text.add(Pages.EFFECTS_HANDBOOK, "Effects Handbook");
         text.add(Pages.ITEMS_HANDBOOK, "Items Handbook");
+        text.add(Pages.FEATURES_HANDBOOK, "Features Handbook");
+
         text.add(Pages.PLAYER_STATS, "Player Stats");
         text.add(Pages.SP_ID_TEST, "Test Page");
         text.add(Pages.SP_ID_1000, SP_1000.getTitle());

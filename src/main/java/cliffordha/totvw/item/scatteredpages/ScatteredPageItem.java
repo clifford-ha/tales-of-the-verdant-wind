@@ -1,6 +1,5 @@
 package cliffordha.totvw.item.scatteredpages;
 
-import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.client.screen.ScatteredPageScreen;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.VWColors;
@@ -23,13 +22,18 @@ import java.util.function.Consumer;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
-import static cliffordha.totvw.item.scatteredpages.VWEffectsHandbook.*;
-import static cliffordha.totvw.item.scatteredpages.VWEnchantmentsHandbook.*;
+import static cliffordha.totvw.item.scatteredpages.VWEffectsHandbook.EFFECTS_HANDBOOK_CONTENTS;
+import static cliffordha.totvw.item.scatteredpages.VWEnchantmentsHandbook.ENCHANTMENTS_HANDBOOK_CONTENTS;
+import static cliffordha.totvw.item.scatteredpages.VWFeaturesHandbook.FEATURES_HANDBOOK_CONTENTS;
 import static cliffordha.totvw.item.scatteredpages.VWItemsHandbook.ITEMS_HANDBOOK_CONTENTS;
-import static cliffordha.totvw.item.scatteredpages.VWItemsHandbook.ITEMS_HANDBOOK_TITLE;
 import static cliffordha.totvw.util.VWUtil.TextUtil.*;
 
 public class ScatteredPageItem extends Item {
+    private static final String ENCHANTMENTS_HANDBOOK_TITLE = "§lEnchantments Handbook§r";
+    private static final String EFFECTS_HANDBOOK_TITLE = "§lEffects Handbook§r";
+    private static final String ITEMS_HANDBOOK_TITLE = "§lItems Handbook§r";
+    private static final String FEATURES_HANDBOOK_TITLE = "§lFeatures Handbook§r";
+
     private final int pageID;
 
     public ScatteredPageItem(Properties properties, int pageID) {
@@ -37,7 +41,7 @@ public class ScatteredPageItem extends Item {
         this.pageID = pageID;
     }
 
-    private static String getTitle(Player player, int title) {
+    private String getTitle(Player player, int title) {
         return ScatteredPageTitle.fromId(title)
                 .map(t -> addTitle(t.getTitle()))
                 .orElse(addTitle(ScatteredPageTitle.SP_0.getTitle()));
@@ -46,7 +50,7 @@ public class ScatteredPageItem extends Item {
     // SPOILER ALERT!!!
     // SPOILER ALERT!!!
     // SPOILER ALERT!!!
-    public static String[] getPages(Player player, int contents) {
+    public String[] getPages(Player player, int contents) {
         if (player.isCreative() && !VWConfig.get().CLIENT_ALLOW_LORE_SPOILERS) {
             return addPage(
                     "Oops! The contents of this page are not available in creative mode :3"
@@ -226,35 +230,35 @@ public class ScatteredPageItem extends Item {
                 case 2006 -> openScreen(ENCHANTMENTS_HANDBOOK_TITLE, ENCHANTMENTS_HANDBOOK_CONTENTS());
                 case 2007 -> openScreen(EFFECTS_HANDBOOK_TITLE, EFFECTS_HANDBOOK_CONTENTS());
                 case 2008 -> openScreen(ITEMS_HANDBOOK_TITLE, ITEMS_HANDBOOK_CONTENTS());
+                case 2009 -> openScreen(FEATURES_HANDBOOK_TITLE, FEATURES_HANDBOOK_CONTENTS());
                 default -> openScreen(getTitle(player, pageID), getPages(player, pageID));
             }
         }
 
         float random = Math.min(player.getRandom().nextFloat() + 0.5f, 1.0f);
-        player.level().playSound(null, player.blockPosition(), SoundEvents.BOOK_PAGE_TURN, player.getSoundSource(), random, random);
+        level.playSound(null, player.blockPosition(), SoundEvents.BOOK_PAGE_TURN, player.getSoundSource(), random, random);
         return InteractionResult.SUCCESS;
     }
 
-    private static void openScreen(String title, String[] pages) {
-        if (title.equals(ENCHANTMENTS_HANDBOOK_TITLE)) {
-            setScreen(ENCHANTMENTS_HANDBOOK_TITLE, pages);
-        } else if (title.equals(EFFECTS_HANDBOOK_TITLE)) {
-            setScreen(EFFECTS_HANDBOOK_TITLE, pages);
-        } else if (title.equals(ITEMS_HANDBOOK_TITLE)) {
-            setScreen(ITEMS_HANDBOOK_TITLE, pages);
-        } else {
-            setScreen(title, pages);
+    private void openScreen(String title, String[] pages) {
+        switch (title) {
+            case ENCHANTMENTS_HANDBOOK_TITLE -> setScreen(ENCHANTMENTS_HANDBOOK_TITLE, pages);
+            case EFFECTS_HANDBOOK_TITLE -> setScreen(EFFECTS_HANDBOOK_TITLE, pages);
+            case ITEMS_HANDBOOK_TITLE -> setScreen(ITEMS_HANDBOOK_TITLE, pages);
+            case FEATURES_HANDBOOK_TITLE -> setScreen(FEATURES_HANDBOOK_TITLE, pages);
+            default -> setScreen(title, pages);
         }
     }
 
     @Environment(EnvType.CLIENT)
-    private static void setScreen(String title, String[] pages) {
+    private void setScreen(String title, String[] pages) {
         Minecraft.getInstance().setScreenAndShow(new ScatteredPageScreen(title, pages));
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
-        if (this.pageID == 2006 || this.pageID == 2007 || this.pageID == 2008) {
+        String id = "" + this.pageID;
+        if (id.startsWith("2")) {
             builder.accept(Component.literal(""));
             builder.accept(Component.literal("Tales of the Verdant Wind").withColor(VWColors.VERDANT_WIND));
             builder.accept(Component.literal("By: Clifford HA").withColor(VWColors.GRAY_MUTED));

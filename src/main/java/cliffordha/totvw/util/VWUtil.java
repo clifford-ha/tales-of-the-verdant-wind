@@ -6,8 +6,9 @@ import cliffordha.totvw.entity.skill.SkillUtil;
 import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle;
-import cliffordha.totvw.registry.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.VWColors;
+import cliffordha.totvw.registry.attachments.VWPlayerPrefs;
 import cliffordha.totvw.tag.VWBiomeTags;
 
 import net.minecraft.core.BlockPos;
@@ -249,21 +250,21 @@ public class VWUtil {
     public static void sendToChat(LivingEntity entity, boolean overlay, String... msg) {
         ServerPlayer player = resolveRecipient(entity);
         if (player == null) return;
-        if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_ENABLE_NOTIFIERS, false)) return;
+        if (!player.getAttachedOrElse(VWPlayerPrefs.ENABLE_NOTIFIERS, VWConfig.get().CLIENT_ENABLE_NOTIFIERS)) return;
         sendToMain(player, overlay, String.join("\n", msg));
     }
 
     public static void sendToChat(LivingEntity entity, int color, String... msg) {
         ServerPlayer player = resolveRecipient(entity);
         if (player == null) return;
-        if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_ENABLE_NOTIFIERS, false)) return;
+        if (!player.getAttachedOrElse(VWPlayerPrefs.ENABLE_NOTIFIERS, VWConfig.get().CLIENT_ENABLE_NOTIFIERS)) return;
         sendToMain(player, color, String.join("\n", msg));
     }
 
     public static void sendToChat(LivingEntity entity, int color, boolean overlay, String... msg) {
         ServerPlayer player = resolveRecipient(entity);
         if (player == null) return;
-        if (!player.getAttachedOrElse(VWAttachments.Player.PLAYER_ENABLE_NOTIFIERS, false)) return;
+        if (!player.getAttachedOrElse(VWPlayerPrefs.ENABLE_NOTIFIERS, VWConfig.get().CLIENT_ENABLE_NOTIFIERS)) return;
         sendToMain(player, color, overlay, String.join("\n", msg));
     }
 

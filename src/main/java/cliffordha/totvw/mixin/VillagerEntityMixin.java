@@ -3,6 +3,7 @@ package cliffordha.totvw.mixin;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.entity.skill.VWSkillProcessor;
 import cliffordha.totvw.registry.*;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.tag.VWBiomeTags;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.Holder;
@@ -40,25 +41,25 @@ import static cliffordha.totvw.util.VWUtil.isInBiome;
 public class VillagerEntityMixin {
     
     @Unique
-    private static final AttachmentType<Boolean> VERDANT_TYPE = VWAttachments.Villager.VILLAGER_IS_VERDANT_TYPE;
+    private static final AttachmentType<Boolean> VERDANT_TYPE = VWAttachments.villager.VILLAGER_IS_VERDANT_TYPE;
     
     @Unique
-    private static final AttachmentType<Integer> CD_HEAL_OTHERS = VWAttachments.Villager.VILLAGER_CD_HEAL_OTHERS;
+    private static final AttachmentType<Integer> CD_HEAL_OTHERS = VWAttachments.villager.VILLAGER_CD_HEAL_OTHERS;
     
     @Unique
-    private static final AttachmentType<Integer> CD_HEAL_WOLF = VWAttachments.Villager.VILLAGER_CD_HEAL_WOLF;
+    private static final AttachmentType<Integer> CD_HEAL_WOLF = VWAttachments.villager.VILLAGER_CD_HEAL_WOLF;
     
     @Unique
-    private static final AttachmentType<Integer> CD_HEAL_IRON_GOLEM = VWAttachments.Villager.VILLAGER_CD_HEAL_IRON_GOLEM;
+    private static final AttachmentType<Integer> CD_HEAL_IRON_GOLEM = VWAttachments.villager.VILLAGER_CD_HEAL_IRON_GOLEM;
 
     @Unique
-    private static final AttachmentType<Integer> CD_DISCOUNT_REROLL = VWAttachments.Villager.VILLAGER_CD_DISCOUNT_REROLL;
+    private static final AttachmentType<Integer> CD_DISCOUNT_REROLL = VWAttachments.villager.VILLAGER_CD_DISCOUNT_REROLL;
 
     @Unique
-    private static final AttachmentType<Float> DISCOUNT_MODIFIER = VWAttachments.Villager.VILLAGER_DISCOUNT_MODIFIER;
+    private static final AttachmentType<Float> DISCOUNT_MODIFIER = VWAttachments.villager.VILLAGER_DISCOUNT_MODIFIER;
     
     @Unique
-    private static final AttachmentType<Integer> WOLF_TRY_SAVE_POINTS = VWAttachments.Wolf.WOLF_TRY_SAVE_POINTS;
+    private static final AttachmentType<Integer> WOLF_TRY_SAVE_POINTS = VWAttachments.wolf.WOLF_TRY_SAVE_POINTS;
 
     @Inject(method = "finalizeSpawn", at = @At("TAIL"))
     private void setSpawnData(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData groupData, CallbackInfoReturnable<SpawnGroupData> cir) {
@@ -174,7 +175,7 @@ public class VillagerEntityMixin {
     @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
     private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         Villager villager = (Villager) (Object) this;
-        if (player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) > 20) {
+        if (player.getAttachedOrElse(VWAttachments.player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) > 20) {
             if (!villager.level().isClientSide()) {
                 villager.makeSound(SoundEvents.VILLAGER_NO);
             }
@@ -188,7 +189,7 @@ public class VillagerEntityMixin {
     private void villagerVerdantTrades(Player player, CallbackInfo ci) {
         Villager villager = (Villager) (Object) this;
         if (!villager.getAttachedOrElse(VERDANT_TYPE, false)) return;
-        if (player.getAttachedOrElse(VWAttachments.Player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) > 20) return;
+        if (player.getAttachedOrElse(VWAttachments.player.PLAYER_VILLAGER_ATROCITY_COUNT, 0) > 20) return;
 
         float modifier = villager.getAttachedOrElse(DISCOUNT_MODIFIER, 0.0f);
 

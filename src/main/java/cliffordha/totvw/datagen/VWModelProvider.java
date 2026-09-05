@@ -1,5 +1,6 @@
 package cliffordha.totvw.datagen;
 
+import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.block.custom.LodestoneWindCoreBlock;
 import cliffordha.totvw.block.custom.StorageBlock;
 import cliffordha.totvw.registry.VWItems;
@@ -15,6 +16,7 @@ import net.minecraft.client.data.models.model.*;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -29,14 +31,6 @@ public class VWModelProvider extends FabricModelProvider {
                 .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
                 .put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(block, "_bottom"))
                 .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, topSuffix));
-    }
-
-    private static TextureMapping lodestoneWindCoreMapping(Block block, String active) {
-        return new TextureMapping()
-                .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
-                .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top"))
-                .put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(block, "_side"))
-                .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, active));
     }
 
     @Override
@@ -69,12 +63,10 @@ public class VWModelProvider extends FabricModelProvider {
         );
 
         MultiVariant LODESTONE_WIND_CORE_ACTIVE = BlockModelGenerators.plainVariant(
-                ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.createWithSuffix(VWBlocks.LODESTONE_WIND_CORE, "_active",
-                        lodestoneWindCoreMapping(VWBlocks.LODESTONE_WIND_CORE, "_active"), block.modelOutput)
+                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "block/lodestone_wind_core_active")
         );
         MultiVariant LODESTONE_WIND_CORE = BlockModelGenerators.plainVariant(
-                ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(VWBlocks.LODESTONE_WIND_CORE,
-                        lodestoneWindCoreMapping(VWBlocks.LODESTONE_WIND_CORE, ""), block.modelOutput)
+                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "block/lodestone_wind_core")
         );
 
         block.blockStateOutput.accept(MultiVariantGenerator.dispatch(VWBlocks.LODESTONE_WIND_CORE)
@@ -149,19 +141,13 @@ public class VWModelProvider extends FabricModelProvider {
         item.generateSpear(VWItems.VERIXIUM_SPEAR);
 
         item.generateFlatItem(Pages.SCATTERED_PAGE, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(Pages.SCATTERED_PAGE_VARIANT_1, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(Pages.SCATTERED_PAGE_VARIANT_2, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(Pages.SCATTERED_PAGE_VARIANT_3, ModelTemplates.FLAT_ITEM);
-
         item.generateFlatItem(Pages.OLD_SCATTERED_PAGE, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(Pages.OLD_SCATTERED_PAGE_VARIANT_1, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(Pages.OLD_SCATTERED_PAGE_VARIANT_2, ModelTemplates.FLAT_ITEM);
-        item.generateFlatItem(Pages.OLD_SCATTERED_PAGE_VARIANT_3, ModelTemplates.FLAT_ITEM);
 
         item.generateFlatItem(Pages.ENCHANTMENTS_HANDBOOK, ModelTemplates.FLAT_ITEM);
         addCopy(item, ModelTemplates.FLAT_ITEM, Pages.ENCHANTMENTS_HANDBOOK,
                 Pages.EFFECTS_HANDBOOK,
-                Pages.ITEMS_HANDBOOK
+                Pages.ITEMS_HANDBOOK,
+                Pages.FEATURES_HANDBOOK
         );
 
         addCopy(item, ModelTemplates.FLAT_ITEM, Pages.SCATTERED_PAGE,

@@ -9,7 +9,7 @@ public class VWItemsHandbook {
     private static final String descBenediction = "Benediction of the Verdant Mountains";
     private static final String descWindCoreEnergySources = "Verixium Powder, Verixium Powder Block, and Wind Charge.";
 
-    private static final String titleAstralBodyContainer = cText(DARK_AQUA, bold("Astral Body Container"));
+    private static final String titleSoulRunestonePlate = cText(DARK_AQUA, bold("Soul Runestone Plate"));
     private static final String titleLodestoneWindCore = cText(YELLOW, bold("Lodestone Wind Core"));
 
     private static String italic(String t) {
@@ -19,11 +19,14 @@ public class VWItemsHandbook {
         return fText(BOLD, t);
     }
 
-    private static String astralBodyContainerInfo() {
-        return titleAstralBodyContainer.toUpperCase() + nextLine
+    private static String soulRunestonePlateInfo() {
+        return titleSoulRunestonePlate.toUpperCase() + nextLine
                 + "An item that allows you to store your wolf companions's soul within your own, allowing you to travel with ease knowing that you can summon them anytime later. You can store up to 5 wolf souls at most. However, if you have the " + descBenediction + " enchantment, the limit will be capped to 12 instead."
                 + nextParagraph
-                + "Additionally, when you have 3 souls, adding more will result in a penalty that will inflict damage upon you. This has a 60% chance of getting triggered and each soul past the threshold will multiply the damage.";
+                + "Moreover, when you reach the 3 souls threshold, adding more will result in a penalty that will inflict damage upon you. This has a 60% chance of getting triggered and each soul past the threshold will multiply the damage."
+                + nextParagraph
+
+                + "This item also allows you to trigger Revival by Proxy provided that you meet the prerequisites. If the threshold is met, each additional soul contained will increase the chances of this item to break and fragment itself.";
     }
     private static String lodestoneWindCoreInfo() {
         return titleLodestoneWindCore.toUpperCase() + nextLine
@@ -42,7 +45,7 @@ public class VWItemsHandbook {
         return addPage(fText(BOLD, "INTRODUCTION") + nextLine
                 + "TOTVW: Wolf Additions adds new items to support the new mechanics introduced in the mod, giving you further contents to experience."
                 + addSeparator
-                + astralBodyContainerInfo()
+                + soulRunestonePlateInfo()
                 + addSeparator
                 + lodestoneWindCoreInfo()
         );
