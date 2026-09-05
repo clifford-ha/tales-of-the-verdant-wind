@@ -1,16 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" factoryName="Application" name="Data Generation" type="Application">
-    <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main"/>
-    <module name="tales-of-the-verdant-wind.main"/>
-    <option name="PROGRAM_PARAMETERS" value=""/>
-    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=C:\Users\Clifford@@0020HA\PROJECTS\totvw-26.2\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient -XX:StackShadowPages=32 --sun-misc-unsafe-memory-access=allow --enable-native-access=ALL-UNNAMED -Dfabric-api.datagen &quot;-Dfabric-api.datagen.output-dir=C:\Users\Clifford HA\PROJECTS\totvw-26.2\src\main\generated&quot;"/>
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run\datagen/"/>
+  <configuration default="false" name="Data Generation" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main" />
+    <module name="tales-of-the-verdant-wind.main" />
+    <shortenClasspath name="ARGS_FILE" />
+    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=C:\Users\Clifford@@0020HA\PROJECTS\totvw-26.2\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient -XX:StackShadowPages=32 --sun-misc-unsafe-memory-access=allow --enable-native-access=ALL-UNNAMED -Dfabric-api.datagen &quot;-Dfabric-api.datagen.output-dir=C:\Users\Clifford HA\PROJECTS\totvw-26.1.2\src\main\generated&quot;" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/datagen/" />
     <method v="2">
-      <option enabled="true" name="Make"/>
+      <option name="Make" enabled="true" />
     </method>
-    <envs>
-
-    </envs>
-    <shortenClasspath name="ARGS_FILE"/>
-  <classpathModifications/></configuration>
+  </configuration>
 </component>
