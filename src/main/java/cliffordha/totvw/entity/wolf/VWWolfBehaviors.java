@@ -295,7 +295,7 @@ public class VWWolfBehaviors {
         int CD_RUPTURE = wolf.getAttachedOrElse(CD_MIGHT_SKILL_RUPTURE, 0);
 
 
-        List<Wolf> babyWolves = level.getEntities(EntityTypes.WOLF, wolf.getBoundingBox().inflate(8), test -> test.isBaby() && test.getAttachedOrElse(WOLF_PARENTS_ID , "").contains(wolf.getStringUUID() + ":baby"));
+        List<Wolf> babyWolves = level.getEntities(EntityType.WOLF, wolf.getBoundingBox().inflate(8), test -> test.isBaby() && test.getAttachedOrElse(WOLF_PARENTS_ID , "").contains(wolf.getStringUUID() + ":baby"));
 
         if (ACTIVE_MENDING > 0) {
             float conversion = ACTIVE_BENEDICTION > 0 ? 0.25f : 0.1f;
@@ -361,7 +361,7 @@ public class VWWolfBehaviors {
         if (ACTIVE_LIFTING > 0) {
             if (victim.hasEffect(MobEffects.LEVITATION)) {
                 double random = level.getRandom().nextDouble();
-                victim.knockback(random, ACTIVE_LIFTING, random, level.damageSources().flyIntoWall(), ACTIVE_LIFTING);
+                victim.knockback(ACTIVE_LIFTING, random, random);
             } else {
                 addHiddenEffect(victim, MobEffects.LEVITATION, 10, ACTIVE_LIFTING * 3);
             }
@@ -378,7 +378,7 @@ public class VWWolfBehaviors {
                 removeEffect(victim, MobEffects.REGENERATION);
             }
             // change later
-            boolean checkVictim = victim.is(EntityTypes.PLAYER) || victim.getMaxHealth() > 20.0;
+            boolean checkVictim = victim.is(EntityType.PLAYER) || victim.getMaxHealth() > 20.0;
             if (checkVictim && CD_PARALYZE <= 0 && !victim.hasEffect(VWEffects.PARALYZE)) {
                 addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
 
@@ -489,7 +489,7 @@ public class VWWolfBehaviors {
         if (ACTIVE_BENEDICTION > 0 && ACTIVE_IGNITION > 0 && ACTIVE_FIRE_PROTECTION >= 3 && isInBiome(wolf, BiomeTags.IS_NETHER)) {
             addHiddenEffect(wolf, MobEffects.FIRE_RESISTANCE, sec(3), 8);
             if (player != null && isInBiome(player, BiomeTags.IS_NETHER) && wolf.distanceTo(player) < 24) addHiddenEffect(player, MobEffects.FIRE_RESISTANCE, sec(3), 8);
-            List<Wolf> babyWolves = level.getEntities(EntityTypes.WOLF, wolf.getBoundingBox().inflate(8), test ->
+            List<Wolf> babyWolves = level.getEntities(EntityType.WOLF, wolf.getBoundingBox().inflate(8), test ->
                     test.isBaby()
                             && test.getAttachedOrElse(WOLF_PARENTS_ID , "").contains(wolf.getStringUUID() + ":baby")
                             && isInBiome(test, BiomeTags.IS_NETHER)
@@ -569,7 +569,7 @@ public class VWWolfBehaviors {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
                 serverLevel.getEntities(
-                        EntityTypes.WOLF,
+                        EntityType.WOLF,
                         _ -> true
                 ).forEach(wolf -> {
                     for (WolfBehaviorRule rule : TICK_RULES) {

@@ -17,7 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
@@ -180,7 +180,7 @@ public class VWCommands {
                             return 0;
                         }
                         ServerLevel level = player.level();
-                        List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
+                        List<Wolf> wolves = level.getEntities(EntityType.WOLF,
                                 player.getBoundingBox().inflate(32),
                                 wolf -> wolf.isTame() && wolf.getUUID() != player.getUUID());
 

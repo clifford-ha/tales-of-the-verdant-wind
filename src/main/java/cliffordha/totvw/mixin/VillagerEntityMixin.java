@@ -122,7 +122,7 @@ public class VillagerEntityMixin {
                 double speed = 0.75;
 
                 if (CD_HEAL_OTHERS <= 0) {
-                    List<Villager> villagerList = level.getEntities(EntityTypes.VILLAGER, scanner(villager, 24),
+                    List<Villager> villagerList = level.getEntities(EntityType.VILLAGER, scanner(villager, 24),
                             target -> target.isAlive()
                                     && target.getHealth() < target.getMaxHealth() * 0.9f);
                     if (!villagerList.isEmpty()) {
@@ -136,7 +136,7 @@ public class VillagerEntityMixin {
                 }
 
                 if (CD_HEAL_WOLF <= 0) {
-                    List<Wolf> wolves = villager.level().getEntities(EntityTypes.WOLF, scanner(villager, 16),
+                    List<Wolf> wolves = villager.level().getEntities(EntityType.WOLF, scanner(villager, 16),
                             wolf -> wolf.isAlive()
                                     && !wolf.isTame()
                                     && wolf.getHealth() < wolf.getMaxHealth() * 0.9f
@@ -155,7 +155,7 @@ public class VillagerEntityMixin {
                     }
                 }
                 if (CD_HEAL_GOLEM <= 0) {
-                    List<IronGolem> golems = villager.level().getEntities(EntityTypes.IRON_GOLEM, scanner(villager, 16),
+                    List<IronGolem> golems = villager.level().getEntities(EntityType.IRON_GOLEM, scanner(villager, 16),
                             golem -> golem.isAlive()
                                     && golem.getHealth() < golem.getMaxHealth() * 0.75f);
 
@@ -211,7 +211,7 @@ public class VillagerEntityMixin {
     @Unique
     private static void healEffect(Level level, Villager villager, LivingEntity entity) {
         float random = 0.5f + level.getRandom().nextFloat();
-        if (entity.is(EntityTypes.IRON_GOLEM)) {
+        if (entity.is(EntityType.IRON_GOLEM)) {
             entity.playSound(SoundEvents.IRON_GOLEM_REPAIR, random, random);
             VWParticleEffects.spawnBlessingParticlesEntity(villager, 4);
         } else {
@@ -224,7 +224,7 @@ public class VillagerEntityMixin {
     @Unique
     private static int getVillagerCount(Villager villager) {
         List<Villager> aliveVillagerList = villager.level().getEntities(
-                EntityTypes.VILLAGER,
+                EntityType.VILLAGER,
                 villager.getBoundingBox().inflate(16),
                 LivingEntity::isAlive);
         if (aliveVillagerList.isEmpty()) return 0;

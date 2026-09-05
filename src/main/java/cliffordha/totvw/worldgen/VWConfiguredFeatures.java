@@ -4,7 +4,6 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.tag.VWBlockTags;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
@@ -74,13 +73,10 @@ public class VWConfiguredFeatures {
     public static void configure(BootstrapContext<ConfiguredFeature<?, ?>> context) {
         HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
 
-        RuleTest stoneReplaceableRule = new BlockMatchTest(Blocks.STONE);
-        RuleTest deepslateReplaceableRule = new BlockMatchTest(Blocks.DEEPSLATE);
-
         List<OreConfiguration.TargetBlockState> verixiumOreConfig =
                 List.of(
-                        OreConfiguration.target(deepslateReplaceableRule, VWBlocks.VERIXIUM_DEEPSLATE_ORE.defaultBlockState()),
-                        OreConfiguration.target(stoneReplaceableRule, VWBlocks.VERIXIUM_STONE_ORE.defaultBlockState())
+                        OreConfiguration.target(new BlockMatchTest(Blocks.DEEPSLATE), VWBlocks.VERIXIUM_DEEPSLATE_ORE.defaultBlockState()),
+                        OreConfiguration.target(new BlockMatchTest(Blocks.STONE), VWBlocks.VERIXIUM_STONE_ORE.defaultBlockState())
                 );
 
         register(context, VERIXIUM_ORE_LARGE_CONFIGURED_KEY, Feature.ORE, new OreConfiguration(verixiumOreConfig, 8, 0.4f));
@@ -101,8 +97,8 @@ public class VWConfiguredFeatures {
                                         Blocks.AIR.defaultBlockState(),
                                         Blocks.AIR.defaultBlockState()
                                 ),
-                                context.lookup(Registries.BLOCK).getOrThrow(BlockTags.FEATURES_CANNOT_REPLACE),
-                                context.lookup(Registries.BLOCK).getOrThrow(BlockTags.GEODE_INVALID_BLOCKS)
+                                BlockTags.FEATURES_CANNOT_REPLACE,
+                                BlockTags.GEODE_INVALID_BLOCKS
                         ),
                         new GeodeLayerSettings(
                                 1.7,
@@ -152,11 +148,9 @@ public class VWConfiguredFeatures {
                                 .build())
                 )
         );
-
-        HolderSet<Block> mossReplaceable = context.lookup(Registries.BLOCK).getOrThrow(VWBlockTags.VERDANT_MOSS_REPLACEABLE);
         register(context, VERDANT_MOSS_PATCH_CONFIGURED_KEY, Feature.VEGETATION_PATCH,
                 new VegetationPatchConfiguration(
-                        mossReplaceable,
+                        VWBlockTags.VERDANT_MOSS_REPLACEABLE,
                         BlockStateProvider.simple(VWBlocks.VERDANT_MOSS_BLOCK),
                         placedFeatures.getOrThrow(VWPlacedFeatures.VERDANT_MOSS_VEGETATION_KEY),
                         CaveSurface.FLOOR,
@@ -174,10 +168,7 @@ public class VWConfiguredFeatures {
 
         context.register(VERIXIUM_FLUID_POND_CONFIGURED_KEY, new ConfiguredFeature<>(Feature.LAKE, new LakeFeature.Configuration(
                 BlockStateProvider.simple(VWBlocks.VERIXIUM_FLUID),
-                BlockStateProvider.simple(Blocks.DEEPSLATE),
-                BlockPredicate.alwaysTrue(),
-                BlockPredicate.matchesTag(VWBlockTags.VERDANT_MOSS_REPLACEABLE),
-                BlockPredicate.matchesTag(VWBlockTags.VERDANT_MOSS_REPLACEABLE)
+                BlockStateProvider.simple(Blocks.DEEPSLATE)
         )));
 
 
@@ -191,8 +182,7 @@ public class VWConfiguredFeatures {
                         ConstantInt.of(0),
                         UniformInt.of(2, 3)
                 ),
-                new TwoLayersFeatureSize(0, 0, 0),
-                BlockStateProvider.simple(Blocks.DIRT)
+                new TwoLayersFeatureSize(0, 0, 0)
         ).build());
 
         register(context, VERDANT_SPRUCE_TREE_CONFIGURED_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -204,8 +194,7 @@ public class VWConfiguredFeatures {
                         UniformInt.of(0, 1),
                         UniformInt.of(2, 3)
                 ),
-                new TwoLayersFeatureSize(1, 1, 2),
-                BlockStateProvider.simple(Blocks.DIRT)
+                new TwoLayersFeatureSize(1, 1, 2)
         ).build());
 
         register(context, ANCIENT_VERDANT_SPRUCE_TREE_CONFIGURED_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -217,8 +206,7 @@ public class VWConfiguredFeatures {
                         ConstantInt.of(0),
                         UniformInt.of(2, 9)
                 ),
-                new TwoLayersFeatureSize(1, 1, 2),
-                BlockStateProvider.simple(Blocks.DIRT)
+                new TwoLayersFeatureSize(1, 1, 2)
         ).build());
 
         register(context, VERDANT_SNIFFER_EGG_CONFIGURED_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.SNIFFER_EGG.defaultBlockState())));

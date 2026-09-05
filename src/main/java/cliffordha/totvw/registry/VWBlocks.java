@@ -271,7 +271,6 @@ public class VWBlocks {
             .button(VERDANT_SPRUCE_BUTTON)
             .pressurePlate(VERDANT_SPRUCE_PRESSURE_PLATE)
             .sign(VERDANT_SPRUCE_SIGN, VERDANT_SPRUCE_WALL_SIGN)
-            .hangingSign(VERDANT_SPRUCE_HANGING_SIGN, VERDANT_SPRUCE_WALL_HANGING_SIGN)
             .door(VERDANT_SPRUCE_DOOR)
             .trapdoor(VERDANT_SPRUCE_TRAPDOOR)
             .recipeGroupPrefix("wooden")

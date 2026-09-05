@@ -122,7 +122,7 @@ public class VWPlayerBehaviors {
                 VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;
 
         List<Wolf> wolves = serverLevel.getEntities(
-                EntityTypes.WOLF,
+                EntityType.WOLF,
                 player.getBoundingBox().inflate(SCAN_DISTANCE),
                 wolf -> wolf.isTame()
                         && wolf.getOwner() != null
@@ -244,7 +244,7 @@ public class VWPlayerBehaviors {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
                 serverLevel.getEntities(
-                        EntityTypes.PLAYER,
+                        EntityType.PLAYER,
                         _ -> true
                 ).forEach(player -> {
                     for (PlayerBehaviorRule rule : TICK_RULES) {

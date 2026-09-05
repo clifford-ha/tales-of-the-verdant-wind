@@ -100,7 +100,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
     @Inject(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/wolf/Wolf;", at = @At("RETURN"), cancellable = true)
     private void inheritStat(ServerLevel level, AgeableMob partner, CallbackInfoReturnable<Wolf> cir) {
-        Wolf baby = EntityTypes.WOLF.create(level, EntitySpawnReason.BREEDING);
+        Wolf baby = EntityType.WOLF.create(level, EntitySpawnReason.BREEDING);
         Wolf wolf = (Wolf) (Object) this;
 
         if (baby != null && partner instanceof Wolf wolfPartner) {
@@ -181,7 +181,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
         if (!wolf.isTame() && level.getGameTime() % 60 == 0) {
             if (wolf.getAttachedOrElse(WOLF_IS_VERDANT_TYPE, false)) {
-                List<Monster> monsters = level.getEntitiesOfClass(Monster.class, wolf.getBoundingBox().inflate(12), z -> wolf.getTarget() == null && z.getTarget() != null && z.getTarget().is(EntityTypes.VILLAGER));
+                List<Monster> monsters = level.getEntitiesOfClass(Monster.class, wolf.getBoundingBox().inflate(12), z -> wolf.getTarget() == null && z.getTarget() != null && z.getTarget().is(EntityType.VILLAGER));
                 if (monsters.isEmpty()) {
                     if (!(wolf.getAttachedOrElse(WOLF_TRY_SAVE_STATUS, 0) > 0 && !wolf.isAngry())) return;
                     if (!level.getRandom().nextBoolean()) return;
