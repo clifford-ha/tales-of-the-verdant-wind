@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 13631009,
+    "separation": 7,
+    "spacing": 17
+  },
+  "structures": [
+    {
+      "structure": "tales-of-the-verdant-wind:underground_command_post",
+      "weight": 1
+    }
+  ]
+}

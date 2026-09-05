@@ -1,0 +1,45 @@
+{
+	"schemaVersion": 1,
+	"id": "tales-of-the-verdant-wind",
+	"version": "${version}",
+	"name": "Tales of the Verdant Wind",
+	"description": "The verdant mountains—a place where the missing wind rests.",
+	"authors": [
+		"Clifford HA"
+	],
+	"contact": {
+		"sources": "https://github.com/clifford-ha/tales-of-the-verdant-wind"
+	},
+	"license": "All rights reserved",
+	"icon": "assets/tales-of-the-verdant-wind/tales-of-the-verdant-wind.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"cliffordha.totvw.TalesOfTheVerdantWind"
+		],
+		"client": [
+          "cliffordha.totvw.TOTVWClient"
+		],
+		"fabric-datagen": [
+			"cliffordha.totvw.datagen.TOTVWDataGenerator"
+		],
+		"terrablender": [
+			"cliffordha.totvw.TalesOfTheVerdantWind"
+		],
+		"modmenu": [
+          "cliffordha.totvw.config.VWModMenuIntegration"
+		]
+	},
+	"accessWidener": "totvw.classtweaker",
+	"mixins": [
+		"tales-of-the-verdant-wind.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*",
+		"terrablender": "*",
+		"cloth-config": "*"
+	}
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tales-of-the-verdant-wind:verdant_spruce_pressure_plate"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_verdant_spruce_planks": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tales-of-the-verdant-wind:verdant_spruce_planks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_verdant_spruce_planks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tales-of-the-verdant-wind:verdant_spruce_pressure_plate"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "tales-of-the-verdant-wind:verixium0",
+        "use_for_trims": true
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "tales-of-the-verdant-wind:verixium1",
+        "use_for_trims": true
+      }
+    ],
+    "wolf_body": [
+      {
+        "texture": "tales-of-the-verdant-wind:verixium_wolf_armor"
+      },
+      {
+        "dyeable": {},
+        "texture": "minecraft:armadillo_scute_overlay"
+      }
+    ],
+    "horse_body": [
+      {
+        "texture": "tales-of-the-verdant-wind:verixium_horse_armor"
+      }
+    ]
+  }
+}

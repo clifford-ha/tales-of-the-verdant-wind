@@ -1,0 +1,24 @@
+classTweaker  v1  official
+accessible class net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
+accessible method net/minecraft/world/level/block/entity/BlockEntityType <init> (Lnet/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier;Ljava/util/Set;)V
+accessible method net/minecraft/client/renderer/blockentity/BlockEntityRenderers register (Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;)V
+accessible method net/minecraft/world/entity/animal/wolf/Wolf setCollarColor (Lnet/minecraft/world/item/DyeColor;)V
+accessible method net/minecraft/world/entity/animal/wolf/Wolf canArmorAbsorb (Lnet/minecraft/world/damagesource/DamageSource;)Z
+accessible method net/minecraft/world/entity/LivingEntity actuallyHurt (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)V
+
+accessible field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool templates Lit/unimi/dsi/fastutil/objects/ObjectArrayList;
+accessible method net/minecraft/world/level/levelgen/structure/pools/SinglePoolElement getTemplate (Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager;)Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate;
+
+
+accessible method net/minecraft/world/entity/animal/wolf/Wolf setVariant (Lnet/minecraft/core/Holder;)V
+accessible method net/minecraft/world/entity/animal/wolf/Wolf getVariant ()Lnet/minecraft/core/Holder;
+accessible method net/minecraft/world/entity/animal/wolf/Wolf setSoundVariant (Lnet/minecraft/core/Holder;)V
+accessible method net/minecraft/world/entity/TamableAnimal teleportToAroundBlockPos (Lnet/minecraft/core/BlockPos;)V
+
+
+accessible method net/minecraft/world/entity/ai/behavior/VillagerGoalPackages validateBedPoi (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;)Z
+
+
+accessible method net/minecraft/world/level/levelgen/feature/configurations/TreeConfiguration <init> (Lnet/minecraft/world/level/levelgen/feature/stateproviders/BlockStateProvider;Lnet/minecraft/world/level/levelgen/feature/trunkplacers/TrunkPlacer;Lnet/minecraft/world/level/levelgen/feature/stateproviders/BlockStateProvider;Lnet/minecraft/world/level/levelgen/feature/foliageplacers/FoliagePlacer;Ljava/util/Optional;Lnet/minecraft/world/level/levelgen/feature/featuresize/FeatureSize;Ljava/util/List;ZLnet/minecraft/world/level/levelgen/feature/stateproviders/BlockStateProvider;)V
+
+

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_shelf_inventory",
+  "textures": {
+    "all": "tales-of-the-verdant-wind:block/verdant_spruce_shelf",
+    "particle": "tales-of-the-verdant-wind:block/stripped_verdant_spruce_log"
+  }
+}

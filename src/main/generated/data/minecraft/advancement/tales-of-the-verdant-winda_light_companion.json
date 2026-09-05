@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:tales-of-the-verdant-winda_wolf_accompanied_by_the_winds",
+  "criteria": {
+    "a_light_companion": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "minecraft:wolf"
+            }
+          }
+        ],
+        "item": {
+          "items": "tales-of-the-verdant-wind:soul_runestone_plate"
+        }
+      },
+      "trigger": "minecraft:player_interacted_with_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "color": "#247D66",
+      "text": "Use a Soul Runestone Plate to store your companion's soul within you"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "tales-of-the-verdant-wind:soul_runestone_plate"
+    },
+    "title": {
+      "color": "#00FFD0",
+      "text": "A \"Light\" Companion"
+    }
+  },
+  "requirements": [
+    [
+      "a_light_companion"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
