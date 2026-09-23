@@ -1,5 +1,6 @@
 package cliffordha.totvw.world;
 
+import cliffordha.totvw.TOTVW;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
@@ -14,8 +15,8 @@ import terrablender.api.VanillaParameterOverlayBuilder;
 import java.util.function.Consumer;
 
 public class VWOverworldRegion extends Region {
-    public VWOverworldRegion(Identifier name, int weight) {
-        super(name, RegionType.OVERWORLD, weight);
+    public VWOverworldRegion() {
+        super(TOTVW.registerID("totvw_overworld"), RegionType.OVERWORLD, 5);
     }
 
     @Override

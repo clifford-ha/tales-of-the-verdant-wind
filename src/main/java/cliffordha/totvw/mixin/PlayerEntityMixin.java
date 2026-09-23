@@ -1,7 +1,10 @@
 package cliffordha.totvw.mixin;
 
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
+import cliffordha.totvw.registry.attachments.entity.VillagerAttachment;
+import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
+
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -32,28 +35,29 @@ public abstract class PlayerEntityMixin {
         Player player = (Player) (Object) this;
         ItemStack itemStack = player.getItemInHand(hand);
 
-        int atrocityCount = player.getAttachedOrElse(VWAttachments.player.PLAYER_VILLAGER_ATROCITY_COUNT, 0);
-
+        int atrocityCount = player.getAttachedOrElse(PlayerAttachment.VILLAGER_ATROCITY_COUNT, 0);
         if (atrocityCount > 20 && entity instanceof Villager || entity instanceof WanderingTrader) {
             sendToChat(player, true, "Your atrocity count (" + atrocityCount + ") is too high!");
             return;
         }
-        String target = entity.getName().getString();
+        
+        String target = entity.getPlainTextName();
         if (entity instanceof Villager villager) {
             if (itemStack.is(VWItems.VERIXIUM_PAPER)) {
-                String sentence = villager.getAttachedOrElse(VWAttachments.villager.VILLAGER_IS_VERDANT_TYPE, false) ? " is a " : " is not a ";
+                String sentence = villager.getAttachedOrElse(VillagerAttachment.IS_VERDANT_TYPE, false) ? " is a " : " is not a ";
                 sendToChat(player, true, target + sentence + "verdant type");
                 cir.setReturnValue(InteractionResult.SUCCESS);
             }
-        } else if (entity instanceof Wolf wolf) {
-            AttachmentType<Integer> BENEDICTION_STACK = VWAttachments.wolf.WOLF_BENEDICTION;
+        }
+        if (entity instanceof Wolf wolf) {
+            AttachmentType<Integer> BENEDICTION_STACK = WolfAttachment.BENEDICTION;
 
             if (itemStack.is(VWItems.VERIXIUM_PAPER)) {
                 if (player.isCrouching()) {
                     sendToChat(player, true, target + " has " + wolf.getAttachedOrElse(BENEDICTION_STACK, 0) + " remaining Benediction stack(s)");
                     cir.setReturnValue(InteractionResult.SUCCESS);
                 } else {
-                    String sentence = wolf.getAttachedOrElse(VWAttachments.wolf.WOLF_IS_VERDANT_TYPE, false) ? " is a " : " is not a ";
+                    String sentence = wolf.getAttachedOrElse(WolfAttachment.IS_VERDANT_TYPE, false) ? " is a " : " is not a ";
                     sendToChat(player, true, target + sentence + "verdant type");
                     cir.setReturnValue(InteractionResult.SUCCESS);
                 }

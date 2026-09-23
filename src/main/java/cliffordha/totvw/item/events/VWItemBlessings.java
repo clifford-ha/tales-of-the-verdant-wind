@@ -22,8 +22,8 @@ import net.minecraft.world.level.biome.Biome;
 
 import java.util.function.Predicate;
 
-import static cliffordha.totvw.entity.skill.VWSkillProcessor.playNotification;
 import static cliffordha.totvw.util.VWUtil.*;
+import static cliffordha.totvw.util.VWUtil.TimeUtil.*;
 
 public class VWItemBlessings {
     private static final int TICK_SECONDS = 20;
@@ -72,7 +72,7 @@ public class VWItemBlessings {
         if (player.level().getBiome(player.blockPosition()).is(biomeTag)) {
             player.addEffect(new MobEffectInstance(effect, inBiome, enhancedAmp));
         } else {player.addEffect(new MobEffectInstance(effect, notInBiome, basicAmp));}
-        playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
+        playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT, true);
     }
     private static void grantEffectTierBased(Player player, boolean tier0, boolean tier1, boolean tier2, Holder<MobEffect> effect, int inBiome, int enhancedAmp, int cdBiome, int cd) {
         int basicAmp = enhancedAmp - 1;
@@ -122,8 +122,8 @@ public class VWItemBlessings {
             sendToChat(player, VWColors.VERDANT_WIND, "Granted: §n" + effect.getRegisteredName().replaceAll("^[^:]*:", "").toUpperCase() + "§r (§eEnhanced§r) for §e" + targetDurationSec + "§r sec");
         } else {
             sendToChat(player, VWColors.VERDANT_WIND, "Granted: §n" + effect.getRegisteredName().replaceAll("^[^:]*:", "").toUpperCase() + "§r for §e" + targetDurationSec + "§r sec");}
-        VWParticleEffects.spawnBlessingParticlesEntity(player, 2);
-        playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT);
+        VWParticles.showBlessingParticle(player, 2);
+        playSound(player, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.AMBIENT, true);
         playNotification(player);
 
         player.getMainHandItem().hurtAndBreak(3, player, EquipmentSlot.MAINHAND);

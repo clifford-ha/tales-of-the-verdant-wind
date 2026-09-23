@@ -1,6 +1,6 @@
 package cliffordha.totvw.registry;
 
-import cliffordha.totvw.item.custom.SoulRunestonePlate;
+import cliffordha.totvw.item.custom.*;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.item.VWArmorMaterials;
@@ -9,7 +9,6 @@ import cliffordha.totvw.item.VWToolMaterials;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -288,6 +287,24 @@ public class VWItems {
                     .stacksTo(1)
                     .rarity(Rarity.RARE)
             ));
+    public static final Item TETHER_RUNESTONE_PLATE = registerItem("tether_runestone_plate",
+            properties -> new TetherRunestonePlate(properties
+                    .stacksTo(1)
+                    .rarity(Rarity.EPIC)
+                    .fireResistant()
+            ));
+    public static final Item GENESIS_RUNESTONE_PLATE = registerItem("genesis_runestone_plate",
+            properties -> new GenesisRunestonePlate(properties
+                    .stacksTo(1)
+                    .rarity(Rarity.EPIC)
+                    .fireResistant()
+            ));
+    public static final Item HAVOC_RUNESTONE_PLATE = registerItem("havoc_runestone_plate",
+            properties -> new HavocRunestonePlate(properties
+                    .stacksTo(1)
+                    .rarity(Rarity.EPIC)
+                    .fireResistant()
+            ));
 
     public static class Pages {
 
@@ -318,6 +335,10 @@ public class VWItems {
         public static final Item SP_ID_1008 = createPage1000(1008);
         public static final Item SP_ID_1009 = createPage1000(1009);
 
+        public static final Item SP_ID_3000 = createPage1000(3000);
+        public static final Item SP_ID_3001 = createPage1000(3001);
+        public static final Item SP_ID_3002 = createPage1000(3002);
+
 
         /** for testing purposes **/
         public static final Item SP_ID_1000 = createPage1000(1000);
@@ -327,17 +348,37 @@ public class VWItems {
         public static void register() {}
     }
 
+    public static class DevItems {
+        public static final Item ATTACHMENTS_REMOVER = registerItem("attachments_remover",
+                properties -> new AttachmentsRemover(properties
+                        .stacksTo(1)
+                        .rarity(Rarity.EPIC)
+                        .fireResistant()
+                ));
+
+        public static void register() {}
+    }
+
 
     public static void register() {
         Pages.register();
+        if (TOTVW.IN_DEVELOPMENT) {
+            DevItems.register();
+        }
+
         VWCreativeTabs.register();
         sendClassRegisterLog("Items");
     }
     
     public static class Util {
         public static Item registerItem(String name, Function<Item.Properties, Item> function) {
-            return Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name),
-                    function.apply(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)))));
+            return Registry.register(BuiltInRegistries.ITEM, TOTVW.registerID(name),
+                    function.apply(
+                            new Item.Properties().setId(
+                                    ResourceKey.create(Registries.ITEM, TOTVW.registerID(name))
+                            )
+                    )
+            );
         }
 
         public static Item createPage1000(int id) {

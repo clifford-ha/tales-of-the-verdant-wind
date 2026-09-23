@@ -18,9 +18,9 @@ public enum ScatteredPageTitle {
 
 
     SP_1001(1001,"An Alchemist's Anecdotes"),
-    SP_1002(1002,SP_1001.getTitle() + "#2"),
-    SP_1003(1003,SP_1001.getTitle() + "#3"),
-    SP_1004(1004,SP_1001.getTitle() + "#4"),
+    SP_1002(1002, SP_1001.title + " #2"),
+    SP_1003(1003, SP_1001.title + " #3"),
+    SP_1004(1004, SP_1001.title + " #4"),
 
     SP_1005(1005,"An Unknown Page"),
 
@@ -32,6 +32,10 @@ public enum ScatteredPageTitle {
     SP_1010(1010,"A Poem"),
     SP_1011(1011,"A Poem"),
     SP_1012(1012,"A Poem"),
+
+    SP_3000(3000,"Villager Diaries"),
+    SP_3001(3001, SP_3000.title + " #2"),
+    SP_3002(3002, SP_3000.title + " #3"),
 
     LODESTONE_WIND_CORE_MANUAL(333, "Lodestone Wind Core Manual"),
     ;

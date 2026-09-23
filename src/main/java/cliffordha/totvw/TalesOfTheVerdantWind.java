@@ -5,7 +5,7 @@ import cliffordha.totvw.loot.VWLootTables;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.client.ClientPrefsPayload;
 import cliffordha.totvw.registry.attachments.VWAttachments;
-import cliffordha.totvw.registry.attachments.VWPlayerPrefs;
+import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.world.*;
 
 import net.fabricmc.api.ModInitializer;
@@ -17,7 +17,7 @@ import terrablender.api.TerraBlenderApi;
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 	public TalesOfTheVerdantWind() {}
 
-	public static final boolean IN_DEVELOPMENT = false;
+	public static final boolean IN_DEVELOPMENT = true;
 	@Override
 	public void onInitialize() {
 		TOTVW.sendStat(TOTVW.MOD_NAME_LONG + " (or TOTVW for short) started initializing...");
@@ -50,16 +50,16 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		ServerPlayNetworking.registerGlobalReceiver(ClientPrefsPayload.TYPE, (payload, context) -> {
 			ServerPlayer player = context.player();
 			player.level().getServer().execute(() -> {
-				player.setAttached(VWPlayerPrefs.ENABLE_NOTIFIERS, payload.enableNotifiers());
-				player.setAttached(VWPlayerPrefs.SHOW_ATROCITY_COUNTER, payload.showAtrocityCounter());
+				player.setAttached(PlayerPrefs.ENABLE_NOTIFIERS, payload.enableNotifiers());
+				player.setAttached(PlayerPrefs.SHOW_ATROCITY_COUNTER, payload.showAtrocityCounter());
 
-				player.setAttached(VWPlayerPrefs.BENEDICTION_HEALTH_THRESHOLD, payload.benedictionLowHealthThreshold());
-				player.setAttached(VWPlayerPrefs.BENEDICTION_SHARE_STACK, payload.benedictionShareStack());
-				player.setAttached(VWPlayerPrefs.BENEDICTION_ALWAYS_TRIGGER_BLESSING, payload.benedictionAlwaysTriggerBlessing());
-				player.setAttached(VWPlayerPrefs.BENEDICTION_TELEPORT_AFTER_SAVE, payload.benedictionTeleportAfterSave());
-				player.setAttached(VWPlayerPrefs.BENEDICTION_WOLF_TP_METHOD, payload.benedictionWolfTPMethod());
-				player.setAttached(VWPlayerPrefs.BENEDICTION_PLAYER_TP_METHOD, payload.benedictionPlayerTPMethod());
-				player.setAttached(VWPlayerPrefs.BENEDICTION_WOLF_TP_ALL, payload.benedictionWolfTPAll());
+				player.setAttached(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD, payload.benedictionLowHealthThreshold());
+				player.setAttached(PlayerPrefs.BENEDICTION_SHARE_STACK, payload.benedictionShareStack());
+				player.setAttached(PlayerPrefs.BENEDICTION_ALWAYS_TRIGGER_BLESSING, payload.benedictionAlwaysTriggerBlessing());
+				player.setAttached(PlayerPrefs.BENEDICTION_TELEPORT_AFTER_SAVE, payload.benedictionTeleportAfterSave());
+				player.setAttached(PlayerPrefs.BENEDICTION_WOLF_TP_METHOD, payload.benedictionWolfTPMethod());
+				player.setAttached(PlayerPrefs.BENEDICTION_PLAYER_TP_METHOD, payload.benedictionPlayerTPMethod());
+				player.setAttached(PlayerPrefs.BENEDICTION_WOLF_TP_ALL, payload.benedictionWolfTPAll());
 			});
 		});
 	}

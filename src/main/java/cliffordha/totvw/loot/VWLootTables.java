@@ -34,10 +34,25 @@ public class VWLootTables {
 
     private static void modifyLootTables(ResourceKey<LootTable> key, FabricLootTableBuilder builder, LootTableSource source, HolderLookup.Provider provider) {
         if (BuiltInLootTables.ANCIENT_CITY.equals(key) || BuiltInLootTables.BURIED_TREASURE.equals(key)) {
-            LootPool.Builder benedictionEnchantment = addEnchantedBookChance(provider, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS, 1, 0.07f);
+            LootPool.Builder benedictionEnchantment = addEnchantedBookChance(provider, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS, 1, 0.05f);
             LootPool.Builder page1005 = addItemChance(VWItems.Pages.SP_ID_1005,1, 0.07f);
+            LootPool.Builder verixiumTemplate = addItemChance(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE,1, 0.07f);
 
-            builder.pool(benedictionEnchantment.build()).pool(page1005.build());
+            builder.pool(benedictionEnchantment.build())
+                    .pool(page1005.build())
+                    .pool(verixiumTemplate.build());
+        }
+        if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
+            LootPool.Builder verixiumArmor = addItemChance(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE,1, 0.6f);
+            builder.pool(verixiumArmor.build());
+        }
+        if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_RARE.equals(key)) {
+            LootPool.Builder powder = addItemChance(VWItems.VERIXIUM_POWDER, 3, 0.1f);
+            builder.pool(powder.build());
+        }
+        if (BuiltInLootTables.ARMORER_GIFT.equals(key)) {
+            LootPool.Builder verixiumWolfArmor = addItemChance(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE,1, 0.7f);
+            builder.pool(verixiumWolfArmor.build());
         }
         if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
             LootPool.Builder witheringEnch = addEnchantedBookChance(provider, VWEnchantments.WOLF_EFFECT_WITHERING, 1, 3, 0.1f);
@@ -45,14 +60,6 @@ public class VWLootTables {
             LootPool.Builder mightEnch = addEnchantedBookChance(provider, VWEnchantments.WOLF_EFFECT_MIGHT, 3, 5, 0.1f);
 
             builder.pool(witheringEnch.build()).pool(poisoningEnch.build()).pool(mightEnch.build());
-        }
-        if (BuiltInLootTables.BABY_VILLAGER_GIFT.equals(key)) {
-            LootPool.Builder verixiumWolfArmor = LootPool.lootPool()
-                    .setRolls(ONE_ROLL)
-                    .when(LootItemRandomChanceCondition.randomChance(0.12f))
-                    .add(LootItem.lootTableItem(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE).apply(new SetEnchantmentsFunction.Builder()))
-                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
-            builder.pool(verixiumWolfArmor.build());
         }
         if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_UNIQUE.equals(key)) {
             LootPool.Builder lodestoneWindCore = addBlockChance(VWBlocks.LODESTONE_WIND_CORE, 1, 0.12f);

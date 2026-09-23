@@ -1,6 +1,5 @@
 package cliffordha.totvw.client.screen;
 
-import cliffordha.totvw.registry.VWColors;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -40,7 +39,7 @@ public class ScatteredPageScreen extends Screen {
 
     private int scrollbarX;
     private int scrollbarY;
-    private final int scrollbarWidth = 6;
+    private static final int scrollbarWidth = 6;
     private int scrollbarHeight;
 
     public ScatteredPageScreen(String pageTitle, String... pages) {

@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -55,7 +54,7 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
                 .add(biome(VWBiomes.VERDANT_MOUNTAINS));
 
         getOrCreateRawBuilder(BiomeTags.HAS_ANCIENT_CITY)
-                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
+                .add(biome(VWBiomes.VERDANT_MOUNTAINS));
 
         getOrCreateRawBuilder(BiomeTags.HAS_BURIED_TREASURE)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
@@ -84,6 +83,12 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
         getOrCreateRawBuilder(BiomeTags.HAS_TRIAL_CHAMBERS)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
+        getOrCreateRawBuilder(BiomeTags.SPAWNS_COLD_VARIANT_FROGS)
+                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
+
+        getOrCreateRawBuilder(BiomeTags.PRODUCES_CORALS_FROM_BONEMEAL)
+                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
+
     }
     public static final TagKey<Biome> IS_VERDANT_BIOMES = create("is_verdant_biomes");
     public static final TagKey<Biome> IS_VERDANT_MOUNTAINS = create("is_verdant_mountains");
@@ -93,5 +98,5 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
     public static final TagKey<Biome> FOREST_WHERE_WOLVES_HOWL = create("forest_where_wolves_howl");
 
     private static TagKey<Biome> create(String name) {
-        return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }
+        return TagKey.create(Registries.BIOME, TOTVW.registerID(name)); }
 }

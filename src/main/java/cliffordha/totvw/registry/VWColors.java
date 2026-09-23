@@ -12,6 +12,8 @@ public class VWColors {
     public static final int BLOODLUST_EFFECT = 0xFF2E4D;
     public static final int BLOODLUST_EFFECT_MUTED = 0xA82F41;
 
+    public static final int HAVOC_PARTICLE = 0xFF2236;
+
     public static final int PARALYZE = 0x365258;
     public static final int PARALYZE_MUTED = 0x111d23;
 

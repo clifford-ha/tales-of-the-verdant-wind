@@ -1,13 +1,14 @@
-package cliffordha.totvw.item.scatteredpages;
+package cliffordha.totvw.item.scatteredpages.handbooks;
 
 import cliffordha.totvw.config.VWConfig;
+import cliffordha.totvw.registry.attachments.PlayerPrefs;
+import net.minecraft.world.entity.player.Player;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
 import static cliffordha.totvw.util.VWUtil.TextUtil.*;
 
 public class VWEnchantmentsHandbook {
-    private static final String dot = ".";
     private static final String descAttackDMG = "Attack Damage";
     private static final String descBenediction = "Benediction of the Verdant Mountains";
     private static final String descBleedingDMG = cText(RED, "Bleeding damage");
@@ -31,31 +32,36 @@ public class VWEnchantmentsHandbook {
         return fText(BOLD, t);
     }
 
-    private static String benedictionOfTheVerdantMountainsInfo() {
+    private static String benedictionOfTheVerdantMountainsInfo(Player player) {
+        String HEALTH_THRESHOLD = (player.getAttachedOrElse(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD, VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD)) + "%";
+
         return titleBenediction.toUpperCase() + nextLine
-                + "This is the core enchantment that will provide access to features that are related to the Verdant Mountains, as well as the key to unlocking the full potential of other enchantments. This enchantment also gives " + cText(DARK_AQUA, "+3 ") + descAttackDMG + dot
+                + "This is the core enchantment that will provide access to features that are related to the Verdant Mountains, as well as the key to unlocking the full potential of other enchantments. This enchantment also gives " + cText(DARK_AQUA, "+3 ") + descAttackDMG + "."
                 + nextParagraph
 
                 + bold("Core Features:") + nextLine
                 + "• If your wolf companion has the enchantment, you may want to give them a Totem of Undying and it will be automatically converted into a Benediction Stack. They will automatically use it to revive themselves when they get knocked down. The stack will also remain even if the armor is removed or destroyed during combat."
                 + nextParagraph
-                + "• Your companion can also share their stack through " + fText(UNDERLINED, "Revival by Proxy") + cText(DARK_GRAY, " (Enabled by default)") + dot
+
+                + "• Your companion can also share their stack through " + fText(UNDERLINED, "Revival by Proxy") + cText(DARK_GRAY, " (Enabled by default)") + ". Additional information can be found in the Features Handbook."
                 + nextParagraph
-                + "• When your health drops below " + cText(AQUA, VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD + "") + ", it will grant " + cText(AQUA, "Blessing of the Verdant Wind (30 sec) and temporary immunity for 10 seconds") + ". This buff also applies to your companion when you have the enchantment and their health drops below said threshold. The duration of cooldown depends on your current game difficulty. This buff is considered a skill."
+
+                + "• " + cText(AQUA, "Verdant Wind's Blessing") + ": When your health drops below " + cText(AQUA, HEALTH_THRESHOLD) + ", or when you get damaged and the damage is equal to or more than said threshold (damage is at least 1 and half a heart), it will grant Blessing of the Verdant Wind effect for 30 seconds and a temporary immunity for 10 seconds. This buff also applies to your companion when you have the enchantment and their health drops below said threshold. The duration of cooldown depends on your current game difficulty. This buff is considered a skill."
                 + nextParagraph
-                + "• Passive: If wolf gets hurt and the damage exceeds 50% of their max health, it will be entirely ignored (except if the damage comes from /kill command). This passive has a cooldown of 15 seconds."
+
+                + "• Passive: When wolf gets hurt and the damage exceeds 50% of their max health, it will be entirely ignored (except if the damage comes from /kill command). This passive has a cooldown of 15 seconds. If wolf has the Havoc Runestone and the damage comes from an entity, reflect 50% of that damage (12 points max) to the attacker."
                 + nextParagraph
 
                 + bold("Combat Features:") + nextLine
-                + "• When holding a tool or weapon with a [VW] mark, hold *Crouch + Right Click to activate the buff. The buff provided depends on what tool you are holding. The duration and amplifier are also increased when within the Verdant Biomes!";
+                + "• When holding a tool or weapon with a [VW] mark, hold *Crouch + Right Click to activate the buff. The buff provided depends on what tool you are holding. Moreover, duration and amplifier are also increased when within the Verdant Biomes!";
     }
     private static String wolfArmorEnhancementKitInfo() {
         return titleWolfArmorEnhancementKit.toUpperCase() + nextLine
-                + "This enchantment slightly boosts your companion's base attributes: Max Health, Water Movement Speed, and Knockback Resistance.";
+                + "This enchantment slightly boosts your companion's base attributes: Max Health, Water Movement Speed, and Knockback Resistance. Additionally, reduces all damage taken by 20%.";
     }
     private static String mightEnchantmentInfo() {
         return titleMight.toUpperCase() + nextLine
-                + "On attack: grant Absorption and Amplified Might effect for a short period of time, scalable by enchantment level. The enchantment also boosts " + descAttackDMG + " and lessens Fall Damage. Additionally, if wolf has a baby wolf nearby, base effects will be shared to them."
+                + "Grants Amplified Might effect when wolf has a target. On attack: grant Absorption effect for a short period of time, scalable by enchantment level. The enchantment also boosts " + descAttackDMG + " and lessens Fall Damage. Additionally, if wolf has a baby wolf nearby, base effects will be shared to them."
                 + nextParagraph
 
                 + italic("At level 3 or higher:") + nextLine
@@ -90,15 +96,20 @@ public class VWEnchantmentsHandbook {
     }
     private static String ignitionEnchantmentInfo() {
         return titleIgnition.toUpperCase() + nextLine
-                + "Wolf will now ignore any damages that inflict " + cText(AQUA, "freezing") + " (vanilla). On attack, ignite target for 3 seconds (multiplied by enchantment level). If target is immune to fire, deal " + cText(GOLD, "Scorching Heat") + " instead. Damage and duration of fire increases when wolf is within Nether or hot biomes. Additionally, wolf will automatically extinguish itself when on fire, and if wolf has a baby wolf nearby that is on fire, extend the effect to them as well, including the passive."
+                + "Wolf will now ignore any damages that inflict " + cText(AQUA, "freezing") + " (vanilla). On attack, ignite target for 3 seconds (multiplied by enchantment level). If target is immune to fire, deal " + cText(GOLD, "Scorching Heat") + " instead. Additionally, wolf will automatically extinguish itself when on fire, and if wolf has a baby wolf nearby that is on fire, extend the effect to them as well, including the passive."
                 + nextParagraph
 
                 + italic("At level 3 or higher:") + nextLine
                 + "• Forcibly remove the Fire Resistance effect from the target if present." + nextLine
                 + "• There is a small chance to break the Powdered Snow block when wolf is inside of it."
-
                 + nextParagraph
-                + "• Passive: When wolf is within the Nether biomes and also has " + descBenediction + " and Fire Protection equal to or more than 3 enchantment level, grant a strong Fire Resistance effect. This passive is extended when their owner is also present and is nearby.";
+
+                + "Passive: When wolf is within the Nether biomes and also has " + descBenediction + " and Fire Protection equal to or more than 3 enchantment level, grant a strong Fire Resistance effect. This passive is extended when their owner is also present and is nearby."
+                + nextParagraph
+
+                + "Bonuses:" + nextLine
+                + "• Damage and duration of fire increases when wolf is within Nether or hot biomes." + nextLine
+                + "• If wolf has the Havoc Runestone, extend duration by another 3 seconds (applied after calculation of the duration).";
     }
     private static String liftingEnchantmentInfo() {
         return titleLifting.toUpperCase() + nextLine
@@ -142,13 +153,13 @@ public class VWEnchantmentsHandbook {
                 + "On attack, if wolf's armor has been damaged, restore durability based on wolf's current total " + descAttackDMG + ". If wolf also has the " + descBenediction + " enchantment, the restoration efficiency will further improve.";
     }
 
-    public static final String ENCHANTMENTS_HANDBOOK_TITLE = addTitle("Enchantments Handbook");
-    public static String[] ENCHANTMENTS_HANDBOOK_CONTENTS() {
+
+    public static String[] ENCHANTMENTS_HANDBOOK_CONTENTS(Player player) {
         return addPage(
                 fText(BOLD, "INTRODUCTION") + nextLine
                         + "TOTVW: Wolf Additions introduces several custom enchantments to help enhance your wolf companion's on-attack combat abilities. Depending on the enchantments available in your companion's armor, it can trigger different effects and skills depending on the circumstances."
                         + addSeparator
-                        + benedictionOfTheVerdantMountainsInfo()
+                        + benedictionOfTheVerdantMountainsInfo(player)
                         + addSeparator
                         + wolfArmorEnhancementKitInfo()
                         + addSeparator

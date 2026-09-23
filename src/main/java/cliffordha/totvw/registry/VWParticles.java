@@ -1,11 +1,14 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.util.VWUtil;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Registry;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
 
 import static cliffordha.totvw.TOTVW.sendClassRegisterLog;
 
@@ -24,7 +27,12 @@ public class VWParticles {
 
 
     private static SimpleParticleType registerParticle(String name, SimpleParticleType particleType) {
-        return Registry.register(BuiltInRegistries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), particleType);
+        return Registry.register(BuiltInRegistries.PARTICLE_TYPE, TOTVW.registerID(name), particleType);
+    }
+    public static void showBlessingParticle(LivingEntity entity, int frequency) {
+        if (!(entity.level() instanceof ServerLevel level)) return;
+        DustParticleOptions dust = new DustParticleOptions(VWColors.VERDANT_WIND, level.getRandom().nextFloat() + 0.5f);
+        VWUtil.sendParticles(dust, level, entity.blockPosition(), 4 * (frequency + 1), 1);
     }
 
     public static void register() {

@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.tag.VWItemTags;
+import cliffordha.totvw.util.VWUtil;
 import net.minecraft.advancements.predicates.ItemPredicate;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.advancements.triggers.InventoryChangeTrigger;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 
 import static net.minecraft.data.recipes.SingleItemRecipeBuilder.stonecutting;
 
@@ -98,7 +100,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         CookingBookCategory.MISC,
                         VWItems.VERIXIUM_CHUNK,
                         900.0F,
-                        20 * 180,
+                        VWUtil.TimeUtil.duration(3, 45),
                         "verixium_raw_materials"
                 );
                 shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_SPEAR, 1)
@@ -166,7 +168,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .pattern("X X")
                         .define('X', VWItems.VERIXIUM_INGOT)
                         .group("verixium_armors")
-                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .unlockedBy(getHasName(VWItems.VERIXIUM_CHUNK), has(VWItems.VERIXIUM_CHUNK))
                         .save(output);
 
                 shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_CHESTPLATE, 1)
@@ -175,7 +177,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .pattern("XXX")
                         .define('X', VWItems.VERIXIUM_INGOT)
                         .group("verixium_armors")
-                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .unlockedBy(getHasName(VWItems.VERIXIUM_CHUNK), has(VWItems.VERIXIUM_CHUNK))
                         .save(output);
 
                 shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_LEGGINGS, 1)
@@ -184,7 +186,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .pattern("X X")
                         .define('X', VWItems.VERIXIUM_INGOT)
                         .group("verixium_armors")
-                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .unlockedBy(getHasName(VWItems.VERIXIUM_CHUNK), has(VWItems.VERIXIUM_CHUNK))
                         .save(output);
 
                 shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_BOOTS, 1)
@@ -192,7 +194,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .pattern("X X")
                         .define('X', VWItems.VERIXIUM_INGOT)
                         .group("verixium_armors")
-                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .unlockedBy(getHasName(VWItems.VERIXIUM_CHUNK), has(VWItems.VERIXIUM_CHUNK))
                         .save(output);
 
                 shaped(RecipeCategory.MISC, VWItems.VERIXIUM_INGOT, 1)
@@ -202,7 +204,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .define('D', Items.DIAMOND)
                         .define('X', VWItems.VERIXIUM_INGOT)
                         .group("verixium_raw_materials")
-                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .unlockedBy(getHasName(Items.DIAMOND), has(Items.DIAMOND))
                         .save(output);
 
                 shaped(RecipeCategory.TOOLS, VWItems.VERIXIUM_FLUID_BUCKET, 1)
@@ -213,18 +215,19 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .define('W', Items.WATER_BUCKET)
                         .define('I', Items.IRON_INGOT)
                         .group("verixium_materials")
-                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .unlockedBy(getHasName(Items.IRON_INGOT), has(Items.IRON_INGOT))
                         .save(output);
 
-                shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE, 1)
+                shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE, 2)
                         .pattern("XIX")
-                        .pattern("IWI")
+                        .pattern("WTW")
                         .pattern("XIX")
+                        .define('T', VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE)
                         .define('X', VWItems.VERIXIUM_POWDER)
                         .define('W', Items.WIND_CHARGE)
                         .define('I', Items.DEEPSLATE)
                         .group("verixium_armors")
-                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .unlockedBy(getHasName(VWItems.VERIXIUM_POWDER), has(VWItems.VERIXIUM_POWDER))
                         .save(output);
 
                 shaped(RecipeCategory.MISC, VWItems.SOUL_RUNESTONE_PLATE, 1)
@@ -274,7 +277,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                 chestBoat(VWItems.VERDANT_SPRUCE_CHEST_BOAT, VWItems.VERDANT_SPRUCE_BOAT);
 
                 signBuilder(VWItems.VERDANT_SPRUCE_SIGN, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS));
-                //hangingSign(VWItems.VERDANT_SPRUCE_HANGING_SIGN, VWBlocks.VERDANT_SPRUCE_PLANKS);
+                hangingSignBuilder(VWItems.VERDANT_SPRUCE_HANGING_SIGN, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS));
                 shelf(VWBlocks.VERDANT_SPRUCE_SHELF, VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
 
                 shaped(RecipeCategory.REDSTONE, VWBlocks.VERDANT_SPRUCE_STORAGE_BOX, 1)
@@ -284,7 +287,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .define('X', VWBlocks.VERDANT_SPRUCE_LOG)
                         .define('P', VWBlocks.VERDANT_SPRUCE_SLAB)
                         .define('C', Items.CHEST)
-                        .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_PLANKS), has(VWBlocks.VERDANT_SPRUCE_PLANKS))
+                        .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_LOG), has(VWBlocks.VERDANT_SPRUCE_LOG))
                         .save(output);
 
 
@@ -295,7 +298,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .pattern("XXX")
                         .pattern("XXX")
                         .define('X', VWBlocks.IRIDESCENT_GLASS)
-                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .unlockedBy(getHasName(Blocks.GLASS), has(Blocks.GLASS))
                         .save(output);
 
                 dyeFromIridescentGlass(exporter,

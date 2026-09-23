@@ -7,12 +7,10 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -70,33 +68,39 @@ public class VWItemTags extends FabricTagsProvider.ItemTagsProvider {
                 .add(item(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG.asItem()))
                 .add(item(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD.asItem()));
 
-        getOrCreateRawBuilder(ItemTags.LOGS_THAT_BURN)
-                .addTag(VERDANT_SPRUCE_LOGS.location());
-
-        getOrCreateRawBuilder(ItemTags.PLANKS)
-                .add(item(VWBlocks.VERDANT_SPRUCE_PLANKS.asItem()));
-
-        getOrCreateRawBuilder(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS)
+        getOrCreateRawBuilder(BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS)
                 .addTag(ItemTags.SWORDS.location())
                 .addTag(ItemTags.AXES.location())
                 .addTag(ItemTags.PICKAXES.location())
                 .addTag(ItemTags.SHOVELS.location())
                 .addTag(ItemTags.HOES.location());
 
-        getOrCreateRawBuilder(VWItemTags.BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)
+        getOrCreateRawBuilder(BENEDICTION_ENCHANTMENT_USE_QUALIFIED_ITEMS)
                 .add(item(Items.GLOWSTONE_DUST))
                 .add(item(VWItems.VERIXIUM_POWDER));
 
-        getOrCreateRawBuilder(VWItemTags.SCATTERED_PAGES)
+        getOrCreateRawBuilder(SCATTERED_PAGES)
                 .add(item(Items.PAPER))
                 .add(item(VWItems.VERIXIUM_PAPER));
 
-        getOrCreateRawBuilder(VWItemTags.LODESTONE_WIND_CORE_ENERGY_SOURCES)
+        getOrCreateRawBuilder(LODESTONE_WIND_CORE_ENERGY_SOURCES)
                 .add(item(VWItems.VERIXIUM_POWDER))
                 .add(item(VWBlocks.VERIXIUM_POWDER_BLOCK.asItem()))
                 .add(item(Items.WIND_CHARGE));
 
+        getOrCreateRawBuilder(RUNESTONE_PLATES)
+                .add(item(VWItems.GENESIS_RUNESTONE_PLATE))
+                .add(item(VWItems.TETHER_RUNESTONE_PLATE))
+                .add(item(VWItems.HAVOC_RUNESTONE_PLATE))
+                .add(item(VWItems.SOUL_RUNESTONE_PLATE));
 
+
+
+        getOrCreateRawBuilder(ItemTags.LOGS_THAT_BURN)
+                .addTag(VERDANT_SPRUCE_LOGS.location());
+
+        getOrCreateRawBuilder(ItemTags.PLANKS)
+                .add(item(VWBlocks.VERDANT_SPRUCE_PLANKS.asItem()));
 
         getOrCreateRawBuilder(ItemTags.ARMOR_ENCHANTABLE)
                 .addTag(WOLF_ARMOR_ENCHANTABLE.location());
@@ -159,7 +163,8 @@ public class VWItemTags extends FabricTagsProvider.ItemTagsProvider {
     public static final TagKey<Item> BENEDICTION_ENCHANTMENT_USE_QUALIFIED_TOOLS = create("benediction_enchantment_use_qualified_tools");
     public static final TagKey<Item> LODESTONE_WIND_CORE_ENERGY_SOURCES = create("lodestone_wind_core_energy_sources");
     public static final TagKey<Item> SCATTERED_PAGES = create("scattered_pages");
+    public static final TagKey<Item> RUNESTONE_PLATES = create("runestone_plates");
 
     private static TagKey<Item> create(String name) {
-        return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }
+        return TagKey.create(Registries.ITEM, TOTVW.registerID(name)); }
 }

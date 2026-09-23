@@ -22,6 +22,11 @@ public class VWBiomeModifications {
                 VegetationPlacements.PATCH_SUGAR_CANE
         );
         BiomeModifications.addFeature(
+                BiomeSelectors.includeByKey(VWBiomes.VERDANT_MOUNTAINS),
+                GenerationStep.Decoration.LOCAL_MODIFICATIONS,
+                CavePlacements.SCULK_PATCH_ANCIENT_CITY
+        );
+        BiomeModifications.addFeature(
                 BiomeSelectors.includeByKey(VWBiomes.VERDANT_FOREST),
                 GenerationStep.Decoration.LOCAL_MODIFICATIONS,
                 VegetationPlacements.PATCH_FIREFLY_BUSH_NEAR_WATER

@@ -1,11 +1,10 @@
-package cliffordha.totvw.item.scatteredpages;
+package cliffordha.totvw.item.scatteredpages.handbooks;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
 import static cliffordha.totvw.util.VWUtil.TextUtil.*;
 
 public class VWFeaturesHandbook {
-    private static final String dot = ".";
     private static final String descAttackDMG = "Attack Damage";
     private static final String descBenediction = "Benediction of the Verdant Mountains";
     private static final String descBleedingDMG = cText(RED, "Bleeding damage");
@@ -13,6 +12,8 @@ public class VWFeaturesHandbook {
     private static final String titleVerdantTypeWolves = cText(GOLD, bold("Verdant-type Wolves"));
     private static final String titleVerdantTypeVillagers = cText(GOLD, bold("Verdant-type Villagers"));
     private static final String titleBenedictionReturnPosition = cText(GOLD, bold("Benediction Return Position"));
+    private static final String titleRevivalByProxy = cText(GOLD, bold("Revival by Proxy"));
+
     private static final String titleWolfArmorEnhancementKit = cText(YELLOW, bold("Wolf Armor Enhancement Kit"));
     private static final String titleMight = cText(AQUA, bold("Might"));
     private static final String titleBloodlust = cText(RED, bold("Bloodlust"));
@@ -31,6 +32,16 @@ public class VWFeaturesHandbook {
         return fText(BOLD, t);
     }
 
+    private static String revivalByProxy() {
+        return titleRevivalByProxy.toUpperCase() + nextLine
+                + "A mechanic allows a player to be revived by their wolf companion when they get incapacitated and have no Totem of Undying in their mainhand or offhand slot (enabled by default in the settings). This can be triggered in the following ways:"
+                + nextParagraph
+
+                + "• Primary Trigger: Player gets incapacitated and their wolf companion is within the scan radius with more than one Benediction Stack. The scan radius is based on Max Chunk Scan in the settings (server)."
+                + nextParagraph
+
+                + "• If the Primary Trigger fails for any reason, if the player has the Soul Runestone Plate and has a wolf souls that meet the criteria mentioned above, the player will be revived by their wolf companion. Check the Soul Runestone Plate entry in the Items Handbook for additional information.";
+    }
     private static String verdantTypeWolves() {
         return titleVerdantTypeWolves.toUpperCase() + nextLine
                 + "This type (and variant) of wolves are found in the new Verdant Biomes."
@@ -78,6 +89,8 @@ public class VWFeaturesHandbook {
         return addPage(
                 fText(BOLD, "INTRODUCTION") + nextLine
                         + "A list of new features and mechanics that aren't introduced in other handbooks."
+                        + addSeparator
+                        + revivalByProxy()
                         + addSeparator
                         + verdantTypeWolves()
                         + addSeparator

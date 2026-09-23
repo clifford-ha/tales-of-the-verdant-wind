@@ -3,7 +3,6 @@ package cliffordha.totvw.datagen;
 import cliffordha.totvw.TOTVW;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageEffects;
 import net.minecraft.world.damagesource.DamageSource;
@@ -15,16 +14,20 @@ public class VWDamageTypes {
     public static final ResourceKey<DamageType> BLEEDING = createDMGType("bleeding");
     public static final ResourceKey<DamageType> LODESTONE_WIND_CORE_PULSE = createDMGType("wind_core_pulse");
     public static final ResourceKey<DamageType> SCORCHING_HEAT = createDMGType("scorching_heat");
+    public static final ResourceKey<DamageType> HAVOC = createDMGType("havoc");
+    public static final ResourceKey<DamageType> TETHER_PROXY = createDMGType("tether_proxy");
 
     public static void bootstrap(BootstrapContext<DamageType> context) {
         context.register(BLOODLUST, new DamageType("bloodlust", 0.0f, DamageEffects.HURT));
         context.register(BLEEDING, new DamageType("bleeding", 0.2f, DamageEffects.HURT));
         context.register(LODESTONE_WIND_CORE_PULSE, new DamageType("wind_core_pulse", 0.3f, DamageEffects.HURT));
         context.register(SCORCHING_HEAT, new DamageType("scorching_heat", 0.4f, DamageEffects.HURT));
+        context.register(HAVOC, new DamageType("havoc", 1.0f, DamageEffects.HURT));
+        context.register(TETHER_PROXY, new DamageType("tether_proxy", 0.0f, DamageEffects.THORNS));
     }
 
     private static ResourceKey<DamageType> createDMGType(String name) {
-        return ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name));
+        return ResourceKey.create(Registries.DAMAGE_TYPE, TOTVW.registerID(name));
     }
 
     private static DamageSource create(Level level, ResourceKey<DamageType> key) {
@@ -42,5 +45,11 @@ public class VWDamageTypes {
     }
     public static DamageSource scorchingHeat(Level level) {
         return create(level, SCORCHING_HEAT);
+    }
+    public static DamageSource havoc(Level level) {
+        return create(level, HAVOC);
+    }
+    public static DamageSource tetherProxy(Level level) {
+        return create(level, TETHER_PROXY);
     }
 }

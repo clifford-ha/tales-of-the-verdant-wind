@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -66,6 +65,6 @@ public class VWEnchantmentTags extends FabricTagsProvider<Enchantment> {
     public static final TagKey<Enchantment> IMPAIRING_DAMAGE = create("impairing_damage");
 
     private static TagKey<Enchantment> create(String name) {
-        return TagKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name)); }
+        return TagKey.create(Registries.ENCHANTMENT, TOTVW.registerID(name)); }
 
 }

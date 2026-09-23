@@ -91,7 +91,7 @@ public interface WolfCondition {
     }
 
     static WolfCondition quarterTick() {
-        return (_, world) -> world.getGameTime() % 5 == 0;
+        return (_, world) -> world.getGameTime() % 4 == 0;
     }
 
     static WolfCondition newSoundsEnable() {
@@ -110,5 +110,7 @@ public interface WolfCondition {
         };
     }
 
-    static WolfCondition ownerFarther(double radius) { return ownerWithin(radius).negate().and(isTamed()); }
+    static WolfCondition ownerFarther(double radius) {
+        return ownerWithin(radius).negate().and(isTamed());
+    }
 }

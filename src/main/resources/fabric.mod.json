@@ -21,7 +21,7 @@
           "cliffordha.totvw.TOTVWClient"
 		],
 		"fabric-datagen": [
-			"cliffordha.totvw.datagen.TOTVWDataGenerator"
+          "cliffordha.totvw.TOTVWDataGenerator"
 		],
 		"terrablender": [
 			"cliffordha.totvw.TalesOfTheVerdantWind"
