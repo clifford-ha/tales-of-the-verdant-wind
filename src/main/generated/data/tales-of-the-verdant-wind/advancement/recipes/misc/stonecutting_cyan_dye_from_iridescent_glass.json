@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipes": "tales-of-the-verdant-wind:stonecutting_cyan_dye_from_iridescent_glass"
+        "recipe": "tales-of-the-verdant-wind:stonecutting_cyan_dye_from_iridescent_glass"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

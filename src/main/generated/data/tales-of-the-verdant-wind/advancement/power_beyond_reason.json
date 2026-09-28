@@ -13,6 +13,7 @@
     }
   },
   "display": {
+    "background": "tales-of-the-verdant-wind:power_beyond_reason",
     "description": {
       "color": "#247D66",
       "text": "Obtain a runestone plate"

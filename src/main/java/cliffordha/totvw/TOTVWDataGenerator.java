@@ -51,7 +51,7 @@ public class TOTVWDataGenerator implements DataGeneratorEntrypoint {
 		registryBuilder.add(Registries.WOLF_VARIANT, VWWolfVariants::bootstrap);
 
 		registryBuilder.add(Registries.BIOME, VWBiomes::bootstrap);
-		registryBuilder.add(Registries.FEATURE, VWConfiguredFeatures::configure);
+		registryBuilder.add(Registries.CONFIGURED_FEATURE, VWConfiguredFeatures::configure);
 		registryBuilder.add(Registries.PLACED_FEATURE, VWPlacedFeatures::configure);
 
 		registryBuilder.add(Registries.LEVEL_STEM, VWDimensions::bootstrapStem);

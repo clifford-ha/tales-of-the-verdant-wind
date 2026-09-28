@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipes": "tales-of-the-verdant-wind:verixium_chunk_from_blasting_verixium_fluid_bucket"
+        "recipe": "tales-of-the-verdant-wind:verixium_chunk_from_blasting_verixium_fluid_bucket"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipes": "tales-of-the-verdant-wind:verixium_armor_upgrade_template_duplicate"
+        "recipe": "tales-of-the-verdant-wind:verixium_armor_upgrade_template_duplicate"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

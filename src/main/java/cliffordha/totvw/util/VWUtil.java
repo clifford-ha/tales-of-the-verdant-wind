@@ -7,7 +7,6 @@ import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle;
 import cliffordha.totvw.registry.VWColors;
-import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.VWSounds;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.tag.VWBiomeTags;
@@ -22,7 +21,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffect;
@@ -78,7 +76,7 @@ public class VWUtil {
             inv.setItem(slot, item);
         } else {
             LivingEntity mob = dropFrom != null ? dropFrom : player;
-            mob.drop(item, false, Prediction.SERVER_ONLY);
+            mob.drop(item, false, false);
         }
     }
     public static void addToInventory(Player player, Item itemToAdd) {
@@ -89,7 +87,7 @@ public class VWUtil {
         if (slot > 0) {
             inv.setItem(slot, item);
         } else {
-            player.drop(item, false, Prediction.SERVER_ONLY);
+            player.drop(item, false, false);
         }
     }
 

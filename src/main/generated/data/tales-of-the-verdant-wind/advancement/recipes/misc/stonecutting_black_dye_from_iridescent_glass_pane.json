@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipes": "tales-of-the-verdant-wind:stonecutting_black_dye_from_iridescent_glass_pane"
+        "recipe": "tales-of-the-verdant-wind:stonecutting_black_dye_from_iridescent_glass_pane"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -43,7 +43,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
 
             String talesOfTheVerdantWindID = "tales_of_the_verdant_wind";
             AdvancementHolder root = Advancement.Builder.advancement()
-                    .rootDisplay(
+                    .display(
                             VWItems.VERIXIUM_PICKAXE,
                             title("Tales of the Verdant Wind", VWColors.VERDANT_WIND),
                             description("Explore the verdant place\nwith your companions"),
@@ -61,6 +61,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                             VWItems.VERIXIUM_CHUNK,
                             title("Weightless Minerals", VWColors.VERDANT_WIND),
                             description("Obtain a Verixium Chunk"),
+                            TOTVW.registerID(weightlessMineralsID),
                             AdvancementType.TASK,
                             false, true, false)
                     .addCriterion(weightlessMineralsID, hasItems(
@@ -75,6 +76,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                             VWItems.VERIXIUM_CHESTPLATE,
                             title("Light As The Wind", VWColors.VERDANT_WIND),
                             description("Equip a full set of Verixium armor"),
+                            TOTVW.registerID(lightAsTheWindID),
                             AdvancementType.CHALLENGE,
                             true, true, false)
                     .addCriterion(lightAsTheWindID, hasItems(
@@ -90,6 +92,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                 .display(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE,
                         title("Condensed Wind", VWColors.VERDANT_WIND),
                         description("Obtain a Verixium Armor Upgrade Template"),
+                        TOTVW.registerID(condensedWindID),
                         AdvancementType.CHALLENGE,
                         true,
                         true,
@@ -104,6 +107,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                     .display(VWItems.VERIXIUM_WOLF_ARMOR,
                             title("A Wolf Accompanied by The Winds", VWColors.VERDANT_WIND),
                             description("Give your companion Verixium armor"),
+                            TOTVW.registerID(aWolfAccompaniedByTheWindsID),
                             AdvancementType.CHALLENGE,
                             true, true, false)
                     .addCriterion(aWolfAccompaniedByTheWindsID,
@@ -118,6 +122,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                     .display(VWItems.SOUL_RUNESTONE_PLATE,
                             title("A \"Light\" Companion", VWColors.VERDANT_WIND),
                             description("Use a Soul Runestone Plate to store your companion's soul within you"),
+                            TOTVW.registerID(aLightCompanionID),
                             AdvancementType.CHALLENGE,
                             true, true, true)
                     .addCriterion(aLightCompanionID,
@@ -132,6 +137,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                     .display(VWItems.VERIXIUM_FLUID_BUCKET,
                             title("Tastes Like Ink"),
                             description("Fill a bucked with Verixium fluid"),
+                            TOTVW.registerID(tastesLikeInkID),
                             AdvancementType.TASK,
                             true, true, false)
                     .addCriterion(tastesLikeInkID,
@@ -144,6 +150,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                     .display(VWBlocks.VERDANT_SPRUCE_SAPLING.asItem(),
                             title("A World Lost In Time", VWColors.VERDANT_WIND),
                             description("Discover the hidden, fragmented world"),
+                            TOTVW.registerID(worldLostInTimeID),
                             AdvancementType.CHALLENGE,
                             true,
                             true,
@@ -163,6 +170,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                             VWItems.SOUL_RUNESTONE_PLATE,
                             title("Power Beyond Reason"),
                             description("Obtain a runestone plate"),
+                            TOTVW.registerID(powerBeyondReasonID),
                             AdvancementType.CHALLENGE,
                             true,
                             true,
@@ -183,6 +191,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                 .display(VWItems.TETHER_RUNESTONE_PLATE,
                         title("Bound By A Thread", VWColors.MIGHT_EFFECT),
                         description("Use the power of Tether Runestone on your companion so it can gain the Link status"),
+                        TOTVW.registerID(boundByAnInvisibleThreadID),
                         AdvancementType.CHALLENGE,
                         true, true, true)
                 .addCriterion(boundByAnInvisibleThreadID,
@@ -198,6 +207,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                         VWBlocks.AIR_PLACEHOLDER.asItem(),
                         title("Holder of Life", VWColors.INDICATOR_80),
                         description("Find a way to make your companion's step bloom with life"),
+                        TOTVW.registerID(doFlowersBloomWhenIWalkID),
                         AdvancementType.CHALLENGE,
                         true, true, true)
                 .addCriterion(doFlowersBloomWhenIWalkID,
@@ -212,6 +222,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
                 .display(VWItems.HAVOC_RUNESTONE_PLATE,
                         title("Deathly Defiance", VWColors.HAVOC_PARTICLE),
                         description("Use the Havoc Runestone Plate to be able to gain the Havoc status effect"),
+                        TOTVW.registerID(deathlyDefianceID),
                         AdvancementType.CHALLENGE,
                         true, true, true)
                 .addCriterion(deathlyDefianceID,

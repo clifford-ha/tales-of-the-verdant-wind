@@ -1,6 +1,5 @@
 package cliffordha.totvw.loot;
 
-import cliffordha.totvw.registry.VWItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableSubProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
@@ -41,9 +40,5 @@ public class VWChestLootProvider extends SimpleFabricLootTableSubProvider {
     @Override
     public BiConsumer<ResourceKey<LootTable>, LootTable.Builder> withConditions(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> exporter, ResourceCondition... conditions) {
         return super.withConditions(exporter, conditions);
-    }
-
-    @Override
-    public void run() {
     }
 }

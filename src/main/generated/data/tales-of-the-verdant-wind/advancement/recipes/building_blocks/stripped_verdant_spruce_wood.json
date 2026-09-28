@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipes": "tales-of-the-verdant-wind:stripped_verdant_spruce_wood"
+        "recipe": "tales-of-the-verdant-wind:stripped_verdant_spruce_wood"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

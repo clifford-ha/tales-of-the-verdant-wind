@@ -8,12 +8,13 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.TrapezoidInt;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
-import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.*;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public class VWPlacedFeatures {
 
 
     public static void configure(BootstrapContext<PlacedFeature> context) {
-        HolderGetter<Feature> configuredFeatures = context.lookup(Registries.FEATURE);
+        HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
         context.register(VERIXIUM_ORE_LARGE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERIXIUM_ORE_LARGE_CONFIGURED_KEY),
                 List.of(
@@ -144,7 +145,7 @@ public class VWPlacedFeatures {
                         InSquarePlacement.spread(),
                         SurfaceWaterDepthFilter.forMaxDepth(0),
                         PlacementUtils.HEIGHTMAP_TOP_SOLID,
-                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.AIR)),
+                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(List.of(Blocks.AIR))),
                         BiomeFilter.biome()
                 ))
         );
@@ -173,10 +174,7 @@ public class VWPlacedFeatures {
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(74)),
                         PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                         CountPlacement.of(UniformInt.of(1, 2)),
-                        OffsetPlacement.of(
-                                TrapezoidInt.of(-3, 7, 0),
-                                TrapezoidInt.of(-3, 3, 0)
-                        ),
+                        RandomOffsetPlacement.vertical(ConstantInt.of(1)),
                         BiomeFilter.biome()
                 ))
         );
@@ -185,10 +183,7 @@ public class VWPlacedFeatures {
                         HeightRangePlacement.uniform(VerticalAnchor.absolute(84), VerticalAnchor.absolute(256)),
                         PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                         CountPlacement.of(UniformInt.of(1, 4)),
-                        OffsetPlacement.of(
-                                TrapezoidInt.of(-7, 3, 0),
-                                TrapezoidInt.of(-3, 3, 0)
-                        ),
+                        RandomOffsetPlacement.vertical(ConstantInt.of(1)),
                         BiomeFilter.biome()
                 ))
         );
@@ -198,7 +193,7 @@ public class VWPlacedFeatures {
                         InSquarePlacement.spread(),
                         PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                         CountPlacement.of(32),
-                        OffsetPlacement.of(
+                        RandomOffsetPlacement.of(
                                 TrapezoidInt.of(-7, 7, 0),
                                 TrapezoidInt.of(-3, 3, 0)
                         ),
@@ -213,7 +208,7 @@ public class VWPlacedFeatures {
                         SurfaceWaterDepthFilter.forMaxDepth(0),
                         PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                         CountPlacement.of(8),
-                        OffsetPlacement.of(
+                        RandomOffsetPlacement.of(
                                 TrapezoidInt.of(-7, 7, 0),
                                 TrapezoidInt.of(-3, 3, 0)
                         ),
@@ -227,7 +222,7 @@ public class VWPlacedFeatures {
                         InSquarePlacement.spread(),
                         PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
                         CountPlacement.of(UniformInt.of(0, 1)),
-                        OffsetPlacement.of(
+                        RandomOffsetPlacement.of(
                                 TrapezoidInt.of(-7, 7, 0),
                                 TrapezoidInt.of(-3, 3, 0)
                         ),
@@ -240,7 +235,6 @@ public class VWPlacedFeatures {
                         CountPlacement.of(48),
                         InSquarePlacement.spread(),
                         PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
-                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.WATER)),
                         BiomeFilter.biome()
                 ))
         );
@@ -260,6 +254,8 @@ public class VWPlacedFeatures {
                         BiomeFilter.biome()
                 ))
         );
+
+
         context.register(VERDANT_FARMLANDS_PATCH_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_FARMLANDS_PATCH),
                 List.of(
                         RarityFilter.onAverageOnceEvery(200),

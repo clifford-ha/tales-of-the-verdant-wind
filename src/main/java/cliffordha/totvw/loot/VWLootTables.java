@@ -4,10 +4,10 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWItems;
+
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -23,11 +23,12 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetEnchantmentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 public class VWLootTables {
-    private static final Holder<ContextIntProvider> ONE_ROLL = ContextIntProviders.exactly(1);
+    private static final NumberProvider ONE_ROLL = ConstantValue.exactly(1);
 
     public static final ResourceKey<LootTable> VERDANT_CAMP_VALUABLES = createFromPath("chests/verdant_camp_valuables");
     public static final ResourceKey<LootTable> VERIXIUM_PILLAR = createFromPath("chests/verixium_pillar");
@@ -115,30 +116,30 @@ public class VWLootTables {
         return LootPool.lootPool()
                 .setRolls(ONE_ROLL)
                 .when(LootItemRandomChanceCondition.randomChance(chance))
-                .add(LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(count))).build());
+                .add(LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(ConstantValue.exactly(count))).build());
     }
     private static LootPool.Builder addBlockChance(Block block, int count, float chance) {
         return LootPool.lootPool()
                 .setRolls(ONE_ROLL)
                 .when(LootItemRandomChanceCondition.randomChance(chance))
                 .add(LootItem.lootTableItem(block)
-                .apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(count))).build());
+                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(count))).build());
     }
     private static LootPool.Builder addEnchantedBookChance(HolderLookup.Provider provider, ResourceKey<Enchantment> ench, int lvl, float chance) {
         return LootPool.lootPool()
                 .setRolls(ONE_ROLL)
                 .when(LootItemRandomChanceCondition.randomChance(chance))
                 .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK).apply(new SetEnchantmentsFunction.Builder()
-                        .withEnchantment(provider.getOrThrow(ench), ContextIntProviders.exactly(lvl)))
-                .apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(1))).build());
+                        .withEnchantment(provider.getOrThrow(ench), ConstantValue.exactly(lvl)))
+                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))).build());
     }
     private static LootPool.Builder addEnchantedBookChance(HolderLookup.Provider provider, ResourceKey<Enchantment> ench, int lvlA, int lvlB, float chance) {
         return LootPool.lootPool()
                 .setRolls(ONE_ROLL)
                 .when(LootItemRandomChanceCondition.randomChance(chance))
                 .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK).apply(new SetEnchantmentsFunction.Builder()
-                        .withEnchantment(provider.getOrThrow(ench), ContextIntProviders.between(lvlA, lvlB)))
-                .apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(1))).build());
+                        .withEnchantment(provider.getOrThrow(ench), UniformGenerator.between(lvlA, lvlB)))
+                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))).build());
     }
 
     public static void registerModifiers() {

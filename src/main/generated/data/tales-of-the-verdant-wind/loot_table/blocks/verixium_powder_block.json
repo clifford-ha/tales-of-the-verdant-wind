@@ -5,46 +5,86 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "condition": {
-            "type": "minecraft:inverted",
-            "term": "minecraft:tool/can_silk_touch"
-          },
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 9,
-              "min": 3
+          "conditions": [
+            {
+              "condition": "minecraft:inverted",
+              "term": {
+                "condition": "minecraft:match_tool",
+                "predicate": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {
+                        "enchantments": "minecraft:silk_touch",
+                        "levels": {
+                          "min": 1
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
-          },
+          ],
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 9.0,
+                "min": 3.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "tales-of-the-verdant-wind:verixium_powder"
         },
         {
           "type": "minecraft:item",
-          "condition": "minecraft:tool/can_silk_touch",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
+          "conditions": [
+            {
+              "condition": "minecraft:match_tool",
+              "predicate": {
+                "predicates": {
+                  "minecraft:enchantments": [
+                    {
+                      "enchantments": "minecraft:silk_touch",
+                      "levels": {
+                        "min": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "functions": [
+            {
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "tales-of-the-verdant-wind:verixium_powder_block"
         },
         {
           "type": "minecraft:item",
-          "condition": {
-            "type": "minecraft:survives_explosion"
-          },
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": {
-              "type": "minecraft:uniform",
-              "max": 9,
-              "min": 0
+          "conditions": [
+            {
+              "condition": "minecraft:survives_explosion"
             }
-          },
+          ],
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 9.0,
+                "min": 0.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "tales-of-the-verdant-wind:verixium_powder"
         }
       ],
-      "rolls": 1
+      "rolls": 1.0
     }
   ]
 }

@@ -12,8 +12,9 @@
             "block": "minecraft:water",
             "predicate_type": "minecraft:block_match"
           },
-          "output_state": "tales-of-the-verdant-wind:verdant_spruce_wood"
-
+          "output_state": {
+            "Name": "tales-of-the-verdant-wind:verdant_spruce_wood"
+          }
         },
         {
           "input_predicate": {
@@ -24,8 +25,9 @@
             "block": "minecraft:ice",
             "predicate_type": "minecraft:block_match"
           },
-          "output_state": "tales-of-the-verdant-wind:verdant_spruce_planks"
-
+          "output_state": {
+            "Name": "tales-of-the-verdant-wind:verdant_spruce_planks"
+          }
         },
         {
           "input_predicate": {
@@ -37,8 +39,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "id": "minecraft:grass_block",
-            "properties": {
+            "Name": "minecraft:grass_block",
+            "Properties": {
               "snowy": "false"
             }
           }
@@ -53,8 +55,8 @@
             "predicate_type": "minecraft:block_match"
           },
           "output_state": {
-            "id": "minecraft:water",
-            "properties": {
+            "Name": "minecraft:water",
+            "Properties": {
               "level": "0"
             }
           }
@@ -69,8 +71,8 @@
             "predicate_type": "minecraft:block_match"
           },
           "output_state": {
-            "id": "minecraft:water",
-            "properties": {
+            "Name": "minecraft:water",
+            "Properties": {
               "level": "0"
             }
           }

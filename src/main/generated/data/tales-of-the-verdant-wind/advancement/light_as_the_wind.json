@@ -22,6 +22,7 @@
     }
   },
   "display": {
+    "background": "tales-of-the-verdant-wind:light_as_the_wind",
     "description": {
       "color": "#247D66",
       "text": "Equip a full set of Verixium armor"

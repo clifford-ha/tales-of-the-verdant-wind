@@ -13,6 +13,7 @@
     }
   },
   "display": {
+    "background": "tales-of-the-verdant-wind:weightless_minerals",
     "description": {
       "color": "#247D66",
       "text": "Obtain a Verixium Chunk"

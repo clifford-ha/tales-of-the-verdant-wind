@@ -7,7 +7,6 @@ import cliffordha.totvw.client.ClientPrefsPayload;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.world.*;
-import cliffordha.totvw.world.tree.VWRootPlacerTypes;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -39,9 +38,7 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		VWParticles.register();
 		VWSounds.register();
 
-		VWRootPlacerTypes.register();
 		VWBiomeModifications.register();
-
 
 		VWCommands.register();
 		VWLootTables.registerModifiers();

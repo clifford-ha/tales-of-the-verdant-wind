@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipes": "tales-of-the-verdant-wind:verdant_spruce_stairs"
+        "recipe": "tales-of-the-verdant-wind:verdant_spruce_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

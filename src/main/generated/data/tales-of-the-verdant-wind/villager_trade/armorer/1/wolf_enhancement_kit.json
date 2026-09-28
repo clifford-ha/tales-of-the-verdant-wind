@@ -1,30 +1,38 @@
 {
   "additional_wants": {
-    "count": 10,
+    "count": 10.0,
     "id": "minecraft:iron_ingot"
   },
-  "given_item_modifier": {
-    "type": "minecraft:filtered",
-    "item_filter": {
-      "items": "minecraft:enchanted_book",
-      "predicates": {
-        "minecraft:stored_enchantments": [
-          {}
-        ]
-      }
+  "given_item_modifiers": [
+    {
+      "function": "minecraft:enchant_randomly",
+      "include_additional_cost_component": true,
+      "only_compatible": false,
+      "options": "tales-of-the-verdant-wind:wolf_armor_enhancement_kit"
     },
-    "on_fail": {
-      "type": "minecraft:discard"
+    {
+      "function": "minecraft:filtered",
+      "item_filter": {
+        "items": "minecraft:enchanted_book",
+        "predicates": {
+          "minecraft:stored_enchantments": [
+            {}
+          ]
+        }
+      },
+      "on_fail": {
+        "function": "minecraft:discard"
+      }
     }
-  },
+  ],
   "gives": {
     "id": "minecraft:enchanted_book"
   },
-  "max_uses": 2,
+  "max_uses": 2.0,
   "reputation_discount": 0.05,
   "wants": {
-    "count": 16,
+    "count": 16.0,
     "id": "minecraft:emerald"
   },
-  "xp": 15
+  "xp": 15.0
 }

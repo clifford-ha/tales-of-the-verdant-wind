@@ -8,83 +8,6 @@
       }
     },
     "minecraft:gameplay/increased_fire_burnout": true,
-    "minecraft:gameplay/natural_mob_spawns": {
-      "argument": {
-        "spawn_costs": {},
-        "spawns_by_category": {
-          "creature": [
-            {
-              "type": "minecraft:wolf",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 2,
-                "min_inclusive": 1
-              },
-              "weight": 10
-            },
-            {
-              "type": "minecraft:sniffer",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 1,
-                "min_inclusive": 0
-              },
-              "weight": 1
-            },
-            {
-              "type": "minecraft:chicken",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 4,
-                "min_inclusive": 2
-              },
-              "weight": 4
-            },
-            {
-              "type": "minecraft:goat",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 4,
-                "min_inclusive": 3
-              },
-              "weight": 10
-            }
-          ],
-          "monster": [
-            {
-              "type": "minecraft:zombie",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 2,
-                "min_inclusive": 2
-              },
-              "weight": 10
-            },
-            {
-              "type": "minecraft:skeleton",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 2,
-                "min_inclusive": 2
-              },
-              "weight": 30
-            }
-          ],
-          "water_ambient": [
-            {
-              "type": "minecraft:tropical_fish",
-              "count": {
-                "type": "minecraft:uniform",
-                "max_inclusive": 1,
-                "min_inclusive": 0
-              },
-              "weight": 1
-            }
-          ]
-        }
-      },
-      "modifier": "overlay"
-    },
     "minecraft:visual/fog_end_distance": 1024.0,
     "minecraft:visual/water_fog_color": "#48d9c1",
     "minecraft:visual/water_fog_end_distance": 128.0
@@ -173,5 +96,61 @@
     ]
   ],
   "has_precipitation": true,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "minecraft:wolf",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      },
+      {
+        "type": "minecraft:sniffer",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 1
+      },
+      {
+        "type": "minecraft:chicken",
+        "maxCount": 4,
+        "minCount": 2,
+        "weight": 4
+      },
+      {
+        "type": "minecraft:goat",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 10
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "minecraft:zombie",
+        "maxCount": 2,
+        "minCount": 2,
+        "weight": 10
+      },
+      {
+        "type": "minecraft:skeleton",
+        "maxCount": 2,
+        "minCount": 2,
+        "weight": 30
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [
+      {
+        "type": "minecraft:tropical_fish",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 1
+      }
+    ],
+    "water_creature": []
+  },
   "temperature": 0.45
 }

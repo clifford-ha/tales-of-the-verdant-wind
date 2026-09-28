@@ -11,7 +11,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TimelineTags;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.attribute.*;
 import net.minecraft.world.clock.WorldClocks;
@@ -57,10 +56,10 @@ public class VWDimensions {
                 DimensionType.Skybox.NONE,
                 CardinalLighting.Type.DEFAULT,
                 EnvironmentAttributeMap.builder()
-                        .set(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(0xBEFDFF))
-                        .set(EnvironmentAttributes.SKY_COLOR, ARGB.vector3fFromRGB24(OverworldBiomes.calculateSkyColor(0.35f)))
-                        .set(EnvironmentAttributes.CLOUD_COLOR, ARGB.vector4fFromARGB32(0xBEFDFF))
-                        .set(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, ARGB.vector4fFromARGB32( 0x17484D))
+                        .set(EnvironmentAttributes.FOG_COLOR, 0xBEFDFF)
+                        .set(EnvironmentAttributes.SKY_COLOR, OverworldBiomes.calculateSkyColor(0.35f))
+                        .set(EnvironmentAttributes.CLOUD_COLOR, 0xBEFDFF)
+                        .set(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, 0x17484D)
                         .set(EnvironmentAttributes.SNOW_GOLEM_MELTS, false)
                         .set(EnvironmentAttributes.CLOUD_HEIGHT, 256F)
                         .set(EnvironmentAttributes.BACKGROUND_MUSIC, BackgroundMusic.OVERWORLD)
@@ -71,7 +70,6 @@ public class VWDimensions {
                         .set(EnvironmentAttributes.MOON_PHASE, MoonPhase.FULL_MOON)
                         .set(EnvironmentAttributes.FOG_START_DISTANCE, 0F)
                         .set(EnvironmentAttributes.CREAKING_ACTIVE, false)
-                        .set(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY, 0.2f)
                         .set(EnvironmentAttributes.INCREASED_FIRE_BURNOUT, true)
                         .build(),
                 timelines.getOrThrow(TimelineTags.IN_OVERWORLD),

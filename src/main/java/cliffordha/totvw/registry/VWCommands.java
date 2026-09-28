@@ -450,7 +450,7 @@ public class VWCommands {
         }
 
         ServerLevel level = player.level();
-        StructureTemplateManager templateManager = source.getServer().getStructureTemplateManager();
+        StructureTemplateManager templateManager = source.getServer().getStructureManager();
         Registry<StructureTemplatePool> poolRegistry = level.registryAccess().lookupOrThrow(Registries.TEMPLATE_POOL);
         BlockPos origin = player.blockPosition().above(1);
 

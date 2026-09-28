@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipes": "tales-of-the-verdant-wind:verdant_spruce_chest_boat"
+        "recipe": "tales-of-the-verdant-wind:verdant_spruce_chest_boat"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

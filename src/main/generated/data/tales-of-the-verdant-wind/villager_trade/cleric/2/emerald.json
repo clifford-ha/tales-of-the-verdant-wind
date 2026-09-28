@@ -2,11 +2,11 @@
   "gives": {
     "id": "minecraft:emerald"
   },
-  "max_uses": 256,
+  "max_uses": 256.0,
   "reputation_discount": 0.05,
   "wants": {
-    "count": 4,
+    "count": 4.0,
     "id": "tales-of-the-verdant-wind:verixium_powder"
   },
-  "xp": 20
+  "xp": 20.0
 }

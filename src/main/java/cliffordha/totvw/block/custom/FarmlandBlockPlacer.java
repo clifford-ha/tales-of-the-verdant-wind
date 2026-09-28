@@ -80,7 +80,7 @@ public class FarmlandBlockPlacer extends Block {
                         level.setBlockAndUpdate(pos.above(), randomCrop.defaultBlockState());
 
                         for (int i = 0; i < random.nextInt(randomCrop.getMaxAge()); i++) {
-                            randomCrop.performBonemeal(level, random, pos.above(), randomCrop.defaultBlockState(), BonemealSource.MOB);
+                            randomCrop.performBonemeal(level, random, pos.above(), randomCrop.defaultBlockState());
                         }
                     }
                 } else {

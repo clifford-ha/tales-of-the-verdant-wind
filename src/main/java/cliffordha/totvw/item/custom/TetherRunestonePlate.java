@@ -1,13 +1,11 @@
 package cliffordha.totvw.item.custom;
 
-import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.attachments.Runestone;
-
 import cliffordha.totvw.util.VWUtil;
+
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -80,7 +77,7 @@ public class TetherRunestonePlate extends Item {
                             wolf.dropLeash();
                             VWUtil.addEffect(wolf, VWEffects.WIND_VEIL, 60 * 20, 0);
 
-                            wolf.teleportToPortalDestination(serverLevel,
+                            wolf.teleport(
                                     new TeleportTransition(
                                             (ServerLevel) player.level(),
                                             new Vec3(player.getX(), player.getY(), player.getZ()),

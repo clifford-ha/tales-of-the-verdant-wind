@@ -1,24 +1,22 @@
 package cliffordha.totvw.datagen;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.tag.VWItemTags;
 import cliffordha.totvw.util.VWUtil;
-import net.minecraft.advancements.Advancement;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.*;
-import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.data.recipes.SingleItemRecipeBuilder.stonecutting;
 
@@ -28,9 +26,8 @@ public class VWRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
-        return new RecipeProvider(recipes, advancements) {
-
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        return new RecipeProvider(registries, output) {
             private static String getRecipeOutputName(final ItemLike product, final ItemLike material) {
                 String itemName = getItemName(product);
                 return "stonecutting_" + itemName + "_from_" + getItemName(material);
