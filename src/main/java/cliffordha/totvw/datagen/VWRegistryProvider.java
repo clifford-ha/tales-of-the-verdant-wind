@@ -23,7 +23,7 @@ public class VWRegistryProvider extends FabricDynamicRegistryProvider {
         entries.addAll(registries.lookupOrThrow(Registries.VILLAGER_TRADE));
 
         entries.addAll(registries.lookupOrThrow(Registries.BIOME));
-        entries.addAll(registries.lookupOrThrow(Registries.CONFIGURED_FEATURE));
+        entries.addAll(registries.lookupOrThrow(Registries.FEATURE));
         entries.addAll(registries.lookupOrThrow(Registries.PLACED_FEATURE));
 
         entries.addAll(registries.lookupOrThrow(Registries.DIMENSION_TYPE));

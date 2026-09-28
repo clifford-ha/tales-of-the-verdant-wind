@@ -1,7 +1,6 @@
 package cliffordha.totvw.registry;
 
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.minecraft.world.level.block.Block;
 
 public class VWBlockProperties {
@@ -27,8 +26,8 @@ public class VWBlockProperties {
                 VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN
         );
 
-        strippable(VWBlocks.VERDANT_SPRUCE_LOG, VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
-        strippable(VWBlocks.VERDANT_SPRUCE_WOOD, VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
+        //strippable(VWBlocks.VERDANT_SPRUCE_LOG, VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
+        //strippable(VWBlocks.VERDANT_SPRUCE_WOOD, VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
     }
 
 
@@ -43,6 +42,6 @@ public class VWBlockProperties {
     }
 
     private static void strippable(Block baseBlock, Block strippedBlock){
-        StrippableBlockRegistry.register(baseBlock, strippedBlock);
+        //StrippableBlockRegistry.register(baseBlock, strippedBlock);
     }
 }

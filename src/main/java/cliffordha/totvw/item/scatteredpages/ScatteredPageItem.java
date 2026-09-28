@@ -4,7 +4,12 @@ import cliffordha.totvw.client.screen.ScatteredPageScreen;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.item.scatteredpages.contents.FirstBookSet;
 import cliffordha.totvw.item.scatteredpages.contents.MiscBookSet;
+import cliffordha.totvw.item.scatteredpages.handbooks.VWEffectsHandbook;
+import cliffordha.totvw.item.scatteredpages.handbooks.VWEnchantmentsHandbook;
+import cliffordha.totvw.item.scatteredpages.handbooks.VWFeaturesHandbook;
+import cliffordha.totvw.item.scatteredpages.handbooks.VWItemsHandbook;
 import cliffordha.totvw.registry.VWColors;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -24,10 +29,6 @@ import java.util.function.Consumer;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
-import static cliffordha.totvw.item.scatteredpages.handbooks.VWEffectsHandbook.EFFECTS_HANDBOOK_CONTENTS;
-import static cliffordha.totvw.item.scatteredpages.handbooks.VWEnchantmentsHandbook.ENCHANTMENTS_HANDBOOK_CONTENTS;
-import static cliffordha.totvw.item.scatteredpages.handbooks.VWFeaturesHandbook.FEATURES_HANDBOOK_CONTENTS;
-import static cliffordha.totvw.item.scatteredpages.handbooks.VWItemsHandbook.ITEMS_HANDBOOK_CONTENTS;
 import static cliffordha.totvw.util.VWUtil.TextUtil.*;
 
 public class ScatteredPageItem extends Item {
@@ -55,6 +56,9 @@ public class ScatteredPageItem extends Item {
                     + fText(UNDERLINED, cText(GRAY,"You can disable this feature (Allow Lore Spoilers) in the config file.")));
 
     private String getTitle(Player player, int title) {
+        if (this.pageID == -2) {
+            return player.getPlainTextName() + "'s Stats";
+        }
         return ScatteredPageTitle.fromId(title)
                 .map(t -> addTitle(t.getTitle()))
                 .orElse(addTitle(ScatteredPageTitle.SP_0.getTitle()));
@@ -86,10 +90,10 @@ public class ScatteredPageItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (level.isClientSide()) {
             switch (this.pageID) {
-                case 2006 -> openScreen(ENCHANTMENTS_HANDBOOK_TITLE, ENCHANTMENTS_HANDBOOK_CONTENTS(player));
-                case 2007 -> openScreen(EFFECTS_HANDBOOK_TITLE, EFFECTS_HANDBOOK_CONTENTS());
-                case 2008 -> openScreen(ITEMS_HANDBOOK_TITLE, ITEMS_HANDBOOK_CONTENTS());
-                case 2009 -> openScreen(FEATURES_HANDBOOK_TITLE, FEATURES_HANDBOOK_CONTENTS());
+                case 2006 -> openScreen(ENCHANTMENTS_HANDBOOK_TITLE, VWEnchantmentsHandbook.ENCHANTMENTS_HANDBOOK_CONTENTS(player));
+                case 2007 -> openScreen(EFFECTS_HANDBOOK_TITLE, VWEffectsHandbook.EFFECTS_HANDBOOK_CONTENTS());
+                case 2008 -> openScreen(ITEMS_HANDBOOK_TITLE, VWItemsHandbook.ITEMS_HANDBOOK_CONTENTS());
+                case 2009 -> openScreen(FEATURES_HANDBOOK_TITLE, VWFeaturesHandbook.FEATURES_HANDBOOK_CONTENTS());
                 default -> openScreen(getTitle(player, pageID), getPages(player, pageID));
             }
         }

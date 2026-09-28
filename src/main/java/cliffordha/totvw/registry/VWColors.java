@@ -23,6 +23,12 @@ public class VWColors {
     public static final int DEFAULT = 0xDCFAFA;
     public static final int DEFAULT_MUTED = 0x90A4AE;
 
+    public static final int RUNESTONE_GENESIS = 0x20DFDF;
+    public static final int RUNESTONE_SOUL = 0x5BE5BC;
+    public static final int RUNESTONE_EFFLORESCENCE = 0xF9D2D2;
+    public static final int RUNESTONE_TETHER = 0x207FDF;
+    public static final int RUNESTONE_HAVOC = 0x9D2828;
+
     public static final int INDICATOR_20 = 0xb93636;
     public static final int INDICATOR_40 = 0xB97232;
     public static final int INDICATOR_60 = 0xadb94f;

@@ -10,8 +10,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -33,15 +32,15 @@ public class VWBlockLootTableProvider extends FabricBlockLootSubProvider {
         add(VWBlocks.VERIXIUM_POWDER_BLOCK, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .add(LootItem.lootTableItem(VWItems.VERIXIUM_POWDER)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 9)))
+                                .apply(SetItemCountFunction.setCount(ContextIntProviders.between(3, 9)))
                                 .when(doesNotHaveSilkTouch())
                         )
                         .add(LootItem.lootTableItem(VWBlocks.VERIXIUM_POWDER_BLOCK)
-                                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                .apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(1)))
                                 .when(hasSilkTouch())
                         )
                         .add(LootItem.lootTableItem(VWItems.VERIXIUM_POWDER)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 9)))
+                                .apply(SetItemCountFunction.setCount(ContextIntProviders.between(0, 9)))
                                 .when(ExplosionCondition.survivesExplosion())
                         )
                 )

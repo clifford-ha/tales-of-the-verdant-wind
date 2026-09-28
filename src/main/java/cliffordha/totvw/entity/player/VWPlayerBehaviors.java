@@ -8,9 +8,11 @@ import cliffordha.totvw.entity.skills.VerdantWindBlessing;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.HavocType;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.tag.VWBiomeTags;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
@@ -23,6 +25,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.ArrayList;
@@ -86,6 +90,19 @@ public class VWPlayerBehaviors {
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(0, 3),
                 (player, _) -> {
+                    AttachmentType<Integer> BLOOM_STACKS = VWAttachments.VERDANT_BLOOM_STACK;
+                    if (player.hasAttached(BLOOM_STACKS)) {
+                        int remaining = player.getAttachedOrElse(BLOOM_STACKS, 0);
+                        boolean shouldRemoveBloomStack = remaining > 0 && !player.getInventory().contains(new ItemStack(Items.BONE_MEAL));
+                        if (shouldRemoveBloomStack) {
+
+                            player.setAttached(BLOOM_STACKS, remaining - 2);
+                            if (player.getAttachedOrElse(BLOOM_STACKS, 0) <= 0) {
+                                player.removeAttached(BLOOM_STACKS);
+                            }
+                        }
+                    }
+
                     float HEALTH_THRESHOLD = player.getAttachedOrElse(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD,
                             VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;
                     if (player.getHealth() <= player.getMaxHealth() * HEALTH_THRESHOLD) {
@@ -96,6 +113,7 @@ public class VWPlayerBehaviors {
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(),
                 (player, _) -> {
+
                     if (VWConfig.get().LOG_ENCHANTMENT_SHOW_PLAYER_CD) setPlayerConfiguration(player, 0);
                     if (VWConfig.get().SERVER_SKILL_COOLDOWNS) {
                         depleteCooldown(player, PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND);

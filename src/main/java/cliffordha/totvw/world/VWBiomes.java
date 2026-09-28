@@ -3,10 +3,8 @@ package cliffordha.totvw.world;
 import cliffordha.totvw.TOTVW;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
-import terrablender.api.RegionType;
 import terrablender.api.Regions;
 
 public class VWBiomes {
@@ -18,7 +16,7 @@ public class VWBiomes {
     }
 
     public static void bootstrap(BootstrapContext<Biome> context) {
-        var carvers = context.lookup(Registries.CONFIGURED_CARVER);
+        var carvers = context.lookup(Registries.CARVER);
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
 
         register(context, VERDANT_MOUNTAINS, VWOverworldBiomes.verdantMountains(placedFeatures, carvers));

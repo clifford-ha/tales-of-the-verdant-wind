@@ -1,26 +1,22 @@
 package cliffordha.totvw.datagen;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.tag.VWItemTags;
 import cliffordha.totvw.util.VWUtil;
-import net.minecraft.advancements.predicates.ItemPredicate;
-import net.minecraft.advancements.triggers.CriteriaTriggers;
-import net.minecraft.advancements.triggers.InventoryChangeTrigger;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.*;
-import net.minecraft.world.item.Item;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
@@ -32,12 +28,28 @@ public class VWRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput exporter) {
-        return new RecipeProvider(registryLookup, exporter) {
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+        return new RecipeProvider(recipes, advancements) {
+
+            private static String getRecipeOutputName(final ItemLike product, final ItemLike material) {
+                String itemName = getItemName(product);
+                return "stonecutting_" + itemName + "_from_" + getItemName(material);
+            }
+
+            private void stonecutter(RecipeCategory category, ItemLike result, ItemLike base, int count) {
+                SingleItemRecipeBuilder dyeRecipe = SingleItemRecipeBuilder.stonecutting(Ingredient.of(base), category, result, count).unlockedBy(getHasName(base), this.has(base));
+                dyeRecipe.save(this.output, getRecipeOutputName(result, base));
+            }
+
+            private void dyeFromIridescentGlass(ItemLike... items) {
+                for (ItemLike item : items) {
+                    stonecutter(RecipeCategory.MISC, item, VWBlocks.IRIDESCENT_GLASS, 4);
+                    stonecutter(RecipeCategory.MISC, item, VWBlocks.IRIDESCENT_GLASS_PANE, 2);
+                }
+            }
+
             @Override
             public void buildRecipes() {
-                HolderLookup.RegistryLookup<Item> itemLookup = registries.lookupOrThrow(Registries.ITEM);
-
                 shaped(RecipeCategory.MISC, VWBlocks.VERIXIUM_POWDER_BLOCK, 1)
                         .pattern("XXX")
                         .pattern("XXX")
@@ -228,6 +240,17 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .define('I', Items.DEEPSLATE)
                         .group("verixium_armors")
                         .unlockedBy(getHasName(VWItems.VERIXIUM_POWDER), has(VWItems.VERIXIUM_POWDER))
+                        .save(output, "verixium_armor_upgrade_template_duplicate");
+
+                shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE, 1)
+                        .pattern("XWX")
+                        .pattern("WTW")
+                        .pattern("XWX")
+                        .define('W', Blocks.DEEPSLATE)
+                        .define('X', VWBlocks.VERIXIUM_POWDER_BLOCK)
+                        .define('T', Items.WIND_CHARGE)
+                        .group("verixium_armors")
+                        .unlockedBy(getHasName(VWItems.VERIXIUM_POWDER), has(VWItems.VERIXIUM_POWDER))
                         .save(output);
 
                 shaped(RecipeCategory.MISC, VWItems.SOUL_RUNESTONE_PLATE, 1)
@@ -275,10 +298,25 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                 planksFromLogs(VWBlocks.VERDANT_SPRUCE_PLANKS, VWItemTags.VERDANT_SPRUCE_LOGS, 4);
                 woodenBoat(VWItems.VERDANT_SPRUCE_BOAT, VWBlocks.VERDANT_SPRUCE_PLANKS);
                 chestBoat(VWItems.VERDANT_SPRUCE_CHEST_BOAT, VWItems.VERDANT_SPRUCE_BOAT);
-
-                signBuilder(VWItems.VERDANT_SPRUCE_SIGN, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS));
-                hangingSignBuilder(VWItems.VERDANT_SPRUCE_HANGING_SIGN, Ingredient.of(VWBlocks.VERDANT_SPRUCE_PLANKS));
                 shelf(VWBlocks.VERDANT_SPRUCE_SHELF, VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
+
+                shaped(RecipeCategory.BUILDING_BLOCKS, VWItems.VERDANT_SPRUCE_SIGN, 3)
+                        .pattern("XXX")
+                        .pattern("XXX")
+                        .pattern(" P ")
+                        .define('X', VWBlocks.VERDANT_SPRUCE_PLANKS)
+                        .define('P', Items.STICK)
+                        .unlockedBy(getHasName(VWBlocks.VERDANT_SPRUCE_PLANKS), has(VWBlocks.VERDANT_SPRUCE_PLANKS))
+                        .save(output);
+
+                shaped(RecipeCategory.BUILDING_BLOCKS, VWItems.VERDANT_SPRUCE_HANGING_SIGN, 6)
+                        .pattern("P P")
+                        .pattern("XXX")
+                        .pattern("XXX")
+                        .define('X', VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG)
+                        .define('P', Blocks.IRON_CHAIN)
+                        .unlockedBy(getHasName(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG), has(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG))
+                        .save(output);
 
                 shaped(RecipeCategory.REDSTONE, VWBlocks.VERDANT_SPRUCE_STORAGE_BOX, 1)
                         .pattern("XPX")
@@ -301,7 +339,9 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy(getHasName(Blocks.GLASS), has(Blocks.GLASS))
                         .save(output);
 
-                dyeFromIridescentGlass(exporter,
+                stonecutter(RecipeCategory.MISC, VWBlocks.IRIDESCENT_GLASS_PANE, VWBlocks.IRIDESCENT_GLASS_PANE, 16);
+
+                dyeFromIridescentGlass(
                         Items.DYE.white(),
                         Items.DYE.gray(),
                         Items.DYE.brown(),
@@ -321,28 +361,6 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                 );
             }
         };
-    }
-
-    private static String getItemName(ItemLike item) {
-        return BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
-    }
-
-    private static SingleItemRecipeBuilder getDye(ItemLike block, ItemLike output, int count) {
-        String name = BuiltInRegistries.ITEM.getKey(output.asItem()).getPath();
-        return stonecutting(Ingredient.of(block), RecipeCategory.MISC, output, count).unlockedBy(name, CriteriaTriggers.INVENTORY_CHANGED.createCriterion(new InventoryChangeTrigger.TriggerInstance(Optional.empty(), InventoryChangeTrigger.TriggerInstance.Slots.ANY, List.of(ItemPredicate.Builder.item().build()))));
-    }
-
-    private void dyeFromIridescentGlass(RecipeOutput exporter, Item... dye) {
-        for (Item item : dye) {
-            SingleItemRecipeBuilder recipe = getDye(VWBlocks.IRIDESCENT_GLASS, item, 4);
-            String outputDye = "iridescent_glass_to_" + getItemName(item);
-            recipe.save(exporter, "stonecutting_" + outputDye);
-        }
-        for (Item item : dye) {
-            SingleItemRecipeBuilder recipe = getDye(VWBlocks.IRIDESCENT_GLASS_PANE, item, 2);
-            String outputDye = "iridescent_glass_pane_to_" + getItemName(item);
-            recipe.save(exporter, "stonecutting_" + outputDye);
-        }
     }
 
     @Override

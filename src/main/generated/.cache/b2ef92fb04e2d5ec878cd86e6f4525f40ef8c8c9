@@ -1,8 +1,13 @@
-// 26.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Advancements
-9f0c5345d1d70d5ece8d83830faa782477ce9e81 data/minecraft/advancement/tales-of-the-verdant-winda_light_companion.json
-572a01b0512da2a83f43df2329b0eb5dd5bb2e32 data/minecraft/advancement/tales-of-the-verdant-winda_wolf_accompanied_by_the_winds.json
-5aa6a2ae82829cc0ad8ef7537d8fdb3fcd2a1cef data/minecraft/advancement/tales-of-the-verdant-windcondensed_wind.json
-1c01e032875b22c51a53fb44124338f3ffb7485c data/minecraft/advancement/tales-of-the-verdant-windlight_as_the_wind.json
-b6abd4a0ff74a1f22a3baf8855bed4e83806db89 data/minecraft/advancement/tales-of-the-verdant-windtales_of_the_verdant_wind.json
-cf20ddb98dca2fbd81eaccfe5eb1c6d00e46f9cd data/minecraft/advancement/tales-of-the-verdant-windtastes_like_ink.json
-53a4986c79c8990d9e4ace4f86b5101ed08e74c7 data/minecraft/advancement/tales-of-the-verdant-windweightless_minerals.json
+// 26.3	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Advancements
+f703a32b88502f9dce3be0cb10149b81ff0355a2 data/tales-of-the-verdant-wind/advancement/a_light_companion.json
+b47c3abfa64bb38496a1c8eb7dc3e8066356cde2 data/tales-of-the-verdant-wind/advancement/a_wolf_accompanied_by_the_winds.json
+c543ee1443d55c3cf4e2c1283b50ea2652dcccd0 data/tales-of-the-verdant-wind/advancement/bound_by_a_thread.json
+23cb3f050d8e714d1a8e59373e048e5cf95cacad data/tales-of-the-verdant-wind/advancement/condensed_wind.json
+b19c34b761240d57a7af54bf233d343bd191287b data/tales-of-the-verdant-wind/advancement/deathly_defiance.json
+e98ad8ff430411079b4a7839eb9782a6619f079c data/tales-of-the-verdant-wind/advancement/holder_of_life.json
+b956fdb1074061a36d2a1d22336b5fd3b43fa5f0 data/tales-of-the-verdant-wind/advancement/light_as_the_wind.json
+a19a60ac459ff22747022f32daeadc484cba3961 data/tales-of-the-verdant-wind/advancement/power_beyond_reason.json
+b6abd4a0ff74a1f22a3baf8855bed4e83806db89 data/tales-of-the-verdant-wind/advancement/tales_of_the_verdant_wind.json
+4a1d07c40c5a153d96130b1bd73cf41669820ae7 data/tales-of-the-verdant-wind/advancement/tastes_like_ink.json
+57e7c7d6245974347ce89185b016623840f63245 data/tales-of-the-verdant-wind/advancement/weightless_minerals.json
+4fcc3808f34feccf97e1d94baf294db6941b066d data/tales-of-the-verdant-wind/advancement/world_lost_in_time.json

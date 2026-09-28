@@ -73,7 +73,7 @@ import static cliffordha.totvw.registry.VWEnchantments.entityEnchantmentLVL;
 import static cliffordha.totvw.util.VWUtil.*;
 
 public class LodestoneWindCoreBlock extends Block {
-    public static final MapCodec<LodestoneWindCoreBlock> CODEC = simpleCodec(LodestoneWindCoreBlock::new);
+    public static final MapCodec<LodestoneWindCoreBlock> CODEC = MapCodec.unit(() -> new LodestoneWindCoreBlock(Properties.of()));
     private static final int ENERGY_LIMIT = 100000;
 
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -84,7 +84,6 @@ public class LodestoneWindCoreBlock extends Block {
         super(properties);
     }
 
-    @Override
     protected MapCodec<? extends Block> codec() {
         return CODEC;
     }

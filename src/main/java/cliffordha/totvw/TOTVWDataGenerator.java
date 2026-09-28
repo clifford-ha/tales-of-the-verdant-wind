@@ -9,8 +9,8 @@ import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.world.VWBiomes;
 import cliffordha.totvw.worldgen.VWConfiguredFeatures;
 import cliffordha.totvw.worldgen.VWPlacedFeatures;
-
 import cliffordha.totvw.worldgen.dimension.VWDimensions;
+
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.RegistrySetBuilder;
@@ -51,7 +51,7 @@ public class TOTVWDataGenerator implements DataGeneratorEntrypoint {
 		registryBuilder.add(Registries.WOLF_VARIANT, VWWolfVariants::bootstrap);
 
 		registryBuilder.add(Registries.BIOME, VWBiomes::bootstrap);
-		registryBuilder.add(Registries.CONFIGURED_FEATURE, VWConfiguredFeatures::configure);
+		registryBuilder.add(Registries.FEATURE, VWConfiguredFeatures::configure);
 		registryBuilder.add(Registries.PLACED_FEATURE, VWPlacedFeatures::configure);
 
 		registryBuilder.add(Registries.LEVEL_STEM, VWDimensions::bootstrapStem);

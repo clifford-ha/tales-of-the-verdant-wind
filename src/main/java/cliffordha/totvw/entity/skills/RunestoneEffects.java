@@ -6,9 +6,11 @@ import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.HavocType;
 import cliffordha.totvw.registry.attachments.Runestone;
-
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
+
+import cliffordha.totvw.util.VWUtil;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -24,6 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +39,17 @@ public class RunestoneEffects {
     public static final AttachmentType<Runestone> RUNESTONE_TYPE = WolfAttachment.RUNESTONE_TYPE;
     public static final AttachmentType<List<String>> TETHERED_ENTITIES = WolfAttachment.TETHERED_ENTITY_TYPES;
 
-    public static final AttachmentType<Integer> CD_HAVOC = PlayerAttachment.CD_HAVOC;
-
     public static final AttachmentType<Integer> ATTACK_CYCLE = WolfAttachment.ATTACK_CYCLE;
 
 
     public static void processRunestones(Wolf wolf, ServerLevel level, Runestone type) {
         if (wolf.getOwner() != null && wolf.getOwner() instanceof Player player) {
 
-            int cdHavoc = player.getAttachedOrElse(CD_HAVOC, 0);
+            int cdHavoc = player.getAttachedOrElse(PlayerAttachment.CD_HAVOC, 0);
             if (type == Runestone.HAVOC && cdHavoc < 1) {
-                if (!player.hasEffect(VWEffects.HAVOC)) addEffect(player, VWEffects.HAVOC, sec(30), 0);
+                if (!player.hasEffect(VWEffects.HAVOC)) {
+                    addEffect(player, VWEffects.HAVOC, sec(60), 0);
+                }
             }
         }
     }
@@ -65,16 +68,16 @@ public class RunestoneEffects {
         boolean isVoid = damage >= player.getHealth() * 0.6f && noTotem;
 
         if (isVoid) {
-            setPlayerHavocStat(player, HavocType.VOID, 2, (60 * 5) + 30, sec(12));
+            setPlayerHavocStat(player, HavocType.VOID, 2, sec(12));
             type = HavocType.VOID.name().toUpperCase();
 
         } else {
             boolean isObliteration = getEntityArmors(attacker) > 2;
             if (isObliteration && attacker != null) {
-                setPlayerHavocStat(player, HavocType.EXPULSION,2, 60 * 3, sec(30));
+                setPlayerHavocStat(player, HavocType.EXPULSION,2, sec(30));
                 type = HavocType.EXPULSION.name().toUpperCase();
             } else {
-                setPlayerHavocStat(player, HavocType.ANNIHILATION, 6, 90, sec(60));
+                setPlayerHavocStat(player, HavocType.ANNIHILATION, 6, sec(60));
                 type = HavocType.ANNIHILATION.name().toUpperCase();
             }
         }
@@ -97,24 +100,18 @@ public class RunestoneEffects {
         addEffect(attacker, MobEffects.GLOWING, duration, 0);
         sendParticles(HavocEffect.HAVOC_PARTICLE, (ServerLevel) attacker.level(), attacker.blockPosition(), 24, 0.5);
     }
-    private static void setPlayerHavocStat(Player player, HavocType type, int usageCount, int cd, int duration) {
+    private static void setPlayerHavocStat(Player player, HavocType type, int usageCount, int duration) {
         int extra = VWEnchantments.getBenediction(player) ? 1 : 0;
         int sec = extra > 0 ? sec(15) : 0;
         rewriteEffect(player, VWEffects.HAVOC, duration + sec, 0);
         player.setAttached(PlayerAttachment.HAVOC_TYPE, type);
         player.setAttached(PlayerAttachment.HAVOC_USAGE_COUNT, usageCount + extra);
-        player.setAttached(CD_HAVOC, cd);
     }
     public static void havocPlayerOnAttack(Player player, LivingEntity victim) {
         if (victim == null) return;
         if (victim instanceof Wolf) return;
 
         int usage = HavocType.getUsage(player);
-        if (usage < 1) {
-            HavocEffect.removeHavoc(player);
-            player.removeEffect(VWEffects.HAVOC);
-            return;
-        }
 
         ServerLevel level = (ServerLevel) player.level();
         HavocType type = HavocType.getType(player);
@@ -158,7 +155,13 @@ public class RunestoneEffects {
 
         player.setAttached(PlayerAttachment.HAVOC_USAGE_COUNT, usage - 1);
         int newUsage = HavocType.getUsage(player);
-        sendToChat(player, true, type.name() + ": " + newUsage + " point(s) left");
+
+        if (newUsage < 1) {
+            sendToChat(player, true, "Havoc has been removed");
+            player.removeEffect(VWEffects.HAVOC);
+        } else {
+            sendToChat(player, true, type.name() + ": " + newUsage + " point(s) left");
+        }
     }
 
 
@@ -170,16 +173,6 @@ public class RunestoneEffects {
         processLinkStatus(wolf, victim, level);
     }
     public static void processLinkStatus(Wolf wolf, LivingEntity victim, ServerLevel level) {
-        List<UUID> aggressors = new ArrayList<>(wolf.getAttachedOrElse(WolfAttachment.AGGRESSOR_LIST, List.of()));
-        if (victim instanceof Player player) {
-            if (wolf.getOwner() == player) {
-                aggressors.remove(player.getUUID());
-                return;
-            } else {
-                if (!aggressors.contains(player.getUUID())) return;
-            }
-        }
-
         List<String> entities = new ArrayList<>(wolf.getAttachedOrElse(TETHERED_ENTITIES, List.of()));
 
         if (victim != null) {
@@ -193,18 +186,35 @@ public class RunestoneEffects {
             int MIGHT_ADDITIONAL = VWEnchantments.getMight(wolf);
             if (MIGHT_ADDITIONAL > 0) SCAN_SIZE += MIGHT_ADDITIONAL * 2;
 
-            List<Entity> scanner = level.getEntities(wolf, wolf.getBoundingBox().inflate(Math.min(SCAN_SIZE, 24)),
-                    t -> t.getType().getDescriptionId().equals(entity)).stream().limit(LINK_LIMIT).toList();
+            List<Entity> scanner = level.getEntities(
+                    wolf,
+                    VWUtil.scanArea(wolf, Math.min(SCAN_SIZE, 24)),
+                    test -> test.getType().getDescriptionId().equals(entity)
+            ).stream().limit(LINK_LIMIT).toList();
 
             if (scanner.isEmpty()) return;
 
             for (Entity mob : scanner) {
                 LivingEntity target = (LivingEntity) mob;
+
+                if (target instanceof Player player) {
+                    boolean isNotAggressor = !WolfAttachment.isListedAggressor(wolf, VWAttachments.getWolfPlayerSharedId(target));
+
+                    if (isNotAggressor) {
+                        return;
+                    } else if (wolf.getOwner() != null) {
+                        if (wolf.getOwner().equals(player)) {
+                            return;
+                        }
+                    }
+                }
+
+                DamageSource source = VWDamageTypes.tetherProxy(level);
                 if (wolf.isWearingBodyArmor()) {
-                    VWWolfBehaviors.runEnchantmentsOnDamage(wolf, level, target, false);
+                    VWWolfBehaviors.runEnchantmentsOnDamage(wolf, level, target, false, source);
                 } else {
                     VWWolfBehaviors.applyConsolidatedDamage(level, wolf, target,
-                            level.damageSources().magic(),
+                            source,
                             0,
                             false
                     );
@@ -213,13 +223,15 @@ public class RunestoneEffects {
         }
     }
     private static void updateLinkRecord(Wolf wolf, LivingEntity victim, List<String> entities, ServerLevel level) {
+        if (victim instanceof Wolf) return;
         List<String> newEntities = new ArrayList<>(entities);
 
         for (String type : entities) {
             int cycle = wolf.getAttachedOrElse(ATTACK_CYCLE, 0) - 1;
             List<Entity> scanner = level.getEntities(wolf,
-                    wolf.getBoundingBox().inflate(12),
-                    t -> t.getType().getDescriptionId().equals(type)).stream().limit(1).toList();
+                    scanArea(wolf, 12),
+                    t -> t.getType().getDescriptionId().equals(type)
+            ).stream().limit(1).toList();
 
             if (scanner.isEmpty() && cycle % 2 == 0) {
                 newEntities.remove(type);

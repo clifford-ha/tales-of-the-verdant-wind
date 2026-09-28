@@ -92,7 +92,9 @@ public class VWItemTags extends FabricTagsProvider.ItemTagsProvider {
                 .add(item(VWItems.GENESIS_RUNESTONE_PLATE))
                 .add(item(VWItems.TETHER_RUNESTONE_PLATE))
                 .add(item(VWItems.HAVOC_RUNESTONE_PLATE))
-                .add(item(VWItems.SOUL_RUNESTONE_PLATE));
+                .add(item(VWItems.SOUL_RUNESTONE_PLATE))
+                .add(item(VWItems.EFFLORESCENCE_RUNESTONE_PLATE))
+        ;
 
 
 

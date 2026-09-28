@@ -1,4 +1,6 @@
-// 26.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/VWModelProvider
+// 26.3	-999999999-01-01T00:00:00	Tales of the Verdant Wind/VWModelProvider
+8d0e51f166e934ea0ddcce5491c083a25ad807a0 assets/tales-of-the-verdant-wind/blockstates/air_placeholder.json
+33b57c9bc0bd749c97026f006ebc338068ccd890 assets/tales-of-the-verdant-wind/blockstates/farmland_placer.json
 4802879f649edc6bcf8df07baf68b1e98cc59deb assets/tales-of-the-verdant-wind/blockstates/iridescent_glass.json
 71c88180e3bcb200ce99a3f8eed079d5cc6446b0 assets/tales-of-the-verdant-wind/blockstates/iridescent_glass_pane.json
 442e777a76ed1ac58ac0960ef73b3cd3cf228224 assets/tales-of-the-verdant-wind/blockstates/lodestone_wind_core.json
@@ -28,10 +30,12 @@ cfb2140cda9ef6564061db07ffa272f0a7e21f49 assets/tales-of-the-verdant-wind/blocks
 b300a37266c709f62c70470421b3bd117074aa19 assets/tales-of-the-verdant-wind/blockstates/verixium_deepslate_ore.json
 51d87285d44357bc7409c310b1b286065bb266b9 assets/tales-of-the-verdant-wind/blockstates/verixium_powder_block.json
 218a7cffd3e05cf153b2408419f8e81e21e35ffa assets/tales-of-the-verdant-wind/blockstates/verixium_stone_ore.json
-16887b833fe61892da996acf6dcbbe7d00078297 assets/tales-of-the-verdant-wind/items/attachments_remover.json
+525f1316426773960719109eef453206d9516987 assets/tales-of-the-verdant-wind/items/air_placeholder.json
 112eeb4d54df066bc1ee98753391d0b2dcb146c2 assets/tales-of-the-verdant-wind/items/condensed_verixium.json
 e89ff4fd0940b1f5d09951e98acca8c58a4513ec assets/tales-of-the-verdant-wind/items/effects_handbook.json
+ceff14eef1800ee50b824b75b19822d16af5708f assets/tales-of-the-verdant-wind/items/efflorescence_runestone_plate.json
 812372759ad37cf11aa6ac636b3cdd51bebd5878 assets/tales-of-the-verdant-wind/items/enchantments_handbook.json
+59ff776103e94fe052c6ce46f0dd3a02db8140c8 assets/tales-of-the-verdant-wind/items/farmland_placer.json
 edafea4e46ce16aae7669116cf84b195d2f8a41e assets/tales-of-the-verdant-wind/items/features_handbook.json
 601f6bd4121743bca4714ebe3e2a306b37ddf432 assets/tales-of-the-verdant-wind/items/genesis_runestone_plate.json
 1a30fad254e16c81730776da4db32435cd5eb4e6 assets/tales-of-the-verdant-wind/items/havoc_runestone_plate.json
@@ -107,6 +111,7 @@ c45734e64eb2dfdf951574ff2b60ebcd559eb026 assets/tales-of-the-verdant-wind/items/
 e39321c690092adb33916aaacb13433fa0313bc7 assets/tales-of-the-verdant-wind/items/verixium_stone_ore.json
 74e54f8ab45d41d1daa740722570d8bca8aa368e assets/tales-of-the-verdant-wind/items/verixium_sword.json
 621dfa5c00beda0581c08c11349ea97ae678bc36 assets/tales-of-the-verdant-wind/items/verixium_wolf_armor.json
+d9641bf645db912fb058f00231c53a972f299adc assets/tales-of-the-verdant-wind/models/block/air_placeholder.json
 7ba3c4b961dcd71a53a47551f313cc232777746c assets/tales-of-the-verdant-wind/models/block/iridescent_glass.json
 59dcbc26915e234f6d81a22ed88f8c7b616b7f2c assets/tales-of-the-verdant-wind/models/block/iridescent_glass_pane_noside.json
 98706531999f8696f38961db1583cc0b6930e75a assets/tales-of-the-verdant-wind/models/block/iridescent_glass_pane_noside_alt.json
@@ -135,14 +140,14 @@ f2ac68ab583a78a8fa3663d0d3e1dd6b9d3282bd assets/tales-of-the-verdant-wind/models
 2d797f099e91d7adde1c30e7cfaec38bc331fbbd assets/tales-of-the-verdant-wind/models/block/verdant_spruce_fence_inventory.json
 2683d362a176f3c6a68a87fe569fcf1d4c8cd0d4 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_fence_post.json
 d5b11b48a8213b5cb1b62b379b01a536bbf97974 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_fence_side.json
-d642982cac38a2774260f45c460c08c5383340ff assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_attached_rot_0.json
-ec7fda8163d0f999a35c305bf2d3722cb66523af assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_attached_rot_1.json
-fcbab6e0c1a00a313b0c7f8a01c11300c403e642 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_attached_rot_2.json
-307facc8662ebd626159b865147b61bf7cfcc916 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_attached_rot_3.json
-f12126a85e3a44b191636470e2e5a1b237d068af assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_rot_0.json
-999f5c8a8d1ef8d6c91b9fcda4f0bcabf66ec197 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_rot_1.json
-34ad615139aacc622e53c83c1de956e6687cdc79 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_rot_2.json
-9b4e643e7e49754d8741e72c909daf9381655ac9 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_rot_3.json
+65b37076e5283c0ec22963a51f000889a16ab655 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_attached_rot_0.json
+063758c2ca32a008e9c821fcff9eecf185cf0f06 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_attached_rot_1.json
+91f201a516f1c7747ee365a6b82fda891e41d0b3 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_attached_rot_2.json
+6f96ef4a5b60401366c0b80ac15a72e0e0dc781b assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_attached_rot_3.json
+48f9b1d2df2a12a0c95c2cd05260b8b0b221e3dc assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_rot_0.json
+71a774aefb5134984c3c8b4625680520cc9c8ab5 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_rot_1.json
+bf97c5d1874c180d633f11aec5b8f2f1d1d8c8c7 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_rot_2.json
+1a029a25daf3162ee1228d14b1065e4c483181be assets/tales-of-the-verdant-wind/models/block/verdant_spruce_hanging_sign_rot_3.json
 a9debc2d59131a415c474cc494ab2184baa2fa7f assets/tales-of-the-verdant-wind/models/block/verdant_spruce_leaves.json
 29da68c125e69ee5cd4d878194d35d360689ce7a assets/tales-of-the-verdant-wind/models/block/verdant_spruce_log.json
 6024ffe87446eca33dfbdce81db8e4d72c114235 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_planks.json
@@ -170,15 +175,15 @@ ac422a77c3b4c51fdd92c5b9a7e4b193ce06093f assets/tales-of-the-verdant-wind/models
 e825d17a2d1f9b19393436e156a758329cf52db0 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_trapdoor_bottom.json
 f0d89af2b4de633b68ecc132176b893b61f8f80b assets/tales-of-the-verdant-wind/models/block/verdant_spruce_trapdoor_open.json
 b09cbe3413bac7bdefb4cb5bed9fee1c2b1e8111 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_trapdoor_top.json
-fe7b1bf30b8ee4123c2b66abde6c6eed1f0e1ffc assets/tales-of-the-verdant-wind/models/block/verdant_spruce_wall_hanging_sign.json
+4e64f18c2db68fc97454be549a1a608ce8f2368f assets/tales-of-the-verdant-wind/models/block/verdant_spruce_wall_hanging_sign.json
 71245885e61f6945cfec9556bc6870dd0b589e75 assets/tales-of-the-verdant-wind/models/block/verdant_spruce_wall_sign.json
 0605aa8260febaf75f8a58ef593c10e2cdb5305e assets/tales-of-the-verdant-wind/models/block/verdant_spruce_wood.json
 2123115b8158407919cc99ac97674ba6547b466e assets/tales-of-the-verdant-wind/models/block/verixium_deepslate_ore.json
 217600e1e9f32a2b23e0ee8ec23c1f29349f3748 assets/tales-of-the-verdant-wind/models/block/verixium_powder_block.json
 49857e4155e69ebcb8792fcc131a77e545abb87a assets/tales-of-the-verdant-wind/models/block/verixium_stone_ore.json
-75f942d65c09e2341a687e2bcb7a64ac38231466 assets/tales-of-the-verdant-wind/models/item/attachments_remover.json
 adc19c63fd9650edaf30d18c33ace661edd149f0 assets/tales-of-the-verdant-wind/models/item/condensed_verixium.json
 fb165794e8da5e2805cbde46eecc6762c5deb789 assets/tales-of-the-verdant-wind/models/item/effects_handbook.json
+0da5ed5930b4b87a6b374cfd0097017d40c83215 assets/tales-of-the-verdant-wind/models/item/efflorescence_runestone_plate.json
 fb165794e8da5e2805cbde46eecc6762c5deb789 assets/tales-of-the-verdant-wind/models/item/enchantments_handbook.json
 fb165794e8da5e2805cbde46eecc6762c5deb789 assets/tales-of-the-verdant-wind/models/item/features_handbook.json
 c907054cb679702828576f5e289d90eafe546260 assets/tales-of-the-verdant-wind/models/item/genesis_runestone_plate.json

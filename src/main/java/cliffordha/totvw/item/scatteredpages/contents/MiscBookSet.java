@@ -1,9 +1,8 @@
 package cliffordha.totvw.item.scatteredpages.contents;
 
+import cliffordha.totvw.entity.player.PlayerStats;
 import cliffordha.totvw.entity.wolf.WolfStats;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
-import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import oshi.util.tuples.Pair;
@@ -37,39 +36,49 @@ public class MiscBookSet {
     }
     public static String[] wolfStats(WolfStats stats) {
         return addPage(
-                "Name: " + stats.name() + nextLine
-                + "UUID: " + stats.UUID() + nextLine
+                "UUID: " + stats.UUID() + nextLine
                 + "Soul ID: " + stats.soulID() + nextLine
                 + "Family ID: " + stats.familyID() + nextLine
                 + "Owner: " + stats.owner() + nextLine
                 + "Owner UUID: " + stats.ownerUUID() + nextLine
+                + "Shared UUID: " + stats.sharedUUID() + nextParagraph
 
                 + "Is Verdant: " + stats.isVerdant() + nextLine
                 + "Benediction Stack: " + stats.benedictionStack() + nextLine
                 + "Attack Cycle: " + stats.attackCycle() + nextLine
                 + "Try Save Points: " + stats.trySavePoints() + nextLine
                 + "Return Point: " + stats.returnPoint() + nextLine
-                + "Runestone Type: " + stats.runestoneType() + nextLine
+                + "Runestone Type: " + stats.runestoneType() + nextParagraph
+
+                + "Trusted Players: " + nextLine + getPairs(stats.trustedPlayers()) + nextParagraph
+                + "Aggressors: " + nextLine + getPairs(stats.aggressors()) + nextParagraph
 
         );
     }
     private static String[] playerStats() {
-        int STAT_WOLF_SOULS = player.getAttachedOrElse(PlayerAttachment.WOLF_SOULS, List.of()).size();
-        int STAT_WOLF_ATROCITY_COUNT = player.getAttachedOrElse(PlayerAttachment.WOLF_ATROCITY_COUNT, 0);
-        int STAT_VILLAGER_ATROCITY_COUNT = player.getAttachedOrElse(PlayerAttachment.VILLAGER_ATROCITY_COUNT, 0);
-
-        AttachmentType<List<Pair<String, UUID>>> T_LIST = PlayerAttachment.TRUSTED_PLAYERS;
-        List<Pair<String, UUID>> trustedPlayers = player.getAttachedOrElse(T_LIST, List.of());
+        var stat = PlayerStats.valueOf(player);
 
         return addPage(
-                "UUID: " + player.getStringUUID() + nextLine
-                + "Wolf Souls: " + STAT_WOLF_SOULS + nextLine
-                + "Atrocity Count [Wolf]: " + STAT_WOLF_ATROCITY_COUNT + nextLine
-                + "Atrocity Cound [Villager]: " + STAT_VILLAGER_ATROCITY_COUNT
+                "UUID: " + stat.UUID() + nextLine
+                + "Wolf Souls: " + stat.wolfSouls() + nextLine
+                + "SHARED UUID: " + stat.sharedUUID()
                 + nextParagraph
 
-                + "Trusted Player Count: " + player.getAttachedOrElse(T_LIST, List.of()).size() + nextLine
-                + "TRUSTED PLAYER DATA: " + nextLine + getPairs(trustedPlayers) + nextLine
+                + "Atrocity Count [Wolf]: " + stat.wolfAtrocityCount() + nextLine
+                + "Atrocity Cound [Villager]: " + stat.villagerAtrocityCount()
+                + nextParagraph
+
+                + "Havoc Type: " + stat.havocType() + nextLine
+                + "Havoc Usage Count: " + stat.havocUsageCount() + nextLine
+
+                + "TRUSTED PLAYER DATA: " + nextLine + getPairs(stat.trustedPlayers())
+                + nextParagraph
+
+                + "Has received handbook for: " + nextLine
+                + "Enchantments: " + stat.hasReceivedEnchantmentsHandbook() + nextLine
+                + "Items: " + stat.hasReceivedItemsHandbook() + nextLine
+                + "Features: " + stat.hasReceivedFeaturesHandbook() + nextLine
+                + "Effects: " + stat.hasReceivedEffectsHandbook()
         );
     }
     private static String getPairs(List<Pair<String, UUID>> list) {
@@ -116,7 +125,7 @@ public class MiscBookSet {
 
                 + addSeparator
                 + fText(BOLD, "ABSTRACT") + nextLine
-                + "By modifying the Lodestone's attracting energy properties, we essentially create a wind field that can be used to deter any living things nearby. This core will serve as a protection field for the Scholars and hunters to minimize the risk of injury as well as mortality rate when such individuals are within places where safety is a concern."
+                + "By modifying the Lodestone's attracting energy properties, we essentially create a wind field that can be used to deter any living things nearby. This core will serve as a getProtection field for the Scholars and hunters to minimize the risk of injury as well as mortality rate when such individuals are within places where safety is a concern."
                 + nextParagraph
                 + "Project's deterring performance showed promising results as it deterred the qualified subjects across different environment, including different variables, with 97% success rate. This has surpassed its prototype's deterring performance by at least 40%. However, its energy efficiency has dropped down to 70% unlike its protype with a staggering 96% at normal conditions. Project has been marked for further testing."
                 + addSeparator

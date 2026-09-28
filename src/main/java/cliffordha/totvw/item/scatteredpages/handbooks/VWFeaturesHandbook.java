@@ -9,10 +9,11 @@ public class VWFeaturesHandbook {
     private static final String descBenediction = "Benediction of the Verdant Mountains";
     private static final String descBleedingDMG = cText(RED, "Bleeding damage");
 
-    private static final String titleVerdantTypeWolves = cText(GOLD, bold("Verdant-type Wolves"));
-    private static final String titleVerdantTypeVillagers = cText(GOLD, bold("Verdant-type Villagers"));
-    private static final String titleBenedictionReturnPosition = cText(GOLD, bold("Benediction Return Position"));
-    private static final String titleRevivalByProxy = cText(GOLD, bold("Revival by Proxy"));
+    private static final String titleVerdantTypeWolves = cText(AQUA, bold("Verdant-type Wolves"));
+    private static final String titleVerdantTypeVillagers = cText(AQUA, bold("Verdant-type Villagers"));
+    private static final String titleBenedictionReturnPosition = cText(AQUA, bold("Benediction Return Position"));
+    private static final String titleRevivalByProxy = cText(AQUA, bold("Revival by Proxy"));
+    private static final String titleTrustSystem = cText(GOLD, bold("Trust System"));
 
     private static final String titleWolfArmorEnhancementKit = cText(YELLOW, bold("Wolf Armor Enhancement Kit"));
     private static final String titleMight = cText(AQUA, bold("Might"));
@@ -82,6 +83,17 @@ public class VWFeaturesHandbook {
     private static String benedictionSpawnpointInfo() {
         return titleBenedictionReturnPosition.toUpperCase() + nextLine
                 + "When a wolf has the " + descBenediction + " enchantment, the player will be able to set a return point for the wolf. When the wolf gets knocked down and said return point is present and valid, and Teleport After Save is enabled, wolf will atempt to teleport to thet return point if it is valid.";
+    }
+    private static String trustSystemInfo() {
+        return titleTrustSystem.toUpperCase() + nextLine
+                + "Reintroduced from earlier versions of the mod. To utilize this feature, a player can use a Paper or Verixium Paper towards a fellow player by right clicking them. A text prompt should notify you upon succeeding. These Trust System is currently being used for Wolf-Player interaction."
+                + nextParagraph
+
+                + "When a player has a tamed wolf, they can use the command to perform various actions like syncing the data from player to wolf: " + bold("[  /totvw trustData wolf sync  ]")
+                + nextParagraph
+
+                + "The player can also remove all or specific trusted players from their data. You need to query"
+                ;
     }
 
 

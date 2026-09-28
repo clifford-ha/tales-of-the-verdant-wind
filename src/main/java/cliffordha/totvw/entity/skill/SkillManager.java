@@ -1,12 +1,12 @@
 package cliffordha.totvw.entity.skill;
 
 import cliffordha.totvw.config.VWConfig;
-
 import cliffordha.totvw.registry.VWSounds;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.VWUtil;
+
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;

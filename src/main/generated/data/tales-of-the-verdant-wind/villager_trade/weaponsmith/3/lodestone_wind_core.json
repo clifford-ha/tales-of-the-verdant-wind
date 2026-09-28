@@ -1,15 +1,15 @@
 {
   "additional_wants": {
-    "count": 3.0,
+    "count": 3,
     "id": "tales-of-the-verdant-wind:verixium_powder_block"
   },
   "gives": {
     "id": "tales-of-the-verdant-wind:lodestone_wind_core"
   },
-  "max_uses": 1.0,
+  "max_uses": 1,
   "wants": {
-    "count": 50.0,
+    "count": 50,
     "id": "minecraft:emerald"
   },
-  "xp": 200.0
+  "xp": 200
 }
