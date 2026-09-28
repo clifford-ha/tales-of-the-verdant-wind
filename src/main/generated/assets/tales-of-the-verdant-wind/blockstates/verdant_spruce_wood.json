@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "tales-of-the-verdant-wind:block/verdant_spruce_wood",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "tales-of-the-verdant-wind:block/verdant_spruce_wood"
+    },
+    "axis=z": {
+      "model": "tales-of-the-verdant-wind:block/verdant_spruce_wood",
+      "x": 90
+    }
+  }
+}

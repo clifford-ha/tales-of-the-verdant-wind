@@ -1,0 +1,30 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tales-of-the-verdant-wind:stonecutting_iridescent_glass_to_yellow_dye"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "yellow_dye": {
+      "conditions": {
+        "items": [
+          {}
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "yellow_dye"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tales-of-the-verdant-wind:stonecutting_iridescent_glass_to_yellow_dye"
+    ]
+  }
+}
