@@ -21,7 +21,7 @@
           "cliffordha.totvw.TOTVWClient"
 		],
 		"fabric-datagen": [
-			"cliffordha.totvw.datagen.TOTVWDataGenerator"
+          "cliffordha.totvw.TOTVWDataGenerator"
 		],
 		"terrablender": [
 			"cliffordha.totvw.TalesOfTheVerdantWind"
@@ -36,8 +36,8 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.19.3",
-		"minecraft": "~26.1",
-		"java": ">=25",
+		"minecraft": "~26.2",
+		"java": ">=24",
 		"fabric-api": "*",
 		"terrablender": "*",
 		"cloth-config": "*"

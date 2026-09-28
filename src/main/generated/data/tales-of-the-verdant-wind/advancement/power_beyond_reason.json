@@ -1,0 +1,33 @@
+{
+  "parent": "tales-of-the-verdant-wind:tales_of_the_verdant_wind",
+  "criteria": {
+    "power_beyond_reason": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#tales-of-the-verdant-wind:runestone_plates"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "background": "tales-of-the-verdant-wind:power_beyond_reason",
+    "description": {
+      "color": "#247D66",
+      "text": "Obtain a runestone plate"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "tales-of-the-verdant-wind:soul_runestone_plate"
+    },
+    "title": "Power Beyond Reason"
+  },
+  "requirements": [
+    [
+      "power_beyond_reason"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
