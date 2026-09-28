@@ -12,9 +12,8 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:deepslate_bricks"
-          }
+          "output_state": "minecraft:deepslate_bricks"
+
         },
         {
           "input_predicate": {
@@ -25,9 +24,8 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:cracked_deepslate_bricks"
-          }
+          "output_state": "minecraft:cracked_deepslate_bricks"
+
         },
         {
           "input_predicate": {
@@ -38,9 +36,8 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:cobweb"
-          }
+          "output_state": "minecraft:cobweb"
+
         },
         {
           "input_predicate": {
@@ -51,9 +48,8 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:cracked_deepslate_tiles"
-          }
+          "output_state": "minecraft:cracked_deepslate_tiles"
+
         },
         {
           "input_predicate": {
@@ -64,9 +60,8 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:air"
-          }
+          "output_state": "minecraft:air"
+
         }
       ]
     }

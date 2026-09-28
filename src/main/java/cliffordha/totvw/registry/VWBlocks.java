@@ -62,7 +62,7 @@ public class VWBlocks {
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
                     .lightLevel(_ -> 15)
-                    .pushReaction(PushReaction.DESTROY)
+                    .pushReaction(PushReaction.POPPED)
                     .strength(1.5F, 90F)),
             BlockBehaviour.Properties.of(),
             true
@@ -254,7 +254,7 @@ public class VWBlocks {
                     .strength(50.0f, 100.0f)
                     .sound(SoundType.STONE)
                     .mapColor(MapColor.STONE)
-                    .pushReaction(PushReaction.IGNORE)
+                    .pushReaction(PushReaction.IMMOVEABLE)
                     .lightLevel((state) -> state.getValue(LodestoneWindCoreBlock.ACTIVE) ? 15 : 0)
             ),
             BlockBehaviour.Properties.of(),
@@ -262,7 +262,26 @@ public class VWBlocks {
     );
 
 
+
+    public static final Block AIR_PLACEHOLDER = registerBlock("air_placeholder",
+            Block::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.AIR),
+            true
+    );
+    public static final Block FARMLAND_PLACER = registerBlock("farmland_placer",
+            properties -> new FarmlandBlockPlacer(properties
+                    .sound(SoundType.GRASS)
+                    .mapColor(MapColor.DIRT)
+                    .strength(1.0f, 1.0f)
+            ),
+            BlockBehaviour.Properties.of(),
+            true
+    );
+
+
     public static final BlockFamily VERDANT_SPRUCE_FAMILY = BlockFamilies.familyBuilder(VERDANT_SPRUCE_PLANKS)
+            .log(VERDANT_SPRUCE_LOG)
+            .strippedLog(STRIPPED_VERDANT_SPRUCE_LOG)
             .stairs(VERDANT_SPRUCE_STAIRS)
             .slab(VERDANT_SPRUCE_SLAB)
             .fence(VERDANT_SPRUCE_FENCE)

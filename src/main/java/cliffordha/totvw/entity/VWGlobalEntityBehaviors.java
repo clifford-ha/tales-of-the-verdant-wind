@@ -1,7 +1,6 @@
 package cliffordha.totvw.entity;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.effect.HavocEffect;
 import cliffordha.totvw.entity.player.PlayerAtrocityCounter;
 import cliffordha.totvw.entity.skills.RevivalByProxy;
 import cliffordha.totvw.entity.player.VWPlayerBehaviors;
@@ -10,8 +9,11 @@ import cliffordha.totvw.entity.skills.VerdantWindBlessing;
 import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.HavocType;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
+import cliffordha.totvw.tag.VWBiomeTags;
+
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -20,12 +22,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.monster.ElderGuardian;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +93,36 @@ public class VWGlobalEntityBehaviors {
     private static void afterDeathEvent(LivingEntity entity, DamageSource damageSource) {
         Entity attacker = damageSource.getEntity();
 
+        boolean checkWardenStat = entity instanceof Warden warden
+                && isInBiome(warden, VWBiomeTags.IS_VERDANT_BIOMES);
+
+        Player playerWardenSlayer = attacker instanceof Player getPlayer ? getPlayer : (attacker instanceof Wolf wolf && wolf.getOwner() instanceof Player owner ? owner : null);
+        if (checkWardenStat && playerWardenSlayer != null && playerWardenSlayer.level() instanceof ServerLevel level) {
+            int acquisition = playerWardenSlayer.getAttachedOrElse(PlayerAttachment.GENESIS_RUNESTONE_ACQUISITION_COUNT, 0);
+            boolean shouldGrant = VWEnchantments.getBenediction(playerWardenSlayer) && acquisition < 2;
+            if (shouldGrant) {
+                playerWardenSlayer.getInventory().add(new ItemStack(VWItems.GENESIS_RUNESTONE_PLATE));
+                playerWardenSlayer.setAttached(PlayerAttachment.GENESIS_RUNESTONE_ACQUISITION_COUNT, acquisition + 1);
+
+                sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, playerWardenSlayer.blockPosition(), 12, 3);
+                sendToChat(playerWardenSlayer, VWColors.VERDANT_WIND, false, "Verdant Wind's Benediction: You have been granted a Genesis Runestone Plate.");
+            }
+        }
+
+        if (entity instanceof ElderGuardian guardian && attacker instanceof Player player && player.level() instanceof ServerLevel level) {
+            List<Wolf> tamedWolf = level.getEntitiesOfClass(Wolf.class, scanArea(guardian, 16), t -> t.getOwner() == player);
+            if (!tamedWolf.isEmpty()) {
+                addToInventory(player, VWItems.TETHER_RUNESTONE_PLATE);
+                for (Wolf wolf : tamedWolf) {
+                    wolf.setHealth(wolf.getMaxHealth());
+                }
+                player.setHealth(player.getMaxHealth());
+
+            } else if (level.getRandom().nextFloat() < 0.07f) {
+                addToInventory(player, VWItems.TETHER_RUNESTONE_PLATE);
+            }
+        }
+
         if (attacker instanceof Player player) {
             if (entity.is(EntityTypes.WOLF) || entity.is(EntityTypes.VILLAGER) || entity.is(EntityTypes.WANDERING_TRADER)) {
                 PlayerAtrocityCounter.processAtrocity(player, entity, true);
@@ -101,9 +140,6 @@ public class VWGlobalEntityBehaviors {
             if (havocPenalty && attacker instanceof LivingEntity getAttacker) {
                 RunestoneEffects.triggerHavocPenalty(getAttacker, type);
             }
-
-            //always last
-            removePlayerAttachmentsOnDeath(player);
         }
     }
     private static void afterDamageEvent(LivingEntity victim, DamageSource damageSource, float dmg) {
@@ -120,9 +156,13 @@ public class VWGlobalEntityBehaviors {
                 RunestoneEffects.getHavocForPlayer(player, (LivingEntity) attacker, dmg);
             }
             if (attacker instanceof Player attackerPlayer) {
-                if (dmg > 3) {
-                    updateNearbyWolvesOnDamage(player, attackerPlayer);
-                }
+                updateNearbyWolvesOnDamage(player, attackerPlayer);
+            }
+        }
+        if (victim instanceof Wolf wolf && attacker instanceof Player player) {
+            boolean isOwner = wolf.getOwner() != null && wolf.getOwner() == player;
+            if (!isOwner) {
+                WolfAttachment.addPlayerToAggressors(wolf, player);
             }
         }
     }
@@ -132,11 +172,15 @@ public class VWGlobalEntityBehaviors {
             return windVeilEffect(entity, source, damage);
         }
 
+        if (attacker instanceof Player attackerPlayer && entity instanceof Player player) {
+            if (PlayerAttachment.trustOther(attackerPlayer, player)) return false;
+        }
+
         if (entity instanceof Wolf wolf) {
-            boolean disableFireDMG = source.is(DamageTypeTags.IS_FREEZING) && VWEnchantments.getIgnition(wolf) > 0;
+            boolean negateFreezingDMG = source.is(DamageTypeTags.IS_FREEZING) && VWEnchantments.getIgnition(wolf) > 0;
             boolean disableAccidentalDMG = wolf.getOwner() instanceof LivingEntity owner && attacker instanceof LivingEntity mob && owner == mob;
 
-            if (disableFireDMG) {
+            if (negateFreezingDMG) {
                 return false;
             }
             if (disableAccidentalDMG) {
@@ -169,6 +213,9 @@ public class VWGlobalEntityBehaviors {
                 if (random.nextFloat() < 0.6f) {
                     if (VWEnchantments.getBenediction(entity)) {
                         attacker.hurtServer(level, dmg, Math.max(2, attacker.getHealth() * 0.15f));
+                        if (attacker instanceof Player player && !player.getMainHandItem().isEmpty()) {
+                            player.getCooldowns().addCooldown(player.getMainHandItem(), 60);
+                        }
                     }
                     attacker.knockback(Math.max(1, attacker.getMaxHealth() * 0.05f), - attacker.getYHeadRot(), - entity.getYHeadRot(), dmg, 0);
                     level.playSound(null, entity.blockPosition(), SoundEvents.THORNS_HIT, SoundSource.PLAYERS);
@@ -181,7 +228,7 @@ public class VWGlobalEntityBehaviors {
                     if (player.hasEffect(VWEffects.HAVOC) && attacker instanceof LivingEntity) {
                         RunestoneEffects.getHavocForPlayer(player, attacker, damage);
                     }
-                    List<Wolf> wolves = level.getEntities(EntityTypes.WOLF, player.getBoundingBox().inflate(16), wolf -> wolf.getOwner() == player);
+                    List<Wolf> wolves = level.getEntities(EntityTypes.WOLF, scanArea(player, 16), wolf -> wolf.getOwner() == player);
 
                     if (!wolves.isEmpty()) {
                         for (Wolf wolf : wolves) {
@@ -193,17 +240,6 @@ public class VWGlobalEntityBehaviors {
         }
         return false;
     }
-    public static void removePlayerAttachmentsOnDeath(Player player) {
-        if (!(player.level() instanceof ServerLevel)) return;
-        HavocEffect.removeHavoc(player);
-        player.removeAttached(PlayerAttachment.WOLF_ATROCITY_COUNT);
-        player.removeAttached(PlayerAttachment.VILLAGER_ATROCITY_COUNT);
-
-        player.removeAttached(PlayerAttachment.RECEIVED_ENCHANTMENTS_HANDBOOK);
-        player.removeAttached(PlayerAttachment.RECEIVED_EFFECTS_HANDBOOK);
-        player.removeAttached(PlayerAttachment.RECEIVED_ITEMS_HANDBOOK);
-        player.removeAttached(PlayerAttachment.RECEIVED_FEATURES_HANDBOOK);
-    }
     private static void updateNearbyWolvesOnDamage(Player player, Player attacker) {
         ServerLevel level = (ServerLevel) player.level();
         List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, scanArea(player, 16), wolf -> wolf.getOwner() == player);
@@ -211,15 +247,16 @@ public class VWGlobalEntityBehaviors {
         if (wolves.isEmpty()) return;
 
         for (Wolf wolf : wolves) {
-            UUID attackerUUID = attacker.getUUID();
+            List<Pair<String, UUID>> trustedPlayers = new ArrayList<>(WolfAttachment.getTrustedPlayers(wolf));
+            UUID attackerUUID = attacker.getAttachedOrElse(VWAttachments.WOLF_PLAYER_SHARED_ID, attacker.getUUID());
 
-            if (WolfAttachment.isPlayerTrusted(wolf, attacker)) {
-                WolfAttachment.removePlayerTrust(wolf, attacker);
-            }
-            List<UUID> aggressors = new ArrayList<>(wolf.getAttachedOrElse(WolfAttachment.AGGRESSOR_LIST, List.of()));
-            if (!aggressors.contains(attackerUUID)) {
-                aggressors.add(attackerUUID);
-                wolf.setAttached(WolfAttachment.AGGRESSOR_LIST, aggressors);
+            for (Pair<String, UUID> trusted : trustedPlayers) {
+                if (trusted.getB().equals(attackerUUID)) {
+                    trustedPlayers.remove(trusted);
+                    wolf.setAttached(WolfAttachment.TRUSTED_PLAYERS, trustedPlayers);
+                    sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, false, wolf.getPlainTextName() + " no longer trust " + trusted.getA());
+                    break;
+                }
             }
         }
     }

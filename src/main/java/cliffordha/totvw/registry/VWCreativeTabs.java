@@ -63,6 +63,7 @@ public class VWCreativeTabs {
                 output.accept(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE);
 
                 output.accept(VWItems.GENESIS_RUNESTONE_PLATE);
+                output.accept(VWItems.EFFLORESCENCE_RUNESTONE_PLATE);
                 output.accept(VWItems.SOUL_RUNESTONE_PLATE);
                 output.accept(VWItems.TETHER_RUNESTONE_PLATE);
                 output.accept(VWItems.HAVOC_RUNESTONE_PLATE);

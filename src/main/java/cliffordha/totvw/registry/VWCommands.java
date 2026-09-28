@@ -39,7 +39,6 @@ import static cliffordha.totvw.util.VWUtil.sendToChat;
 public class VWCommands {
     private static final AttachmentType<List<Pair<String, UUID>>> TRUST_DATA = PlayerAttachment.TRUSTED_PLAYERS;
     private static final AttachmentType<List<Pair<String, UUID>>> WOLF_TRUST_DATA = WolfAttachment.TRUSTED_PLAYERS;
-    private static final AttachmentType<List<UUID>> AGGRESSOR_LIST = WolfAttachment.AGGRESSOR_LIST;
 
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
@@ -53,10 +52,17 @@ public class VWCommands {
                             return 0;
                         }
 
-                        int data = player.getAttachedOrElse(TRUST_DATA, List.of()).size();
-                        if (data > 0) {
-                            sendSuccess(context, false, "There are currently " + data + " player" + (data > 1 ? "s" : "") + " you trust.");
-                            return data;
+                        List<Pair<String, UUID>> data = player.getAttachedOrElse(TRUST_DATA, List.of());
+                        if (!data.isEmpty()) {
+                            String firstPart = data.size() > 1 ? "These are currently " : "There is currently ";
+                            sendSuccess(context, false, firstPart + data.size() + " player" + (data.size() > 1 ? "s" : "") + " you trust.");
+
+                            sendToChat(player, false, "Index  |  Name");
+                            for (Pair<String, UUID> pair : player.getAttachedOrElse(TRUST_DATA, List.of())) {
+                                sendToChat(player, false, data.indexOf(pair) + 1 + " " + pair.getA());
+                            }
+
+                            return data.size();
                         } else {
                             sendFail(context, VWColors.GRAY, "You don't have any trusted players in your list.");
                             return 0;
@@ -142,7 +148,7 @@ public class VWCommands {
                         }
 
                         for (Wolf wolf : wolves) {
-                            wolf.removeAttached(AGGRESSOR_LIST);
+                            wolf.removeAttached(WolfAttachment.AGGRESSOR_LIST);
                         }
 
                         String w = wolves.size() > 1 ? "nearby wolves" : wolves.getFirst().getPlainTextName();
@@ -163,8 +169,6 @@ public class VWCommands {
                         }
                         ServerLevel level = player.level();
 
-                        List<Pair<String, UUID>> trustData = player.getAttachedOrElse(TRUST_DATA, List.of());
-
                         List<Wolf> wolves = level.getEntities(
                                 EntityTypes.WOLF,
                                 player.getBoundingBox().inflate(16),
@@ -176,20 +180,23 @@ public class VWCommands {
                         }
 
                         int aggressors = 0;
+                        List<Pair<String, UUID>> trustData = player.getAttachedOrElse(TRUST_DATA, List.of());
                         for (Wolf wolf : wolves) {
+                            List<Pair<String, UUID>> aggressorList = new ArrayList<>(wolf.getAttachedOrElse(WolfAttachment.AGGRESSOR_LIST, List.of()));
+
                             if (!trustData.isEmpty()) {
                                 wolf.setAttached(WOLF_TRUST_DATA, trustData);
 
-                                AttachmentType<List<UUID>> AGGRESSOR_LIST = WolfAttachment.AGGRESSOR_LIST;
-                                List<UUID> aggressorList = new ArrayList<>(wolf.getAttachedOrElse(AGGRESSOR_LIST, List.of()));
-
-                                for (Pair<String, UUID> pair : trustData) {
-                                    if (aggressorList.contains(pair.getB())) {
-                                        aggressors++;
-                                        aggressorList.remove(pair.getB());
-                                        wolf.setAttached(AGGRESSOR_LIST, aggressorList);
+                                if (!aggressorList.isEmpty()) {
+                                    for (Pair<String, UUID> data : aggressorList) {
+                                        if (aggressorList.contains(data)) {
+                                            aggressors++;
+                                            aggressorList.remove(data);
+                                            wolf.setAttached(WolfAttachment.AGGRESSOR_LIST, aggressorList);
+                                        }
                                     }
                                 }
+
                             } else {
                                 wolf.removeAttached(WOLF_TRUST_DATA);
                             }
@@ -353,6 +360,7 @@ public class VWCommands {
 
                         for (Wolf wolf : wolves) {
                             wolf.setOwner(player);
+                            wolf.setTame(true, true);
                         }
                         context.getSource().sendSuccess(() -> Component.literal("Tamed " + wolves.size() + " nearby wolves."), true);
                         return wolves.size();
@@ -369,7 +377,7 @@ public class VWCommands {
                                 ServerLevel level = player.level();
                                 List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
                                         player.getBoundingBox().inflate(32),
-                                        wolf -> wolf.isTame() && wolf.getUUID() == player.getUUID());
+                                        wolf -> wolf.isTame() && wolf.getOwner() == player);
 
                                 if (wolves.isEmpty()) {
                                     context.getSource().sendFailure(Component.literal("No nearby wolves to un-tame!"));
@@ -442,7 +450,7 @@ public class VWCommands {
         }
 
         ServerLevel level = player.level();
-        StructureTemplateManager templateManager = source.getServer().getStructureManager();
+        StructureTemplateManager templateManager = source.getServer().getStructureTemplateManager();
         Registry<StructureTemplatePool> poolRegistry = level.registryAccess().lookupOrThrow(Registries.TEMPLATE_POOL);
         BlockPos origin = player.blockPosition().above(1);
 

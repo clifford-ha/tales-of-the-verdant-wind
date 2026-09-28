@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TimelineTags;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.attribute.*;
 import net.minecraft.world.clock.WorldClocks;
 import net.minecraft.world.level.CardinalLighting;
@@ -40,6 +40,8 @@ public class VWDimensions {
         var clocks = context.lookup(Registries.WORLD_CLOCK);
         var blocks = context.lookup(Registries.BLOCK);
 
+        var mob = context.lookup(Registries.ENTITY_TYPE);
+
         context.register(NOLAYAN_DIMENSION_TYPE, new DimensionType(
                 false, // hasFixedTime
                 true, // hasSkylight
@@ -51,23 +53,26 @@ public class VWDimensions {
                 384, // logicalHeight
                 blocks.getOrThrow(BlockTags.INFINIBURN_OVERWORLD), // infiniburn
                 1.0f, // ambientLight
-                new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
-                DimensionType.Skybox.OVERWORLD,
+                new DimensionType.MonsterSettings(UniformInt.of(1, 9), 9),
+                DimensionType.Skybox.NONE,
                 CardinalLighting.Type.DEFAULT,
                 EnvironmentAttributeMap.builder()
-                        .set(EnvironmentAttributes.FOG_COLOR, ARGB.color(1.0f, 0xBEFDFF))
-                        .set(EnvironmentAttributes.SKY_COLOR, OverworldBiomes.calculateSkyColor(0.35f))
-                        .set(EnvironmentAttributes.CLOUD_COLOR, ARGB.color(1.0f, 0xBEFDFF))
-                        .set(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, ARGB.color(1.0f, 0x17484D))
+                        .set(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(0xBEFDFF))
+                        .set(EnvironmentAttributes.SKY_COLOR, ARGB.vector3fFromRGB24(OverworldBiomes.calculateSkyColor(0.35f)))
+                        .set(EnvironmentAttributes.CLOUD_COLOR, ARGB.vector4fFromARGB32(0xBEFDFF))
+                        .set(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, ARGB.vector4fFromARGB32( 0x17484D))
                         .set(EnvironmentAttributes.SNOW_GOLEM_MELTS, false)
-                        .set(EnvironmentAttributes.CLOUD_HEIGHT, 148F)
+                        .set(EnvironmentAttributes.CLOUD_HEIGHT, 256F)
                         .set(EnvironmentAttributes.BACKGROUND_MUSIC, BackgroundMusic.OVERWORLD)
                         .set(EnvironmentAttributes.BED_RULE, BedRule.CAN_SLEEP_WHEN_DARK)
                         .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, false)
                         .set(EnvironmentAttributes.NETHER_PORTAL_SPAWNS_PIGLINS, true)
                         .set(EnvironmentAttributes.AMBIENT_SOUNDS, AmbientSounds.LEGACY_CAVE_SETTINGS)
                         .set(EnvironmentAttributes.MOON_PHASE, MoonPhase.FULL_MOON)
-                        .set(EnvironmentAttributes.FOG_START_DISTANCE, 64F)
+                        .set(EnvironmentAttributes.FOG_START_DISTANCE, 0F)
+                        .set(EnvironmentAttributes.CREAKING_ACTIVE, false)
+                        .set(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY, 0.2f)
+                        .set(EnvironmentAttributes.INCREASED_FIRE_BURNOUT, true)
                         .build(),
                 timelines.getOrThrow(TimelineTags.IN_OVERWORLD),
                 Optional.of(clocks.getOrThrow(WorldClocks.OVERWORLD))));

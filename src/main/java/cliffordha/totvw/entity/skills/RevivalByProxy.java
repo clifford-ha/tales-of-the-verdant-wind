@@ -158,7 +158,6 @@ public class RevivalByProxy {
         RandomSource random = level.getRandom();
         Inventory inv = player.getInventory();
 
-        attachments.remove(TOTVW.MOD_ID + ":wolf_benediction");
         attachments.putInt(TOTVW.MOD_ID + ":wolf_benediction", count - 1);
         stack.put("fabric:attachments", attachments);
 

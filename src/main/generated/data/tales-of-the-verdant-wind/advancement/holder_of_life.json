@@ -1,0 +1,44 @@
+{
+  "parent": "tales-of-the-verdant-wind:power_beyond_reason",
+  "criteria": {
+    "holder_of_life": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:entity_type": "minecraft:wolf"
+            }
+          }
+        ],
+        "item": {
+          "items": "tales-of-the-verdant-wind:efflorescence_runestone_plate"
+        }
+      },
+      "trigger": "minecraft:player_interacted_with_entity"
+    }
+  },
+  "display": {
+    "background": "tales-of-the-verdant-wind:holder_of_life",
+    "description": {
+      "color": "#247D66",
+      "text": "Find a way to make your companion's step bloom with life"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "tales-of-the-verdant-wind:air_placeholder"
+    },
+    "title": {
+      "color": "#4BB94F",
+      "text": "Holder of Life"
+    }
+  },
+  "requirements": [
+    [
+      "holder_of_life"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

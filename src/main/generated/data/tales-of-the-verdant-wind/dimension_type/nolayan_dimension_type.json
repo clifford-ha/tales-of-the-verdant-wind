@@ -28,16 +28,18 @@
         "translate": "block.minecraft.bed.no_sleep"
       }
     },
+    "minecraft:gameplay/creaking_active": false,
+    "minecraft:gameplay/increased_fire_burnout": true,
     "minecraft:gameplay/nether_portal_spawns_piglin": true,
     "minecraft:gameplay/respawn_anchor_works": false,
     "minecraft:gameplay/snow_golem_melts": false,
-    "minecraft:visual/cloud_color": "#ffbefdff",
-    "minecraft:visual/cloud_height": 148.0,
+    "minecraft:visual/cloud_color": "#00befdff",
+    "minecraft:visual/cloud_height": 256.0,
     "minecraft:visual/fog_color": "#befdff",
-    "minecraft:visual/fog_start_distance": 64.0,
+    "minecraft:visual/fog_start_distance": 0.0,
     "minecraft:visual/moon_phase": "full_moon",
     "minecraft:visual/sky_color": "#7ca3ff",
-    "minecraft:visual/sunrise_sunset_color": "#ff17484d"
+    "minecraft:visual/sunrise_sunset_color": "#0017484d"
   },
   "coordinate_scale": 1.0,
   "default_clock": "minecraft:overworld",
@@ -48,7 +50,12 @@
   "infiniburn": "#minecraft:infiniburn_overworld",
   "logical_height": 384,
   "min_y": -64,
-  "monster_spawn_block_light_limit": 0,
-  "monster_spawn_light_level": 0,
+  "monster_spawn_block_light_limit": 9,
+  "monster_spawn_light_level": {
+    "type": "minecraft:uniform",
+    "max_inclusive": 9,
+    "min_inclusive": 1
+  },
+  "skybox": "none",
   "timelines": "#minecraft:in_overworld"
 }

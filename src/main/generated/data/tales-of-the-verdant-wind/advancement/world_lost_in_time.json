@@ -1,0 +1,43 @@
+{
+  "parent": "tales-of-the-verdant-wind:tales_of_the_verdant_wind",
+  "criteria": {
+    "world_lost_in_time": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "dimension": "tales-of-the-verdant-wind:nolayan"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "background": "tales-of-the-verdant-wind:world_lost_in_time",
+    "description": {
+      "color": "#247D66",
+      "text": "Discover the hidden, fragmented world"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "tales-of-the-verdant-wind:verdant_spruce_sapling"
+    },
+    "title": {
+      "color": "#00FFD0",
+      "text": "A World Lost In Time"
+    }
+  },
+  "requirements": [
+    [
+      "world_lost_in_time"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

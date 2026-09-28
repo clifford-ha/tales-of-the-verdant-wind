@@ -8,6 +8,7 @@ import cliffordha.totvw.item.custom.SoulRunestonePlate;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
 import cliffordha.totvw.item.scatteredpages.contents.MiscBookSet;
 import cliffordha.totvw.registry.attachments.Runestone;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.VillagerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
@@ -26,6 +27,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
@@ -187,6 +189,11 @@ public abstract class WolfEntityMixin extends LivingEntity {
         if (wolf.isTame()) {
             setAttributeBaseValue(wolf, Attributes.MAX_HEALTH, 40.0);
             wolf.setHealth(40.0f);
+            if (wolf.getOwner() instanceof Player player) {
+                UUID SHARED= UUID.randomUUID();
+                player.setAttached(VWAttachments.WOLF_PLAYER_SHARED_ID, SHARED);
+                wolf.setAttached(VWAttachments.WOLF_PLAYER_SHARED_ID, SHARED);
+            }
         } else {
             setAttributeBaseValue(wolf, Attributes.MAX_HEALTH, 20.0);
         }
@@ -298,8 +305,8 @@ public abstract class WolfEntityMixin extends LivingEntity {
             Runestone RUNESTONE_TYPE = wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY);
 
             if (stack.is(Items.SHEARS) && !RUNESTONE_TYPE.equals(Runestone.EMPTY)) {
-                wolf.drop(Runestone.getStack(RUNESTONE_TYPE), false, false);
-                wolf.setAttached(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY);
+                wolf.drop(Runestone.getStack(RUNESTONE_TYPE), false, Prediction.SERVER_ONLY);
+                wolf.removeAttached(WolfAttachment.RUNESTONE_TYPE);
                 level.playSound(null, wolf.blockPosition(), SoundEvents.SHEEP_SHEAR, SoundSource.NEUTRAL);
                 sendToChat(player, true, name + "'s runestone has been removed.");
                 cir.setReturnValue(InteractionResult.SUCCESS);
@@ -317,6 +324,8 @@ public abstract class WolfEntityMixin extends LivingEntity {
                 }
 
             } else if (stack.is(VWItemTags.RUNESTONE_PLATES)) {
+                if (player.getCooldowns().isOnCooldown(stack)) return;
+
                 InteractionResult updateRunestone;
                 if (stack.is(VWItems.SOUL_RUNESTONE_PLATE)) {
                     if (player.getAttachedOrElse(PlayerAttachment.WOLF_ATROCITY_COUNT, 0) > 10) {
@@ -362,13 +371,18 @@ public abstract class WolfEntityMixin extends LivingEntity {
                     cir.setReturnValue(updateRunestone);
 
                 } else if (stack.is(VWItems.GENESIS_RUNESTONE_PLATE)) {
-                    updateRunestone = updateRunestone(wolf, player, Runestone.GENESIS, stack);
+                    return;
 
-                    cir.setReturnValue(updateRunestone);
                 } else if (stack.is(VWItems.HAVOC_RUNESTONE_PLATE)) {
 
                     updateRunestone = updateRunestone(wolf, player, Runestone.HAVOC, stack);
                     cir.setReturnValue(updateRunestone);
+                } else if (stack.is(VWItems.EFFLORESCENCE_RUNESTONE_PLATE)) {
+                    updateRunestone = updateRunestone(wolf, player, Runestone.FLOURISHING_FLORA, stack);
+
+                    cir.setReturnValue(updateRunestone);
+                } else {
+                    return;
                 }
             }
         }
@@ -409,10 +423,10 @@ public abstract class WolfEntityMixin extends LivingEntity {
             sendToChat(player, true, name + " already uses this runestone type.");
             return InteractionResult.FAIL;
         } else {
-            wolf.drop(Runestone.getStack(current), false, false);
+            wolf.drop(Runestone.getStack(current), false, Prediction.SERVER_ONLY);
             wolf.setAttached(WolfAttachment.RUNESTONE_TYPE, type);
             consumeItem(player, stack);
-            sendToChat(this, true, name + "'s Runestone has been changed to " + type.getName() + ".");
+            sendToChat(this, true, name + "'s Runestone buff has been changed to " + type.getBuff() + ".");
             return InteractionResult.SUCCESS;
         }
     }
@@ -420,8 +434,13 @@ public abstract class WolfEntityMixin extends LivingEntity {
     @Inject(method = "wantsToAttack", at = @At("RETURN"), cancellable = true)
     private void wantsToAttack(LivingEntity target, LivingEntity owner, CallbackInfoReturnable<Boolean> cir) {
         Wolf wolf = (Wolf) (Object) this;
-        if (target instanceof Player player && wolf.isTame()) {
-            cir.setReturnValue(WolfAttachment.isPlayerTrusted(wolf, player));
+        boolean isPlayerOrWolf = target instanceof Player || target instanceof Wolf;
+        if (isPlayerOrWolf && wolf.isTame()) {
+            if (target instanceof Wolf wolfy && wolfy.isBaby()) {
+                cir.setReturnValue(false);
+                return;
+            }
+            cir.setReturnValue(WolfAttachment.isPlayerToBeAttacked(wolf, target));
 
         } else if (target instanceof Creeper) {
             if (wolf.getHealth() < wolf.getMaxHealth() * 0.5f) return;
@@ -433,10 +452,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
             boolean encBenediction = VWEnchantments.getBenediction(wolf);
             if (!(encGnawing > 0 && (encProtection >= 3 || encBlastProtection >= 3 || encMight > 2 || encBenediction))) return;
             cir.setReturnValue(true);
-        } else if (target instanceof Wolf wolfy) {
-            if (wolfy.isBaby()) {
-                cir.setReturnValue(false);
-            }
+
         } else if (target instanceof Villager villager) {
             if (villager.isBaby() || villager.getAttachedOrElse(VillagerAttachment.IS_VERDANT_TYPE, false)) {
                 cir.setReturnValue(false);

@@ -6,33 +6,37 @@ import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.Carvers;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.attribute.*;
 import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 public class VWOverworldBiomes {
-        public static Biome verdantMountains(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        public static Biome verdantMountains(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<WorldCarver> carverGetter) {
             MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
             BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-            spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityTypes.WOLF, 1, 2));
-            spawner.addSpawn(MobCategory.CREATURE, 1, new MobSpawnSettings.SpawnerData(EntityTypes.SNIFFER, 1, 1));
-            spawner.addSpawn(MobCategory.CREATURE, 4, new MobSpawnSettings.SpawnerData(EntityTypes.CHICKEN, 2, 4));
-            spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityTypes.GOAT, 4, 4));
+            spawner.addSpawn(EntityTypes.WOLF, 10, UniformInt.of(1, 2));
+            spawner.addSpawn(EntityTypes.SNIFFER, 1, UniformInt.of(0, 1));
+            spawner.addSpawn(EntityTypes.CHICKEN, 4, UniformInt.of(2, 4));
+            spawner.addSpawn(EntityTypes.GOAT, 10, UniformInt.of(3, 4));
 
-            spawner.addSpawn(MobCategory.MONSTER, 10, new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 2, 2));
-            spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 2, 2));
+            spawner.addSpawn(EntityTypes.ZOMBIE, 10, UniformInt.of(2, 2));
+            spawner.addSpawn(EntityTypes.SKELETON, 30, UniformInt.of(2, 2));
 
-            spawner.addSpawn(MobCategory.WATER_AMBIENT, 6, new MobSpawnSettings.SpawnerData(EntityTypes.TROPICAL_FISH, 1, 2));
+            spawner.addSpawn(EntityTypes.TROPICAL_FISH, 1, UniformInt.of(0, 1));
+
+            spawner.build();
 
             addVerdantDefaults(biome);
+            biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_FARMLANDS_PATCH_KEY);
             biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_PILLARS_KEY);
             biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_SPRUCE_TREE_LOWER_KEY);
 
@@ -51,28 +55,31 @@ public class VWOverworldBiomes {
                     .mobSpawnSettings(spawner.build()).generationSettings(biome.build())
                     .setAttribute(EnvironmentAttributes.INCREASED_FIRE_BURNOUT, true)
                     .setAttribute(EnvironmentAttributes.FOG_END_DISTANCE, 1024f)
-                    .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, 0x48d9c1)
+                    .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.vector3fFromRGB24(0x48d9c1))
                     .setAttribute(EnvironmentAttributes.WATER_FOG_END_DISTANCE, 128f)
                     .setAttribute(EnvironmentAttributes.BACKGROUND_MUSIC, new BackgroundMusic(SoundEvents.MUSIC_BIOME_JAGGED_PEAKS))
                     .build();
         }
 
-    public static Biome verdantForest(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+    public static Biome verdantForest(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<WorldCarver> carverGetter) {
         MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
         BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-        spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityTypes.WOLF, 3, 4));
-        spawner.addSpawn(MobCategory.CREATURE, 1, new MobSpawnSettings.SpawnerData(EntityTypes.SNIFFER, 1, 1));
-        spawner.addSpawn(MobCategory.CREATURE, 8, new MobSpawnSettings.SpawnerData(EntityTypes.CHICKEN, 2, 4));
-        spawner.addSpawn(MobCategory.CREATURE, 6, new MobSpawnSettings.SpawnerData(EntityTypes.GOAT, 2, 2));
+        spawner.addSpawn(EntityTypes.WOLF, 10, UniformInt.of(3, 4));
+        spawner.addSpawn(EntityTypes.SNIFFER, 1, UniformInt.of(0, 1));
+        spawner.addSpawn(EntityTypes.CHICKEN, 8, UniformInt.of(2, 4));
+        spawner.addSpawn(EntityTypes.GOAT, 6, UniformInt.of(0, 2));
 
-        spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 2, 2));
-        spawner.addSpawn(MobCategory.MONSTER, 10, new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 2, 2));
+        spawner.addSpawn(EntityTypes.ZOMBIE, 30, UniformInt.of(2, 2));
+        spawner.addSpawn(EntityTypes.SKELETON, 10, UniformInt.of(2, 2));
 
-        spawner.addSpawn(MobCategory.WATER_AMBIENT, 6, new MobSpawnSettings.SpawnerData(EntityTypes.TROPICAL_FISH, 1, 2));
-        spawner.addSpawn(MobCategory.WATER_AMBIENT, 1, new MobSpawnSettings.SpawnerData(EntityTypes.NAUTILUS, 1, 1));
+        spawner.addSpawn(EntityTypes.TROPICAL_FISH, 1, UniformInt.of(0, 1));
+        spawner.addSpawn(EntityTypes.NAUTILUS, 1, UniformInt.of(0, 1));
+
+        spawner.build();
 
         addVerdantDefaults(biome);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_FARMLANDS_DISK_KEY);
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.ANCIENT_VERDANT_SPRUCE_TREE_KEY);
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_SPRUCE_BUSH_TREE_KEY);
 
@@ -89,19 +96,19 @@ public class VWOverworldBiomes {
                 ).build())
                 .mobSpawnSettings(spawner.build()).generationSettings(biome.build())
                 .setAttribute(EnvironmentAttributes.FOG_END_DISTANCE, 128f)
-                .setAttribute(EnvironmentAttributes.FOG_COLOR, 0x90e1d5)
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(0x90e1d5))
                 .setAttribute(EnvironmentAttributes.SKY_FOG_END_DISTANCE, 64f)
-                .setAttribute(EnvironmentAttributes.SKY_COLOR, 0x90e1d5)
-                .setAttribute(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, 0xb6e1af)
-                .setAttribute(EnvironmentAttributes.CLOUD_COLOR, 0xaefff3)
-                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, 0x48d9c1)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.vector3fFromRGB24(0x90e1d5))
+                .setAttribute(EnvironmentAttributes.SUNRISE_SUNSET_COLOR, ARGB.vector4fFromARGB32(0xb6e1af))
+                .setAttribute(EnvironmentAttributes.CLOUD_COLOR, ARGB.vector4fFromARGB32(0xaefff3))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.vector3fFromRGB24(0x48d9c1))
                 .setAttribute(EnvironmentAttributes.WATER_FOG_END_DISTANCE, 32f)
                 .setAttribute(EnvironmentAttributes.BACKGROUND_MUSIC, new BackgroundMusic(SoundEvents.MUSIC_BIOME_FOREST))
                 .build();
     }
 
 
-    private static void addVerdantDefaults(BiomeGenerationSettings.Builder biome) {
+    public static void addVerdantDefaults(BiomeGenerationSettings.Builder biome) {
         biome.addCarver(Carvers.CAVE);
         biome.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
         biome.addCarver(Carvers.CANYON);

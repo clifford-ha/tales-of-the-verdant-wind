@@ -12,35 +12,27 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:cracked_deepslate_bricks"
-          }
+          "output_state": "minecraft:cracked_deepslate_bricks"
         },
         {
           "input_predicate": {
             "predicate_type": "minecraft:tag_match",
-            "tag": "minecraft:doors",
-            "probability": 0.7
+            "tag": "minecraft:doors"
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:air"
-          }
+          "output_state": "minecraft:air"
         },
         {
           "input_predicate": {
             "block": "minecraft:torch",
-            "predicate_type": "minecraft:block_match",
-            "probability": 0.1
+            "predicate_type": "minecraft:block_match"
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:air"
-          }
+          "output_state": "minecraft:air"
         },
         {
           "input_predicate": {
@@ -50,9 +42,7 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:air"
-          }
+          "output_state": "minecraft:air"
         },
         {
           "input_predicate": {
@@ -63,8 +53,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:campfire",
-            "Properties": {
+            "id": "minecraft:campfire",
+            "properties": {
               "facing": "north",
               "lit": "false",
               "signal_fire": "false",
@@ -81,22 +71,18 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:cobweb"
-          }
+          "output_state": "minecraft:cobweb"
         },
         {
           "input_predicate": {
-            "block": "tales-of-the-verdant-wind:verdant_spruce_log",
+            "block": "minecraft:spruce_log",
             "predicate_type": "minecraft:random_block_match",
             "probability": 0.08
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:cobweb"
-          }
+          "output_state": "minecraft:cobweb"
         },
         {
           "input_predicate": {
@@ -107,15 +93,13 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:cobweb"
-          }
+          "output_state": "minecraft:cobweb"
         },
         {
           "input_predicate": {
             "block_state": {
-              "Name": "minecraft:glass_pane",
-              "Properties": {
+              "id": "minecraft:glass_pane",
+              "properties": {
                 "east": "false",
                 "north": "true",
                 "south": "true",
@@ -129,8 +113,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:brown_stained_glass_pane",
-            "Properties": {
+            "id": "minecraft:brown_stained_glass_pane",
+            "properties": {
               "east": "false",
               "north": "true",
               "south": "true",
@@ -142,8 +126,8 @@
         {
           "input_predicate": {
             "block_state": {
-              "Name": "minecraft:glass_pane",
-              "Properties": {
+              "id": "minecraft:glass_pane",
+              "properties": {
                 "east": "true",
                 "north": "false",
                 "south": "false",
@@ -157,8 +141,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:brown_stained_glass_pane",
-            "Properties": {
+            "id": "minecraft:brown_stained_glass_pane",
+            "properties": {
               "east": "true",
               "north": "false",
               "south": "false",
@@ -176,12 +160,7 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:pumpkin_stem",
-            "Properties": {
-              "age": "0"
-            }
-          }
+          "output_state": "minecraft:pumpkin_stem"
         },
         {
           "input_predicate": {
@@ -192,12 +171,7 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:potatoes",
-            "Properties": {
-              "age": "0"
-            }
-          }
+          "output_state": "minecraft:potatoes"
         }
       ]
     }

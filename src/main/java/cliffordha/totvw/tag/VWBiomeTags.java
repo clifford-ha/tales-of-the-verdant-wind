@@ -5,7 +5,6 @@ import cliffordha.totvw.world.VWBiomes;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
@@ -25,8 +24,8 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
     @Override
     protected void addTags(HolderLookup.@NonNull Provider registries) {
 
-        getOrCreateRawBuilder(BiomeTags.IS_OVERWORLD)
-                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
+        /*getOrCreateRawBuilder(BiomeTags.IS_OVERWORLD)
+                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());*/
 
         getOrCreateRawBuilder(IS_VERDANT_BIOMES)
                 .add(biome(VWBiomes.VERDANT_MOUNTAINS))
@@ -45,7 +44,7 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
                 .add(biome(VWBiomes.VERDANT_FOREST));
 
         getOrCreateRawBuilder(HAS_VERDANT_FOREST_VILLAGE)
-                .add(biome(VWBiomes.VERDANT_FOREST));
+                .addTag(IS_VERDANT_FOREST.location());
 
         getOrCreateRawBuilder(HAS_VERDANT_MOUNTAINS_VILLAGE)
                 .add(biome(VWBiomes.VERDANT_MOUNTAINS));
