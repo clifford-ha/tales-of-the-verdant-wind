@@ -2,9 +2,14 @@ package cliffordha.totvw.entity.wolf;
 
 import cliffordha.totvw.registry.attachments.AttachmentUtil;
 import cliffordha.totvw.registry.attachments.Runestone;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import oshi.util.tuples.Pair;
+
+import java.util.List;
+import java.util.UUID;
 
 public record WolfStats(
         String name,
@@ -14,13 +19,17 @@ public record WolfStats(
 
         String owner,
         String ownerUUID,
+        String sharedUUID,
 
         String isVerdant,
         String benedictionStack,
         String attackCycle,
         String trySavePoints,
         String returnPoint,
-        String runestoneType
+        String runestoneType,
+
+        List<Pair<String, UUID>> trustedPlayers,
+        List<Pair<String, UUID>> aggressors
 ) {
     public static WolfStats valueOf(Wolf wolf) {
         var hasSoulID = wolf.getAttachedOrElse(WolfAttachment.SOUL_ID, AttachmentUtil.EMPTY_UUID);
@@ -29,6 +38,7 @@ public record WolfStats(
         String FAMILY_ID = hasFamilyID != AttachmentUtil.EMPTY_UUID ? String.valueOf(wolf.getAttached(WolfAttachment.FAMILY_ID)) : "None";
         String OWNER = wolf.getOwner() != null ? wolf.getOwner().getPlainTextName() : "None";
         String OWNER_UUID = wolf.getOwner() != null ? String.valueOf(wolf.getOwner().getUUID()) : "None";
+        String SHARED_UUID = wolf.getOwner() != null ? String.valueOf(VWAttachments.getWolfPlayerSharedId(wolf)): "None";
 
         String IS_VERDANT = wolf.getAttachedOrElse(WolfAttachment.IS_VERDANT_TYPE, false) + "";
         String BENEDICTION_STACK = wolf.getAttachedOrElse(WolfAttachment.BENEDICTION, 0) + "";
@@ -45,13 +55,17 @@ public record WolfStats(
 
                 OWNER,
                 OWNER_UUID,
+                SHARED_UUID,
 
                 IS_VERDANT,
                 BENEDICTION_STACK,
                 ATTACK_CYCLE,
                 TRY_SAVE_POINTS,
                 RETURN_POINT,
-                RUNESTONE_TYPE
+                RUNESTONE_TYPE,
+
+                WolfAttachment.getTrustedPlayers(wolf),
+                WolfAttachment.getAggressors(wolf)
         );
     }
 }

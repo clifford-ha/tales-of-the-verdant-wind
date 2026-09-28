@@ -4,6 +4,7 @@ import cliffordha.totvw.item.events.VWItemBlessings;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.VWSounds;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.tag.VWItemTags;
 
@@ -38,22 +39,20 @@ public class VWPlayerInteractions {
         ItemStack stack = player.getMainHandItem();
         boolean hasPaper = stack.is(Items.PAPER) || stack.is(VWItems.VERIXIUM_PAPER);
 
-        if (hasPaper && entity instanceof LivingEntity otherPlayer) {
+        if (hasPaper && entity instanceof Player otherPlayer) {
             if (player == otherPlayer) return InteractionResult.PASS;
 
             AttachmentType<List<Pair<String, UUID>>> T_LIST = PlayerAttachment.TRUSTED_PLAYERS;
             List<Pair<String, UUID>> oldPlayerData = player.getAttachedOrElse(T_LIST, List.of());
             List<Pair<String, UUID>> newPlayerData = new ArrayList<>(oldPlayerData);
 
-            if (oldPlayerData.size() >= 4) {
+            Pair<String, UUID> mobData = PlayerAttachment.getNameAndUUID(otherPlayer);
+
+            boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.getB() == mobData.getB());
+            if (oldPlayerData.size() >= 4 && !hasPriorData) {
                 sendToChat(player, true, "You can only list 4 trusted players at a time.");
                 return InteractionResult.FAIL;
             }
-
-            Pair<String, UUID> mobData = new Pair<>(otherPlayer.getPlainTextName(), otherPlayer.getUUID());
-            player.playSound(VWSounds.NOTIFY);
-
-            boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.getB() == mobData.getB());
             if (hasPriorData) {
                 var index = oldPlayerData.stream().findFirst().filter(data -> data.getB() == mobData.getB()).map(oldPlayerData::indexOf).orElse(null);
                 if (index == null) return InteractionResult.PASS;
@@ -77,6 +76,7 @@ public class VWPlayerInteractions {
                 player.setAttached(PlayerAttachment.TRUSTED_PLAYERS, List.copyOf(newPlayerData));
 
                 sendToChat(player, false, otherPlayer.getPlainTextName() + " is now a trusted player!");
+                player.playSound(VWSounds.NOTIFY);
                 return InteractionResult.SUCCESS;
             }
         }

@@ -47,6 +47,8 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(VWBlocks.VERDANT_SPRUCE_SHELF, "Verdant Spruce Shelf");
         text.add(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX, "Verdant Spruce Storage Box");
 
+        text.add(VWBlocks.VERIXIUM_FLUID, "Verixium Fluid");
+
         text.add("container.tales-of-the-verdant-wind.storage_box", "Storage Box");
         text.add(VWBlocks.LODESTONE_WIND_CORE, "Lodestone Wind Core");
 
@@ -89,6 +91,11 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(VWItems.TETHER_RUNESTONE_PLATE, "Tether Runestone Plate");
         text.add(VWItems.GENESIS_RUNESTONE_PLATE, "Genesis Runestone Plate");
         text.add(VWItems.HAVOC_RUNESTONE_PLATE, "Havoc Runestone Plate");
+        text.add(VWItems.EFFLORESCENCE_RUNESTONE_PLATE, "Efflorescence Runestone Plate");
+
+        // MISC BLOCKS
+        text.add(VWBlocks.FARMLAND_PLACER, "Farmland Placer");
+
 
         String SCATTERED_PAGE = "Scattered Page";
         text.add(Pages.SCATTERED_PAGE, SCATTERED_PAGE);
@@ -136,12 +143,12 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add(effectKey("blessing_of_the_verdant_wind"), "Blessing of the Verdant Wind");
         text.add(effectKey("amplified_might"), "Amplified Might");
-        text.add(effectKey("getBloodlust"), "Bloodlust");
+        text.add(effectKey("bloodlust"), "Bloodlust");
         text.add(effectKey("paralyze"), "Paralyzed");
         text.add(effectKey("wind_veil"), "Wind Veil");
         text.add(effectKey("havoc"), "Havoc");
 
-        text.add("effect.tales-of-the-verdant-wind.getBloodlust.description", "Gives massive attack buff in exchange for constant damage while the effect is active");
+        text.add("effect.tales-of-the-verdant-wind.bloodlust.description", "Gives massive attack buff in exchange for constant damage while the effect is active");
         
         text.add("item.minecraft.potion.effect.sacred_verdant_potion", "Sacred Verdant Potion");
         text.add("item.minecraft.splash_potion.effect.sacred_verdant_potion", "Sacred Verdant Splash Potion");
@@ -160,8 +167,8 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add("item.minecraft.tipped_arrow.effect.baleful_strength_potion", "Arrow of Baleful Strength");
 
 
-        text.add("death.attack.getBloodlust", "%1$s died from the agonizing effects of §cBloodlust§r");
-        text.add("death.attack.getBloodlust.player", "%1$s died from the agonizing effects of §cBloodlust§r while fighting %2$s");
+        text.add("death.attack.bloodlust", "%1$s died from the agonizing effects of §cBloodlust§r");
+        text.add("death.attack.bloodlust.player", "%1$s died from the agonizing effects of §cBloodlust§r while fighting %2$s");
 
         text.add("death.attack.scorching_heat", "%1$s died from scorching heat");
         text.add("death.attack.scorching_heat.player", "%1$s died from scorching heat while fighting %2$s");
@@ -204,7 +211,9 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(TOTVW.MOD_ID, "Tales of the Verdant Wind");
 
         //DEV
-        text.add(VWItems.DevItems.ATTACHMENTS_REMOVER, "Attachments Remover");
+        if (TOTVW.IN_DEVELOPMENT) {
+            text.add(VWItems.DevItems.ATTACHMENTS_REMOVER, "Attachments Remover");
+        }
     }
 
     private static String biomeKey(String name) {

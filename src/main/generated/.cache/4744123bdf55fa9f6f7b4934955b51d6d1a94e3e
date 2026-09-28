@@ -1,4 +1,4 @@
-// 26.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Tags for minecraft:block
+// 26.3	-999999999-01-01T00:00:00	Tales of the Verdant Wind/Tags for minecraft:block
 e4346aaa60bdd8c4e61120acfc06f35de2d8f6d9 data/minecraft/tags/block/ceiling_hanging_signs.json
 bb4b1381f24d8c8bec9bd64ae7ef7306913dede9 data/minecraft/tags/block/dampens_vibrations.json
 bb4b1381f24d8c8bec9bd64ae7ef7306913dede9 data/minecraft/tags/block/dirt.json
@@ -24,5 +24,5 @@ bd37af3ecdda29cadebfd47217e7dbd1cb21d175 data/minecraft/tags/block/wooden_fences
 c177e6cd3597ed17c678add834234053694445ff data/minecraft/tags/block/wooden_slabs.json
 37ebb1a2e33d81bf21897a34303ae1de3a07e476 data/minecraft/tags/block/wooden_stairs.json
 2afb1515cf3c75aa27e46655d07400521766a2bb data/tales-of-the-verdant-wind/tags/block/verdant_blocks.json
-a335785aabf2d8275251c1c970df166c936994f4 data/tales-of-the-verdant-wind/tags/block/verdant_moss_replaceable.json
+976dc1aea25dad9123f29669bf8bc4d7ee3b888b data/tales-of-the-verdant-wind/tags/block/verdant_moss_replaceable.json
 5848ac22821e6df7dce91eedea3c3a29cbe747ba data/tales-of-the-verdant-wind/tags/block/verdant_spruce_logs.json

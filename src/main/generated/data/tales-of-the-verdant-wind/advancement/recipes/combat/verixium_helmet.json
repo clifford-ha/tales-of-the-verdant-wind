@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "tales-of-the-verdant-wind:verixium_helmet"
+        "recipes": "tales-of-the-verdant-wind:verixium_helmet"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

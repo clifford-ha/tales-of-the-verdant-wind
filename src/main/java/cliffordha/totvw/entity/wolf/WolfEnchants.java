@@ -7,26 +7,28 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 public record WolfEnchants(
         boolean hasBenediction,
         boolean hasEnhancementKit,
+
         int getIgnition,
         int getPoisoning,
         int getWithering,
         int getLifting,
         int getBloodlust,
-        int might,
-        int oozing,
-        int gnawing,
+        int getMight,
+        int getOozing,
+        int getGnawing,
 
         //from vanilla
-        int protection,
-        int fireProtection,
-        int projectileProtection,
-        int blastProtection,
-        int mending
+        int getProtection,
+        int getFireProtection,
+        int getProjectileProtection,
+        int getBlastProtection,
+        int getMending
 ) {
     static WolfEnchants of(Wolf wolf) {
         return new WolfEnchants(
                 VWEnchantments.getBenediction(wolf),
                 VWEnchantments.getEnhancementKit(wolf),
+
                 VWEnchantments.getIgnition(wolf),
                 VWEnchantments.getPoisoning(wolf),
                 VWEnchantments.getWithering(wolf),
@@ -60,27 +62,27 @@ public record WolfEnchants(
         return getBloodlust > 0;
     }
     boolean hasMight() {
-        return might > 0;
+        return getMight > 0;
     }
     boolean hasOozing() {
-        return oozing > 0;
+        return getOozing > 0;
     }
     boolean hasGnawing() {
-        return gnawing > 0;
+        return getGnawing > 0;
     }
     boolean hasProtection() {
-        return protection > 0;
+        return getProtection > 0;
     }
     boolean hasFireProtection() {
-        return fireProtection > 0;
+        return getFireProtection > 0;
     }
     boolean hasProjectileProtection() {
-        return projectileProtection > 0;
+        return getProjectileProtection > 0;
     }
     boolean hasBlastProtection() {
-        return blastProtection > 0;
+        return getBlastProtection > 0;
     }
     boolean hasMending() {
-        return mending > 0;
+        return getMending > 0;
     }
 }

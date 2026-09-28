@@ -4,19 +4,36 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.attachments.entity.*;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.player.Player;
+import oshi.util.tuples.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static cliffordha.totvw.registry.attachments.AttachmentUtil.*;
 
 public class VWAttachments {
     public static final AttachmentType<Boolean> HAS_VERDANT_OMEN = registerBool("has_verdant_omen", false);
+
     public static final AttachmentType<Integer> PRESSURE_DIFFERENCE = registerInt("pressure_difference", false);
     public static final AttachmentType<Boolean> HAS_IMPLODED = registerBool("has_imploded", false);
+
+    public static final AttachmentType<Integer> VERDANT_BLOOM_STACK = registerInt("verdant_bloom_stack", false);
 
     public static final AttachmentType<BlockPos> LAST_OVERWORLD_POS = registerBlockPos("last_overworld_pos", true);
     public static final AttachmentType<BlockPos> LAST_NOLAYAN_POS = registerBlockPos("last_nolayan_pos", true);
     public static final AttachmentType<Boolean> HAS_ENTERED_NOLAYAN = registerBool("has_entered_nolayan", true);
+
+    public static final AttachmentType<UUID> WOLF_PLAYER_SHARED_ID = registerUUID("wolf_player_shared_id", true);
+
+
+    public static UUID getWolfPlayerSharedId(LivingEntity entity) {
+        return entity.getAttachedOrElse(WOLF_PLAYER_SHARED_ID, entity.getUUID());
+    }
+
 
 
     public static final List<AttachmentType<?>> WOLF_ATTACHMENTS = List.of(
@@ -51,6 +68,7 @@ public class VWAttachments {
             PlayerAttachment.RECEIVED_ITEMS_HANDBOOK,
             PlayerAttachment.RECEIVED_FEATURES_HANDBOOK,
 
+            PlayerAttachment.GENESIS_RUNESTONE_ACQUISITION_COUNT,
             PlayerAttachment.WOLF_SOULS,
             PlayerAttachment.VILLAGER_ATROCITY_COUNT,
             PlayerAttachment.WOLF_ATROCITY_COUNT,
@@ -74,6 +92,7 @@ public class VWAttachments {
             HAS_VERDANT_OMEN,
             PRESSURE_DIFFERENCE,
             HAS_IMPLODED,
+            VERDANT_BLOOM_STACK,
             LAST_OVERWORLD_POS,
             LAST_NOLAYAN_POS,
             HAS_ENTERED_NOLAYAN

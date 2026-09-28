@@ -7,6 +7,7 @@ import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle;
 import cliffordha.totvw.registry.VWColors;
+import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.VWSounds;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.tag.VWBiomeTags;
@@ -21,6 +22,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffect;
@@ -29,7 +31,10 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
@@ -61,6 +66,30 @@ public class VWUtil {
     public static void sendParticles(ParticleOptions type, ServerLevel level, BlockPos pos, int count, double deviation) {
         for (int i = 0; i < count; i++) {
             level.sendParticles(type, pos.getX() + deviation, pos.getY() + deviation, pos.getZ() + deviation, 1, deviation, deviation, deviation, 0);
+        }
+    }
+
+    public static void addToInventory(Player player, Item itemToAdd, LivingEntity dropFrom) {
+        ItemStack item = new ItemStack(itemToAdd);
+        Inventory inv = player.getInventory();
+        int slot = inv.getFreeSlot();
+
+        if (slot > 0) {
+            inv.setItem(slot, item);
+        } else {
+            LivingEntity mob = dropFrom != null ? dropFrom : player;
+            mob.drop(item, false, Prediction.SERVER_ONLY);
+        }
+    }
+    public static void addToInventory(Player player, Item itemToAdd) {
+        ItemStack item = new ItemStack(itemToAdd);
+        Inventory inv = player.getInventory();
+        int slot = inv.getFreeSlot();
+
+        if (slot > 0) {
+            inv.setItem(slot, item);
+        } else {
+            player.drop(item, false, Prediction.SERVER_ONLY);
         }
     }
 
@@ -270,6 +299,7 @@ public class VWUtil {
 
         /** colors text **/
         public static String cText(ScatteredPageTextColor color, String text) {
+            if (color == null) return text;
             return color.getColor() + text + "§r";
         }
 

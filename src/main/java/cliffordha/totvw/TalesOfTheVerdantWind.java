@@ -7,6 +7,7 @@ import cliffordha.totvw.client.ClientPrefsPayload;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.world.*;
+import cliffordha.totvw.world.tree.VWRootPlacerTypes;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -17,7 +18,7 @@ import terrablender.api.TerraBlenderApi;
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 	public TalesOfTheVerdantWind() {}
 
-	public static final boolean IN_DEVELOPMENT = true;
+	public static final boolean IN_DEVELOPMENT = false;
 	@Override
 	public void onInitialize() {
 		TOTVW.sendStat(TOTVW.MOD_NAME_LONG + " (or TOTVW for short) started initializing...");
@@ -27,6 +28,7 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		VWBlockProperties.register();
 		VWFluids.register();
 
+		VWAttachments.register();
 		VWEntities.register();
 		VWBlockEntityTypes.register();
 		VWEnchantments.register();
@@ -36,8 +38,10 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		VWPotionBrewing.register();
 		VWParticles.register();
 		VWSounds.register();
+
+		VWRootPlacerTypes.register();
 		VWBiomeModifications.register();
-		VWAttachments.register();
+
 
 		VWCommands.register();
 		VWLootTables.registerModifiers();

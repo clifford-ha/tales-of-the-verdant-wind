@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "tales-of-the-verdant-wind:verixium_powder_block"
+        "recipes": "tales-of-the-verdant-wind:verixium_powder_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -1,0 +1,41 @@
+{
+  "parent": "tales-of-the-verdant-wind:power_beyond_reason",
+  "criteria": {
+    "bound_by_a_thread": {
+      "conditions": {
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:wolf"
+          }
+        },
+        "item": {
+          "items": "tales-of-the-verdant-wind:tether_runestone_plate"
+        }
+      },
+      "trigger": "minecraft:player_interacted_with_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "color": "#247D66",
+      "text": "Use the power of Tether Runestone on your companion so it can gain the Link status"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "id": "tales-of-the-verdant-wind:tether_runestone_plate"
+    },
+    "title": {
+      "color": "#6EC5FF",
+      "text": "Bound By A Thread"
+    }
+  },
+  "requirements": [
+    [
+      "bound_by_a_thread"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

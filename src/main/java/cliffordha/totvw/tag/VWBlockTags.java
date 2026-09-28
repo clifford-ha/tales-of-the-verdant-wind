@@ -55,7 +55,8 @@ public class VWBlockTags extends FabricTagsProvider.BlockTagsProvider {
                 .addOptionalTag(BlockTags.DEEPSLATE_ORE_REPLACEABLES.location())
                 .addOptionalTag(BlockTags.SAND.location())
                 .add(block(Blocks.GRAVEL))
-                .add(block(Blocks.GRASS_BLOCK));
+                .add(block(Blocks.GRASS_BLOCK))
+                .add(block(Blocks.MYCELIUM));
 
 
         getOrCreateRawBuilder(BlockTags.LEAVES)

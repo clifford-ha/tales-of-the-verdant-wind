@@ -1,9 +1,10 @@
 package cliffordha.totvw.effect;
 
 import cliffordha.totvw.registry.VWColors;
+import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.attachments.HavocType;
-
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
+
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
@@ -13,6 +14,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 
 public class HavocEffect extends MobEffect {
@@ -28,7 +30,11 @@ public class HavocEffect extends MobEffect {
     }
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
-        mob = entity;
+        if (entity instanceof Player || entity instanceof Wolf) {
+            mob = entity;
+        } else {
+            entity.removeEffect(VWEffects.HAVOC);
+        }
     }
 
     @Override
@@ -59,6 +65,17 @@ public class HavocEffect extends MobEffect {
 
     public static void removeHavoc(LivingEntity entity) {
         if (entity instanceof Player player) {
+            int cooldown;
+            if (HavocType.isAnnihilation(player)) {
+                cooldown = 90;
+            } else if (HavocType.isExpulsion(player)) {
+                cooldown = (60 * 2) + 30;
+            } else if (HavocType.isVoid(player)) {
+                cooldown = (60 * 7);
+            } else {
+                cooldown = 30;
+            }
+            player.setAttached(PlayerAttachment.CD_HAVOC, cooldown);
             player.removeAttached(PlayerAttachment.HAVOC_TYPE);
             player.removeAttached(PlayerAttachment.HAVOC_USAGE_COUNT);
         }

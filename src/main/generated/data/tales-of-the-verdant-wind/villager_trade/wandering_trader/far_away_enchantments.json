@@ -1,41 +1,30 @@
 {
   "additional_wants": {
-    "count": 2.0,
+    "count": 2,
     "id": "tales-of-the-verdant-wind:verixium_chunk"
   },
-  "given_item_modifiers": [
-    {
-      "function": "minecraft:enchant_randomly",
-      "include_additional_cost_component": true,
-      "only_compatible": false,
-      "options": [
-        "tales-of-the-verdant-wind:benediction_of_the_verdant_mountains",
-        "tales-of-the-verdant-wind:wolf_effect_oozing"
-      ]
-    },
-    {
-      "function": "minecraft:filtered",
-      "item_filter": {
-        "items": "minecraft:enchanted_book",
-        "predicates": {
-          "minecraft:stored_enchantments": [
-            {}
-          ]
-        }
-      },
-      "on_fail": {
-        "function": "minecraft:discard"
+  "given_item_modifier": {
+    "type": "minecraft:filtered",
+    "item_filter": {
+      "items": "minecraft:enchanted_book",
+      "predicates": {
+        "minecraft:stored_enchantments": [
+          {}
+        ]
       }
+    },
+    "on_fail": {
+      "type": "minecraft:discard"
     }
-  ],
+  },
   "gives": {
     "id": "minecraft:enchanted_book"
   },
-  "max_uses": 2.0,
+  "max_uses": 2,
   "reputation_discount": 0.05,
   "wants": {
-    "count": 10.0,
+    "count": 10,
     "id": "minecraft:emerald"
   },
-  "xp": 50.0
+  "xp": 50
 }

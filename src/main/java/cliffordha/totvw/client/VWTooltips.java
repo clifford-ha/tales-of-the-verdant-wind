@@ -97,6 +97,7 @@ public class VWTooltips {
         String LORE_soulRunestoneFragment4;
 
         String LORE_genesisRunestonePlate;
+        String LORE_efflorescenceRunestonePlate;
         String LORE_tetherRunestonePlate;
         String LORE_havocRunestonePlate;
 
@@ -115,7 +116,8 @@ public class VWTooltips {
             LORE_soulRunestoneFragment3 = "\"Prior to the Wind's ascent, the people of ∎∎∎∎ tried to preserve the memories from the stream of time. Only then did they realize that a soul can be ∎∎∎∎∎ and ∎∎∎∎∎∎∎∎.\"";
             LORE_soulRunestoneFragment4 = "\"Perhaps... my authority will quench their hatred. Onward, I shall entrust the duties of taking care of our people to each and everyone of you till the day 'I' return.\"";
 
-            LORE_genesisRunestonePlate = "A fragment from a lost world...";
+            LORE_genesisRunestonePlate = "A fragment of unknown origin...";
+            LORE_efflorescenceRunestonePlate = "You feel as though you are revitalized by the subtle powered contained by this item...";
             LORE_tetherRunestonePlate = "You can feel a strange connection to the world itself... Perhaps you can use it for something great?";
             LORE_havocRunestonePlate = "It appears this item is fluctuating on its own...";
 
@@ -132,6 +134,7 @@ public class VWTooltips {
             LORE_soulRunestoneFragment3 = unset;
             LORE_soulRunestoneFragment4 = unset;
             LORE_genesisRunestonePlate = unset;
+            LORE_efflorescenceRunestonePlate = unset;
             LORE_tetherRunestonePlate = unset;
             LORE_havocRunestonePlate = unset;
 
@@ -143,25 +146,41 @@ public class VWTooltips {
             LORE_verixiumIngot = unset;
         }
 
-        if (stack.is(VWItems.SOUL_RUNESTONE_PLATE)) {
-            int ACTIVE_SOULS = player.getAttachedOrElse(PlayerAttachment.WOLF_SOULS, List.of()).size();
-            if (ACTIVE_SOULS > 0) {
-                int randomInt10 = player.getAttachedOrElse(PlayerAttachment.RANDOM_INT_10, 0);
+        if (stack.is(VWItemTags.RUNESTONE_PLATES)) {
+            if (stack.is(VWItems.GENESIS_RUNESTONE_PLATE)) {
+                addEmpty(out);
+                addExpandingText(out, LORE_genesisRunestonePlate);
 
-                String wolf = ACTIVE_SOULS < 2 ? "The " + cText(AQUA, "wolf") + " is " : "The " + cText(AQUA, ACTIVE_SOULS + "") + " wolves are ";
-                addText(out, wolf + soulRunestoneIdle(randomInt10, ACTIVE_SOULS));
+            } else if (stack.is(VWItems.EFFLORESCENCE_RUNESTONE_PLATE)) {
+                addEmpty(out);
+                addExpandingText(out, LORE_efflorescenceRunestonePlate);
+
+            } else if (stack.is(VWItems.SOUL_RUNESTONE_PLATE)) {
+                int ACTIVE_SOULS = player.getAttachedOrElse(PlayerAttachment.WOLF_SOULS, List.of()).size();
+                if (ACTIVE_SOULS > 0) {
+                    int randomInt10 = player.getAttachedOrElse(PlayerAttachment.RANDOM_INT_10, 0);
+
+                    String wolf = ACTIVE_SOULS < 2 ? "The " + cText(AQUA, "wolf") + " is " : "The " + cText(AQUA, ACTIVE_SOULS + "") + " wolves are ";
+                    addText(out, wolf + soulRunestoneIdle(randomInt10, ACTIVE_SOULS));
+                }
+                addEmpty(out);
+                addExpandingText(out, "Fragmented Memory:", LORE_soulRunestonePlate);
+
+            } else if (stack.is(VWItems.TETHER_RUNESTONE_PLATE)) {
+                addEmpty(out);
+                addExpandingText(out, LORE_tetherRunestonePlate);
+
+            } else if (stack.is(VWItems.HAVOC_RUNESTONE_PLATE)) {
+                addEmpty(out);
+                addExpandingText(out, LORE_havocRunestonePlate);
+
             }
-            addEmpty(out);
-            addExpandingText(out, "Fragmented Memory:", LORE_soulRunestonePlate);
         }
+
         if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_1)) addExpandingText(out, LORE_soulRunestoneFragment1);
         if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_2)) addExpandingText(out, LORE_soulRunestoneFragment2);
         if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_3)) addExpandingText(out, LORE_soulRunestoneFragment3);
         if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_4)) addExpandingText(out, LORE_soulRunestoneFragment4);
-
-        if (stack.is(VWItems.GENESIS_RUNESTONE_PLATE)) addExpandingText(out, LORE_genesisRunestonePlate);
-        if (stack.is(VWItems.TETHER_RUNESTONE_PLATE)) addExpandingText(out, LORE_tetherRunestonePlate);
-        if (stack.is(VWItems.HAVOC_RUNESTONE_PLATE)) addExpandingText(out, LORE_havocRunestonePlate);
 
         if (stack.is(VWItems.VERIXIUM_CHUNK)) {
             addExpandingText(out, LORE_verixiumChunk);

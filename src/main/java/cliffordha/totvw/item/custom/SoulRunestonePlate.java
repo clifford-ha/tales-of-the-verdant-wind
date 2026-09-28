@@ -3,10 +3,12 @@ package cliffordha.totvw.item.custom;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
+
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -22,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueInput;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,20 @@ public class SoulRunestonePlate extends Item {
         super(properties);
     }
 
+    private static final Component SOUL = Component.literal("§lSoul Runestone Plate§r").withColor(VWColors.RUNESTONE_SOUL);
+    private static boolean ACTIVE = false;
+
+    @Override
+    public Component getName(ItemStack itemStack) {
+        return ACTIVE ? SOUL : super.getName(itemStack);
+    }
+
+    @Override
+    public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
+        ACTIVE = owner instanceof Player player && !player.getAttachedOrElse(PlayerAttachment.WOLF_SOULS, List.of()).isEmpty();
+        super.inventoryTick(itemStack, level, owner, slot);
+    }
+
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (player.getCooldowns().isOnCooldown(new ItemStack(this))) return InteractionResult.FAIL;
@@ -44,20 +61,29 @@ public class SoulRunestonePlate extends Item {
 
         boolean notOnGround = player.isFallFlying() || level.getBlockState(player.blockPosition().below()).isAir();
         if (player.isInLiquid() || notOnGround) {
-            String errorGround = "You can only summon when on ground!";
-            sendToChat(player, false, errorGround);
+            if (level.isClientSide()) {
+                String errorGround = "You can only summon when on ground!";
+                sendToChat(player, false, errorGround);
+            }
+
             player.getCooldowns().addCooldown(new ItemStack(this), 20);
             return InteractionResult.FAIL;
         }
         List<CompoundTag> souls = player.getAttachedOrElse(WOLF_SOULS, List.of());
 
         if (!player.hasAttached(WOLF_SOULS) || souls.isEmpty()) {
-            sendToChat(player, false, "You currently have no wolf souls to summon!");
+            if (level.isClientSide()) {
+                sendToChat(player, false, "You currently have no wolf souls to summon!");
+            }
             player.getCooldowns().addCooldown(new ItemStack(this), 20);
             return InteractionResult.FAIL;
         } else {
             if (player.getAttachedOrElse(PlayerAttachment.WOLF_ATROCITY_COUNT, 0) > 10) {
-                sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, false, "The runestone rejected your summoning request...");
+                if (level.isClientSide()) {
+                    sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, false, "The runestone rejected your summoning request...");
+                }
+
+
                 player.getCooldowns().addCooldown(new ItemStack(this), 60);
                 return InteractionResult.FAIL;
             }
@@ -120,33 +146,18 @@ public class SoulRunestonePlate extends Item {
                 catcher.add(soul);
             }
         }
-        /*
-        souls.forEach(soul -> {
-            ListTag setPosition = getPosition(player);
-            soul.put("Pos", setPosition);
-
-            TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), soul);
-            Optional<Entity> wolfEntity = EntityType.create(input, level, new EntitySpawnRequest(EntitySpawnReason.LOAD, true));
-
-            if (wolfEntity.isPresent()) {
-                level.addFreshEntity(wolfEntity.get());
-                Wolf wolf = (Wolf) wolfEntity.get();
-                if (wolf.getHealth() < 2.0f) {
-                    wolf.setHealth(4.0f);
-                }
-                wolf.removeAllEffects();
-                wolf.teleportToAroundBlockPos(player.blockPosition());
-                addHiddenEffect(wolf, VWEffects.WIND_VEIL, 20 * 3, 0);
-
-                check.add(1);
-            }
-        });*/
 
         if (pass == souls.size()) {
             player.removeAttached(WOLF_SOULS);
         } else {
-            processAndSummonSouls(player, level, catcher);
-            TOTVW.sendWarning(player.getPlainTextName() + " resummoned " + catcher.size() + " wolf souls due to a failure.");
+            if (catcher.isEmpty()) {
+                TOTVW.sendWarning("An error getMight have occured while " + player.getPlainTextName() + " tried to summon wolves using the Soul Runestone Plate.");
+                player.removeAttached(WOLF_SOULS);
+            } else {
+                player.setAttached(WOLF_SOULS, catcher);
+                String t = catcher.size() > 1 ? catcher.size() + " were not summoned" : "One was not summoned";
+                sendToChat(player, false, "An error getMight have occurred while trying to summon wolves.\n" + t);
+            }
         }
     }
 

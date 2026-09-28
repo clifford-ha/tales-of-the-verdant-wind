@@ -6,6 +6,7 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.item.VWArmorMaterials;
 import cliffordha.totvw.item.VWToolMaterials;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -226,7 +227,8 @@ public class VWItems {
                     .fireResistant()
             ));
     public static final Item VERIXIUM_AXE = registerItem("verixium_axe",
-            properties -> new AxeItem(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 5.0F, -2.5f, properties
+            properties -> new Item(properties
+                    .axe(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 5.0F, -2.5f)
                     .fireResistant()
             ));
     public static final Item VERIXIUM_PICKAXE = registerItem("verixium_pickaxe",
@@ -235,11 +237,13 @@ public class VWItems {
                     .fireResistant()
             ));
     public static final Item VERIXIUM_HOE = registerItem("verixium_hoe",
-            properties -> new HoeItem(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 3.0F, 0.0f, properties
+            properties -> new Item(properties
+                    .hoe(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 3.0F, 0.0f)
                     .fireResistant()
             ));
     public static final Item VERIXIUM_SHOVEL = registerItem("verixium_shovel",
-            properties -> new ShovelItem(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 1.5F, -3.0f, properties
+            properties -> new Item(properties
+                    .shovel(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 1.5F, -3.0f)
                     .fireResistant()
             ));
     public static final Item VERIXIUM_FLUID_BUCKET = registerItem("verixium_fluid_bucket",
@@ -254,7 +258,7 @@ public class VWItems {
             properties -> new BoatItem(VWEntities.VERDANT_SPRUCE_CHEST_BOAT, properties.stacksTo(1)
             ));
     public static final Item VERDANT_SPRUCE_SIGN = registerItem("verdant_spruce_sign",
-            properties -> new SignItem(VWBlocks.VERDANT_SPRUCE_SIGN, VWBlocks.VERDANT_SPRUCE_WALL_SIGN, properties
+            properties -> new StandingAndWallBlockItem(VWBlocks.VERDANT_SPRUCE_SIGN, VWBlocks.VERDANT_SPRUCE_WALL_SIGN, Direction.DOWN, properties
                     .stacksTo(16)
             ));
     public static final Item VERDANT_SPRUCE_HANGING_SIGN = registerItem("verdant_spruce_hanging_sign",
@@ -264,7 +268,6 @@ public class VWItems {
     public static final Item SOUL_RUNESTONE_PLATE = registerItem("soul_runestone_plate",
             properties -> new SoulRunestonePlate(properties
                     .stacksTo(1)
-                    .rarity(Rarity.EPIC)
                     .fireResistant()
             ));
     public static final Item SOUL_RUNESTONE_FRAGMENT_1 = registerItem("soul_runestone_fragment_1",
@@ -290,19 +293,21 @@ public class VWItems {
     public static final Item TETHER_RUNESTONE_PLATE = registerItem("tether_runestone_plate",
             properties -> new TetherRunestonePlate(properties
                     .stacksTo(1)
-                    .rarity(Rarity.EPIC)
                     .fireResistant()
             ));
     public static final Item GENESIS_RUNESTONE_PLATE = registerItem("genesis_runestone_plate",
             properties -> new GenesisRunestonePlate(properties
                     .stacksTo(1)
-                    .rarity(Rarity.EPIC)
                     .fireResistant()
             ));
     public static final Item HAVOC_RUNESTONE_PLATE = registerItem("havoc_runestone_plate",
             properties -> new HavocRunestonePlate(properties
                     .stacksTo(1)
-                    .rarity(Rarity.EPIC)
+                    .fireResistant()
+            ));
+    public static final Item EFFLORESCENCE_RUNESTONE_PLATE = registerItem("efflorescence_runestone_plate",
+            properties -> new EfflorescenceRunestonePlate(properties
+                    .stacksTo(1)
                     .fireResistant()
             ));
 
