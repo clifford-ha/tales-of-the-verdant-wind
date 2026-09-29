@@ -18,7 +18,6 @@ import net.minecraft.world.item.trading.VillagerTrades;
 import java.util.List;
 import java.util.Optional;
 
-
 public class VWVillagerTrades {
     public static final ResourceKey<VillagerTrade> WEAPONSMITH_2_WOLF_ATK_ENCHANTMENTS = createKey("weaponsmith/2/wolf_atk_enchantments");
     public static final ResourceKey<VillagerTrade> WEAPONSMITH_2_RUNESTONE_FRAGMENT_3 = createKey("weaponsmith/2/runestone_fragment_3");
@@ -62,9 +61,9 @@ public class VWVillagerTrades {
                 defaultFloat(),
                 Optional.empty(),
                 VillagerTrades.enchantedBook(items,
-                        HolderSet.direct(
+                        Optional.of(HolderSet.direct(
                                 enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_IGNITION)
-                        ))
+                        )))
         ));
         context.register(WEAPONSMITH_3_LODESTONE_WIND_CORE, new VillagerTrade(
                 new TradeCost(Items.EMERALD, 50),
@@ -88,11 +87,11 @@ public class VWVillagerTrades {
                 defaultFloat(),
                 Optional.empty(),
                 VillagerTrades.enchantedBook(items,
-                        HolderSet.direct(
+                        Optional.of(HolderSet.direct(
                                 enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_LIFTING),
                                 enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_MIGHT),
                                 enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_OOZING)
-                        ))
+                        )))
         ));
         context.register(LIBRARIAN_2_VERIXIUM_PAPER, new VillagerTrade(
                 new TradeCost(Items.EMERALD, 1),
@@ -137,9 +136,9 @@ public class VWVillagerTrades {
                 defaultFloat(),
                 Optional.empty(),
                 VillagerTrades.enchantedBook(items,
-                        HolderSet.direct(
+                        Optional.of(HolderSet.direct(
                                 enchantments.getOrThrow(VWEnchantments.WOLF_ARMOR_ENHANCEMENT_KIT)
-                        ))
+                        )))
         ));
         context.register(ARMORER_4_VERIXIUM_WOLF_ARMOR, new VillagerTrade(
                 new TradeCost(Items.EMERALD, 30),
@@ -182,10 +181,10 @@ public class VWVillagerTrades {
                 defaultFloat(),
                 Optional.empty(),
                 VillagerTrades.enchantedBook(items,
-                        HolderSet.direct(
+                        Optional.of(HolderSet.direct(
                                 enchantments.getOrThrow(VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS),
                                 enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_OOZING)
-                        ))
+                        )))
         ));
     }
 

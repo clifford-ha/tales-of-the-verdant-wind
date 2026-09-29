@@ -57,7 +57,7 @@ public class VWGlobalEntityBehaviors {
     private static void developmentTick() {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
-                serverLevel.getEntities(EntityTypes.PLAYER, _ -> true).forEach(player -> {
+                serverLevel.getEntities(EntityType.PLAYER, _ -> true).forEach(player -> {
                     if (!player.entityTags().contains(player.getStringUUID() + "-reminderStamp")) {
                         sendToChat(player, VWColors.VERDANT_WIND, false, "TOTVW mod version is a development build.");
                         player.entityTags().add(player.getStringUUID() + "-reminderStamp");
@@ -121,7 +121,7 @@ public class VWGlobalEntityBehaviors {
         }
 
         if (attacker instanceof Player player) {
-            if (entity.is(EntityTypes.WOLF) || entity.is(EntityTypes.VILLAGER) || entity.is(EntityTypes.WANDERING_TRADER)) {
+            if (entity.is(EntityType.WOLF) || entity.is(EntityType.VILLAGER) || entity.is(EntityType.WANDERING_TRADER)) {
                 PlayerAtrocityCounter.processAtrocity(player, entity, true);
             }
         }
@@ -144,7 +144,7 @@ public class VWGlobalEntityBehaviors {
         Entity attacker = damageSource.getEntity();
 
         if (attacker instanceof Player player) {
-            if (victim.is(EntityTypes.WOLF) || victim.is(EntityTypes.VILLAGER) || victim.is(EntityTypes.WANDERING_TRADER)) {
+            if (victim.is(EntityType.WOLF) || victim.is(EntityType.VILLAGER) || victim.is(EntityType.WANDERING_TRADER)) {
                 PlayerAtrocityCounter.processAtrocity(player, victim, false);
             }
         }
@@ -203,7 +203,7 @@ public class VWGlobalEntityBehaviors {
         if (!(entity.level() instanceof ServerLevel level)) return true;
         Entity source = damageSource.getEntity();
         if (entity instanceof Monster) return true;
-        if (source instanceof LivingEntity attacker && !attacker.is(EntityTypes.WOLF)) {
+        if (source instanceof LivingEntity attacker && !attacker.is(EntityType.WOLF)) {
             if (entity instanceof Player || entity instanceof Wolf) {
                 RandomSource random = level.getRandom();
                 DamageSource dmg = level.damageSources().magic();
@@ -214,7 +214,7 @@ public class VWGlobalEntityBehaviors {
                             player.getCooldowns().addCooldown(player.getMainHandItem(), 60);
                         }
                     }
-                    attacker.knockback(Math.max(1, attacker.getMaxHealth() * 0.05f), - attacker.getYHeadRot(), - entity.getYHeadRot(), dmg, 0);
+                    attacker.knockback(Math.max(1, attacker.getMaxHealth() * 0.05f), - attacker.getYHeadRot(), - entity.getYHeadRot());
                     level.playSound(null, entity.blockPosition(), SoundEvents.THORNS_HIT, SoundSource.PLAYERS);
 
                     for (int i = 0; i < random.nextIntBetweenInclusive(1, 5); i++) {
@@ -225,7 +225,7 @@ public class VWGlobalEntityBehaviors {
                     if (player.hasEffect(VWEffects.HAVOC) && attacker instanceof LivingEntity) {
                         RunestoneEffects.getHavocForPlayer(player, attacker, damage);
                     }
-                    List<Wolf> wolves = level.getEntities(EntityTypes.WOLF, scanArea(player, 16), wolf -> wolf.getOwner() == player);
+                    List<Wolf> wolves = level.getEntities(EntityType.WOLF, scanArea(player, 16), wolf -> wolf.getOwner() == player);
 
                     if (!wolves.isEmpty()) {
                         for (Wolf wolf : wolves) {

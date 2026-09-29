@@ -32,8 +32,6 @@ import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
-import static cliffordha.totvw.registry.VWColors.setColor;
-
 public class TOTVWClient implements ClientModInitializer {
     public void onInitializeClient() {
         FluidRenderingRegistry.register(
@@ -43,7 +41,7 @@ public class TOTVWClient implements ClientModInitializer {
                         new Material(Identifier.withDefaultNamespace("block/water_still")),
                         new Material(Identifier.withDefaultNamespace("block/water_flow")),
                         new Material(Identifier.withDefaultNamespace("block/water_overlay")),
-                        BlockTintSources.constant(setColor(0x13e1a8))
+                        BlockTintSources.constant(VWColors.setColor(0x13e1a8))
                 )
         );
         BlockColorRegistry.register(
@@ -51,22 +49,25 @@ public class TOTVWClient implements ClientModInitializer {
                 VWBlocks.IRIDESCENT_GLASS,
                 VWBlocks.IRIDESCENT_GLASS_PANE
         );
-        VWColorizeTextMixin.register(
+        VWColorizeTextMixin.register(VWColors.VERDANT_WIND, List.of(
                 "enchantment.tales-of-the-verdant-wind.benediction_of_the_verdant_mountains",
-                VWColors.VERDANT_WIND
-        );
-        VWColorizeTextMixin.register(
-                "effect.tales-of-the-verdant-wind.blessing_of_the_verdant_wind",
-                VWColors.VERDANT_WIND
-        );
-        VWColorizeTextMixin.register(
+
                 "item.minecraft.tipped_arrow.effect.sacred_verdant_potion",
-                VWColors.VERDANT_WIND_MUTED
+                "item.minecraft.potion.effect.sacred_verdant_potion",
+                "item.minecraft.splash_potion.effect.sacred_verdant_potion",
+                "item.minecraft.lingering_potion.effect.sacred_verdant_potion",
+
+                "effect.tales-of-the-verdant-wind.blessing_of_the_verdant_wind",
+                "effect.tales-of-the-verdant-wind.wind_veil"
+                )
         );
-        VWColorizeTextMixin.register(
-                "effect.tales-of-the-verdant-wind.bloodlust",
-                VWColors.BLOODLUST_EFFECT
+        VWColorizeTextMixin.register(VWColors.BLOODLUST_EFFECT, List.of(
+                "effect.tales-of-the-verdant-wind.getBloodlust"
+                )
         );
+        VWColorizeTextMixin.register(VWColors.HAVOC_PARTICLE, List.of(
+                "effect.tales-of-the-verdant-wind.order_of_annihilation"
+        ));
         ParticleProviderRegistry.getInstance().register(VWParticles.BENEDICTION_TRIGGER_PARTICLE, BenedictionTriggerParticle.BenedictionParticleProvider::new);
         ParticleProviderRegistry.getInstance().register(VWParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, VerdantBiomesEnvironmentAmbiance.VerdantBiomesEnvironmentAmbianceProvider::new);
         ParticleProviderRegistry.getInstance().register(VWParticles.VERIXIUM_POWDER_RAIN_PARTICLE, VerixiumPowderRainParticle.VerixiumPowderRainParticleProvider::new);
@@ -74,6 +75,7 @@ public class TOTVWClient implements ClientModInitializer {
 
         EntityRenderers.register(VWEntities.VERDANT_SPRUCE_BOAT, context -> new BoatRenderer(context, VWModelLayerProvider.VERDANT_SPRUCE_BOAT));
         EntityRenderers.register(VWEntities.VERDANT_SPRUCE_CHEST_BOAT, context -> new BoatRenderer(context, VWModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT));
+
         ModelLayerRegistry.registerModelLayer(VWModelLayerProvider.VERDANT_SPRUCE_BOAT, BoatModel::createBoatModel);
         ModelLayerRegistry.registerModelLayer(VWModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT, BoatModel::createChestBoatModel);
 
@@ -83,6 +85,7 @@ public class TOTVWClient implements ClientModInitializer {
         BlockEntityRenderers.register(VWBlockEntityTypes.SHELF, ShelfRenderer::new);
         VWEffectOverlays.register();
         VWTooltips.register();
+
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
                 sender.sendPacket(new ClientPrefsPayload(
                         VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER,

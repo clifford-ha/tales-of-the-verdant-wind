@@ -148,9 +148,11 @@ public class VWConfigScreen {
                         .setDefaultValue(true)
                         .setTooltip(text(
                                 """
-                                        When enabled, allow redistributing damage
-                                        that weren't absorbed by the armor
-                                        to both the armor and wolf."""
+                                        When enabled, allow distribution
+                                        of damage to both the armor and wolf.
+                                        
+                                        Recommended as it is being utilized
+                                        by certain feature-triggers."""
                         ))
                         .setSaveConsumer(value -> VWConfig.get().SERVER_WOLF_DMG_DISTRIBUTION = value)
                         .build()

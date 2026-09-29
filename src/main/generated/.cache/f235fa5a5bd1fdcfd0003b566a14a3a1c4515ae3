@@ -1,4 +1,4 @@
-// 26.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/TOTVW Dynamic Registries
+// 26.1	-999999999-01-01T00:00:00	Tales of the Verdant Wind/TOTVW Dynamic Registries
 a8c8571026469cd07415bed5b8accdc20a194639 data/tales-of-the-verdant-wind/damage_type/bleeding.json
 7aa6bbbfc1ccea34fbfafbe6905608e1e7795d18 data/tales-of-the-verdant-wind/damage_type/bloodlust.json
 00c4b4e074d4315a41b1dee0d4ae779b38245a4e data/tales-of-the-verdant-wind/damage_type/havoc.json
@@ -33,20 +33,20 @@ ed7758eb2999bab0eee604a07dcc813c31a82c33 data/tales-of-the-verdant-wind/wolf_var
 bd7142a0ae824131d8269e82e0a170e2375ec3b0 data/tales-of-the-verdant-wind/wolf_variant/verdant_snowy.json
 2bb23a77ccce0a1ca8f7e919e9d6b01c62e7c554 data/tales-of-the-verdant-wind/worldgen/biome/verdant_forest.json
 af4032d14cdcb8bc6d599973537951081fac00dc data/tales-of-the-verdant-wind/worldgen/biome/verdant_mountains.json
-860d71b445f8b18673fbada3f160aa4c56bd52f6 data/tales-of-the-verdant-wind/worldgen/configured_feature/ancient_verdant_spruce_tree.json
+8c100bf1b0d80a620d2a2582991c1a00865b3505 data/tales-of-the-verdant-wind/worldgen/configured_feature/ancient_verdant_spruce_tree.json
 fe16fee2a1016b60050387c7226224d30407d953 data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_farmlands_disk.json
 93435b9b07cc6446f538f1007f4b87a268ff876d data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_farmlands_patch.json
 8c14d3cbeb2c4f0f3bb62a993f9698dc6121e804 data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_fern_patch.json
 952c16f12fb214ddf7c2b9b21ebdbaeafaa1d8ae data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_grass_patch.json
-8f2056e1592c8c1699f7a919781312b86b4be21b data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_hollows.json
+b0b179003d36da10c220b7b03df60c1d9a77d2b1 data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_hollows.json
 3baa68e392f8e42efea2f35eb9cd3699c631c5ba data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_moss_patch.json
 cecb9a86ea296e44c134232a5981b0cd251804d0 data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_moss_vegetation.json
 4ab9727e4adc6364a7b08763e055cf97c9c99924 data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_pillars.json
 fa2c1f4bf9d1a16ebb5f805b8443a3eabde78bf2 data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_river_seagrass.json
-0aa0bde86c0a3e56da0203f29191112662274558 data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_spruce_bush_tree.json
-85f3bef50edc7d0342e98e3e9ccdbd8c42895309 data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_spruce_tree.json
+e0126edaf4443504a760c61ac2758877c8e834f5 data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_spruce_bush_tree.json
+008991b56b4cc1d0187e62252383ddf4e1ec0a57 data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_spruce_tree.json
 169c06357133220da73d5ae52c8e3eb930061efb data/tales-of-the-verdant-wind/worldgen/configured_feature/verdant_torchflower_patch.json
-8c48876181793f8a7125823caabf126847b82d92 data/tales-of-the-verdant-wind/worldgen/configured_feature/verixium_fluid_pond.json
+bae7b2fc551c0aa03103195af0ec21f09a936fc4 data/tales-of-the-verdant-wind/worldgen/configured_feature/verixium_fluid_pond.json
 987bc2ad97fdeb6b35896770015236a2b2513570 data/tales-of-the-verdant-wind/worldgen/configured_feature/verixium_ore_buried.json
 8474171a5d6a136d7c50ff00964181fae994f696 data/tales-of-the-verdant-wind/worldgen/configured_feature/verixium_ore_large.json
 4ed24810596973f5ae7b7342e8208ab49d102bcf data/tales-of-the-verdant-wind/worldgen/configured_feature/verixium_ore_small.json

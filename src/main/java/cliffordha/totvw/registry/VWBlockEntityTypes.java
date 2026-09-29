@@ -34,7 +34,7 @@ public class VWBlockEntityTypes {
                     Set.of(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX)));
 
     public static <T extends BlockEntityType<?>> T create(String name, T blockEntityType) {
-        BLOCK_ENTITY_TYPES.add(new Pair<>(Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), blockEntityType));
+        BLOCK_ENTITY_TYPES.add(new Pair<>(TOTVW.registerID(name), blockEntityType));
         return blockEntityType;
     }
 

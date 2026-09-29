@@ -19,7 +19,6 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import java.util.List;
 
 import static cliffordha.totvw.registry.VWEffects.*;
-import static cliffordha.totvw.util.VWUtil.*;
 
 public class AmplifiedMightEffect extends MobEffect {
     private final Identifier ID = VWIdentifiers.EFFECT_AMPLIFIED_MIGHT;
@@ -38,7 +37,7 @@ public class AmplifiedMightEffect extends MobEffect {
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
         AttributeMap attributes = entity.getAttributes();
-        if (entity instanceof Wolf wolf && wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_MIGHT) > 0) {
+        if (entity instanceof Wolf wolf && VWEnchantments.getMight(wolf) > 0) {
             addModifier(attributes, ID, Attributes.ARMOR,  4 + (2 * amplifier), ADD_VALUE);
 
             addModifier(attributes, ID, Attributes.JUMP_STRENGTH, 0.05 + (amplifier * 0.05), ADD_VALUE);

@@ -339,22 +339,22 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                 stonecutter(RecipeCategory.MISC, VWBlocks.IRIDESCENT_GLASS_PANE, VWBlocks.IRIDESCENT_GLASS_PANE, 16);
 
                 dyeFromIridescentGlass(
-                        Items.DYE.white(),
-                        Items.DYE.gray(),
-                        Items.DYE.brown(),
-                        Items.DYE.orange(),
-                        Items.DYE.lime(),
-                        Items.DYE.cyan(),
-                        Items.DYE.blue(),
-                        Items.DYE.magenta(),
-                        Items.DYE.lightGray(),
-                        Items.DYE.black(),
-                        Items.DYE.red(),
-                        Items.DYE.yellow(),
-                        Items.DYE.green(),
-                        Items.DYE.lightBlue(),
-                        Items.DYE.purple(),
-                        Items.DYE.pink()
+                        Items.WHITE_DYE,
+                        Items.GRAY_DYE,
+                        Items.BROWN_DYE,
+                        Items.ORANGE_DYE,
+                        Items.LIME_DYE,
+                        Items.CYAN_DYE,
+                        Items.BLUE_DYE,
+                        Items.MAGENTA_DYE,
+                        Items.LIGHT_GRAY_DYE,
+                        Items.BLACK_DYE,
+                        Items.RED_DYE,
+                        Items.YELLOW_DYE,
+                        Items.GREEN_DYE,
+                        Items.LIGHT_BLUE_DYE,
+                        Items.PURPLE_DYE,
+                        Items.PINK_DYE
                 );
             }
         };

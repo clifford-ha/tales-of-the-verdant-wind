@@ -7,6 +7,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.trading.VillagerTrade;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 
@@ -28,5 +29,8 @@ public class VWTagHelpers {
     }
     public static TagEntry enchantment(ResourceKey<Enchantment> type) {
         return TagEntry.element(type.identifier());
+    }
+    public static TagEntry trade(ResourceKey<VillagerTrade> trades) {
+        return TagEntry.element(trades.identifier());
     }
 }

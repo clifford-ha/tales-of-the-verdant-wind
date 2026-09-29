@@ -1,9 +1,12 @@
 package cliffordha.totvw.effect;
 
 import cliffordha.totvw.registry.VWIdentifiers;
-import cliffordha.totvw.registry.VWParticleEffects;
 import cliffordha.totvw.registry.VWColors;
 
+import cliffordha.totvw.registry.VWParticles;
+import cliffordha.totvw.util.VWUtil;
+import net.minecraft.client.particle.DustParticle;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
@@ -24,6 +27,7 @@ import static cliffordha.totvw.registry.VWEffects.*;
 
 public class BlessingOfTheVerdantWindEffect extends MobEffect {
     private final Identifier ID = VWIdentifiers.EFFECT_BLESSING_OF_THE_VERDANT_WIND;
+    private static final DustParticleOptions blessing = new DustParticleOptions(VWColors.VERDANT_WIND, 1.0f);
 
     public BlessingOfTheVerdantWindEffect() {
         super(MobEffectCategory.BENEFICIAL, VWColors.VERDANT_WIND);
@@ -40,7 +44,7 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
         if (entity instanceof Monster) return;
         if (entity instanceof Enemy) return;
         if (!entity.hasEffect(MobEffects.INVISIBILITY)) {
-            VWParticleEffects.spawnBlessingParticlesEntity(entity, 1);
+            VWUtil.sendParticles(blessing, (ServerLevel) entity.level(), entity.blockPosition(), 12, 1);
         }
         AttributeMap attributes = entity.getAttributes();
 
@@ -63,7 +67,7 @@ public class BlessingOfTheVerdantWindEffect extends MobEffect {
         if (serverLevel.getRandom().nextInt(60) == 0) {
             entity.heal(heal);
             if (!entity.hasEffect(MobEffects.INVISIBILITY)) {
-                VWParticleEffects.benedictionEnvironmentParticleEntity(entity);
+                VWUtil.sendParticles(blessing, (ServerLevel) entity.level(), entity.blockPosition(), 8, 0);
             }
             if (entity.hasEffect(PARALYZE)) {
                 entity.removeEffect(PARALYZE);

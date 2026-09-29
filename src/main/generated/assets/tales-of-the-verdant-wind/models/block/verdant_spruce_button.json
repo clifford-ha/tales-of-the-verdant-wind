@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/button",
+  "textures": {
+    "texture": "tales-of-the-verdant-wind:block/verdant_spruce_planks"
+  }
+}

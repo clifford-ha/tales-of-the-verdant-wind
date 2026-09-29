@@ -17,7 +17,7 @@ public class VerixiumPowderBlock extends SandBlock {
     public VerixiumPowderBlock(ColorRGBA dustColor, Properties properties) {
         super(dustColor, properties);
     }
-    public final int dustColor = VWColors.VERDANT_WIND;
+    public static final int dustColor = VWColors.VERDANT_WIND;
 
     @Override
     public int getDustColor(BlockState blockState, BlockGetter level, BlockPos pos) {

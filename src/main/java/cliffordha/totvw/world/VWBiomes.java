@@ -3,7 +3,6 @@ package cliffordha.totvw.world;
 import cliffordha.totvw.TOTVW;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import terrablender.api.Regions;
@@ -13,7 +12,7 @@ public class VWBiomes {
     public static final ResourceKey<Biome> VERDANT_FOREST = registerBiomeKey("verdant_forest");
 
     public static void registerBiomes() {
-        Regions.register(new VWOverworldRegion(Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "totvw_overworld"), 20));
+        Regions.register(new VWOverworldRegion());
     }
 
     public static void bootstrap(BootstrapContext<Biome> context) {
@@ -29,6 +28,6 @@ public class VWBiomes {
     }
 
     private static ResourceKey<Biome> registerBiomeKey(String name) {
-        return ResourceKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name));
+        return ResourceKey.create(Registries.BIOME, TOTVW.registerID(name));
     }
 }

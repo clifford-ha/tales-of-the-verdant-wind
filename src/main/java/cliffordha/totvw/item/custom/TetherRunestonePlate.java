@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
@@ -53,14 +53,14 @@ public class TetherRunestonePlate extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (level instanceof ServerLevel serverLevel && player.isCrouching()) {
-            List<Wolf> recall = new ArrayList<>(serverLevel.getEntities(EntityTypes.WOLF,
+            List<Wolf> recall = new ArrayList<>(serverLevel.getEntities(EntityType.WOLF,
                     t -> t.getOwner() == player
             ));
 
             List<Wolf> multiLevelRecall = new ArrayList<>();
             for (ServerLevel multiLevel : serverLevel.getServer().getAllLevels()) {
                 multiLevelRecall.addAll(multiLevel.getEntities(
-                        EntityTypes.WOLF,
+                        EntityType.WOLF,
                         t -> t.getOwner() == player && t.level().dimensionType() != player.level().dimensionType()
                 ));
             }

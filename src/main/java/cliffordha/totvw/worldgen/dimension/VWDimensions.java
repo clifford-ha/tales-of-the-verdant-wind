@@ -50,7 +50,7 @@ public class VWDimensions {
                 -64, // minY
                 384, // height
                 384, // logicalHeight
-                blocks.getOrThrow(BlockTags.INFINIBURN_OVERWORLD), // infiniburn
+                BlockTags.INFINIBURN_OVERWORLD, // infiniburn
                 1.0f, // ambientLight
                 new DimensionType.MonsterSettings(UniformInt.of(1, 9), 9),
                 DimensionType.Skybox.NONE,

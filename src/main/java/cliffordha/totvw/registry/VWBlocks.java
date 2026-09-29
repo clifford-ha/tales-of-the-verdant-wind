@@ -14,7 +14,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.BlockFamilies;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.item.*;
@@ -263,6 +262,23 @@ public class VWBlocks {
     );
 
 
+
+    public static final Block AIR_PLACEHOLDER = registerBlock("air_placeholder",
+            Block::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.AIR),
+            true
+    );
+    public static final Block FARMLAND_PLACER = registerBlock("farmland_placer",
+            properties -> new FarmlandBlockPlacer(properties
+                    .sound(SoundType.GRASS)
+                    .mapColor(MapColor.DIRT)
+                    .strength(1.0f, 1.0f)
+            ),
+            BlockBehaviour.Properties.of(),
+            true
+    );
+
+
     public static final BlockFamily VERDANT_SPRUCE_FAMILY = BlockFamilies.familyBuilder(VERDANT_SPRUCE_PLANKS)
             .stairs(VERDANT_SPRUCE_STAIRS)
             .slab(VERDANT_SPRUCE_SLAB)
@@ -284,10 +300,10 @@ public class VWBlocks {
     
     public static class Util {
         public static BlockSetType registerBlockSetType(String name, BlockSetType blockSetType) {
-            return BlockSetTypeBuilder.copyOf(blockSetType).register(Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name));
+            return BlockSetTypeBuilder.copyOf(blockSetType).register(TOTVW.registerID(name));
         }
         public static WoodType registerWoodType(String name, WoodType woodType, BlockSetType blockSetType) {
-            return WoodTypeBuilder.copyOf(woodType).register(Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), blockSetType);
+            return WoodTypeBuilder.copyOf(woodType).register(TOTVW.registerID(name), blockSetType);
         }
 
         public static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> blockFactory, BlockBehaviour.Properties settings, boolean registerBlock, Component... tooltips) {
@@ -308,10 +324,10 @@ public class VWBlocks {
             return Registry.register(BuiltInRegistries.BLOCK, blockKey, block);}
 
         private static ResourceKey<Block> keyOfBlock(String name) {
-            return ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name));
+            return ResourceKey.create(Registries.BLOCK, TOTVW.registerID(name));
         }
         private static ResourceKey<Item> keyOfItem(String name) {
-            return ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name));
+            return ResourceKey.create(Registries.ITEM, TOTVW.registerID(name));
         }
     }
 }

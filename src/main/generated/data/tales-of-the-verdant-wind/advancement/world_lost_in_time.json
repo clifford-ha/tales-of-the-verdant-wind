@@ -8,7 +8,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "minecraft:location": {
+              "location": {
                 "dimension": "tales-of-the-verdant-wind:nolayan"
               }
             }

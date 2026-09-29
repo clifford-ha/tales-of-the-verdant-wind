@@ -24,6 +24,9 @@ public interface PlayerCondition {
     }
 
 
+
+    static PlayerCondition alwaysTrue() {return (_, _) -> true;}
+
     static PlayerCondition hasBodyArmor() { return (player, _) -> player.hasItemInSlot(EquipmentSlot.CHEST) ;}
 
     static PlayerCondition checkBiomeTag(TagKey<Biome> biomeTag) { return (player, _) -> player.level().getBiome(player.blockPosition()).is(biomeTag) ;}

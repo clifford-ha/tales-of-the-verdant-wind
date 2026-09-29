@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "tales-of-the-verdant-wind:block/verdant_spruce_pressure_plate"
+    },
+    "powered=true": {
+      "model": "tales-of-the-verdant-wind:block/verdant_spruce_pressure_plate_down"
+    }
+  }
+}

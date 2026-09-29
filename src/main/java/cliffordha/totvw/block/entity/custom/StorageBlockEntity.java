@@ -30,7 +30,7 @@ public class StorageBlockEntity extends RandomizableContainerBlockEntity {
     private NonNullList<ItemStack> items;
     private final ContainerOpenersCounter openersCounter;
 
-    private final int CONTAINER_SIZE = 9 * 6;
+    private static final int CONTAINER_SIZE = 9 * 6;
 
     public StorageBlockEntity(BlockPos worldPosition, BlockState blockState) {
         super(VWBlockEntityTypes.STORAGE_BOX, worldPosition, blockState);
@@ -94,7 +94,7 @@ public class StorageBlockEntity extends RandomizableContainerBlockEntity {
     @Override
     protected void loadAdditional(final ValueInput input) {
         super.loadAdditional(input);
-        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        this.items = NonNullList.withSize(this.CONTAINER_SIZE, ItemStack.EMPTY);
         if (!this.tryLoadLootTable(input)) {
             ContainerHelper.loadAllItems(input, this.items);
         }

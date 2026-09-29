@@ -2,7 +2,7 @@ package cliffordha.totvw.client;
 
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.tag.VWItemTags;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,9 +25,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
-import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
+import static cliffordha.totvw.registry.VWEnchantments.entityEnchantmentLVL;
 import static cliffordha.totvw.util.VWUtil.TextUtil.*;
-import static cliffordha.totvw.util.VWUtil.entityEnchantmentLVL;
 
 @Environment(EnvType.CLIENT)
 public class VWTooltips {
@@ -96,6 +95,12 @@ public class VWTooltips {
         String LORE_soulRunestoneFragment2;
         String LORE_soulRunestoneFragment3;
         String LORE_soulRunestoneFragment4;
+
+        String LORE_genesisRunestonePlate;
+        String LORE_efflorescenceRunestonePlate;
+        String LORE_tetherRunestonePlate;
+        String LORE_havocRunestonePlate;
+
         String LORE_verixiumChunk;
         String LORE_condensedVerixium0;
         String LORE_condensedVerixium1;
@@ -110,6 +115,12 @@ public class VWTooltips {
             LORE_soulRunestoneFragment2 = "\"But what good does constantly defying the very principles of nature have?\"";
             LORE_soulRunestoneFragment3 = "\"Prior to the Wind's ascent, the people of ∎∎∎∎ tried to preserve the memories from the stream of time. Only then did they realize that a soul can be ∎∎∎∎∎ and ∎∎∎∎∎∎∎∎.\"";
             LORE_soulRunestoneFragment4 = "\"Perhaps... my authority will quench their hatred. Onward, I shall entrust the duties of taking care of our people to each and everyone of you till the day 'I' return.\"";
+
+            LORE_genesisRunestonePlate = "A fragment of unknown origin...";
+            LORE_efflorescenceRunestonePlate = "You feel as though you are revitalized by the subtle powered contained by this item...";
+            LORE_tetherRunestonePlate = "You can feel a strange connection to the world itself... Perhaps you can use it for something great?";
+            LORE_havocRunestonePlate = "It appears this item is fluctuating on its own...";
+
             LORE_verixiumChunk = "\"For the land that they call 'home' and for the people they protect.\"";
             LORE_condensedVerixium0 = "\"For the land that they call 'home' and for the people they protect.";
             LORE_condensedVerixium1 = "O God of the Verdant Winds...\"";
@@ -122,6 +133,11 @@ public class VWTooltips {
             LORE_soulRunestoneFragment2 = unset;
             LORE_soulRunestoneFragment3 = unset;
             LORE_soulRunestoneFragment4 = unset;
+            LORE_genesisRunestonePlate = unset;
+            LORE_efflorescenceRunestonePlate = unset;
+            LORE_tetherRunestonePlate = unset;
+            LORE_havocRunestonePlate = unset;
+
             LORE_verixiumChunk = unset;
             LORE_condensedVerixium0 = unset;
             LORE_condensedVerixium1 = unset;
@@ -130,17 +146,37 @@ public class VWTooltips {
             LORE_verixiumIngot = unset;
         }
 
-        if (stack.is(VWItems.SOUL_RUNESTONE_PLATE)) {
-            int ACTIVE_SOULS = player.getAttachedOrElse(VWAttachments.player.PLAYER_WOLF_SOULS_COUNTER, 0);
-            if (ACTIVE_SOULS > 0) {
-                int randomInt10 = player.getAttachedOrElse(VWAttachments.player.PLAYER_RANDOM_INT_10, 0);
+        if (stack.is(VWItemTags.RUNESTONE_PLATES)) {
+            if (stack.is(VWItems.GENESIS_RUNESTONE_PLATE)) {
+                addEmpty(out);
+                addExpandingText(out, LORE_genesisRunestonePlate);
 
-                String wolf = ACTIVE_SOULS < 2 ? "The " + cText(AQUA, "wolf") + " is " : "The " + cText(AQUA, ACTIVE_SOULS + "") + " wolves are ";
-                addText(out, wolf + soulRunestoneIdle(randomInt10, ACTIVE_SOULS));
+            } else if (stack.is(VWItems.EFFLORESCENCE_RUNESTONE_PLATE)) {
+                addEmpty(out);
+                addExpandingText(out, LORE_efflorescenceRunestonePlate);
+
+            } else if (stack.is(VWItems.SOUL_RUNESTONE_PLATE)) {
+                int ACTIVE_SOULS = player.getAttachedOrElse(PlayerAttachment.WOLF_SOULS, List.of()).size();
+                if (ACTIVE_SOULS > 0) {
+                    int randomInt10 = player.getAttachedOrElse(PlayerAttachment.RANDOM_INT_10, 0);
+
+                    String wolf = ACTIVE_SOULS < 2 ? "The " + cText(AQUA, "wolf") + " is " : "The " + cText(AQUA, ACTIVE_SOULS + "") + " wolves are ";
+                    addText(out, wolf + soulRunestoneIdle(randomInt10, ACTIVE_SOULS));
+                }
+                addEmpty(out);
+                addExpandingText(out, "Fragmented Memory:", LORE_soulRunestonePlate);
+
+            } else if (stack.is(VWItems.TETHER_RUNESTONE_PLATE)) {
+                addEmpty(out);
+                addExpandingText(out, LORE_tetherRunestonePlate);
+
+            } else if (stack.is(VWItems.HAVOC_RUNESTONE_PLATE)) {
+                addEmpty(out);
+                addExpandingText(out, LORE_havocRunestonePlate);
+
             }
-            addEmpty(out);
-            addExpandingText(out, "Fragmented Memory:", LORE_soulRunestonePlate);
         }
+
         if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_1)) addExpandingText(out, LORE_soulRunestoneFragment1);
         if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_2)) addExpandingText(out, LORE_soulRunestoneFragment2);
         if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_3)) addExpandingText(out, LORE_soulRunestoneFragment3);
@@ -257,6 +293,19 @@ public class VWTooltips {
     }
     private static void addEmpty(List<Component> out) {
         out.add(Component.literal(""));
+    }
+    private static void addExpandingText(List<Component> out, int color, String... keys) {
+        if (mc.hasShiftDown()) {
+            for (String key : keys) {
+                List<FormattedText> wrapped = mc.font.getSplitter()
+                        .splitLines(Component.translatable(key), 150, Style.EMPTY);
+                for (FormattedText line : wrapped) {
+                    out.add(Component.literal(line.getString()).withColor(color));
+                }
+            }
+        } else {
+            out.add(Component.literal("Read lore...").withColor(VWColors.GRAY));
+        }
     }
     private static void addExpandingText(List<Component> out, String... keys) {
         if (mc.hasShiftDown()) {

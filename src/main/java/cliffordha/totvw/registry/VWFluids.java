@@ -4,7 +4,6 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.fluid.VerixiumFluid;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.FlowingFluid;
 
 public class VWFluids {
@@ -12,7 +11,7 @@ public class VWFluids {
     public static final FlowingFluid VERIXIUM_FLUID = initialize("verixium_fluid", new VerixiumFluid.Source());
 
     private static FlowingFluid initialize(String name, FlowingFluid fluid) {
-        return Registry.register(BuiltInRegistries.FLUID, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), fluid);
+        return Registry.register(BuiltInRegistries.FLUID, TOTVW.registerID(name), fluid);
     }
 
     public static void register() {

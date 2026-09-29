@@ -54,8 +54,8 @@ public class FarmlandBlockPlacer extends Block {
                         List<Block> lanterns = List.of(
                                 Blocks.LANTERN,
                                 Blocks.SOUL_LANTERN,
-                                Blocks.COPPER_LANTERN.weathering().weathered(),
-                                Blocks.COPPER_LANTERN.waxed().weathered()
+                                Blocks.COPPER_LANTERN.weathered(),
+                                Blocks.COPPER_LANTERN.waxedWeathered()
                         );
                         if (random.nextFloat() < 0.009f) {
                             level.setBlockAndUpdate(pos.above(), lanterns.get(random.nextInt(lanterns.size())).defaultBlockState());
