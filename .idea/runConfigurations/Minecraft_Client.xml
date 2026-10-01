@@ -1,12 +1,14 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" factoryName="Application" name="Minecraft Client" singleton="false" type="Application">
-    <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main"/>
-    <module name="tales-of-the-verdant-wind.main"/>
-    <shortenClasspath name="ARGS_FILE"/>
-    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=C:\Users\Clifford@@0020HA\PROJECTS\totvw-26.3-beta\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient -XX:StackShadowPages=32 --sun-misc-unsafe-memory-access=allow --enable-native-access=ALL-UNNAMED"/>
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/"/>
+  <configuration default="false" name="Minecraft Client" type="Application" factoryName="Application" singleton="false">
+    <option name="ALTERNATIVE_JRE_PATH" value="temurin-25" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main" />
+    <module name="cliffordha.totvw.tales-of-the-verdant-wind.main" />
+    <shortenClasspath name="ARGS_FILE" />
+    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=C:\Users\Clifford@@0020HA\PROJECTS\totvw-26.3\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient -XX:StackShadowPages=32 --sun-misc-unsafe-memory-access=allow --enable-native-access=ALL-UNNAMED" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/" />
     <method v="2">
-      <option enabled="true" name="Make"/>
+      <option name="Make" enabled="true" />
     </method>
-  <classpathModifications/></configuration>
+  </configuration>
 </component>
