@@ -5,7 +5,6 @@ import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import com.mojang.serialization.Codec;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public enum Runestone {
@@ -15,7 +14,10 @@ public enum Runestone {
     SOUL("Soul Runestone", "None"),
     TETHER("Tether Runestone", "Link"),
     HAVOC("Havoc Runestone", "Havoc"),
-    FLOURISHING_FLORA("Flourishing Flora Runestone", "Verdant Bloom"),
+    EFFLORESCENCE("Efflorescence Runestone", "Verdant Bloom"),
+
+    // fix
+    FLOURISHING_FLORA(EFFLORESCENCE.name, EFFLORESCENCE.buff),
     ;
 
     private final String name;
@@ -43,7 +45,7 @@ public enum Runestone {
         } else if (stack.is(VWItems.HAVOC_RUNESTONE_PLATE)) {
             return HAVOC.name;
         } else if (stack.is(VWItems.EFFLORESCENCE_RUNESTONE_PLATE)) {
-            return FLOURISHING_FLORA.name;
+            return EFFLORESCENCE.name;
         }
 
 
@@ -58,13 +60,13 @@ public enum Runestone {
         final ItemStack SOUL = new ItemStack(VWItems.SOUL_RUNESTONE_PLATE);
         final ItemStack TETHER = new ItemStack(VWItems.TETHER_RUNESTONE_PLATE);
         final ItemStack HAVOC = new ItemStack(VWItems.HAVOC_RUNESTONE_PLATE);
-        final ItemStack FLOURISHING_FLORA = new ItemStack(VWItems.EFFLORESCENCE_RUNESTONE_PLATE);
+        final ItemStack EFFLORESCENCE = new ItemStack(VWItems.EFFLORESCENCE_RUNESTONE_PLATE);
         switch (type) {
             case GENESIS -> stack = GENESIS;
             case SOUL -> stack = SOUL;
             case TETHER -> stack = TETHER;
             case HAVOC -> stack = HAVOC;
-            case FLOURISHING_FLORA -> stack = FLOURISHING_FLORA;
+            case EFFLORESCENCE -> stack = EFFLORESCENCE;
             default -> stack = DEFAULT;
         }
         return stack;
@@ -82,11 +84,8 @@ public enum Runestone {
     public static boolean hasHavoc(Wolf wolf) {
         return hasRunestone(wolf, Runestone.HAVOC);
     }
-    public static boolean hasFlourishingFlora(Wolf wolf) {
-        return hasRunestone(wolf, Runestone.FLOURISHING_FLORA);
-    }
-    public static boolean hasFlourishingFlora(Player player) {
-        return hasRunestone(player, Runestone.FLOURISHING_FLORA);
+    public static boolean hasEfflorescence(Wolf wolf) {
+        return hasRunestone(wolf, Runestone.EFFLORESCENCE);
     }
 
     private static boolean hasRunestone(LivingEntity entity, Runestone type) {

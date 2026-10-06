@@ -28,12 +28,13 @@ import java.util.List;
 import java.util.Optional;
 
 public class VWDimensions {
-    public static final ResourceKey<LevelStem> NOLAYAN_KEY = ResourceKey.create(Registries.LEVEL_STEM,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "nolayan"));
-    public static final ResourceKey<Level> NOLAYAN_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "nolayan"));
-    public static final ResourceKey<DimensionType> NOLAYAN_DIMENSION_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
-            Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "nolayan_dimension_type"));
+    public static final ResourceKey<Level> OVERWORLD = ResourceKey.create(Registries.DIMENSION, Identifier.withDefaultNamespace("overworld"));
+    public static final ResourceKey<Level> NETHER = ResourceKey.create(Registries.DIMENSION, Identifier.withDefaultNamespace("the_nether"));
+    public static final ResourceKey<Level> END = ResourceKey.create(Registries.DIMENSION, Identifier.withDefaultNamespace("the_end"));
+
+    public static final ResourceKey<LevelStem> NOLAYAN_KEY = ResourceKey.create(Registries.LEVEL_STEM, TOTVW.registerID( "nolayan"));
+    public static final ResourceKey<Level> NOLAYAN_LEVEL_KEY = ResourceKey.create(Registries.DIMENSION, TOTVW.registerID( "nolayan"));
+    public static final ResourceKey<DimensionType> NOLAYAN_DIMENSION_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE, TOTVW.registerID("nolayan_dimension_type"));
 
     public static void bootstrapType(BootstrapContext<DimensionType> context) {
         var timelines = context.lookup(Registries.TIMELINE);

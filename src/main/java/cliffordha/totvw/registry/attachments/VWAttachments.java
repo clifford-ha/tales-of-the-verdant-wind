@@ -58,6 +58,7 @@ public class VWAttachments {
             WolfAttachment.TRUSTED_PLAYERS,
             WolfAttachment.TETHERED_ENTITY_TYPES,
             WolfAttachment.RUNESTONE_TYPE,
+            WolfAttachment.TETHER_ENTITY_BLACKLIST,
             WolfAttachment.ATTACK_CYCLE
     );
     public static final List<AttachmentType<?>> PLAYER_ATTACHMENTS = List.of(

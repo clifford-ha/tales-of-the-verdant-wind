@@ -29,6 +29,7 @@
       }
     },
     "minecraft:gameplay/creaking_active": false,
+    "minecraft:gameplay/creature_world_gen_spawn_probability": 0.2,
     "minecraft:gameplay/increased_fire_burnout": true,
     "minecraft:gameplay/nether_portal_spawns_piglin": true,
     "minecraft:gameplay/respawn_anchor_works": false,

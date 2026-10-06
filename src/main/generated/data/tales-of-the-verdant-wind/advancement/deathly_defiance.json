@@ -3,15 +3,13 @@
   "criteria": {
     "deathly_defiance": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "minecraft:wolf"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:wolf"
           }
-        ],
+        },
         "item": {
           "items": "tales-of-the-verdant-wind:havoc_runestone_plate"
         }
@@ -20,7 +18,6 @@
     }
   },
   "display": {
-    "background": "tales-of-the-verdant-wind:deathly_defiance",
     "description": {
       "color": "#247D66",
       "text": "Use the Havoc Runestone Plate to be able to gain the Havoc status effect"

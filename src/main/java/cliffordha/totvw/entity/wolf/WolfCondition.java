@@ -1,6 +1,5 @@
 package cliffordha.totvw.entity.wolf;
 
-import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.util.VWUtil;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.Registry;
@@ -92,10 +91,6 @@ public interface WolfCondition {
 
     static WolfCondition quarterTick() {
         return (_, world) -> world.getGameTime() % 4 == 0;
-    }
-
-    static WolfCondition newSoundsEnable() {
-        return (wolf, level) -> VWConfig.get().CLIENT_MOD_SOUNDS;
     }
 
     static WolfCondition noAttachment(AttachmentType<Integer> type) {

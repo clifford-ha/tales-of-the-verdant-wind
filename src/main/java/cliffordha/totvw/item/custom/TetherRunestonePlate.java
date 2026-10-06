@@ -1,13 +1,11 @@
 package cliffordha.totvw.item.custom;
 
-import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.attachments.Runestone;
-
 import cliffordha.totvw.util.VWUtil;
+
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -55,6 +52,7 @@ public class TetherRunestonePlate extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
+        if (player.getCooldowns().isOnCooldown(new ItemStack(this))) return InteractionResult.FAIL;
         if (level instanceof ServerLevel serverLevel && player.isCrouching()) {
             List<Wolf> recall = new ArrayList<>(serverLevel.getEntities(EntityTypes.WOLF,
                     t -> t.getOwner() == player
@@ -78,7 +76,7 @@ public class TetherRunestonePlate extends Item {
                             wolf.unRide();
                             wolf.setOrderedToSit(false);
                             wolf.dropLeash();
-                            VWUtil.addEffect(wolf, VWEffects.WIND_VEIL, 60 * 20, 0);
+                            VWUtil.addEffect(wolf, VWEffects.WIND_VEIL, 60, 0);
 
                             wolf.teleportToPortalDestination(serverLevel,
                                     new TeleportTransition(
@@ -102,10 +100,11 @@ public class TetherRunestonePlate extends Item {
                         wolf.dropLeash();
 
                         wolf.teleportTo(player.getX(), player.getY(), player.getZ());
-                        VWUtil.addEffect(wolf, VWEffects.WIND_VEIL, 60 * 20, 0);
+                        VWUtil.addEffect(wolf, VWEffects.WIND_VEIL, 60, 0);
                     }
                     sendToChat(player, true, "Recalled " + recall.size() + " nearby tamed wolves.");
                 }
+                player.getCooldowns().addCooldown(new ItemStack(this), 100);
                 return InteractionResult.SUCCESS_SERVER;
             }
         }

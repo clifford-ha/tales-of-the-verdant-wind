@@ -268,10 +268,15 @@ public abstract class WolfEntityMixin extends LivingEntity {
         boolean isTame = wolf.isTame();
 
 
-        if (stack.is(VWItems.Pages.PLAYER_STATS) && isOwner) {
-            WolfStats stats = WolfStats.valueOf(wolf);
-            ScatteredPageItem.showSpecifiedContent(wolf, stats.name() + " Stats", MiscBookSet.wolfStats(stats));
+        if (getLevel.isClientSide()) {
+            if (stack.is(VWItems.Pages.PLAYER_STATS) && isOwner) {
+                WolfStats stats = WolfStats.valueOf(wolf);
+                ScatteredPageItem.showSpecifiedContent(wolf, stats.name() + " Stats", MiscBookSet.wolfStats(stats));
+                cir.setReturnValue(InteractionResult.SUCCESS);
+            }
+            return;
         }
+
 
         if (!(getLevel instanceof ServerLevel level)) return;
 
@@ -378,7 +383,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
                     updateRunestone = updateRunestone(wolf, player, Runestone.HAVOC, stack);
                     cir.setReturnValue(updateRunestone);
                 } else if (stack.is(VWItems.EFFLORESCENCE_RUNESTONE_PLATE)) {
-                    updateRunestone = updateRunestone(wolf, player, Runestone.FLOURISHING_FLORA, stack);
+                    updateRunestone = updateRunestone(wolf, player, Runestone.EFFLORESCENCE, stack);
 
                     cir.setReturnValue(updateRunestone);
                 } else {

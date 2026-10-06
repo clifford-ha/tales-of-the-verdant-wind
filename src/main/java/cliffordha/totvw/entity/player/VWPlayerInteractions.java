@@ -1,19 +1,24 @@
 package cliffordha.totvw.entity.player;
 
+import cliffordha.totvw.networking.packets.OpenTetherBlacklistPayload;
 import cliffordha.totvw.item.events.VWItemBlessings;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.VWSounds;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.tag.VWItemTags;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -28,16 +33,24 @@ import static cliffordha.totvw.util.VWUtil.sendToChat;
 
 public class VWPlayerInteractions {
     public static void onInteractEvents() {
-        UseEntityCallback.EVENT.register( (player, level, _, entity, _) -> onEntityInteractEvent(player, entity));
+        UseEntityCallback.EVENT.register( (player, level, hand, entity, _) -> onEntityInteractEvent(player, entity, hand));
         UseItemCallback.EVENT.register((player, level, _) -> onUseItemEvent(player));
     }
 
-    private static InteractionResult onEntityInteractEvent(Player player, Entity entity) {
+    private static InteractionResult onEntityInteractEvent(Player player, Entity entity, InteractionHand hand) {
         if (player.level().isClientSide()) return InteractionResult.PASS;
         if (!(entity instanceof LivingEntity)) return InteractionResult.PASS;
 
         ItemStack stack = player.getMainHandItem();
         boolean hasPaper = stack.is(Items.PAPER) || stack.is(VWItems.VERIXIUM_PAPER);
+
+        if (player.isShiftKeyDown() && entity instanceof Wolf wolf
+                && wolf.getOwner() == player && Runestone.hasTether(wolf)) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                ServerPlayNetworking.send(serverPlayer, new OpenTetherBlacklistPayload(wolf.getId()));
+            }
+            return InteractionResult.SUCCESS;
+        }
 
         if (hasPaper && entity instanceof Player otherPlayer) {
             if (player == otherPlayer) return InteractionResult.PASS;

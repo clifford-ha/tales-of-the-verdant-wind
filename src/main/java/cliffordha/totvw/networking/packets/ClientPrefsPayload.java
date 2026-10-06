@@ -1,4 +1,4 @@
-package cliffordha.totvw.client;
+package cliffordha.totvw.networking.packets;
 
 import cliffordha.totvw.TOTVW;
 import net.minecraft.network.RegistryFriendlyByteBuf;

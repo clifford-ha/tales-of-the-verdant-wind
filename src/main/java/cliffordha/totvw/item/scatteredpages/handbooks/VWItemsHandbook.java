@@ -65,7 +65,7 @@ public class VWItemsHandbook {
     }
     private static String efflorescenceRunestonePlateInfo() {
         return titleEfflorescenceRunestonePlate.toUpperCase() + nextLine
-                + "An item that allows both player and wolf to draw forth upon the power of nature's flora. When used, gain the Efflorescence status."
+                + "An item that allows both player and wolf to draw forth upon the power of nature's flora. When used, gain the Verdant Bloom status."
                 + nextParagraph
 
                 + "VERDANT BLOOM STATUS:" + nextLine

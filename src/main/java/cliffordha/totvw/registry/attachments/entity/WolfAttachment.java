@@ -4,6 +4,9 @@ import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import oshi.util.tuples.Pair;
@@ -46,9 +49,18 @@ public class WolfAttachment {
     public static final AttachmentType<List<String>> TETHERED_ENTITY_TYPES = registerStringList(WOLF + "tethered_entity_types", false);
 
     public static final AttachmentType<Runestone> RUNESTONE_TYPE = registerRunestone(WOLF + "runestone_type", false);
+    public static final AttachmentType<List<String>> TETHER_ENTITY_BLACKLIST = registerStringList(WOLF + "tether_entity_blacklist", true);
     public static final AttachmentType<Integer> ATTACK_CYCLE = registerInt(WOLF + "attack_cycle", false);
 
 
+
+    public static List<String> getTetherBlacklist(Wolf wolf) {
+        return wolf.getAttachedOrElse(TETHER_ENTITY_BLACKLIST, List.of());
+    }
+
+    public static boolean isTetherBlacklisted(Wolf wolf, Entity entity) {
+        return getTetherBlacklist(wolf).contains(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
+    }
     public static boolean isFamilyRelated(Wolf wolf, Wolf baby) {
         UUID wolfID = wolf.getAttachedOrElse(WolfAttachment.FAMILY_ID, EMPTY_UUID);
         UUID babyID = baby.getAttachedOrElse(WolfAttachment.FAMILY_ID, EMPTY_UUID);
