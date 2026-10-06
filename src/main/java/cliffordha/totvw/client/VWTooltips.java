@@ -84,67 +84,26 @@ public class VWTooltips {
 
         boolean ACTIVE_BENEDICTION = entityEnchantmentLVL(player, EquipmentSlot.CHEST, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS) > 0;
 
-        // this translation block looks awful ngl
-        String unset = "Not yet set";
-
         String itemVerixiumArmor = "A light yet durable armor";
-        String itemVerixium = "A subtle hint of wind emanates from this item...";
+        String itemVerixium = "A subtle hint of wind emanates from this item...";;
+        
+        String LORE_soulRunestonePlate = "My only regret is that I won't be able to be by your side as you grow up... and, do so forgive me for entrusting you with a heavy burden.";
+        String LORE_soulRunestoneFragment1 = "\"There will always be those who try to defy the absolute limit of this world. Though sacrifices were uncomfortably high, the ingenuity always take precedence to overcome the obstacles that stand in the way of the living.\"";
+        String LORE_soulRunestoneFragment2 = "\"But what good does constantly defying the very principles of nature have?\"";
+        String LORE_soulRunestoneFragment3 = "\"Prior to the Wind's ascent, the people of ∎∎∎∎ tried to preserve the memories from the stream of time. Only then did they realize that a soul can be ∎∎∎∎∎ and ∎∎∎∎∎∎∎∎.\"";
+        String LORE_soulRunestoneFragment4 = "\"Perhaps... my authority will quench their hatred. Onward, I shall entrust the duties of taking care of our people to each and everyone of you till the day 'I' return.\"";
 
-        String LORE_soulRunestonePlate;
-        String LORE_soulRunestoneFragment1;
-        String LORE_soulRunestoneFragment2;
-        String LORE_soulRunestoneFragment3;
-        String LORE_soulRunestoneFragment4;
+        String LORE_genesisRunestonePlate = "A fragment of unknown origin...";
+        String LORE_efflorescenceRunestonePlate = "You feel as though you are revitalized by the subtle powered contained by this item...";
+        String LORE_tetherRunestonePlate = "You can feel a strange connection to the world itself... Perhaps you can use it for something great?";
+        String LORE_havocRunestonePlate = "It appears this item is fluctuating on its own...";
 
-        String LORE_genesisRunestonePlate;
-        String LORE_efflorescenceRunestonePlate;
-        String LORE_tetherRunestonePlate;
-        String LORE_havocRunestonePlate;
-
-        String LORE_verixiumChunk;
-        String LORE_condensedVerixium0;
-        String LORE_condensedVerixium1;
-        String LORE_verixiumShard;
-        String LORE_verixiumPowder;
-        String LORE_verixiumIngot;
-
-
-        if (!VWConfig.get().CLIENT_TRANSLATE_LANGUAGE) {
-            LORE_soulRunestonePlate = "My only regret is that I won't be able to be by your side as you grow up... and, do so forgive me for entrusting you with a heavy burden.";
-            LORE_soulRunestoneFragment1 = "\"There will always be those who try to defy the absolute limit of this world. Though sacrifices were uncomfortably high, the ingenuity always take precedence to overcome the obstacles that stand in the way of the living.\"";
-            LORE_soulRunestoneFragment2 = "\"But what good does constantly defying the very principles of nature have?\"";
-            LORE_soulRunestoneFragment3 = "\"Prior to the Wind's ascent, the people of ∎∎∎∎ tried to preserve the memories from the stream of time. Only then did they realize that a soul can be ∎∎∎∎∎ and ∎∎∎∎∎∎∎∎.\"";
-            LORE_soulRunestoneFragment4 = "\"Perhaps... my authority will quench their hatred. Onward, I shall entrust the duties of taking care of our people to each and everyone of you till the day 'I' return.\"";
-
-            LORE_genesisRunestonePlate = "A fragment of unknown origin...";
-            LORE_efflorescenceRunestonePlate = "You feel as though you are revitalized by the subtle powered contained by this item...";
-            LORE_tetherRunestonePlate = "You can feel a strange connection to the world itself... Perhaps you can use it for something great?";
-            LORE_havocRunestonePlate = "It appears this item is fluctuating on its own...";
-
-            LORE_verixiumChunk = "\"For the land that they call 'home' and for the people they protect.\"";
-            LORE_condensedVerixium0 = "\"For the land that they call 'home' and for the people they protect.";
-            LORE_condensedVerixium1 = "O God of the Verdant Winds...\"";
-            LORE_verixiumShard = "\"Bless us, so we may reap a bountiful harvest.\"";
-            LORE_verixiumPowder = "\"Guide us, so we may never be swept by the floods of fiery lies.\"";
-            LORE_verixiumIngot = "\"Protect us, so we may defend your land and people from the perils of the creatures from beyond.\"";
-        } else {
-            LORE_soulRunestonePlate = unset;
-            LORE_soulRunestoneFragment1 = unset;
-            LORE_soulRunestoneFragment2 = unset;
-            LORE_soulRunestoneFragment3 = unset;
-            LORE_soulRunestoneFragment4 = unset;
-            LORE_genesisRunestonePlate = unset;
-            LORE_efflorescenceRunestonePlate = unset;
-            LORE_tetherRunestonePlate = unset;
-            LORE_havocRunestonePlate = unset;
-
-            LORE_verixiumChunk = unset;
-            LORE_condensedVerixium0 = unset;
-            LORE_condensedVerixium1 = unset;
-            LORE_verixiumShard = unset;
-            LORE_verixiumPowder = unset;
-            LORE_verixiumIngot = unset;
-        }
+        String LORE_verixiumChunk = "\"For the land that they call 'home' and for the people they protect.\"";
+        String LORE_condensedVerixium0 = "\"For the land that they call 'home' and for the people they protect.";
+        String LORE_condensedVerixium1 = "O God of the Verdant Winds...\"";
+        String LORE_verixiumShard = "\"Bless us, so we may reap a bountiful harvest.\"";
+        String LORE_verixiumPowder = "\"Guide us, so we may never be swept by the floods of fiery lies.\"";
+        String LORE_verixiumIngot = "\"Protect us, so we may defend your land and people from the perils of the creatures from beyond.\"";
 
         if (stack.is(VWItemTags.RUNESTONE_PLATES)) {
             if (stack.is(VWItems.GENESIS_RUNESTONE_PLATE)) {

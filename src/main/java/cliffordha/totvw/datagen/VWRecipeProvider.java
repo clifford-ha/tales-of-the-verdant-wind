@@ -336,8 +336,6 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy(getHasName(Blocks.GLASS), has(Blocks.GLASS))
                         .save(output);
 
-                stonecutter(RecipeCategory.MISC, VWBlocks.IRIDESCENT_GLASS_PANE, VWBlocks.IRIDESCENT_GLASS_PANE, 16);
-
                 dyeFromIridescentGlass(
                         Items.DYE.white(),
                         Items.DYE.gray(),

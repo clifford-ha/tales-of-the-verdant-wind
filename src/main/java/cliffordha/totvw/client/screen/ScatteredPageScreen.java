@@ -16,12 +16,6 @@ public class ScatteredPageScreen extends Screen {
     private static final float PADDING_RATIO = 0.05F;
     private static final int PADDING = 10;
 
-    private static final int COLOR_BG = 0x80001822;
-    private static final int COLOR_LINE = 0x66FFFFFF;
-    private static final int COLOR_TEXT = 0xFFFFFFFF;
-    private static final int COLOR_SCROLLBAR_TRACK = 0x33FFFFFF;
-    private static final int COLOR_SCROLLBAR_THUMB = 0xAAFFFFFF;
-
     private final String pageTitle;
     private final List<String> pages;
     private final List<FormattedCharSequence> allLines = new ArrayList<>();
@@ -65,7 +59,7 @@ public class ScatteredPageScreen extends Screen {
                         .build()
         );
 
-        int textAreaWidth = this.panelWidth - (PADDING * 2) - this.scrollbarWidth - 6;
+        int textAreaWidth = this.panelWidth - (PADDING * 2) - scrollbarWidth - 6;
         this.textStartY = this.topPos + 32;
         int textEndY = this.topPos + this.panelHeight - PADDING;
         this.lineHeight = this.font.lineHeight + 2;
@@ -83,16 +77,20 @@ public class ScatteredPageScreen extends Screen {
         this.maxScroll = Math.max(0, this.allLines.size() - this.visibleLines);
         this.scrollOffset = 0;
 
-        this.scrollbarX = this.leftPos + this.panelWidth - PADDING - this.scrollbarWidth;
+        this.scrollbarX = this.leftPos + this.panelWidth - PADDING - scrollbarWidth;
         this.scrollbarY = this.textStartY;
         this.scrollbarHeight = textEndY - this.textStartY;
     }
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        int COLOR_BG = 0x80001822;
+        int COLOR_LINE = 0x66FFFFFF;
+        int COLOR_TEXT = 0xFFFFFFFF;
+        int COLOR_SCROLLBAR_TRACK = 0x33FFFFFF;
+        int COLOR_SCROLLBAR_THUMB = 0xAAFFFFFF;
         int x = this.leftPos;
         int y = this.topPos;
-        int textColor = COLOR_TEXT;
 
         // background
         graphics.fill((int) Math.floor(x * PADDING_RATIO), (int) Math.floor(y * PADDING_RATIO), this.width, this.height, 0x80000000);
@@ -102,24 +100,24 @@ public class ScatteredPageScreen extends Screen {
         graphics.fill(x + PADDING, y + 26, x + this.panelWidth - PADDING, y + 27, COLOR_LINE);
 
         // title
-        graphics.text(this.font, this.pageTitle, x + PADDING, y + 11, textColor, false);
+        graphics.text(this.font, this.pageTitle, x + PADDING, y + 11, COLOR_TEXT, false);
 
         // text
         int lineY = this.textStartY;
         int end = Math.min(this.allLines.size(), this.scrollOffset + this.visibleLines);
         for (int i = this.scrollOffset; i < end; i++) {
-            graphics.text(this.font, this.allLines.get(i), x + PADDING, lineY, textColor, false);
+            graphics.text(this.font, this.allLines.get(i), x + PADDING, lineY, COLOR_TEXT, false);
             lineY += this.lineHeight;
         }
 
         // scrollbar
         if (this.maxScroll > 0) {
-            graphics.fill(this.scrollbarX, this.scrollbarY, this.scrollbarX + this.scrollbarWidth, this.scrollbarY + this.scrollbarHeight, COLOR_SCROLLBAR_TRACK);
+            graphics.fill(this.scrollbarX, this.scrollbarY, this.scrollbarX + scrollbarWidth, this.scrollbarY + this.scrollbarHeight, COLOR_SCROLLBAR_TRACK);
 
             int thumbHeight = Math.max(12, (int) ((float) this.visibleLines / this.allLines.size() * this.scrollbarHeight));
             int thumbY = this.scrollbarY + (int) ((float) this.scrollOffset / this.maxScroll * (this.scrollbarHeight - thumbHeight));
 
-            graphics.fill(this.scrollbarX, thumbY, this.scrollbarX + this.scrollbarWidth, thumbY + thumbHeight, COLOR_SCROLLBAR_THUMB);
+            graphics.fill(this.scrollbarX, thumbY, this.scrollbarX + scrollbarWidth, thumbY + thumbHeight, COLOR_SCROLLBAR_THUMB);
         }
 
         super.extractRenderState(graphics, mouseX, mouseY, a);

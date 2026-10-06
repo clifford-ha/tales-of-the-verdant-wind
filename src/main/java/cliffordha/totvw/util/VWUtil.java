@@ -14,7 +14,9 @@ import cliffordha.totvw.tag.VWBiomeTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -52,6 +54,19 @@ public class VWUtil {
     public static boolean isInBiome(LevelAccessor level, BlockPos pos, TagKey<Biome> biome) {
         return level.getBiome(pos).is(biome);
     }
+    public static boolean isDimension(LivingEntity entity, ResourceKey<Level> dimension) {
+        return entity.level().dimension().equals(dimension);
+    }
+
+
+    public static String getEntityID(Entity entity) {
+        return BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
+    }
+    public static boolean isEqualEntityID(String test, Entity type) {
+        return getEntityID(type).equals(test);
+    }
+
+
     /** note: generic **/
     public static RandomSource random = RandomSource.create();
 

@@ -17,7 +17,6 @@ import cliffordha.totvw.tag.VWBiomeTags;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -38,13 +37,11 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.*;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -159,8 +156,7 @@ public class VWWolfBehaviors {
                 }
         ));
         TICK_RULES.add(WolfBehaviorRule.forAny(
-                WolfCondition.newSoundsEnable()
-                        .and(WolfCondition.isInBiomes(VWBiomeTags.FOREST_WHERE_WOLVES_HOWL))
+               WolfCondition.isInBiomes(VWBiomeTags.FOREST_WHERE_WOLVES_HOWL)
                         .and(WolfCondition.tick(0, 30)),
                 (wolf, level) -> {
                     if (wolf.isAngry()) return;
@@ -437,7 +433,7 @@ public class VWWolfBehaviors {
             } else if (type == Runestone.HAVOC) {
                 t = HavocEffect.HAVOC_PARTICLE;
                 n = 6;
-            } else if (type == Runestone.FLOURISHING_FLORA) {
+            } else if (type == Runestone.EFFLORESCENCE) {
                 t = ParticleTypes.GLOW;
                 n = 2;
             } else {

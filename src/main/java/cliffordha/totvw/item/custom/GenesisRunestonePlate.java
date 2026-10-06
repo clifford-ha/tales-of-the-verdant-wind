@@ -52,7 +52,7 @@ public class GenesisRunestonePlate extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide() && !player.getCooldowns().isOnCooldown(new ItemStack(this))) {
             player.getCooldowns().addCooldown(new ItemStack(this), 100);
-            if (!player.level().dimension().equals(VWDimensions.NOLAYAN_LEVEL_KEY) && !VWUtil.isInBiome(player, BiomeTags.IS_OVERWORLD)) {
+            if (!VWUtil.isDimension(player, VWDimensions.NOLAYAN_LEVEL_KEY) && !VWUtil.isDimension(player, VWDimensions.OVERWORLD)) {
                 VWUtil.sendToChat(player, false, "You must be in the Overworld to establish connection");
                 return InteractionResult.FAIL;
             }

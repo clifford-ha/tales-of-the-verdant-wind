@@ -1,4 +1,4 @@
-// 26.2	-999999999-01-01T00:00:00	Tales of the Verdant Wind/VWModelProvider
+// 26.3	-999999999-01-01T00:00:00	Tales of the Verdant Wind/VWModelProvider
 8d0e51f166e934ea0ddcce5491c083a25ad807a0 assets/tales-of-the-verdant-wind/blockstates/air_placeholder.json
 33b57c9bc0bd749c97026f006ebc338068ccd890 assets/tales-of-the-verdant-wind/blockstates/farmland_placer.json
 4802879f649edc6bcf8df07baf68b1e98cc59deb assets/tales-of-the-verdant-wind/blockstates/iridescent_glass.json
@@ -31,6 +31,7 @@ b300a37266c709f62c70470421b3bd117074aa19 assets/tales-of-the-verdant-wind/blocks
 51d87285d44357bc7409c310b1b286065bb266b9 assets/tales-of-the-verdant-wind/blockstates/verixium_powder_block.json
 218a7cffd3e05cf153b2408419f8e81e21e35ffa assets/tales-of-the-verdant-wind/blockstates/verixium_stone_ore.json
 525f1316426773960719109eef453206d9516987 assets/tales-of-the-verdant-wind/items/air_placeholder.json
+16887b833fe61892da996acf6dcbbe7d00078297 assets/tales-of-the-verdant-wind/items/attachments_remover.json
 112eeb4d54df066bc1ee98753391d0b2dcb146c2 assets/tales-of-the-verdant-wind/items/condensed_verixium.json
 e89ff4fd0940b1f5d09951e98acca8c58a4513ec assets/tales-of-the-verdant-wind/items/effects_handbook.json
 ceff14eef1800ee50b824b75b19822d16af5708f assets/tales-of-the-verdant-wind/items/efflorescence_runestone_plate.json
@@ -181,6 +182,7 @@ b09cbe3413bac7bdefb4cb5bed9fee1c2b1e8111 assets/tales-of-the-verdant-wind/models
 2123115b8158407919cc99ac97674ba6547b466e assets/tales-of-the-verdant-wind/models/block/verixium_deepslate_ore.json
 217600e1e9f32a2b23e0ee8ec23c1f29349f3748 assets/tales-of-the-verdant-wind/models/block/verixium_powder_block.json
 49857e4155e69ebcb8792fcc131a77e545abb87a assets/tales-of-the-verdant-wind/models/block/verixium_stone_ore.json
+75f942d65c09e2341a687e2bcb7a64ac38231466 assets/tales-of-the-verdant-wind/models/item/attachments_remover.json
 adc19c63fd9650edaf30d18c33ace661edd149f0 assets/tales-of-the-verdant-wind/models/item/condensed_verixium.json
 fb165794e8da5e2805cbde46eecc6762c5deb789 assets/tales-of-the-verdant-wind/models/item/effects_handbook.json
 0da5ed5930b4b87a6b374cfd0097017d40c83215 assets/tales-of-the-verdant-wind/models/item/efflorescence_runestone_plate.json
