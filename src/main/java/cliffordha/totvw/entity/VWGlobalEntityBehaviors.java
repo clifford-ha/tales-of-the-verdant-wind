@@ -32,6 +32,7 @@ import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -92,7 +93,8 @@ public class VWGlobalEntityBehaviors {
      * the user's specified distance returns a false value.
      */
     private static boolean revivePlayerIfPossible(LivingEntity entity, DamageSource damageSource, float v) {
-        if (entity instanceof Player player) {
+        boolean hasTotem = entity.getMainHandItem().is(Items.TOTEM_OF_UNDYING) || entity.getOffhandItem().is(Items.TOTEM_OF_UNDYING);
+        if (entity instanceof Player player && !hasTotem) {
             if (damageSource.is(DamageTypes.GENERIC_KILL)) return true;
             if (!player.getAttachedOrElse(VWPlayerPrefs.BENEDICTION_SHARE_STACK, VWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK)) return true;
 
@@ -151,7 +153,8 @@ public class VWGlobalEntityBehaviors {
         List<CompoundTag> souls = player.getAttachedOrElse(VWAttachments.player.PLAYER_WOLF_SOULS, List.of());
         CompoundTag stack = souls.stream().filter(soul ->
                 soul.getCompoundOrEmpty("fabric:attachments")
-                        .getIntOr(TOTVW.MOD_ID + ":wolf_benediction", 0) > 1).toList().getFirst();
+                        .getIntOr(TOTVW.MOD_ID + ":wolf_benediction", 0) > 1).findFirst().orElse(new CompoundTag());
+        if (stack.isEmpty()) return true;
 
         if (!souls.isEmpty() && wolfHasBenedictionEnchantment(stack)) {
             processRevivalThroughRunestone(level, player, souls, stack);
@@ -203,8 +206,6 @@ public class VWGlobalEntityBehaviors {
         wolf.setOrderedToSit(false);
     }
     private static boolean wolfHasBenedictionEnchantment(CompoundTag stack) {
-        if (stack.isEmpty()) return false;
-
         return stack.getCompoundOrEmpty("equipment")
                 .getCompoundOrEmpty("body")
                 .getCompoundOrEmpty("components")
