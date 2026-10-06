@@ -1,0 +1,11 @@
+{
+  "gives": {
+    "count": 3,
+    "id": "tales-of-the-verdant-wind:verixium_powder"
+  },
+  "max_uses": 256.0,
+  "wants": {
+    "id": "tales-of-the-verdant-wind:verixium_fluid_bucket"
+  },
+  "xp": 20.0
+}

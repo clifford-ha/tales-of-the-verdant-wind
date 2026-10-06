@@ -1,0 +1,11 @@
+{
+  "gives": {
+    "id": "tales-of-the-verdant-wind:verdant_spruce_sapling"
+  },
+  "max_uses": 12.0,
+  "reputation_discount": 0.05,
+  "wants": {
+    "id": "minecraft:emerald"
+  },
+  "xp": 20.0
+}

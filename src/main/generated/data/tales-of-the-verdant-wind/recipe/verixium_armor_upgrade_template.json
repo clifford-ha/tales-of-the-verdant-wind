@@ -3,14 +3,14 @@
   "category": "equipment",
   "group": "verixium_armors",
   "key": {
-    "I": "minecraft:deepslate",
-    "W": "minecraft:wind_charge",
-    "X": "tales-of-the-verdant-wind:verixium_powder"
+    "T": "minecraft:wind_charge",
+    "W": "minecraft:deepslate",
+    "X": "tales-of-the-verdant-wind:verixium_powder_block"
   },
   "pattern": [
-    "XIX",
-    "IWI",
-    "XIX"
+    "XWX",
+    "WTW",
+    "XWX"
   ],
   "result": {
     "id": "tales-of-the-verdant-wind:verixium_armor_upgrade_template"

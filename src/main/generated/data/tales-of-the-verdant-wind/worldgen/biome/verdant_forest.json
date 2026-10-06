@@ -94,6 +94,7 @@
       "tales-of-the-verdant-wind:verdant_moss_patch",
       "tales-of-the-verdant-wind:verdant_moss_patch_high",
       "tales-of-the-verdant-wind:verdant_river_seagrass",
+      "tales-of-the-verdant-wind:verdant_farmlands_disk",
       "tales-of-the-verdant-wind:ancient_verdant_spruce_tree",
       "tales-of-the-verdant-wind:verdant_spruce_bush_tree"
     ]
@@ -144,8 +145,22 @@
         "weight": 10
       }
     ],
-    "underground_water_creature": [],
-    "water_ambient": [],
+    "underground_water_creature": [
+      {
+        "type": "minecraft:skeleton",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 1
+      }
+    ],
+    "water_ambient": [
+      {
+        "type": "minecraft:tropical_fish",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 1
+      }
+    ],
     "water_creature": []
   },
   "temperature": 0.35
