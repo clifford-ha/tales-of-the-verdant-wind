@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "tales-of-the-verdant-wind:iridescent_glass",
+  "result": {
+    "count": 4,
+    "id": "minecraft:yellow_dye"
+  }
+}

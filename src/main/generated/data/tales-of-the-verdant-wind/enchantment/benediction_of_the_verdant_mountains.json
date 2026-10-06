@@ -1,0 +1,35 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.tales-of-the-verdant-wind.benediction_of_the_verdant_mountains"
+  },
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 3.0,
+          "per_level_above_first": 0.0
+        },
+        "attribute": "minecraft:attack_damage",
+        "id": "tales-of-the-verdant-wind:benediction_of_the_verdant_mountains",
+        "operation": "add_value"
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 80,
+    "per_level_above_first": 20
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 80,
+    "per_level_above_first": 0
+  },
+  "primary_items": "#minecraft:chest_armor",
+  "slots": [
+    "body"
+  ],
+  "supported_items": "#minecraft:chest_armor",
+  "weight": 2
+}

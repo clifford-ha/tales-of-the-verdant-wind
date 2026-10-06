@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "#": "minecraft:stick",
+    "W": "tales-of-the-verdant-wind:verdant_spruce_planks"
+  },
+  "pattern": [
+    "#W#",
+    "#W#"
+  ],
+  "result": {
+    "id": "tales-of-the-verdant-wind:verdant_spruce_fence_gate"
+  }
+}
