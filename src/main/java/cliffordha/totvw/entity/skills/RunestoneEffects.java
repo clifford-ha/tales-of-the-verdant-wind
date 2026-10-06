@@ -187,7 +187,7 @@ public class RunestoneEffects {
             List<Entity> scanner = level.getEntities(
                     wolf,
                     VWUtil.scanArea(wolf, Math.min(SCAN_SIZE, 24)),
-                    test -> test.getType().getDescriptionId().equals(entity)
+                    test -> isEqualEntityID(entity, test)
             ).stream().limit(LINK_LIMIT).toList();
 
             if (scanner.isEmpty()) return;
@@ -195,49 +195,61 @@ public class RunestoneEffects {
             for (Entity mob : scanner) {
                 LivingEntity target = (LivingEntity) mob;
 
-                if (target instanceof Player player) {
-                    boolean isNotAggressor = !WolfAttachment.isListedAggressor(wolf, VWAttachments.getWolfPlayerSharedId(target));
+                applyLink(wolf, target, level);
+            }
+        }
+    }
+    private static void applyLink(Wolf wolf, LivingEntity target, ServerLevel level) {
+        if (WolfAttachment.isTetherBlacklisted(wolf, target)) return;
 
-                    if (isNotAggressor) {
-                        return;
-                    } else if (wolf.getOwner() != null) {
-                        if (wolf.getOwner().equals(player)) {
-                            return;
-                        }
-                    }
-                }
+        if (target instanceof Player player) {
+            boolean isNotAggressor = !WolfAttachment.isListedAggressor(wolf, VWAttachments.getWolfPlayerSharedId(target));
 
-                DamageSource source = VWDamageTypes.tetherProxy(level);
-                if (wolf.isWearingBodyArmor()) {
-                    VWWolfBehaviors.runEnchantmentsOnDamage(wolf, level, target, false, source);
-                } else {
-                    VWWolfBehaviors.applyConsolidatedDamage(level, wolf, target,
-                            source,
-                            0,
-                            false
-                    );
+            if (isNotAggressor) {
+                return;
+            } else if (wolf.getOwner() != null) {
+                if (wolf.getOwner().equals(player)) {
+                    return;
                 }
             }
+        }
+
+        DamageSource source = VWDamageTypes.tetherProxy(level);
+        if (wolf.isWearingBodyArmor()) {
+            VWWolfBehaviors.runEnchantmentsOnDamage(wolf, level, target, false, source);
+        } else {
+            VWWolfBehaviors.applyConsolidatedDamage(level, wolf, target,
+                    source,
+                    0,
+                    false
+            );
         }
     }
     private static void updateLinkRecord(Wolf wolf, LivingEntity victim, List<String> entities, ServerLevel level) {
         if (victim instanceof Wolf) return;
+        if (WolfAttachment.isTetherBlacklisted(wolf, victim)) return;
+
         List<String> newEntities = new ArrayList<>(entities);
 
         for (String type : entities) {
-            int cycle = wolf.getAttachedOrElse(ATTACK_CYCLE, 0) - 1;
-            List<Entity> scanner = level.getEntities(wolf,
-                    scanArea(wolf, 12),
-                    t -> t.getType().getDescriptionId().equals(type)
-            ).stream().limit(1).toList();
-
-            if (scanner.isEmpty() && cycle % 2 == 0) {
+            if (WolfAttachment.isTetherBlacklisted(wolf, victim) && entities.contains(getEntityID(victim))) {
                 newEntities.remove(type);
+            } else {
+
+                int cycle = wolf.getAttachedOrElse(ATTACK_CYCLE, 0) - 1;
+                List<Entity> scanner = level.getEntities(wolf,
+                        scanArea(wolf, 12),
+                        test -> isEqualEntityID(type, test)
+                ).stream().limit(1).toList();
+
+                if (scanner.isEmpty() && cycle % 2 == 0) {
+                    newEntities.remove(type);
+                }
             }
         }
         wolf.setAttached(TETHERED_ENTITIES, newEntities);
 
-        String targetType = victim.getType().getDescriptionId();
+        String targetType = getEntityID(victim);
         if (newEntities.contains(targetType)) return;
 
         if (newEntities.size() >= 2) {

@@ -156,8 +156,7 @@ public class VWWolfBehaviors {
                 }
         ));
         TICK_RULES.add(WolfBehaviorRule.forAny(
-                WolfCondition.newSoundsEnable()
-                        .and(WolfCondition.isInBiomes(VWBiomeTags.FOREST_WHERE_WOLVES_HOWL))
+               WolfCondition.isInBiomes(VWBiomeTags.FOREST_WHERE_WOLVES_HOWL)
                         .and(WolfCondition.tick(0, 30)),
                 (wolf, level) -> {
                     if (wolf.isAngry()) return;
@@ -434,7 +433,7 @@ public class VWWolfBehaviors {
             } else if (type == Runestone.HAVOC) {
                 t = HavocEffect.HAVOC_PARTICLE;
                 n = 6;
-            } else if (type == Runestone.FLOURISHING_FLORA) {
+            } else if (type == Runestone.EFFLORESCENCE) {
                 t = ParticleTypes.GLOW;
                 n = 2;
             } else {

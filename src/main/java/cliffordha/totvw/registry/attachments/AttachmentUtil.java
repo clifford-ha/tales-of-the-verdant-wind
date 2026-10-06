@@ -32,6 +32,17 @@ public class AttachmentUtil {
             UUIDUtil.STREAM_CODEC, Pair::getB,
             Pair::new
     );
+    public static final Codec<Pair<String, Boolean>> STRING_BOOLEAN_CODEC = RecordCodecBuilder.create(
+            pair -> pair.group(
+                    Codec.STRING.fieldOf("id").forGetter(Pair::getA),
+                    Codec.BOOL.fieldOf("value").forGetter(Pair::getB)
+            ).apply(pair, Pair::new)
+    );
+    public static final StreamCodec<FriendlyByteBuf, Pair<String, Boolean>> STRING_BOOLEAN_CODEC_STREAM = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, Pair::getA,
+            ByteBufCodecs.BOOL, Pair::getB,
+            Pair::new
+    );
 
     public static AttachmentType<HavocType> registerHavocType(String name, boolean copyOnDeath) {
         return AttachmentRegistry.create(
@@ -61,6 +72,17 @@ public class AttachmentUtil {
                 builder -> {
                     builder.persistent(ENTITY_DATA_CODEC.listOf())
                             .syncWith(ENTITY_DATA_CODEC_STREAM.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all())
+                            .initializer(ArrayList::new);
+                    if (copyOnDeath) builder.copyOnDeath();
+                }
+        );
+    }
+    public static AttachmentType<List<Pair<String, Boolean>>> registerListPairEntities(String name, boolean copyOnDeath) {
+        return AttachmentRegistry.create(
+                TOTVW.registerID(name),
+                builder -> {
+                    builder.persistent(STRING_BOOLEAN_CODEC.listOf())
+                            .syncWith(STRING_BOOLEAN_CODEC_STREAM.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all())
                             .initializer(ArrayList::new);
                     if (copyOnDeath) builder.copyOnDeath();
                 }
@@ -139,6 +161,17 @@ public class AttachmentUtil {
                     builder.persistent(Codec.BOOL)
                             .syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all())
                             .initializer(() -> false);
+                    if (copyOnDeath) builder.copyOnDeath();
+                }
+        );
+    }
+    public static AttachmentType<List<Boolean>> registerBoolList(String name, boolean copyOnDeath) {
+        return AttachmentRegistry.create(
+                TOTVW.registerID(name),
+                builder -> {
+                    builder.persistent(Codec.BOOL.listOf())
+                            .syncWith(ByteBufCodecs.fromCodec(Codec.BOOL.listOf()), AttachmentSyncPredicate.all())
+                            .initializer(ArrayList::new);
                     if (copyOnDeath) builder.copyOnDeath();
                 }
         );

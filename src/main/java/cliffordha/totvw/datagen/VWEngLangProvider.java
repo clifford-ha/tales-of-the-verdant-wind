@@ -2,6 +2,7 @@ package cliffordha.totvw.datagen;
 
 import java.util.concurrent.CompletableFuture;
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.keymapping.VWKeymap;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems.Pages;
@@ -198,6 +199,7 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(biomeKey("verdant_forest"), "Verdant Forest");
 
 
+        // SOUNDS
         text.add(VWSounds.WOLF_HOWL_A, "Distant wolf howls");
         text.add(VWSounds.WOLF_HOWL_B1, "Distant wolf howls");
         text.add(VWSounds.WOLF_HOWL_B2, "Distant wolf howls");
@@ -207,6 +209,11 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(VWSounds.WOLF_SKILL_PARALYZE, "%1$s got paralyzed");
 
         text.add(VWSounds.LODESTONE_WIND_CORE_AMBIENT, "Wind Core whooshes");
+
+
+
+        // KEYMAPPINGS
+        text.add(VWKeymap.WOLF_CONFIG_KEY, "Wolf Config Screen");
 
         text.add(TOTVW.MOD_ID, "Tales of the Verdant Wind");
 

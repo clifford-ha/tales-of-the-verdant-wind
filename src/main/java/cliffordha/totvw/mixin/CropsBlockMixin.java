@@ -43,7 +43,7 @@ public abstract class CropsBlockMixin {
         List<Wolf> wolves = level.getEntitiesOfClass(
                 Wolf.class,
                 scan,
-                Runestone::hasFlourishingFlora
+                Runestone::hasEfflorescence
         ).stream().limit(1).toList();
 
         List<Player> players = level.getEntities(
@@ -138,7 +138,7 @@ public abstract class CropsBlockMixin {
 
         boolean shouldGrowByWolf = crop.getAge(state) < crop.getMaxAge()
                 && entity instanceof Wolf wolf
-                && Runestone.hasFlourishingFlora(wolf);
+                && Runestone.hasEfflorescence(wolf);
 
         boolean shouldGrowByPlayer = crop.getAge(state) < crop.getMaxAge()
                 && entity instanceof Player player

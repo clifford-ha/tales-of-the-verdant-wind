@@ -3,7 +3,7 @@ package cliffordha.totvw.config;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.block.custom.LodestoneWindCoreBlock;
 import cliffordha.totvw.registry.VWColors;
-import cliffordha.totvw.client.ClientPrefsPayload;
+import cliffordha.totvw.networking.packets.ClientPrefsPayload;
 import me.shedaniel.clothconfig2.api.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.screens.Screen;
@@ -39,21 +39,6 @@ public class VWConfigScreen {
 
         ConfigCategory client = builder.getOrCreateCategory(Component.literal("Client"));
 
-        if (TOTVW.IN_DEVELOPMENT) {
-            client.addEntry(
-                    entryBuilder.startBooleanToggle(
-                                    Component.literal("Use New Language Set"),
-                                    VWConfig.get().CLIENT_TRANSLATE_LANGUAGE)
-                            .setDefaultValue(false)
-                            .setTooltip(text(
-                                    """
-                                            When circumstances are met, certain item
-                                            tooltips will show untranslated version of the text"""
-                            ))
-                            .setSaveConsumer(value -> VWConfig.get().CLIENT_TRANSLATE_LANGUAGE = value)
-                            .build()
-            );
-        }
         client.addEntry(
                 entryBuilder.startBooleanToggle(
                                 Component.literal("Use Notifiers"),
@@ -64,20 +49,6 @@ public class VWConfigScreen {
                                         + "be sent to chat or overlay"
                         ))
                         .setSaveConsumer(value -> VWConfig.get().CLIENT_ENABLE_NOTIFIERS = value)
-                        .build()
-        );
-        client.addEntry(
-                entryBuilder.startBooleanToggle(
-                                Component.literal("Use New Sounds"),
-                                VWConfig.get().CLIENT_MOD_SOUNDS)
-                        .setDefaultValue(true)
-                        .setTooltip(text(
-                                """
-                                        When enabled, custom sounds will be used
-                                        for various events. Option still in
-                                        development and may be removed in the future."""
-                        ))
-                        .setSaveConsumer(value -> VWConfig.get().CLIENT_MOD_SOUNDS = value)
                         .build()
         );
 
