@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "tales-of-the-verdant-wind:block/verixium_powder_block"
-  }
-}
