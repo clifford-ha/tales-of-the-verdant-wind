@@ -24,7 +24,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
 public class StorageBlock extends BaseEntityBlock {
-    public static final MapCodec<? extends BaseEntityBlock> CODEC = simpleCodec(StorageBlock::new);
+    public static final MapCodec<StorageBlock> CODEC = MapCodec.unit(() -> new StorageBlock(Properties.of()));
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static BooleanProperty OPEN = BlockStateProperties.OPEN;
 
@@ -32,7 +32,6 @@ public class StorageBlock extends BaseEntityBlock {
         super(properties);
     }
 
-    @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }

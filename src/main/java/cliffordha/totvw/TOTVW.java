@@ -1,5 +1,6 @@
 package cliffordha.totvw;
 
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,5 +29,9 @@ public class TOTVW {
     }
     public static void sendError(String info) {
         TOTVW.LOGGER.error(info);
+    }
+
+    public static Identifier registerID(String key) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, key);
     }
 }

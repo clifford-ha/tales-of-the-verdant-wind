@@ -4,10 +4,8 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.tag.VWBlockTags;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.WeightedList;
@@ -19,9 +17,7 @@ import net.minecraft.world.level.levelgen.GeodeBlockSettings;
 import net.minecraft.world.level.levelgen.GeodeCrackSettings;
 import net.minecraft.world.level.levelgen.GeodeLayerSettings;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.LakeFeature;
+import net.minecraft.world.level.levelgen.feature.*;
 import net.minecraft.world.level.levelgen.feature.configurations.*;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.SpruceFoliagePlacer;
@@ -63,11 +59,12 @@ public class VWConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> VERDANT_MOSS_VEGETATION_CONFIGURED_KEY = create("verdant_moss_vegetation");
     public static final ResourceKey<ConfiguredFeature<?, ?>> VERDANT_MOSS_PATCH_CONFIGURED_KEY = create("verdant_moss_patch");
 
-    public static final ResourceKey<ConfiguredFeature<?, ?>> VERDANT_SNIFFER_EGG_CONFIGURED_KEY = create("verdant_sniffer_egg");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> VERDANT_FARMLANDS_PATCH = create("verdant_farmlands_patch");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> VERDANT_FARMLANDS_DISK = create("verdant_farmlands_disk");
 
     // helper
     private static ResourceKey<ConfiguredFeature<?, ?>> create(String name) {
-        return ResourceKey.create(Registries.CONFIGURED_FEATURE, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name));
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, TOTVW.registerID(name));
     }
 
 
@@ -101,8 +98,8 @@ public class VWConfiguredFeatures {
                                         Blocks.AIR.defaultBlockState(),
                                         Blocks.AIR.defaultBlockState()
                                 ),
-                                context.lookup(Registries.BLOCK).getOrThrow(BlockTags.FEATURES_CANNOT_REPLACE),
-                                context.lookup(Registries.BLOCK).getOrThrow(BlockTags.GEODE_INVALID_BLOCKS)
+                                BlockTags.FEATURES_CANNOT_REPLACE,
+                                BlockTags.GEODE_INVALID_BLOCKS
                         ),
                         new GeodeLayerSettings(
                                 1.7,
@@ -143,20 +140,18 @@ public class VWConfiguredFeatures {
         register(context, VERDANT_FERN_PATCH_CONFIGURED_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.FERN.defaultBlockState())));
         register(context, VERDANT_TORCHFLOWER_PATCH_CONFIGURED_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.TORCHFLOWER.defaultBlockState())));
         register(context, VERDANT_MOSS_VEGETATION_CONFIGURED_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(
-                new WeightedStateProvider(
-                        WeightedList.<BlockState>builder()
-                                .add(Blocks.FERN.defaultBlockState(), 7)
-                                .add(VWBlocks.VERDANT_SPRUCE_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true), 6)
-                                .add(Blocks.BUSH.defaultBlockState(), 3)
-                                .add(Blocks.SWEET_BERRY_BUSH.defaultBlockState().setValue(SweetBerryBushBlock.AGE, 3), 1)
-                                .build())
+                        new WeightedStateProvider(
+                                WeightedList.<BlockState>builder()
+                                        .add(Blocks.FERN.defaultBlockState(), 7)
+                                        .add(VWBlocks.VERDANT_SPRUCE_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true), 6)
+                                        .add(Blocks.BUSH.defaultBlockState(), 3)
+                                        .add(Blocks.SWEET_BERRY_BUSH.defaultBlockState().setValue(SweetBerryBushBlock.AGE, 3), 1)
+                                        .build())
                 )
         );
-
-        HolderSet<Block> mossReplaceable = context.lookup(Registries.BLOCK).getOrThrow(VWBlockTags.VERDANT_MOSS_REPLACEABLE);
         register(context, VERDANT_MOSS_PATCH_CONFIGURED_KEY, Feature.VEGETATION_PATCH,
                 new VegetationPatchConfiguration(
-                        mossReplaceable,
+                        VWBlockTags.VERDANT_MOSS_REPLACEABLE,
                         BlockStateProvider.simple(VWBlocks.VERDANT_MOSS_BLOCK),
                         placedFeatures.getOrThrow(VWPlacedFeatures.VERDANT_MOSS_VEGETATION_KEY),
                         CaveSurface.FLOOR,
@@ -174,10 +169,7 @@ public class VWConfiguredFeatures {
 
         context.register(VERIXIUM_FLUID_POND_CONFIGURED_KEY, new ConfiguredFeature<>(Feature.LAKE, new LakeFeature.Configuration(
                 BlockStateProvider.simple(VWBlocks.VERIXIUM_FLUID),
-                BlockStateProvider.simple(Blocks.DEEPSLATE),
-                BlockPredicate.alwaysTrue(),
-                BlockPredicate.matchesTag(VWBlockTags.VERDANT_MOSS_REPLACEABLE),
-                BlockPredicate.matchesTag(VWBlockTags.VERDANT_MOSS_REPLACEABLE)
+                BlockStateProvider.simple(Blocks.DEEPSLATE)
         )));
 
 
@@ -191,8 +183,7 @@ public class VWConfiguredFeatures {
                         ConstantInt.of(0),
                         UniformInt.of(2, 3)
                 ),
-                new TwoLayersFeatureSize(0, 0, 0),
-                BlockStateProvider.simple(Blocks.DIRT)
+                new TwoLayersFeatureSize(0, 0, 0)
         ).build());
 
         register(context, VERDANT_SPRUCE_TREE_CONFIGURED_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -204,8 +195,7 @@ public class VWConfiguredFeatures {
                         UniformInt.of(0, 1),
                         UniformInt.of(2, 3)
                 ),
-                new TwoLayersFeatureSize(1, 1, 2),
-                BlockStateProvider.simple(Blocks.DIRT)
+                new TwoLayersFeatureSize(1, 1, 2)
         ).build());
 
         register(context, ANCIENT_VERDANT_SPRUCE_TREE_CONFIGURED_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -217,12 +207,28 @@ public class VWConfiguredFeatures {
                         ConstantInt.of(0),
                         UniformInt.of(2, 9)
                 ),
-                new TwoLayersFeatureSize(1, 1, 2),
-                BlockStateProvider.simple(Blocks.DIRT)
+                new TwoLayersFeatureSize(1, 1, 2)
         ).build());
 
-        register(context, VERDANT_SNIFFER_EGG_CONFIGURED_KEY, Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(Blocks.SNIFFER_EGG.defaultBlockState())));
+        register(context, VERDANT_FARMLANDS_DISK, Feature.DISK, new DiskConfiguration(
+                BlockStateProvider.simple(VWBlocks.FARMLAND_PLACER.defaultBlockState()),
+                BlockPredicate.matchesTag(VWBlockTags.VERDANT_MOSS_REPLACEABLE),
+                UniformInt.of(3, 7),
+                2
+        ));
 
+        register(context, VERDANT_FARMLANDS_PATCH, Feature.VEGETATION_PATCH, new VegetationPatchConfiguration(
+                VWBlockTags.VERDANT_MOSS_REPLACEABLE,
+                BlockStateProvider.simple(VWBlocks.FARMLAND_PLACER.defaultBlockState()),
+                placedFeatures.getOrThrow(VWPlacedFeatures.VERDANT_MOSS_VEGETATION_KEY),
+                CaveSurface.FLOOR,
+                UniformInt.of(1, 2),
+                0F,
+                2,
+                0.3F,
+                UniformInt.of(1, 3),
+                0.33F
+        ));
     }
 
     private static <FC extends FeatureConfiguration, F extends Feature<FC>> void register(BootstrapContext<ConfiguredFeature<?, ?>> context, ResourceKey<ConfiguredFeature<?, ?>> key, F feature, FC configuration) {

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:blasting",
+  "category": "misc",
   "cookingtime": 4500,
   "experience": 900.0,
   "group": "verixium_raw_materials",

@@ -2,10 +2,7 @@ package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
 
-import cliffordha.totvw.effect.AmplifiedMightEffect;
-import cliffordha.totvw.effect.BlessingOfTheVerdantWindEffect;
-import cliffordha.totvw.effect.BloodlustEffect;
-import cliffordha.totvw.effect.ParalyzeEffect;
+import cliffordha.totvw.effect.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -33,9 +30,15 @@ public class VWEffects {
     public static final Holder<MobEffect> PARALYZE = registerMobEffect("paralyze",
             new ParalyzeEffect());
 
+    public static final Holder<MobEffect> WIND_VEIL = registerMobEffect("wind_veil",
+            new WindVeilEffect());
+
+    public static final Holder<MobEffect> HAVOC = registerMobEffect("havoc",
+            new HavocEffect());
+
     private static Holder<MobEffect> registerMobEffect(String name, MobEffect effect) {
         return Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,
-                Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), effect);
+                TOTVW.registerID(name), effect);
     }
 
     public static void addModifier(AttributeMap map, Identifier id, Holder<Attribute> name, double value, AttributeModifier.Operation operation) {

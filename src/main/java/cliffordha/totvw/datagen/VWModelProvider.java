@@ -6,22 +6,21 @@ import cliffordha.totvw.block.custom.StorageBlock;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.VWItems.Pages;
 import cliffordha.totvw.registry.VWBlocks;
+
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.*;
-
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-
-import java.util.List;
 
 public class VWModelProvider extends FabricModelProvider {
     public VWModelProvider(FabricPackOutput output) {
@@ -41,10 +40,13 @@ public class VWModelProvider extends FabricModelProvider {
 
         block.createTrivialCube(VWBlocks.VERIXIUM_STONE_ORE);
         block.createTrivialCube(VWBlocks.VERIXIUM_DEEPSLATE_ORE);
-        block.createColoredBlockWithRandomRotations(TexturedModel.CUBE, List.of(
+        block.createColoredBlockWithRandomRotations(TexturedModel.CUBE,
                 VWBlocks.VERDANT_MOSS_BLOCK,
                 VWBlocks.VERIXIUM_POWDER_BLOCK
-        ));
+        );
+
+        block.createTrivialCube(VWBlocks.AIR_PLACEHOLDER);
+        block.copyModel(VWBlocks.VERDANT_MOSS_BLOCK, VWBlocks.FARMLAND_PLACER);
 
         block.createGlassBlocks(VWBlocks.IRIDESCENT_GLASS, VWBlocks.IRIDESCENT_GLASS_PANE);
 
@@ -52,6 +54,7 @@ public class VWModelProvider extends FabricModelProvider {
         block.createPlantWithDefaultItem(VWBlocks.VERDANT_SPRUCE_SAPLING, VWBlocks.POTTED_VERDANT_SPRUCE_SAPLING, BlockModelGenerators.PlantType.TINTED);
 
         verdantSpruceFamily.generateFor(VWBlocks.VERDANT_SPRUCE_FAMILY);
+        block.createHangingSign(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG, VWBlocks.VERDANT_SPRUCE_HANGING_SIGN, VWBlocks.VERDANT_SPRUCE_WALL_HANGING_SIGN);
         block.createShelf(VWBlocks.VERDANT_SPRUCE_SHELF, VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG);
         block.woodProvider(VWBlocks.VERDANT_SPRUCE_LOG).log(VWBlocks.VERDANT_SPRUCE_LOG).wood(VWBlocks.VERDANT_SPRUCE_WOOD);
         block.woodProvider(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG).log(VWBlocks.STRIPPED_VERDANT_SPRUCE_LOG).wood(VWBlocks.STRIPPED_VERDANT_SPRUCE_WOOD);
@@ -131,7 +134,12 @@ public class VWModelProvider extends FabricModelProvider {
                 VWItems.SOUL_RUNESTONE_FRAGMENT_1,
                 VWItems.SOUL_RUNESTONE_FRAGMENT_2,
                 VWItems.SOUL_RUNESTONE_FRAGMENT_3,
-                VWItems.SOUL_RUNESTONE_FRAGMENT_4
+                VWItems.SOUL_RUNESTONE_FRAGMENT_4,
+
+                VWItems.TETHER_RUNESTONE_PLATE,
+                VWItems.GENESIS_RUNESTONE_PLATE,
+                VWItems.HAVOC_RUNESTONE_PLATE,
+                VWItems.EFFLORESCENCE_RUNESTONE_PLATE
         );
 
         add(item, ModelTemplates.FLAT_HANDHELD_ITEM,
@@ -151,6 +159,12 @@ public class VWModelProvider extends FabricModelProvider {
                 Pages.EFFECTS_HANDBOOK,
                 Pages.ITEMS_HANDBOOK,
                 Pages.FEATURES_HANDBOOK
+        );
+
+        addCopy(item, ModelTemplates.FLAT_ITEM, Items.BOOK,
+                Pages.SP_ID_3000,
+                Pages.SP_ID_3001,
+                Pages.SP_ID_3002
         );
 
         addCopy(item, ModelTemplates.FLAT_ITEM, Pages.SCATTERED_PAGE,
@@ -177,6 +191,10 @@ public class VWModelProvider extends FabricModelProvider {
 
                 Pages.SP_ID_TEST
         );
+
+        if (TOTVW.IN_DEVELOPMENT) {
+            item.generateFlatItem(VWItems.DevItems.ATTACHMENTS_REMOVER, Pages.SCATTERED_PAGE, ModelTemplates.FLAT_ITEM);
+        }
     }
 
     @Override

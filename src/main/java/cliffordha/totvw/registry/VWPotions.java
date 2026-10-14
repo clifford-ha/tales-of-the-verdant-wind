@@ -4,7 +4,6 @@ import cliffordha.totvw.TOTVW;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.alchemy.Potion;
 
@@ -32,7 +31,7 @@ public class VWPotions {
             new Potion("baleful_strength_potion", new MobEffectInstance(VWEffects.BLOODLUST, setTime(1, 15), 1)));
 
     private static Holder<Potion> registerPotion(String name, Potion potion) {
-        return Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name), potion);
+        return Registry.registerForHolder(BuiltInRegistries.POTION, TOTVW.registerID(name), potion);
     }
 
     public static void register() {

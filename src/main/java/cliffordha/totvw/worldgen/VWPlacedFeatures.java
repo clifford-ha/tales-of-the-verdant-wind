@@ -3,11 +3,9 @@ package cliffordha.totvw.worldgen;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.tag.VWBlockTags;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -54,7 +52,8 @@ public class VWPlacedFeatures {
     public static final ResourceKey<PlacedFeature> VERDANT_FERN_PATCH_KEY = create("verdant_fern_patch");
 
     public static final ResourceKey<PlacedFeature> VERDANT_TORCHFLOWER_PATCH_KEY = create("verdant_torchflower_patch");
-    public static final ResourceKey<PlacedFeature> VERDANT_WILD_SNIFFER_EGG_KEY = create("verdant_wild_sniffer_egg");
+    public static final ResourceKey<PlacedFeature> VERDANT_FARMLANDS_PATCH_KEY = create("verdant_farmlands_patch");
+    public static final ResourceKey<PlacedFeature> VERDANT_FARMLANDS_DISK_KEY = create("verdant_farmlands_disk");
 
 
     //helper
@@ -255,16 +254,25 @@ public class VWPlacedFeatures {
                         BiomeFilter.biome()
                 ))
         );
-        /*
-        context.register(VERDANT_WILD_SNIFFER_EGG_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_SNIFFER_EGG_CONFIGURED_KEY),
+
+
+        context.register(VERDANT_FARMLANDS_PATCH_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_FARMLANDS_PATCH),
                 List.of(
-                        RarityFilter.onAverageOnceEvery(23),
+                        RarityFilter.onAverageOnceEvery(200),
                         InSquarePlacement.spread(),
-                        PlacementUtils.HEIGHTMAP_TOP_SOLID,
-                        BlockPredicateFilter.forPredicate(BlockPredicate.matchesBlocks(Blocks.SWEET_BERRY_BUSH)),
+                        PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                        CountPlacement.of(UniformInt.of(1, 7)),
                         BiomeFilter.biome()
                 ))
-        );*/
+        );
+        context.register(VERDANT_FARMLANDS_DISK_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VWConfiguredFeatures.VERDANT_FARMLANDS_DISK),
+                List.of(
+                        RarityFilter.onAverageOnceEvery(300),
+                        InSquarePlacement.spread(),
+                        PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                        CountPlacement.of(UniformInt.of(1, 3)),
+                        BiomeFilter.biome()
+                ))
+        );
     }
-
 }

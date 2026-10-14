@@ -27,7 +27,7 @@ public class ParalyzeEffect extends MobEffect {
         super(MobEffectCategory.NEUTRAL, VWColors.PARALYZE);
     }
 
-    private final List<Holder<Attribute>> PARALYZE_ATTRIBUTES = List.of(
+    private static final List<Holder<Attribute>> PARALYZE_ATTRIBUTES = List.of(
             Attributes.ARMOR,
             Attributes.ARMOR_TOUGHNESS,
             Attributes.KNOCKBACK_RESISTANCE,
@@ -50,7 +50,7 @@ public class ParalyzeEffect extends MobEffect {
 
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
-        if (entity instanceof Mob mob && !entity.is(EntityTypes.PLAYER)) {
+        if (entity instanceof Mob mob && !entity.is(EntityType.PLAYER)) {
             mob.setNoAi(true);
         } else if (entity instanceof Player player) {
             if (player.getAbilities().instabuild || player.isSpectator()) return;
@@ -98,7 +98,7 @@ public class ParalyzeEffect extends MobEffect {
     }
 
     private void removeModifiers(LivingEntity entity) {
-        if (entity instanceof Mob mob && !entity.is(EntityTypes.PLAYER)) {
+        if (entity instanceof Mob mob && !entity.is(EntityType.PLAYER)) {
             mob.setNoAi(false);
         } else if (entity instanceof Player) {
             removeAllModifiers(entity, ID, PARALYZE_ATTRIBUTES);

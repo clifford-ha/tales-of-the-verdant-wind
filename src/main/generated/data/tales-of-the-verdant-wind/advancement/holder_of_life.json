@@ -8,7 +8,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "minecraft:entity_type": "minecraft:wolf"
+              "type": "minecraft:wolf"
             }
           }
         ],
@@ -28,7 +28,7 @@
     "frame": "challenge",
     "hidden": true,
     "icon": {
-      "id": "tales-of-the-verdant-wind:air_placeholder"
+      "id": "tales-of-the-verdant-wind:efflorescence_runestone_plate"
     },
     "title": {
       "color": "#4BB94F",
