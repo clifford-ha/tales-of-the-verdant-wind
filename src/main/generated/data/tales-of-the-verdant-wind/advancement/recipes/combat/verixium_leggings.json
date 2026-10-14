@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "tales-of-the-verdant-wind:verixium_leggings"
+        "recipes": "tales-of-the-verdant-wind:verixium_leggings"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

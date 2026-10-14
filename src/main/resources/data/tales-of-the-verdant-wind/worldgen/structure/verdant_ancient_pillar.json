@@ -14,7 +14,7 @@
       "air_pocket_probability": 0.1,
       "can_be_cold": true,
       "mossiness": 0.2,
-      "overgrown": false,
+      "overgrown": true,
       "placement": "on_land_surface",
       "replace_with_blackstone": false,
       "vines": true,

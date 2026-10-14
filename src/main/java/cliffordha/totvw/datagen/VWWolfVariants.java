@@ -24,7 +24,7 @@ public class VWWolfVariants {
     }
 
     private static ResourceKey<WolfVariant> create(String name) {
-        return ResourceKey.create(Registries.WOLF_VARIANT, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name));
+        return ResourceKey.create(Registries.WOLF_VARIANT, TOTVW.registerID(name));
     }
 
     private static void register(final BootstrapContext<WolfVariant> context, final ResourceKey<WolfVariant> name, final String fileName, final TagKey<Biome> spawnBiome) {

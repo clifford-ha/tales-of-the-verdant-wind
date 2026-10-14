@@ -3,15 +3,13 @@
   "criteria": {
     "bound_by_a_thread": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "minecraft:wolf"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:wolf"
           }
-        ],
+        },
         "item": {
           "items": "tales-of-the-verdant-wind:tether_runestone_plate"
         }
@@ -20,7 +18,6 @@
     }
   },
   "display": {
-    "background": "tales-of-the-verdant-wind:bound_by_a_thread",
     "description": {
       "color": "#247D66",
       "text": "Use the power of Tether Runestone on your companion so it can gain the Link status"

@@ -3,23 +3,20 @@
   "criteria": {
     "world_lost_in_time": {
       "conditions": {
-        "player": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:location": {
-                "dimension": "tales-of-the-verdant-wind:nolayan"
-              }
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "dimension": "tales-of-the-verdant-wind:nolayan"
             }
           }
-        ]
+        }
       },
       "trigger": "minecraft:location"
     }
   },
   "display": {
-    "background": "tales-of-the-verdant-wind:world_lost_in_time",
     "description": {
       "color": "#247D66",
       "text": "Discover the hidden, fragmented world"

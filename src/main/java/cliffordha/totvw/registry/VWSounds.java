@@ -19,7 +19,7 @@ public class VWSounds {
     public static final SoundEvent NOTIFY = registerSoundEvent("notify");
 
     private static SoundEvent registerSoundEvent(String name) {
-        Identifier id = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name);
+        Identifier id = TOTVW.registerID(name);
         return Registry.register(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));
     }
 

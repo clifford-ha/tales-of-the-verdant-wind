@@ -91,6 +91,6 @@ public final class VWEffectOverlays {
     }
 
     private static Identifier register(String name) {
-        return Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name);
+        return TOTVW.registerID(name);
     }
 }

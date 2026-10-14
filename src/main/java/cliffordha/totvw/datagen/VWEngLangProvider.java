@@ -2,6 +2,7 @@ package cliffordha.totvw.datagen;
 
 import java.util.concurrent.CompletableFuture;
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.keymapping.VWKeymap;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems.Pages;
@@ -47,6 +48,8 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(VWBlocks.VERDANT_SPRUCE_SHELF, "Verdant Spruce Shelf");
         text.add(VWBlocks.VERDANT_SPRUCE_STORAGE_BOX, "Verdant Spruce Storage Box");
 
+        text.add(VWBlocks.VERIXIUM_FLUID, "Verixium Fluid");
+
         text.add("container.tales-of-the-verdant-wind.storage_box", "Storage Box");
         text.add(VWBlocks.LODESTONE_WIND_CORE, "Lodestone Wind Core");
 
@@ -86,6 +89,14 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(VWItems.SOUL_RUNESTONE_FRAGMENT_2, "Soul Runestone Fragment (TR)");
         text.add(VWItems.SOUL_RUNESTONE_FRAGMENT_3, "Soul Runestone Fragment (BL)");
         text.add(VWItems.SOUL_RUNESTONE_FRAGMENT_4, "Soul Runestone Fragment (BR)");
+        text.add(VWItems.TETHER_RUNESTONE_PLATE, "Tether Runestone Plate");
+        text.add(VWItems.GENESIS_RUNESTONE_PLATE, "Genesis Runestone Plate");
+        text.add(VWItems.HAVOC_RUNESTONE_PLATE, "Havoc Runestone Plate");
+        text.add(VWItems.EFFLORESCENCE_RUNESTONE_PLATE, "Efflorescence Runestone Plate");
+
+        // MISC BLOCKS
+        text.add(VWBlocks.FARMLAND_PLACER, "Farmland Placer");
+
 
         String SCATTERED_PAGE = "Scattered Page";
         text.add(Pages.SCATTERED_PAGE, SCATTERED_PAGE);
@@ -111,6 +122,10 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add(Pages.SP_ID_1006, SP_1006.getTitle());
 
+        text.add(Pages.SP_ID_3000, SP_3000.getTitle());
+        text.add(Pages.SP_ID_3001, SP_3001.getTitle());
+        text.add(Pages.SP_ID_3002, SP_3002.getTitle());
+
         text.add(Pages.LODESTONE_WIND_CORE_MANUAL, LODESTONE_WIND_CORE_MANUAL.getTitle());
 
 
@@ -131,6 +146,8 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(effectKey("amplified_might"), "Amplified Might");
         text.add(effectKey("bloodlust"), "Bloodlust");
         text.add(effectKey("paralyze"), "Paralyzed");
+        text.add(effectKey("wind_veil"), "Wind Veil");
+        text.add(effectKey("havoc"), "Havoc");
 
         text.add("effect.tales-of-the-verdant-wind.bloodlust.description", "Gives massive attack buff in exchange for constant damage while the effect is active");
         
@@ -163,6 +180,12 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add("death.attack.wind_core_pulse", "%1$s got incapacitated by the Wind Core's pulse");
         text.add("death.attack.wind_core_pulse.player", "%1$s got incapacitated by the Wind Core's pulse while fighting %2$s");
 
+        text.add("death.attack.havoc", "%1$s got their life drained by the effects of Havoc");
+        text.add("death.attack.havoc.player", "%1$s got their life drained by the effects of Havoc while fighting %2$s");
+
+        text.add("death.attack.tether_proxy", "%1$s got killed via proxy");
+        text.add("death.attack.tether_proxy.player", "%1$s got killed via proxy while fighting %2$s");
+
 
         text.add(VWItems.VERIXIUM_SPEAR, "Verixium Spear");
         text.add(VWItems.VERIXIUM_SWORD, "Verixium Sword");
@@ -176,6 +199,7 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(biomeKey("verdant_forest"), "Verdant Forest");
 
 
+        // SOUNDS
         text.add(VWSounds.WOLF_HOWL_A, "Distant wolf howls");
         text.add(VWSounds.WOLF_HOWL_B1, "Distant wolf howls");
         text.add(VWSounds.WOLF_HOWL_B2, "Distant wolf howls");
@@ -186,7 +210,17 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add(VWSounds.LODESTONE_WIND_CORE_AMBIENT, "Wind Core whooshes");
 
+
+
+        // KEYMAPPINGS
+        text.add(VWKeymap.TOTVW_CONFIG_SCREEN, "TOTVW Config Screen");
+
         text.add(TOTVW.MOD_ID, "Tales of the Verdant Wind");
+
+        //DEV
+        if (TOTVW.IN_DEVELOPMENT) {
+            text.add(VWItems.DevItems.ATTACHMENTS_REMOVER, "Attachments Remover");
+        }
     }
 
     private static String biomeKey(String name) {

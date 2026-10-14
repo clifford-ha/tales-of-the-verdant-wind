@@ -8,7 +8,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -56,7 +55,8 @@ public class VWBlockTags extends FabricTagsProvider.BlockTagsProvider {
                 .addOptionalTag(BlockTags.DEEPSLATE_ORE_REPLACEABLES.location())
                 .addOptionalTag(BlockTags.SAND.location())
                 .add(block(Blocks.GRAVEL))
-                .add(block(Blocks.GRASS_BLOCK));
+                .add(block(Blocks.GRASS_BLOCK))
+                .add(block(Blocks.MYCELIUM));
 
 
         getOrCreateRawBuilder(BlockTags.LEAVES)
@@ -176,7 +176,7 @@ public class VWBlockTags extends FabricTagsProvider.BlockTagsProvider {
     public static final TagKey<Block> VERDANT_MOSS_REPLACEABLE = create("verdant_moss_replaceable");
 
     private static TagKey<Block> create(String name) {
-        return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, name));
+        return TagKey.create(Registries.BLOCK, TOTVW.registerID(name));
     }
 
     private static Identifier copyFrom(String path) {
