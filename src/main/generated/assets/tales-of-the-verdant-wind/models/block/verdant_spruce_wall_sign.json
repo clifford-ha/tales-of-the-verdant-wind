@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_wall_sign",
+  "textures": {
+    "all": "tales-of-the-verdant-wind:block/verdant_spruce_sign",
+    "particle": "tales-of-the-verdant-wind:block/verdant_spruce_planks"
+  }
+}

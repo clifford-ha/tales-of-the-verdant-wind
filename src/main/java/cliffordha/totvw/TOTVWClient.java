@@ -1,19 +1,20 @@
 package cliffordha.totvw;
 
 import cliffordha.totvw.client.VWTooltips;
-import cliffordha.totvw.config.VWConfig;
+import cliffordha.totvw.client.screen.DedicatedConfigScreen;
+import cliffordha.totvw.keymapping.VWKeymap;
+import cliffordha.totvw.networking.ClientboundPackets;
 import cliffordha.totvw.particle.MightParalyzeParticle;
 import cliffordha.totvw.particle.VerixiumPowderRainParticle;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.client.VWModelLayerProvider;
 import cliffordha.totvw.particle.BenedictionTriggerParticle;
 import cliffordha.totvw.particle.VerdantBiomesEnvironmentAmbiance;
-import cliffordha.totvw.client.ClientPrefsPayload;
 import cliffordha.totvw.util.VWEffectOverlays;
 import cliffordha.totvw.util.VWColorizeTextMixin;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
@@ -32,8 +33,6 @@ import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
-import static cliffordha.totvw.registry.VWColors.setColor;
-
 public class TOTVWClient implements ClientModInitializer {
     public void onInitializeClient() {
         FluidRenderingRegistry.register(
@@ -43,7 +42,7 @@ public class TOTVWClient implements ClientModInitializer {
                         new Material(Identifier.withDefaultNamespace("block/water_still")),
                         new Material(Identifier.withDefaultNamespace("block/water_flow")),
                         new Material(Identifier.withDefaultNamespace("block/water_overlay")),
-                        BlockTintSources.constant(setColor(0x13e1a8))
+                        BlockTintSources.constant(VWColors.setColor(0x13e1a8))
                 )
         );
         BlockColorRegistry.register(
@@ -51,22 +50,25 @@ public class TOTVWClient implements ClientModInitializer {
                 VWBlocks.IRIDESCENT_GLASS,
                 VWBlocks.IRIDESCENT_GLASS_PANE
         );
-        VWColorizeTextMixin.register(
+        VWColorizeTextMixin.register(VWColors.VERDANT_WIND, List.of(
                 "enchantment.tales-of-the-verdant-wind.benediction_of_the_verdant_mountains",
-                VWColors.VERDANT_WIND
-        );
-        VWColorizeTextMixin.register(
-                "effect.tales-of-the-verdant-wind.blessing_of_the_verdant_wind",
-                VWColors.VERDANT_WIND
-        );
-        VWColorizeTextMixin.register(
+
                 "item.minecraft.tipped_arrow.effect.sacred_verdant_potion",
-                VWColors.VERDANT_WIND_MUTED
+                "item.minecraft.potion.effect.sacred_verdant_potion",
+                "item.minecraft.splash_potion.effect.sacred_verdant_potion",
+                "item.minecraft.lingering_potion.effect.sacred_verdant_potion",
+
+                "effect.tales-of-the-verdant-wind.blessing_of_the_verdant_wind",
+                "effect.tales-of-the-verdant-wind.wind_veil"
+                )
         );
-        VWColorizeTextMixin.register(
-                "effect.tales-of-the-verdant-wind.bloodlust",
-                VWColors.BLOODLUST_EFFECT
+        VWColorizeTextMixin.register(VWColors.BLOODLUST_EFFECT, List.of(
+                "effect.tales-of-the-verdant-wind.getBloodlust"
+                )
         );
+        VWColorizeTextMixin.register(VWColors.HAVOC_PARTICLE, List.of(
+                "effect.tales-of-the-verdant-wind.order_of_annihilation"
+        ));
         ParticleProviderRegistry.getInstance().register(VWParticles.BENEDICTION_TRIGGER_PARTICLE, BenedictionTriggerParticle.BenedictionParticleProvider::new);
         ParticleProviderRegistry.getInstance().register(VWParticles.VERDANT_BIOMES_ENVIRONMENT_AMBIANCE, VerdantBiomesEnvironmentAmbiance.VerdantBiomesEnvironmentAmbianceProvider::new);
         ParticleProviderRegistry.getInstance().register(VWParticles.VERIXIUM_POWDER_RAIN_PARTICLE, VerixiumPowderRainParticle.VerixiumPowderRainParticleProvider::new);
@@ -74,6 +76,7 @@ public class TOTVWClient implements ClientModInitializer {
 
         EntityRenderers.register(VWEntities.VERDANT_SPRUCE_BOAT, context -> new BoatRenderer(context, VWModelLayerProvider.VERDANT_SPRUCE_BOAT));
         EntityRenderers.register(VWEntities.VERDANT_SPRUCE_CHEST_BOAT, context -> new BoatRenderer(context, VWModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT));
+
         ModelLayerRegistry.registerModelLayer(VWModelLayerProvider.VERDANT_SPRUCE_BOAT, BoatModel::createBoatModel);
         ModelLayerRegistry.registerModelLayer(VWModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT, BoatModel::createChestBoatModel);
 
@@ -83,21 +86,17 @@ public class TOTVWClient implements ClientModInitializer {
         BlockEntityRenderers.register(VWBlockEntityTypes.SHELF, ShelfRenderer::new);
         VWEffectOverlays.register();
         VWTooltips.register();
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
-                sender.sendPacket(new ClientPrefsPayload(
-                        VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER,
-                        VWConfig.get().CLIENT_ENABLE_NOTIFIERS,
 
-                        VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD,
-                        VWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK,
-                        VWConfig.get().SERVER_ALWAYS_TRIGGER_BLESSING,
-                        VWConfig.get().SERVER_TELEPORT_AFTER_SAVE,
-                        VWConfig.get().SERVER_WOLF_TP_METHOD,
-                        VWConfig.get().SERVER_PLAYER_TP_METHOD,
-                        VWConfig.get().SERVER_WOLF_TP_ALL
-                ))
-        );
+        VWKeymap.register();
+
+        ClientboundPackets.registerPackets();
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player != null && VWKeymap.isWolfConfigKeyDown()) {
+                DedicatedConfigScreen.create();
+            }
+        });
     }
+
     private static int getRainbowColor() {
         float hue = (System.currentTimeMillis() % 4000) / 1000.0f;
         return java.awt.Color.HSBtoRGB(hue, 0.75f, 1.0f);

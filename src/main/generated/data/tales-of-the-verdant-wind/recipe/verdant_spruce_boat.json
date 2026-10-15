@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "boat",
+  "key": {
+    "#": "tales-of-the-verdant-wind:verdant_spruce_planks"
+  },
+  "pattern": [
+    "# #",
+    "###"
+  ],
+  "result": {
+    "id": "tales-of-the-verdant-wind:verdant_spruce_boat"
+  }
+}

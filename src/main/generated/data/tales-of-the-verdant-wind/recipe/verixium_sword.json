@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "verixium_weapons",
+  "key": {
+    "L": "tales-of-the-verdant-wind:verixium_ingot",
+    "X": "minecraft:stick"
+  },
+  "pattern": [
+    "L",
+    "X",
+    "X"
+  ],
+  "result": {
+    "id": "tales-of-the-verdant-wind:verixium_sword"
+  }
+}

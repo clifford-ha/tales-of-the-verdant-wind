@@ -7,6 +7,7 @@ import cliffordha.totvw.registry.VWItems;
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -22,11 +23,11 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetEnchantmentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 public class VWLootTables {
-    private static final ConstantValue ONE_ROLL = ConstantValue.exactly(1);
+    private static final Holder<ContextIntProvider> ONE_ROLL = ContextIntProviders.exactly(1);
 
     public static final ResourceKey<LootTable> VERDANT_CAMP_VALUABLES = createFromPath("chests/verdant_camp_valuables");
     public static final ResourceKey<LootTable> VERIXIUM_PILLAR = createFromPath("chests/verixium_pillar");
@@ -34,10 +35,25 @@ public class VWLootTables {
 
     private static void modifyLootTables(ResourceKey<LootTable> key, FabricLootTableBuilder builder, LootTableSource source, HolderLookup.Provider provider) {
         if (BuiltInLootTables.ANCIENT_CITY.equals(key) || BuiltInLootTables.BURIED_TREASURE.equals(key)) {
-            LootPool.Builder benedictionEnchantment = addEnchantedBookChance(provider, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS, 1, 0.07f);
+            LootPool.Builder benedictionEnchantment = addEnchantedBookChance(provider, VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS, 1, 0.05f);
             LootPool.Builder page1005 = addItemChance(VWItems.Pages.SP_ID_1005,1, 0.07f);
+            LootPool.Builder verixiumTemplate = addItemChance(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE,1, 0.07f);
 
-            builder.pool(benedictionEnchantment.build()).pool(page1005.build());
+            builder.pool(benedictionEnchantment.build())
+                    .pool(page1005.build())
+                    .pool(verixiumTemplate.build());
+        }
+        if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
+            LootPool.Builder verixiumArmor = addItemChance(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE,1, 0.6f);
+            builder.pool(verixiumArmor.build());
+        }
+        if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_RARE.equals(key)) {
+            LootPool.Builder powder = addItemChance(VWItems.VERIXIUM_POWDER, 3, 0.1f);
+            builder.pool(powder.build());
+        }
+        if (BuiltInLootTables.ARMORER_GIFT.equals(key)) {
+            LootPool.Builder verixiumWolfArmor = addItemChance(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE,1, 0.7f);
+            builder.pool(verixiumWolfArmor.build());
         }
         if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE.equals(key)) {
             LootPool.Builder witheringEnch = addEnchantedBookChance(provider, VWEnchantments.WOLF_EFFECT_WITHERING, 1, 3, 0.1f);
@@ -45,14 +61,6 @@ public class VWLootTables {
             LootPool.Builder mightEnch = addEnchantedBookChance(provider, VWEnchantments.WOLF_EFFECT_MIGHT, 3, 5, 0.1f);
 
             builder.pool(witheringEnch.build()).pool(poisoningEnch.build()).pool(mightEnch.build());
-        }
-        if (BuiltInLootTables.BABY_VILLAGER_GIFT.equals(key)) {
-            LootPool.Builder verixiumWolfArmor = LootPool.lootPool()
-                    .setRolls(ONE_ROLL)
-                    .when(LootItemRandomChanceCondition.randomChance(0.12f))
-                    .add(LootItem.lootTableItem(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE).apply(new SetEnchantmentsFunction.Builder()))
-                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)).build());
-            builder.pool(verixiumWolfArmor.build());
         }
         if (BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_UNIQUE.equals(key)) {
             LootPool.Builder lodestoneWindCore = addBlockChance(VWBlocks.LODESTONE_WIND_CORE, 1, 0.12f);
@@ -70,6 +78,19 @@ public class VWLootTables {
 
             builder.pool(page1001.build()).pool(page1002.build());
         }
+        if (BuiltInLootTables.END_CITY_TREASURE.equals(key)) {
+            LootPool.Builder genesisRunestone = addItemChance(VWItems.GENESIS_RUNESTONE_PLATE,1, 0.07f);
+            builder.pool(genesisRunestone.build());
+        }
+        if (BuiltInLootTables.BASTION_TREASURE.equals(key)) {
+            LootPool.Builder havocRunestone = addItemChance(VWItems.HAVOC_RUNESTONE_PLATE,1, 0.33f);
+            builder.pool(havocRunestone.build());
+        }
+        if (BuiltInLootTables.DESERT_PYRAMID.equals(key)) {
+            LootPool.Builder efflorescenceRunestone = addItemChance(VWItems.EFFLORESCENCE_RUNESTONE_PLATE,1, 0.24f);
+            builder.pool(efflorescenceRunestone.build());
+        }
+
 
         if (VERIXIUM_PILLAR.equals(key)) {
             LootPool.Builder soulRunestoneFragment1 = addItemChance(VWItems.SOUL_RUNESTONE_FRAGMENT_1,1, 0.33f);
@@ -94,30 +115,30 @@ public class VWLootTables {
         return LootPool.lootPool()
                 .setRolls(ONE_ROLL)
                 .when(LootItemRandomChanceCondition.randomChance(chance))
-                .add(LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(ConstantValue.exactly(count))).build());
+                .add(LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(count))).build());
     }
     private static LootPool.Builder addBlockChance(Block block, int count, float chance) {
         return LootPool.lootPool()
                 .setRolls(ONE_ROLL)
                 .when(LootItemRandomChanceCondition.randomChance(chance))
                 .add(LootItem.lootTableItem(block)
-                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(count))).build());
+                .apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(count))).build());
     }
     private static LootPool.Builder addEnchantedBookChance(HolderLookup.Provider provider, ResourceKey<Enchantment> ench, int lvl, float chance) {
         return LootPool.lootPool()
                 .setRolls(ONE_ROLL)
                 .when(LootItemRandomChanceCondition.randomChance(chance))
                 .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK).apply(new SetEnchantmentsFunction.Builder()
-                        .withEnchantment(provider.getOrThrow(ench), ConstantValue.exactly(lvl)))
-                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))).build());
+                        .withEnchantment(provider.getOrThrow(ench), ContextIntProviders.exactly(lvl)))
+                .apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(1))).build());
     }
     private static LootPool.Builder addEnchantedBookChance(HolderLookup.Provider provider, ResourceKey<Enchantment> ench, int lvlA, int lvlB, float chance) {
         return LootPool.lootPool()
                 .setRolls(ONE_ROLL)
                 .when(LootItemRandomChanceCondition.randomChance(chance))
                 .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK).apply(new SetEnchantmentsFunction.Builder()
-                        .withEnchantment(provider.getOrThrow(ench), UniformGenerator.between(lvlA, lvlB)))
-                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))).build());
+                        .withEnchantment(provider.getOrThrow(ench), ContextIntProviders.between(lvlA, lvlB)))
+                .apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(1))).build());
     }
 
     public static void registerModifiers() {

@@ -15,15 +15,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static cliffordha.totvw.util.VWUtil.wolfEnchantmentLVL;
-
 @Mixin(PowderSnowBlock.class)
 public class PowderSnowBlockMixin {
 
     @Inject(method = "entityInside", at = @At("HEAD"), cancellable = true)
     private static void breakUponContact(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise, CallbackInfo ci) {
         if (entity instanceof Wolf wolf) {
-            int hasIgnition = wolfEnchantmentLVL(wolf, VWEnchantments.WOLF_EFFECT_IGNITION);
+            int hasIgnition = VWEnchantments.getIgnition(wolf);
             if (hasIgnition > 0) {
                 boolean destroyBlock = level.getRandom().nextFloat() < 0.03f && level.getGameTime() % 60 == 0;
                 if (hasIgnition > 2 && destroyBlock) {

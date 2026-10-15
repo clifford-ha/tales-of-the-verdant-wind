@@ -1,0 +1,21 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.tales-of-the-verdant-wind.wolf_effect_gnawing"
+  },
+  "max_cost": {
+    "base": 147,
+    "per_level_above_first": 33
+  },
+  "max_level": 2,
+  "min_cost": {
+    "base": 33,
+    "per_level_above_first": 0
+  },
+  "primary_items": "#tales-of-the-verdant-wind:wolf_armor_enchantable",
+  "slots": [
+    "body"
+  ],
+  "supported_items": "#tales-of-the-verdant-wind:wolf_armor_enchantable",
+  "weight": 2
+}

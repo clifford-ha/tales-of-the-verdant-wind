@@ -13,10 +13,9 @@
     }
   },
   "display": {
-    "background": "tales-of-the-verdant-wind:tastes_like_ink",
     "description": {
       "color": "#247D66",
-      "text": "Fill a bucked with Verixium fluid"
+      "text": "Fill a bucket with Verixium fluid"
     },
     "icon": {
       "id": "tales-of-the-verdant-wind:verixium_fluid_bucket"

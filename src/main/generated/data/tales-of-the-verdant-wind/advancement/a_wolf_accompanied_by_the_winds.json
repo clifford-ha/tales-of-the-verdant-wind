@@ -3,15 +3,13 @@
   "criteria": {
     "a_wolf_accompanied_by_the_winds": {
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "minecraft:entity_type": "minecraft:wolf"
-            }
+        "entity": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "minecraft:wolf"
           }
-        ],
+        },
         "item": {
           "items": "tales-of-the-verdant-wind:verixium_wolf_armor"
         }
@@ -20,7 +18,6 @@
     }
   },
   "display": {
-    "background": "tales-of-the-verdant-wind:a_wolf_accompanied_by_the_winds",
     "description": {
       "color": "#247D66",
       "text": "Give your companion Verixium armor"

@@ -12,6 +12,8 @@ public class VWColors {
     public static final int BLOODLUST_EFFECT = 0xFF2E4D;
     public static final int BLOODLUST_EFFECT_MUTED = 0xA82F41;
 
+    public static final int HAVOC_PARTICLE = 0xFF2236;
+
     public static final int PARALYZE = 0x365258;
     public static final int PARALYZE_MUTED = 0x111d23;
 
@@ -20,6 +22,12 @@ public class VWColors {
 
     public static final int DEFAULT = 0xDCFAFA;
     public static final int DEFAULT_MUTED = 0x90A4AE;
+
+    public static final int RUNESTONE_GENESIS = 0x20DFDF;
+    public static final int RUNESTONE_SOUL = 0x5BE5BC;
+    public static final int RUNESTONE_EFFLORESCENCE = 0xF9D2D2;
+    public static final int RUNESTONE_TETHER = 0x207FDF;
+    public static final int RUNESTONE_HAVOC = 0x9D2828;
 
     public static final int INDICATOR_20 = 0xb93636;
     public static final int INDICATOR_40 = 0xB97232;
