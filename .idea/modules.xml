@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/tales-of-the-verdant-wind.main.iml" filepath="$PROJECT_DIR$/.idea/modules/tales-of-the-verdant-wind.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/tales-of-the-verdant-wind.test.iml" filepath="$PROJECT_DIR$/.idea/modules/tales-of-the-verdant-wind.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/totvw-26.2.iml" filepath="$PROJECT_DIR$/totvw-26.2.iml" />
     </modules>
   </component>
 </project>
