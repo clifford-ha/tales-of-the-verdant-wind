@@ -61,7 +61,12 @@ public class VWCreativeTabs {
                 output.accept(VWItems.VERIXIUM_FLUID_BUCKET);
                 output.accept(VWItems.VERIXIUM_PAPER);
                 output.accept(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE);
+
+                output.accept(VWItems.GENESIS_RUNESTONE_PLATE);
+                output.accept(VWItems.EFFLORESCENCE_RUNESTONE_PLATE);
                 output.accept(VWItems.SOUL_RUNESTONE_PLATE);
+                output.accept(VWItems.TETHER_RUNESTONE_PLATE);
+                output.accept(VWItems.HAVOC_RUNESTONE_PLATE);
 
                 output.accept(VWItems.VERIXIUM_HELMET);
                 output.accept(VWItems.VERIXIUM_CHESTPLATE);
@@ -95,6 +100,10 @@ public class VWCreativeTabs {
                     output.accept(Pages.PLAYER_STATS);
                     output.accept(Pages.SP_ID_TEST);
                     output.accept(Pages.SP_ID_1000);
+
+                    output.accept(Pages.SP_ID_3000);
+                    output.accept(Pages.SP_ID_3001);
+                    output.accept(Pages.SP_ID_3002);
                 }
                 output.accept(Pages.ENCHANTMENTS_HANDBOOK);
                 output.accept(Pages.EFFECTS_HANDBOOK);

@@ -3,6 +3,7 @@
     "count": 12.0,
     "id": "minecraft:wind_charge"
   },
+  "double_trade_price_enchantments": [],
   "gives": {
     "id": "tales-of-the-verdant-wind:verixium_armor_upgrade_template"
   },
