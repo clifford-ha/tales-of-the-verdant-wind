@@ -18,7 +18,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.List;
@@ -45,6 +47,9 @@ public class VWModelProvider extends FabricModelProvider {
                 VWBlocks.VERDANT_MOSS_BLOCK,
                 VWBlocks.VERIXIUM_POWDER_BLOCK
         ));
+
+        block.createTrivialCube(VWBlocks.AIR_PLACEHOLDER);
+        block.copyModel(VWBlocks.VERDANT_MOSS_BLOCK, VWBlocks.FARMLAND_PLACER);
 
         block.createGlassBlocks(VWBlocks.IRIDESCENT_GLASS, VWBlocks.IRIDESCENT_GLASS_PANE);
 
@@ -131,7 +136,12 @@ public class VWModelProvider extends FabricModelProvider {
                 VWItems.SOUL_RUNESTONE_FRAGMENT_1,
                 VWItems.SOUL_RUNESTONE_FRAGMENT_2,
                 VWItems.SOUL_RUNESTONE_FRAGMENT_3,
-                VWItems.SOUL_RUNESTONE_FRAGMENT_4
+                VWItems.SOUL_RUNESTONE_FRAGMENT_4,
+
+                VWItems.TETHER_RUNESTONE_PLATE,
+                VWItems.GENESIS_RUNESTONE_PLATE,
+                VWItems.HAVOC_RUNESTONE_PLATE,
+                VWItems.EFFLORESCENCE_RUNESTONE_PLATE
         );
 
         add(item, ModelTemplates.FLAT_HANDHELD_ITEM,
@@ -151,6 +161,12 @@ public class VWModelProvider extends FabricModelProvider {
                 Pages.EFFECTS_HANDBOOK,
                 Pages.ITEMS_HANDBOOK,
                 Pages.FEATURES_HANDBOOK
+        );
+
+        addCopy(item, ModelTemplates.FLAT_ITEM, Items.BOOK,
+                Pages.SP_ID_3000,
+                Pages.SP_ID_3001,
+                Pages.SP_ID_3002
         );
 
         addCopy(item, ModelTemplates.FLAT_ITEM, Pages.SCATTERED_PAGE,
@@ -177,6 +193,10 @@ public class VWModelProvider extends FabricModelProvider {
 
                 Pages.SP_ID_TEST
         );
+
+        if (TOTVW.IN_DEVELOPMENT) {
+            item.generateFlatItem(VWItems.DevItems.ATTACHMENTS_REMOVER, Pages.SCATTERED_PAGE, ModelTemplates.FLAT_ITEM);
+        }
     }
 
     @Override

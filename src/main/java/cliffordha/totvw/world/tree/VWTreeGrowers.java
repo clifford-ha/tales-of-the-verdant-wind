@@ -8,5 +8,8 @@ import java.util.Optional;
 
 public class VWTreeGrowers {
     public static final TreeGrower VERDANT = new TreeGrower(TOTVW.MOD_ID + ":verdant",
-            Optional.of(VWConfiguredFeatures.ANCIENT_VERDANT_SPRUCE_TREE_CONFIGURED_KEY), Optional.of(VWConfiguredFeatures.VERDANT_SPRUCE_TREE_CONFIGURED_KEY), Optional.empty());
+            Optional.of(VWConfiguredFeatures.ANCIENT_VERDANT_SPRUCE_TREE_CONFIGURED_KEY),
+            Optional.of(VWConfiguredFeatures.VERDANT_SPRUCE_TREE_CONFIGURED_KEY),
+            Optional.empty()
+    );
 }

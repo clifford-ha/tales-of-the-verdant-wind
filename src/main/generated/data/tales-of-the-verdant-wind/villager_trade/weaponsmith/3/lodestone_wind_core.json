@@ -3,6 +3,7 @@
     "count": 3.0,
     "id": "tales-of-the-verdant-wind:verixium_powder_block"
   },
+  "double_trade_price_enchantments": [],
   "gives": {
     "id": "tales-of-the-verdant-wind:lodestone_wind_core"
   },
@@ -11,5 +12,5 @@
     "count": 50.0,
     "id": "minecraft:emerald"
   },
-  "xp": 200.0
+  "xp": 64.0
 }

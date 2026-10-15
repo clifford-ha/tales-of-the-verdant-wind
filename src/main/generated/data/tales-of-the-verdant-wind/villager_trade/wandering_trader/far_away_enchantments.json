@@ -3,6 +3,7 @@
     "count": 2.0,
     "id": "tales-of-the-verdant-wind:verixium_chunk"
   },
+  "double_trade_price_enchantments": [],
   "given_item_modifiers": [
     {
       "function": "minecraft:enchant_randomly",

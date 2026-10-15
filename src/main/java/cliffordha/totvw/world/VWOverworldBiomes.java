@@ -6,6 +6,7 @@ import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.Carvers;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.attribute.*;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-
 
 public class VWOverworldBiomes {
         public static Biome verdantMountains(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
@@ -31,7 +31,12 @@ public class VWOverworldBiomes {
             spawner.addSpawn(MobCategory.MONSTER, 10, new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 2, 2));
             spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 2, 2));
 
+            spawner.addSpawn(MobCategory.WATER_AMBIENT, 1, new MobSpawnSettings.SpawnerData(EntityTypes.TROPICAL_FISH, 1, 1));
+
+            spawner.build();
+
             addVerdantDefaults(biome);
+            biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_FARMLANDS_PATCH_KEY);
             biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_PILLARS_KEY);
             biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_SPRUCE_TREE_LOWER_KEY);
 
@@ -68,7 +73,13 @@ public class VWOverworldBiomes {
         spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 2, 2));
         spawner.addSpawn(MobCategory.MONSTER, 10, new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 2, 2));
 
+        spawner.addSpawn(MobCategory.WATER_AMBIENT, 1, new MobSpawnSettings.SpawnerData(EntityTypes.TROPICAL_FISH, 1, 1));
+        spawner.addSpawn(MobCategory.UNDERGROUND_WATER_CREATURE, 1, new MobSpawnSettings.SpawnerData(EntityTypes.NAUTILUS, 1, 1));
+
+        spawner.build();
+
         addVerdantDefaults(biome);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_FARMLANDS_DISK_KEY);
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.ANCIENT_VERDANT_SPRUCE_TREE_KEY);
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VWPlacedFeatures.VERDANT_SPRUCE_BUSH_TREE_KEY);
 
@@ -97,7 +108,7 @@ public class VWOverworldBiomes {
     }
 
 
-    private static void addVerdantDefaults(BiomeGenerationSettings.Builder biome) {
+    public static void addVerdantDefaults(BiomeGenerationSettings.Builder biome) {
         biome.addCarver(Carvers.CAVE);
         biome.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
         biome.addCarver(Carvers.CANYON);

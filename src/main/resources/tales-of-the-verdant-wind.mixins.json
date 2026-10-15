@@ -5,7 +5,9 @@
   "mixins": [
     "BedBlockMixin",
     "BerryBushBlockMixin",
+    "CropsBlockMixin",
     "IronGolemEntityMixin",
+    "ItemsMixin",
     "PlayerEntityMixin",
     "PowderSnowBlockMixin",
     "TamableAnimalMixin",

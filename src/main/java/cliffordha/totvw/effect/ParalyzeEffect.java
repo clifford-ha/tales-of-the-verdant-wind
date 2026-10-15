@@ -27,7 +27,7 @@ public class ParalyzeEffect extends MobEffect {
         super(MobEffectCategory.NEUTRAL, VWColors.PARALYZE);
     }
 
-    private final List<Holder<Attribute>> PARALYZE_ATTRIBUTES = List.of(
+    private static final List<Holder<Attribute>> PARALYZE_ATTRIBUTES = List.of(
             Attributes.ARMOR,
             Attributes.ARMOR_TOUGHNESS,
             Attributes.KNOCKBACK_RESISTANCE,

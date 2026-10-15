@@ -3,6 +3,7 @@
     "count": 10.0,
     "id": "minecraft:iron_ingot"
   },
+  "double_trade_price_enchantments": [],
   "given_item_modifiers": [
     {
       "function": "minecraft:enchant_randomly",
