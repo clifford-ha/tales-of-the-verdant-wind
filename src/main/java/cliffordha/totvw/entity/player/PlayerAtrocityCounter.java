@@ -4,6 +4,8 @@ import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
+import cliffordha.totvw.util.VWUtil;
+
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -15,13 +17,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import static cliffordha.totvw.util.VWUtil.sendToChat;
-import static cliffordha.totvw.util.VWUtil.setDifficultyBasedValue;
 
 public class PlayerAtrocityCounter {
     public static void processAtrocity(Player player, LivingEntity victim, boolean death) {
         Level level = player.level();
 
-        float multiplier = setDifficultyBasedValue(level, 0.5f, 0.75f, 1.0f, 2.0f);
+        float multiplier = VWUtil.setDifficultyBasedValue(level, 0.5f, 0.75f, 1.0f, 2.0f);
         int maybeAddMore = level.getRandom().nextIntBetweenInclusive(0, 3);
         int deduction = Mth.ceil(3 * multiplier) + maybeAddMore;
         int finalDeduction = death ? deduction * 4 : deduction;
@@ -49,9 +50,9 @@ public class PlayerAtrocityCounter {
     private static void showAtrocityCounter(Player player, LivingEntity victim, int count) {
         if (!player.getAttachedOrElse(PlayerPrefs.SHOW_ATROCITY_COUNTER, VWConfig.get().CLIENT_SHOW_ATROCITY_COUNTER)) return;
         if (victim instanceof Wolf) {
-            sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Wolf atrocity count: " + count);
+            sendToChat(player, VWColors.BLOODLUST_MUTED, true, "Wolf atrocity count: " + count);
         } else if (victim instanceof Villager || victim instanceof WanderingTrader) {
-            sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, true, "Villager atrocity count: " + count);
+            sendToChat(player, VWColors.BLOODLUST_MUTED, true, "Villager atrocity count: " + count);
         }
     }
 }

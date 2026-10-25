@@ -4,6 +4,7 @@ import cliffordha.totvw.registry.attachments.AttachmentUtil;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
+import cliffordha.totvw.worldgen.dimension.VWDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import oshi.util.tuples.Pair;
@@ -24,9 +25,11 @@ public record WolfStats(
         String isVerdant,
         String benedictionStack,
         String attackCycle,
-        String trySavePoints,
+        int trySavePoints,
+        String respawnDimension,
         String returnPoint,
-        String runestoneType,
+        Runestone runestoneType,
+        boolean hasArcticAffliction,
 
         List<Pair<String, UUID>> trustedPlayers,
         List<Pair<String, UUID>> aggressors
@@ -43,8 +46,6 @@ public record WolfStats(
         String IS_VERDANT = wolf.getAttachedOrElse(WolfAttachment.IS_VERDANT_TYPE, false) + "";
         String BENEDICTION_STACK = wolf.getAttachedOrElse(WolfAttachment.BENEDICTION, 0) + "";
         String ATTACK_CYCLE = wolf.getAttachedOrElse(WolfAttachment.ATTACK_CYCLE, 0) + "";
-        String TRY_SAVE_POINTS = wolf.getAttachedOrElse(WolfAttachment.TRY_SAVE_POINTS, 0) + "";
-        String RUNESTONE_TYPE = wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY).getName();
         BlockPos returnPoint = wolf.getAttachedOrElse(WolfAttachment.RESPAWN_POINT, BlockPos.ZERO);
         String RETURN_POINT = returnPoint != BlockPos.ZERO ? returnPoint.getX() + ", " + returnPoint.getY() + ", " + returnPoint.getZ() : "None";
         return new WolfStats(
@@ -60,9 +61,11 @@ public record WolfStats(
                 IS_VERDANT,
                 BENEDICTION_STACK,
                 ATTACK_CYCLE,
-                TRY_SAVE_POINTS,
+                wolf.getAttachedOrElse(WolfAttachment.TRY_SAVE_POINTS, 0),
+                String.valueOf(wolf.getAttachedOrElse(WolfAttachment.RESPAWN_DIMENSION, VWDimensions.NONE).identifier()),
                 RETURN_POINT,
-                RUNESTONE_TYPE,
+                wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY),
+                wolf.getAttachedOrElse(VWAttachments.ARCTIC_AFFLICTION, 0) > 0,
 
                 WolfAttachment.getTrustedPlayers(wolf),
                 WolfAttachment.getAggressors(wolf)

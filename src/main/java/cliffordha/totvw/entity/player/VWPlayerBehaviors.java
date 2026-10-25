@@ -11,6 +11,7 @@ import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.tag.VWBiomeTags;
+import cliffordha.totvw.util.VWTimer;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -34,7 +35,6 @@ import java.util.List;
 
 import static cliffordha.totvw.entity.skill.SkillManager.*;
 import static cliffordha.totvw.util.VWUtil.*;
-import static cliffordha.totvw.util.VWUtil.TimeUtil.*;
 
 public class VWPlayerBehaviors {
     private static final List<PlayerBehaviorRule> ON_DAMAGE_RULES = new ArrayList<>();
@@ -139,7 +139,7 @@ public class VWPlayerBehaviors {
     public static void runWolfBlessing(LivingEntity player, Wolf wolf, ServerLevel level) {
         float triggerHeal;
         if (player instanceof Player aPlayer && (!aPlayer.isCreative() || !aPlayer.isSpectator())) {
-            triggerHeal = triggerHeal(player, wolf);
+            triggerHeal = VerdantWindBlessing.triggerHeal(player, wolf);
         } else {
             triggerHeal = 999.0f;
         }
@@ -147,8 +147,8 @@ public class VWPlayerBehaviors {
         VerdantWindBlessing.applyBenedictionEffects(wolf,  false);
         sendToChat(player, VWColors.VERDANT_WIND, true, "You have granted §nVerdant Wind's Blessing§r to " + wolfName(wolf));
 
-        sendParticles(VWParticles.BENEDICTION_TRIGGER_PARTICLE, level, wolf.blockPosition(), 6, 0.5);
-        verdantBlessingAfterEffects(level, player);
+        sendParticles(VWParticles.BENEDICTION_TRIGGER, level, wolf.blockPosition(), 6, 0.5);
+        VerdantWindBlessing.verdantBlessingAfterEffects(level, player);
     }
     private static void runEnchantmentsOnDamage(Player player, ServerLevel level) {
         var victim = CURRENT_VICTIM.get();
@@ -161,7 +161,7 @@ public class VWPlayerBehaviors {
         boolean inNether = isInBiome(player, BiomeTags.IS_NETHER);
 
         if (BENEDICTION_ACTIVE && inVerdantBiomes) {
-            victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, sec(3), 0));
+            victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 3, 0));
         }
 
         if (FIRE_PROTECTION > 2 && inNether && !victim.fireImmune()) {

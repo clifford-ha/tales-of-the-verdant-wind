@@ -2,7 +2,7 @@ package cliffordha.totvw.item.scatteredpages.handbooks;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
-import static cliffordha.totvw.util.VWUtil.TextUtil.*;
+import static cliffordha.totvw.util.VWTextUtil.*;
 
 public class VWFeaturesHandbook {
     private static final String descAttackDMG = "Attack Damage";
@@ -100,7 +100,7 @@ public class VWFeaturesHandbook {
     public static String[] FEATURES_HANDBOOK_CONTENTS() {
         return addPage(
                 fText(BOLD, "INTRODUCTION") + nextLine
-                        + "A list of new features and mechanics that aren't introduced in other handbooks."
+                        + "A armorData of new features and mechanics that aren't introduced in other handbooks."
                         + addSeparator
                         + revivalByProxy()
                         + addSeparator

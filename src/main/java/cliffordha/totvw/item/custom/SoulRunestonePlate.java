@@ -4,6 +4,7 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 
+import cliffordha.totvw.util.VWTextUtil;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
@@ -29,7 +30,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static cliffordha.totvw.util.VWUtil.*;
 
@@ -80,7 +80,7 @@ public class SoulRunestonePlate extends Item {
         } else {
             if (player.getAttachedOrElse(PlayerAttachment.WOLF_ATROCITY_COUNT, 0) > 10) {
                 if (level.isClientSide()) {
-                    sendToChat(player, VWColors.BLOODLUST_EFFECT_MUTED, false, "The runestone rejected your summoning request...");
+                    sendToChat(player, VWColors.BLOODLUST_MUTED, false, "The runestone rejected your summoning request...");
                 }
 
 
@@ -100,12 +100,7 @@ public class SoulRunestonePlate extends Item {
                 if (nameList.size() >= 2 && pass == nameList.size()) {
                     names = souls.size() + " wolves";
                 } else {
-                    if (nameList.size() > 2) {
-                        names = nameList.stream().limit(nameList.size() - 1).collect(Collectors.joining(", ")) + ", and " + nameList.getLast();
-                    } else {
-                        names = nameList.stream().reduce((a, b) -> a + " and " + b).orElse("");
-                        if (nameList.size() == 1) names = nameList.getFirst();
-                    }
+                    names = VWTextUtil.iterateList(nameList, false);
                 }
 
                 String message = nameList.size() > 5 ? "Summoned " + souls.size() + " wolves." : "Summoned " + names + ".";
@@ -138,7 +133,7 @@ public class SoulRunestonePlate extends Item {
                 }
                 wolf.removeAllEffects();
                 wolf.teleportToAroundBlockPos(player.blockPosition());
-                addHiddenEffect(wolf, VWEffects.WIND_VEIL, 20 * 3, 0);
+                addHiddenEffect(wolf, VWEffects.WIND_VEIL, 3, 0);
 
                 pass++;
 
@@ -151,7 +146,7 @@ public class SoulRunestonePlate extends Item {
             player.removeAttached(WOLF_SOULS);
         } else {
             if (catcher.isEmpty()) {
-                TOTVW.sendWarning("An error getMight have occured while " + player.getPlainTextName() + " tried to summon wolves using the Soul Runestone Plate.");
+                TOTVW.sendWarning("Detected an empty catcher! An error might have occurred while " + player.getPlainTextName() + " tried to summon wolves using the Soul Runestone Plate.");
                 player.removeAttached(WOLF_SOULS);
             } else {
                 player.setAttached(WOLF_SOULS, catcher);
@@ -168,7 +163,7 @@ public class SoulRunestonePlate extends Item {
         for (int i = 0; i < 16; i++) {
             double xz = random.nextIntBetweenInclusive(0, 2);
             double y = random.nextIntBetweenInclusive(0, 3);
-            level.sendParticles(VWParticles.VERIXIUM_POWDER_RAIN_PARTICLE, player.getX(), player.getY(), player.getZ(), 3, xz, y, xz, 0);
+            level.sendParticles(VWParticles.VERIXIUM_POWDER_RAIN, player.getX(), player.getY(), player.getZ(), 3, xz, y, xz, 0);
         }
         level.playSound(null, player.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS);
 
@@ -176,7 +171,7 @@ public class SoulRunestonePlate extends Item {
         boolean ownerHasBenediction = VWEnchantments.getBenediction(player);
         int getLimit = ownerHasBenediction ? 12 : 5;
         if (isSummoned) {
-            if (souls > getLimit) addOrStackEffect(player, MobEffects.WEAKNESS, 60 * souls, 1, true);
+            if (souls > getLimit) addOrStackEffect(player, MobEffects.WEAKNESS, 3 * souls, 1, true);
         } else {
             if (souls > 3 && random.nextFloat() < 0.6f) {
                 int multiplier = souls - 3;

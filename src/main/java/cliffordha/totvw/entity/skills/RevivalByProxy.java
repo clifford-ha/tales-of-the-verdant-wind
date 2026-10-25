@@ -6,13 +6,15 @@ import cliffordha.totvw.item.custom.SoulRunestonePlate;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
-
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
+import cliffordha.totvw.worldgen.dimension.VWDimensions;
+
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
@@ -26,6 +28,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.storage.LevelData;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +57,9 @@ public class RevivalByProxy {
             if (!wolves.isEmpty()) {
                 List<Wolf> wolfWithStack = wolves.stream().filter(wolf -> wolf.getAttachedOrElse(BENEDICTION_STACK, 0) > 1).toList();
                 if (!wolfWithStack.isEmpty()) {
+                    if (damageSource.is(DamageTypes.FELL_OUT_OF_WORLD)) {
+                        validateLocationBeforeRevival(level, player);
+                    }
                     Wolf mainWolf = wolfWithStack.getFirst();
                     getTeleportToWolf(player, mainWolf, false, mainWolf);
 
@@ -72,7 +80,7 @@ public class RevivalByProxy {
                     String name = mainWolf.getPlainTextName();
                     int STACK_AFTER = mainWolf.getAttachedOrElse(BENEDICTION_STACK, 0);
                     if (STACK_AFTER == 0) {
-                        sendToChat(mainWolf, VWColors.BLOODLUST_EFFECT_MUTED, name + " used up all Benediction stacks");
+                        sendToChat(mainWolf, VWColors.BLOODLUST_MUTED, name + " used up all Benediction stacks");
                     } else {
                         sendToChat(mainWolf, VWColors.VERDANT_WIND_MUTED, "A Benediction stack has been shared by " + name + ". " + STACK_AFTER + " remaining.");
                     }
@@ -110,7 +118,7 @@ public class RevivalByProxy {
     private static void getTeleportToWolf(Player player, Wolf wolf, boolean tpAll, Wolf mainWolf) {
         if (!player.canTeleport(player.level(), wolf.level())) return;
         if (!player.getAttachedOrElse(PlayerPrefs.BENEDICTION_TELEPORT_AFTER_SAVE, VWConfig.get().SERVER_TELEPORT_AFTER_SAVE)) return;
-        if (player.distanceTo(wolf) < 16) return;
+        if (player.distanceTo(wolf) < 12) return;
 
         BlockPos wolfPos = wolf.blockPosition();
         BlockPos playerPos = player.blockPosition();
@@ -167,6 +175,9 @@ public class RevivalByProxy {
 
         float chance = 0.05f + ((souls.size() - 3) * 0.05f);
         boolean checkDMGSource= source.is(DamageTypes.FELL_OUT_OF_WORLD) || source.is(DamageTypes.GENERIC_KILL);
+        if (source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
+            validateLocationBeforeRevival(level, player);
+        }
         if (!checkDMGSource && souls.size() > 3 && random.nextFloat() < (0.33f + chance)) {
             SoulRunestonePlate.processAndSummonSouls(player, level, souls);
 
@@ -193,5 +204,48 @@ public class RevivalByProxy {
         }
         VerdantWindBlessing.applyBenedictionEffects(player, true);
         level.broadcastEntityEvent(player, (byte) 35);
+    }
+    private static void validateLocationBeforeRevival(ServerLevel level, Player player) {
+        if (player.blockPosition().getY() > 0) return;
+
+        ResourceKey<Level> dimension = player.getAttachedOrElse(PlayerAttachment.RESPAWN_DIMENSION, VWDimensions.NONE);
+        ServerLevel serverLevel = level.getServer().getLevel(dimension);
+        BlockPos pos = player.getAttachedOrElse(PlayerAttachment.RESPAWN_POINT, new BlockPos(0, 0, 0));
+
+        if (!dimension.equals(VWDimensions.NONE)) {
+            if (serverLevel == null && pos.equals(new BlockPos(0, 0, 0))) return;
+            player.teleport(
+                    new TeleportTransition(
+                            serverLevel,
+                            Vec3.atBottomCenterOf(pos),
+                            Vec3.ZERO,
+                            serverLevel.getRespawnData().yaw(),
+                            serverLevel.getRespawnData().pitch(),
+                            TeleportTransition.PLACE_PORTAL_TICKET.then(TeleportTransition.PLAY_PORTAL_SOUND)
+                    )
+            );
+            sendToChat(player, VWColors.BLOODLUST_MUTED, "Player is out of bounds! Attempted to return to last bed location.");
+        } else {
+
+            serverLevel = level.getServer().getLevel(player.level().dimension());
+            if (serverLevel == null) {
+                TOTVW.sendError("Failed to validate player location at " + player.blockPosition() + " in dimension " + player.level().dimension() + ".");
+                return;
+            }
+            LevelData.RespawnData data = serverLevel.getRespawnData();
+            pos = serverLevel.getRespawnData().pos();
+
+            player.teleport(
+                    new TeleportTransition(
+                            serverLevel,
+                            Vec3.atBottomCenterOf(pos),
+                            Vec3.ZERO,
+                            data.yaw(),
+                            data.pitch(),
+                            TeleportTransition.PLACE_PORTAL_TICKET.then(TeleportTransition.PLAY_PORTAL_SOUND)
+                    )
+            );
+            sendToChat(player, VWColors.BLOODLUST_MUTED, "Player is out of bounds! Attempted to return to a valid location.");
+        }
     }
 }

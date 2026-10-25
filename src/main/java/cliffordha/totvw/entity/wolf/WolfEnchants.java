@@ -3,7 +3,7 @@ package cliffordha.totvw.entity.wolf;
 import cliffordha.totvw.registry.VWEnchantments;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 
-//Yes, I know I am lazy...
+//Yes, I know I'm lazy af :)
 public record WolfEnchants(
         boolean hasBenediction,
         boolean hasEnhancementKit,
@@ -16,6 +16,7 @@ public record WolfEnchants(
         int getMight,
         int getOozing,
         int getGnawing,
+        int getArcticWinds,
 
         //from vanilla
         int getProtection,
@@ -24,7 +25,7 @@ public record WolfEnchants(
         int getBlastProtection,
         int getMending
 ) {
-    static WolfEnchants of(Wolf wolf) {
+    public static WolfEnchants of(Wolf wolf) {
         return new WolfEnchants(
                 VWEnchantments.getBenediction(wolf),
                 VWEnchantments.getEnhancementKit(wolf),
@@ -37,6 +38,7 @@ public record WolfEnchants(
                 VWEnchantments.getMight(wolf),
                 VWEnchantments.getOozing(wolf),
                 VWEnchantments.getGnawing(wolf),
+                VWEnchantments.getArcticWinds(wolf),
 
                 VWEnchantments.getProtection(wolf),
                 VWEnchantments.getFireProtection(wolf),
@@ -46,43 +48,46 @@ public record WolfEnchants(
         );
     }
 
-    boolean hasIgnition() {
+    public boolean hasIgnition() {
         return getIgnition > 0;
     }
-    boolean hasPoisoning() {
+    public boolean hasPoisoning() {
         return getPoisoning > 0;
     }
-    boolean hasWithering() {
+    public boolean hasWithering() {
         return getWithering > 0;
     }
-    boolean hasLifting() {
+    public boolean hasLifting() {
         return getLifting > 0;
     }
-    boolean hasBloodLust() {
+    public boolean hasBloodLust() {
         return getBloodlust > 0;
     }
-    boolean hasMight() {
+    public boolean hasMight() {
         return getMight > 0;
     }
-    boolean hasOozing() {
+    public boolean hasOozing() {
         return getOozing > 0;
     }
-    boolean hasGnawing() {
+    public boolean hasGnawing() {
         return getGnawing > 0;
     }
-    boolean hasProtection() {
+    public boolean hasArcticWinds() {
+        return getArcticWinds > 0;
+    }
+    public boolean hasProtection() {
         return getProtection > 0;
     }
-    boolean hasFireProtection() {
+    public boolean hasFireProtection() {
         return getFireProtection > 0;
     }
-    boolean hasProjectileProtection() {
+    public boolean hasProjectileProtection() {
         return getProjectileProtection > 0;
     }
-    boolean hasBlastProtection() {
+    public boolean hasBlastProtection() {
         return getBlastProtection > 0;
     }
-    boolean hasMending() {
+    public boolean hasMending() {
         return getMending > 0;
     }
 }

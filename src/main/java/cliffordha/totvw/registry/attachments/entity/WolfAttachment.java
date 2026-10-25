@@ -1,13 +1,18 @@
 package cliffordha.totvw.registry.attachments.entity;
 
+import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.util.BasicArmorData;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -18,6 +23,8 @@ import static cliffordha.totvw.registry.attachments.AttachmentUtil.*;
 
 public class WolfAttachment {
     private static final String WOLF = "wolf_";
+
+    public static final AttachmentType<BasicArmorData> ARMOR_DATA = registerArmorData(WOLF + "armor_data");
     
     public static final AttachmentType<Boolean> IS_VERDANT_TYPE = registerBool(WOLF + "is_verdant_type", true);
     public static final AttachmentType<Boolean> IS_VILLAGE_GUARD = registerBool(WOLF + "is_village_guard", true);
@@ -42,6 +49,7 @@ public class WolfAttachment {
     public static final AttachmentType<UUID> SOUL_ID = registerUUID(WOLF + "soul_id", true);
     public static final AttachmentType<UUID> FAMILY_ID = registerUUID(WOLF + "family_id", true);
 
+    public static final AttachmentType<ResourceKey<Level>> RESPAWN_DIMENSION = registerLevel(WOLF + "respawn_dimension", true);
     public static final AttachmentType<BlockPos> RESPAWN_POINT = registerBlockPos(WOLF + "respawn_point", true);
     public static final AttachmentType<List<Pair<String, UUID>>> AGGRESSOR_LIST = registerListPair(WOLF + "aggressor_list", true);
     public static final AttachmentType<List<Pair<String, UUID>>> TRUSTED_PLAYERS = registerListPair(WOLF + "trusted_players", true);
@@ -50,6 +58,7 @@ public class WolfAttachment {
     public static final AttachmentType<Runestone> RUNESTONE_TYPE = registerRunestone(WOLF + "runestone_type", false);
     public static final AttachmentType<List<String>> TETHER_ENTITY_BLACKLIST = registerStringList(WOLF + "tether_entity_blacklist", true);
     public static final AttachmentType<Integer> ATTACK_CYCLE = registerInt(WOLF + "attack_cycle", false);
+    public static final AttachmentType<Integer> FLASH_FREEZE_STACK = registerInt(WOLF + "flash_freeze_stack", false);
 
 
 
@@ -69,11 +78,19 @@ public class WolfAttachment {
         // Somehow using the == does not work... or I'm just high when I tested it
         return wolfID.equals(babyID);
     }
-    public static boolean isPlayerToBeAttacked(Wolf wolf, LivingEntity target) {
-        List<Pair<String, UUID>> TRUSTED = getTrustedPlayers(wolf);
-        List<Pair<String, UUID>> check = TRUSTED.stream().filter(data -> data.getB().equals(VWAttachments.getWolfPlayerSharedId(target))).toList();
 
-        return !check.isEmpty();
+    /**
+     * Only call when a wolf should attack another wolf or player
+     */
+    public static boolean shouldAttackEntity(Wolf wolf, LivingEntity target) {
+        List<Pair<String, UUID>> TRUSTED = getTrustedPlayers(wolf);
+        Pair<String, UUID> mobData = getNameAndUUID(target);
+        for (Pair<String, UUID> data : TRUSTED) {
+            if (data.getB().equals(mobData.getB())) {
+                return false;
+            }
+        }
+        return true;
     }
     public static List<Pair<String, UUID>> getTrustedPlayers(Wolf wolf) {
         return wolf.getAttachedOrElse(TRUSTED_PLAYERS, List.of());
@@ -118,4 +135,13 @@ public class WolfAttachment {
             wolf.setAttached(WolfAttachment.AGGRESSOR_LIST, List.copyOf(newPlayerData));
         }
     }
+    public static ItemStack getArmorData(Wolf wolf) {
+        return wolf.getAttachedOrElse(ARMOR_DATA, BasicArmorData.NONE).getItemStack();
+    }
+    public static List<AttachmentType<Integer>> WOLF_COOLDOWNS = List.of(
+            CD_BLOODLUST_SKILL_PARALYZE,
+            CD_MIGHT_SKILL_RUPTURE,
+            CD_IGNORE_HIGH_DAMAGE,
+            CD_BLESSING_OF_THE_VERDANT_WIND
+    );
 }

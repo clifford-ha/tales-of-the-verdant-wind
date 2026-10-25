@@ -26,7 +26,7 @@ public class AmplifiedMightEffect extends MobEffect {
     private final AttributeModifier.Operation ADD_MULTIPLIED_TOTAL = AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL;
 
     public AmplifiedMightEffect() {
-        super(MobEffectCategory.BENEFICIAL, VWColors.MIGHT_EFFECT);
+        super(MobEffectCategory.BENEFICIAL, VWColors.MIGHT);
     }
     
     @Override

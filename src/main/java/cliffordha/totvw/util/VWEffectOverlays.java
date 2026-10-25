@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 
 public final class VWEffectOverlays {
     private static final float BLOODLUST_PULSE_SPEED_MS = (float) (Math.PI * 2.0 / 2000.0);
+    public static float SINE = Mth.sin(Util.getMillis() * BLOODLUST_PULSE_SPEED_MS);
 
     private VWEffectOverlays() {}
 
@@ -52,7 +53,7 @@ public final class VWEffectOverlays {
             float alpha = getAlpha(playerHealth);
             int a = (int) (alpha * 255) & 0xFF;
 
-            graphics.fill(0, 0, getWidth(), getHeight(), ARGB.color(a, VWColors.BLOODLUST_EFFECT));
+            graphics.fill(0, 0, getWidth(), getHeight(), ARGB.color(a, VWColors.BLOODLUST));
         }
     }
 

@@ -1,6 +1,5 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
@@ -12,10 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractBedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -30,16 +26,7 @@ public class BedBlockMixin {
         AttachmentType<BlockPos> PLAYER_RESPAWN_POINT = PlayerAttachment.RESPAWN_POINT;
         if (!level.isClientSide() && bedRule.canSetSpawn(player.level()) && !bedRule.destroyOnUse()) {
             player.setAttached(PLAYER_RESPAWN_POINT, pos);
-            sendToServer("Player saved respawn point: " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
-        }
-    }
-
-    @Unique
-    private static final Logger SEND = LoggerFactory.getLogger("TOTVW/WolfEntityMixin");
-    @Unique
-    private static void sendToServer(String message) {
-        if (VWConfig.get().MIXIN_UPDATE_LOGS) {
-            SEND.info(message);
+            player.setAttached(PlayerAttachment.RESPAWN_DIMENSION, player.level().dimension());
         }
     }
 }

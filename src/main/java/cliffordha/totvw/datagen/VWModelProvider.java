@@ -194,6 +194,8 @@ public class VWModelProvider extends FabricModelProvider {
                 Pages.SP_ID_TEST
         );
 
+        item.generateFlatItem(VWItems.EMPTY, VWBlocks.AIR_PLACEHOLDER.asItem(), ModelTemplates.FLAT_ITEM);
+
         if (TOTVW.IN_DEVELOPMENT) {
             item.generateFlatItem(VWItems.DevItems.ATTACHMENTS_REMOVER, Pages.SCATTERED_PAGE, ModelTemplates.FLAT_ITEM);
         }

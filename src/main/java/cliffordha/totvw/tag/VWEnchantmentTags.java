@@ -34,6 +34,7 @@ public class VWEnchantmentTags extends FabricTagsProvider<Enchantment> {
                 .add(enchantment(WOLF_EFFECT_GNAWING));
 
         getOrCreateRawBuilder(CONTINUOUS_DAMAGE)
+                .add(enchantment(WOLF_EFFECT_ARCTIC_WINDS))
                 .add(enchantment(WOLF_EFFECT_IGNITION))
                 .add(enchantment(WOLF_EFFECT_POISONING))
                 .add(enchantment(WOLF_EFFECT_WITHERING));
@@ -63,7 +64,6 @@ public class VWEnchantmentTags extends FabricTagsProvider<Enchantment> {
     public static final TagKey<Enchantment> WOLF_ENCHANTMENTS = create("wolf_enchantments");
     public static final TagKey<Enchantment> CONTINUOUS_DAMAGE = create("continuous_damage");
     public static final TagKey<Enchantment> IMPAIRING_DAMAGE = create("impairing_damage");
-
     private static TagKey<Enchantment> create(String name) {
         return TagKey.create(Registries.ENCHANTMENT, TOTVW.registerID(name)); }
 

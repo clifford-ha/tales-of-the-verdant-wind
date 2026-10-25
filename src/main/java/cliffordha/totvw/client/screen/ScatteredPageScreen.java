@@ -7,18 +7,23 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ScatteredPageScreen extends Screen {
     private static final float PADDING_RATIO = 0.05F;
     private static final int PADDING = 10;
 
     private final String pageTitle;
-    private final List<String> pages;
+    private List<String> pages;
     private final List<FormattedCharSequence> allLines = new ArrayList<>();
+    private final @Nullable Supplier<String[]> liveSupplier;
+    private int textAreaWidth;
+    private int refreshTimer = 0;
 
     private int leftPos;
     private int topPos;
@@ -40,6 +45,13 @@ public class ScatteredPageScreen extends Screen {
         super(Component.literal(pageTitle));
         this.pageTitle = pageTitle;
         this.pages = Arrays.asList(pages);
+        this.liveSupplier = null;
+    }
+    public ScatteredPageScreen(String pageTitle, Supplier<String[]> liveSupplier) {
+        super(Component.literal(pageTitle));
+        this.pageTitle = pageTitle;
+        this.pages = Arrays.asList(liveSupplier.get());
+        this.liveSupplier = liveSupplier;
     }
 
     @Override
@@ -59,22 +71,13 @@ public class ScatteredPageScreen extends Screen {
                         .build()
         );
 
-        int textAreaWidth = this.panelWidth - (PADDING * 2) - scrollbarWidth - 6;
+        this.textAreaWidth = this.panelWidth - (PADDING * 2) - scrollbarWidth - 6;
         this.textStartY = this.topPos + 32;
         int textEndY = this.topPos + this.panelHeight - PADDING;
         this.lineHeight = this.font.lineHeight + 2;
         this.visibleLines = Math.max(1, (textEndY - this.textStartY) / this.lineHeight);
 
-        this.allLines.clear();
-        StringBuilder combined = new StringBuilder();
-
-        for (int i = 0; i < this.pages.size(); i++) {
-            combined.append(this.pages.get(i));
-            if (i < this.pages.size() - 1) combined.append(" ");
-        }
-        this.allLines.addAll(this.font.split(Component.literal(combined.toString()), textAreaWidth));
-
-        this.maxScroll = Math.max(0, this.allLines.size() - this.visibleLines);
+        this.buildLines();
         this.scrollOffset = 0;
 
         this.scrollbarX = this.leftPos + this.panelWidth - PADDING - scrollbarWidth;
@@ -121,6 +124,33 @@ public class ScatteredPageScreen extends Screen {
         }
 
         super.extractRenderState(graphics, mouseX, mouseY, a);
+    }
+
+    private void buildLines() {
+        this.allLines.clear();
+        StringBuilder combined = new StringBuilder();
+        for (int i = 0; i < this.pages.size(); i++) {
+            combined.append(this.pages.get(i));
+            if (i < this.pages.size() - 1) combined.append(" ");
+        }
+        this.allLines.addAll(this.font.split(Component.literal(combined.toString()), this.textAreaWidth));
+        this.maxScroll = Math.max(0, this.allLines.size() - this.visibleLines);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.liveSupplier == null) return;
+        if (++this.refreshTimer < 5) return;
+        this.refreshTimer = 0;
+
+        List<String> next = Arrays.asList(this.liveSupplier.get());
+        if (next.equals(this.pages)) return;
+
+        int keepScroll = this.scrollOffset;
+        this.pages = next;
+        this.buildLines();
+        this.scrollOffset = Mth.clamp(keepScroll, 0, this.maxScroll);
     }
 
     @Override

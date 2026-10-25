@@ -1,12 +1,21 @@
 package cliffordha.totvw.registry.attachments.entity;
 
+import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.HavocType;
 import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.util.BasicArmorData;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -39,8 +48,66 @@ public class PlayerAttachment {
     public static final AttachmentType<Integer> VILLAGER_ATROCITY_COUNT = registerInt(P + "villager_atrocity_count", false);
     public static final AttachmentType<Integer> WOLF_ATROCITY_COUNT = registerInt(P + "wolf_atrocity_count", false);
 
+    public static final AttachmentType<ResourceKey<Level>> RESPAWN_DIMENSION = registerLevel(P + "respawn_dimension", true);
     public static final AttachmentType<BlockPos> RESPAWN_POINT = registerBlockPos(P + "respawn_point", true);
     public static final AttachmentType<List<Pair<String, UUID>>> TRUSTED_PLAYERS = registerListPair(P + "trusted_players", true);
+
+    public static final AttachmentType<List<BasicArmorData>> EQUIPMENTS = registerArmorList(P + "equipments");
+
+    public static @Nullable ItemStack getArmorFor(Player player, EquipmentSlot slot) {
+        List<BasicArmorData> armors = player.getAttachedOrElse(EQUIPMENTS, new ArrayList<>());
+        if (armors.isEmpty()) return null;
+        for (BasicArmorData data : armors) {
+            if (data.getSlot().equals(slot) && !data.getItemStack().is(VWItems.EMPTY)) {
+                return data.getItemStack();
+            }
+        }
+        return null;
+    }
+    public static void updateArmorList(Player player) {
+        List<BasicArmorData> armors = new ArrayList<>();
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            ItemStack stack = player.hasItemInSlot(slot) ? player.getItemBySlot(slot) : null;
+            if (stack != null) {
+                armors.add(new BasicArmorData(
+                        stack.getDisplayName(),
+                        BuiltInRegistries.ITEM.getKey(stack.getItem()),
+                        stack.getMaxDamage(),
+                        stack.getDamageValue(),
+                        slot
+                ));
+            }
+        }
+        player.setAttached(EQUIPMENTS, armors);
+    }
+    public static int getDamageValue(ItemStack stack) {
+        if (!stack.is(VWItems.EMPTY) && stack.isDamageableItem()) {
+            return stack.getDamageValue();
+        }
+        return 0;
+    }
+    public static int getMaxDamageValue(ItemStack stack) {
+        if (stack != null && !stack.is(VWItems.EMPTY) && stack.isDamageableItem()) {
+            return stack.getMaxDamage();
+        }
+        return 0;
+    }
+    public static List<BasicArmorData> getArmorList(Player player) {
+        List<BasicArmorData> armors = new ArrayList<>();
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            ItemStack stack = player.getItemBySlot(slot);
+            if (getMaxDamageValue(stack) > 0) {
+                armors.add(new BasicArmorData(
+                        stack.getItemName(),
+                        BasicArmorData.getID(stack),
+                        stack.getMaxDamage(),
+                        stack.getDamageValue(),
+                        slot
+                ));
+            }
+        }
+        return armors;
+    }
 
     public static Pair<String, UUID> getNameAndUUID(LivingEntity entity) {
         return new Pair<>(entity.getPlainTextName(), VWAttachments.getWolfPlayerSharedId(entity));
@@ -53,8 +120,8 @@ public class PlayerAttachment {
         List<Pair<String, UUID>> otherData = getTrustedPlayers(other);
 
         List<Pair<String, UUID>> checkA = playerData.stream().filter(data -> data.getB().equals(VWAttachments.getWolfPlayerSharedId(other))).toList();
-        List<Pair<String, UUID>> checkN = otherData.stream().filter(data -> data.getB().equals(VWAttachments.getWolfPlayerSharedId(player))).toList();
+        List<Pair<String, UUID>> checkB = otherData.stream().filter(data -> data.getB().equals(VWAttachments.getWolfPlayerSharedId(player))).toList();
 
-        return !checkA.isEmpty() && !checkN.isEmpty();
+        return !checkA.isEmpty() && !checkB.isEmpty();
     }
 }

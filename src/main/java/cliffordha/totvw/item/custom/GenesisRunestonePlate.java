@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
@@ -66,7 +65,7 @@ public class GenesisRunestonePlate extends Item {
         if (!(entity instanceof ServerPlayer player)) return null;
         ServerLevel currentLevel = player.level();
 
-        VWUtil.sendParticles(VWParticles.BENEDICTION_TRIGGER_PARTICLE, currentLevel, player.blockPosition(), 32, 1.5);
+        VWUtil.sendParticles(VWParticles.BENEDICTION_TRIGGER, currentLevel, player.blockPosition(), 32, 1.5);
         ResourceKey<Level> currentDimension = currentLevel.dimension();
         boolean isLeavingCustomDim = currentDimension == VWDimensions.NOLAYAN_LEVEL_KEY;
 

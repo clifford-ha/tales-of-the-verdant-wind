@@ -1,6 +1,7 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -64,7 +65,7 @@ public class VWCommands {
 
                             return data.size();
                         } else {
-                            sendFail(context, VWColors.GRAY, "You don't have any trusted players in your list.");
+                            sendFail(context, VWColors.GRAY, "You don't have any trusted players in your armorData.");
                             return 0;
                         }
                     }
@@ -91,7 +92,7 @@ public class VWCommands {
                             }
 
                             Pair<String, UUID> removed = data.get(index - 1);
-                            sendSuccess(context, false, "You removed " + removed.getA() + " from your list of trusted players.");
+                            sendSuccess(context, false, "You removed " + removed.getA() + " from your armorData of trusted players.");
                             data.remove(index - 1);
                             player.setAttached(TRUST_DATA, data);
                             return data.size();
@@ -116,7 +117,7 @@ public class VWCommands {
                         int data = player.getAttachedOrElse(TRUST_DATA, List.of()).size();
                         if (data > 0) {
                             player.removeAttached(TRUST_DATA);
-                            sendSuccess(context, false, "You removed your list of trusted players (" + data + ").");
+                            sendSuccess(context, false, "You removed your armorData of trusted players (" + data + ").");
                             return data;
                         } else {
                             sendFail(context, "No trust data to remove.");
@@ -152,7 +153,7 @@ public class VWCommands {
                         }
 
                         String w = wolves.size() > 1 ? "nearby wolves" : wolves.getFirst().getPlainTextName();
-                        sendSuccess(context, false, "Removed the aggressor list of " + w + ".");
+                        sendSuccess(context, false, "Removed the aggressor armorData of " + w + ".");
                         return wolves.size();
                     }
                     )))));

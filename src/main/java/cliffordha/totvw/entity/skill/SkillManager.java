@@ -99,8 +99,8 @@ public class SkillManager {
             if (CD_VERDANT_BLESSING > 0) showLog(player, "VerdantBlessingCD", CD_VERDANT_BLESSING);
             if (CD_HAVOC_AMP > 0) showLog(player, "HavocCD", CD_HAVOC_AMP);
         } else {
-            if (CD_VERDANT_BLESSING > 0) player.setAttached(PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-            if (CD_HAVOC_AMP > 0) player.setAttached(PlayerAttachment.CD_HAVOC, 0);
+            if (CD_VERDANT_BLESSING > 0) player.removeAttached(PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND);
+            if (CD_HAVOC_AMP > 0) player.removeAttached(PlayerAttachment.CD_HAVOC);
         }
     }
 
@@ -108,8 +108,8 @@ public class SkillManager {
         int COUNTER_VILLAGER_ATROCITY = player.getAttachedOrElse(PlayerAttachment.VILLAGER_ATROCITY_COUNT, 0);
         int COUNTER_WOLF_ATROCITY = player.getAttachedOrElse(PlayerAttachment.WOLF_ATROCITY_COUNT, 0);
 
-        if (COUNTER_VILLAGER_ATROCITY > 0) player.setAttached(PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-        if (COUNTER_WOLF_ATROCITY > 0) player.setAttached(PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+        if (COUNTER_VILLAGER_ATROCITY > 0) player.removeAttached(PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND);
+        if (COUNTER_WOLF_ATROCITY > 0) player.removeAttached(PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND);
     }
 
 
@@ -127,10 +127,10 @@ public class SkillManager {
             if (CD_MIGHT_RUPTURE > 0) showLog(wolf, name + " | MightCD", CD_MIGHT_RUPTURE);
             if (CD_IGNORE_DMG > 0) showLog(wolf, name + " | IgnoreHighDMG", CD_IGNORE_DMG);
         } else {
-            if (CD_VERDANT_BLESSING > 0) wolf.setAttached(WolfAttachment.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-            if (CD_BLOODLUST_SKILL_PARALYZE > 0) wolf.setAttached(WolfAttachment.CD_BLOODLUST_SKILL_PARALYZE, 0);
-            if (CD_MIGHT_RUPTURE > 0) wolf.setAttached(WolfAttachment.CD_MIGHT_SKILL_RUPTURE, 0);
-            if (CD_IGNORE_DMG > 0) wolf.setAttached(WolfAttachment.CD_IGNORE_HIGH_DAMAGE, 0);
+            if (CD_VERDANT_BLESSING > 0) wolf.removeAttached(WolfAttachment.CD_BLESSING_OF_THE_VERDANT_WIND);
+            if (CD_BLOODLUST_SKILL_PARALYZE > 0) wolf.removeAttached(WolfAttachment.CD_BLOODLUST_SKILL_PARALYZE);
+            if (CD_MIGHT_RUPTURE > 0) wolf.removeAttached(WolfAttachment.CD_MIGHT_SKILL_RUPTURE);
+            if (CD_IGNORE_DMG > 0) wolf.removeAttached(WolfAttachment.CD_IGNORE_HIGH_DAMAGE);
         }
     }
     private static void showLog(LivingEntity entity, String value, int attachment) {

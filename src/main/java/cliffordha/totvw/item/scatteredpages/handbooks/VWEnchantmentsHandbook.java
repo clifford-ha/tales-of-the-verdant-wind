@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
-import static cliffordha.totvw.util.VWUtil.TextUtil.*;
+import static cliffordha.totvw.util.VWTextUtil.*;
 
 public class VWEnchantmentsHandbook {
     private static final String descAttackDMG = "Attack Damage";

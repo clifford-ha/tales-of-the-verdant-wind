@@ -2,7 +2,7 @@ package cliffordha.totvw.item.custom;
 
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.attachments.VWAttachments;
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.VWTimer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -50,7 +50,7 @@ public class EfflorescenceRunestonePlate extends Item {
             int currentStacks = player.getAttachedOrElse(VWAttachments.VERDANT_BLOOM_STACK, 0);
             player.setAttached(VWAttachments.VERDANT_BLOOM_STACK, currentStacks + 50);
             stack.consume(5, player);
-            player.getCooldowns().addCooldown(new ItemStack(this), VWUtil.TimeUtil.duration(1, 30));
+            player.getCooldowns().addCooldown(new ItemStack(this), VWTimer.tickDuration(1, 30));
 
             if (level.isClientSide()) {
                 playSound(player, SoundEvents.BONE_MEAL_USE, SoundSource.PLAYERS, true);

@@ -7,7 +7,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import static cliffordha.totvw.registry.VWEnchantments.entityEnchantmentLVL;
 
 public record EntityEnchants(
-        boolean benediction,
+        boolean hasBenediction,
 
         //from vanilla
         int protection,

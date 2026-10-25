@@ -63,7 +63,7 @@ public class VWPlayerInteractions {
 
             boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.getB() == mobData.getB());
             if (oldPlayerData.size() >= 4 && !hasPriorData) {
-                sendToChat(player, true, "You can only list 4 trusted players at a time.");
+                sendToChat(player, true, "You can only armorData 4 trusted players at a time.");
                 return InteractionResult.FAIL;
             }
             if (hasPriorData) {

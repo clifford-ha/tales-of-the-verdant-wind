@@ -28,14 +28,13 @@ import java.util.List;
 
 import static cliffordha.totvw.registry.VWEffects.*;
 import static cliffordha.totvw.registry.VWEnchantments.entityEnchantmentLVL;
-import static cliffordha.totvw.util.VWUtil.*;
 
 public class BloodlustEffect extends MobEffect {
     private final Identifier ID = VWIdentifiers.EFFECT_BLOODLUST;
     private final Identifier ID_ADDITIONAL = VWIdentifiers.EFFECT_BLOODLUST_ADDITIONAL;
 
     public BloodlustEffect() {
-        super(MobEffectCategory.HARMFUL, VWColors.BLOODLUST_EFFECT);
+        super(MobEffectCategory.HARMFUL, VWColors.BLOODLUST);
     }
 
     @Override

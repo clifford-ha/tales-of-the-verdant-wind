@@ -82,10 +82,13 @@ public class VWBiomeTags extends FabricTagsProvider<Biome> {
         getOrCreateRawBuilder(BiomeTags.HAS_TRIAL_CHAMBERS)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
-        getOrCreateRawBuilder(BiomeTags.SPAWNS_COLD_VARIANT_FROGS)
+        getOrCreateRawBuilder(BiomeTags.PRODUCES_CORALS_FROM_BONEMEAL)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
-        getOrCreateRawBuilder(BiomeTags.PRODUCES_CORALS_FROM_BONEMEAL)
+        getOrCreateRawBuilder(BiomeTags.SPAWNS_COLD_VARIANT_FARM_ANIMALS)
+                .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
+
+        getOrCreateRawBuilder(BiomeTags.SPAWNS_COLD_VARIANT_FROGS)
                 .addTag(VWBiomeTags.IS_VERDANT_BIOMES.location());
 
     }

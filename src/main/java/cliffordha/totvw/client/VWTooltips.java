@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.registry.VWEnchantments.entityEnchantmentLVL;
-import static cliffordha.totvw.util.VWUtil.TextUtil.*;
+import static cliffordha.totvw.util.VWTextUtil.*;
 
 @Environment(EnvType.CLIENT)
 public class VWTooltips {

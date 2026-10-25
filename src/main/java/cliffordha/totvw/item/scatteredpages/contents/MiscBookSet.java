@@ -1,90 +1,35 @@
 package cliffordha.totvw.item.scatteredpages.contents;
 
-import cliffordha.totvw.entity.player.PlayerStats;
-import cliffordha.totvw.entity.wolf.WolfStats;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import oshi.util.tuples.Pair;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
-import static cliffordha.totvw.util.VWUtil.TextUtil.*;
+import static cliffordha.totvw.util.VWTextUtil.*;
 
 public class MiscBookSet {
-    public static Player player;
-    public static void resolvePlayer(Player resolver) {
-        player = resolver;
-    }
-    public static String[] get(int id) {
-        if (player == null) return ScatteredPageItem.invalidPlayer;
+    public static String[] get(Player player, int id) {
+        if (player == null) {
+            return ScatteredPageItem.invalidPlayer;
+        }
         switch (id) {
             case -2 -> {
-                return playerStats();
+                return EntityStats.playerStats(player);
             }
             case 1000 -> {
-                return multiTestPage();
+                return multiTestPage(player);
             }
             case 333 -> {
-                return getLodestoneWindCoreManual();
+                return getLodestoneWindCoreManual(player);
             }
         }
         return ScatteredPageItem.invalidRef;
     }
-    public static String[] wolfStats(WolfStats stats) {
-        return addPage(
-                "UUID: " + stats.UUID() + nextLine
-                + "Soul ID: " + stats.soulID() + nextLine
-                + "Family ID: " + stats.familyID() + nextLine
-                + "Owner: " + stats.owner() + nextLine
-                + "Owner UUID: " + stats.ownerUUID() + nextLine
-                + "Shared UUID: " + stats.sharedUUID() + nextParagraph
 
-                + "Is Verdant: " + stats.isVerdant() + nextLine
-                + "Benediction Stack: " + stats.benedictionStack() + nextLine
-                + "Attack Cycle: " + stats.attackCycle() + nextLine
-                + "Try Save Points: " + stats.trySavePoints() + nextLine
-                + "Return Point: " + stats.returnPoint() + nextLine
-                + "Runestone Type: " + stats.runestoneType() + nextParagraph
-
-                + "Trusted Players: " + nextLine + getPairs(stats.trustedPlayers()) + nextParagraph
-                + "Aggressors: " + nextLine + getPairs(stats.aggressors()) + nextParagraph
-
-        );
-    }
-    private static String[] playerStats() {
-        var stat = PlayerStats.valueOf(player);
-
-        return addPage(
-                "UUID: " + stat.UUID() + nextLine
-                + "Wolf Souls: " + stat.wolfSouls() + nextLine
-                + "SHARED UUID: " + stat.sharedUUID()
-                + nextParagraph
-
-                + "Atrocity Count [Wolf]: " + stat.wolfAtrocityCount() + nextLine
-                + "Atrocity Cound [Villager]: " + stat.villagerAtrocityCount()
-                + nextParagraph
-
-                + "Havoc Type: " + stat.havocType() + nextLine
-                + "Havoc Usage Count: " + stat.havocUsageCount() + nextLine
-
-                + "TRUSTED PLAYER DATA: " + nextLine + getPairs(stat.trustedPlayers())
-                + nextParagraph
-
-                + "Has received handbook for: " + nextLine
-                + "Enchantments: " + stat.hasReceivedEnchantmentsHandbook() + nextLine
-                + "Items: " + stat.hasReceivedItemsHandbook() + nextLine
-                + "Features: " + stat.hasReceivedFeaturesHandbook() + nextLine
-                + "Effects: " + stat.hasReceivedEffectsHandbook()
-        );
-    }
-    private static String getPairs(List<Pair<String, UUID>> list) {
-        return list.stream().map(pair -> pair.getA() + " " + pair.getB()).reduce((a, b) -> a + nextLine + b).orElse("");
-    }
-    private static String[] multiTestPage() {
+    private static String[] multiTestPage(Player player) {
         boolean HAS_ARMOR = !player.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
         return addPage(
                 "This is a page that has a lot of contents and is intended to be used for testing purposes (obviously). In this " + fText(UNDERLINED, "scattered page") + ", you can see a lot of text formatting options, colors, etc. used for testing this very UI you are looking at."
@@ -111,7 +56,7 @@ public class MiscBookSet {
     }
 
 
-    private static String[] getLodestoneWindCoreManual() {
+    private static String[] getLodestoneWindCoreManual(Player player) {
         boolean IN_LOWLIGHT = player.level().getMaxLocalRawBrightness(player.blockPosition(), 0) < 9;
         return addPage(fText(BOLD, fText(ITALIC, "An Experimental Research on Wind-charged Monster Deterring Field to Combat the Catastrophic Effects of the Creatures from Beyond"))
                 + nextParagraph

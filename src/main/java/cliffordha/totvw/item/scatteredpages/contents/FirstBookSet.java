@@ -5,16 +5,12 @@ import net.minecraft.world.entity.player.Player;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
-import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.ITALIC;
-import static cliffordha.totvw.util.VWUtil.TextUtil.*;
+import static cliffordha.totvw.util.VWTextUtil.*;
 
 public class FirstBookSet {
-    public static Player player;
-    public static void resolvePlayer(Player resolver) {
-        player = resolver;
-    }
-    public static String[] get(int id) {
-        if (player == null) return ScatteredPageItem.invalidPlayer;
+    public static String[] get(Player player, int id) {
+        if (player == null)
+            return ScatteredPageItem.invalidPlayer;
         switch (id) {
             case 1001 -> {
                 return get1001();
@@ -23,13 +19,13 @@ public class FirstBookSet {
                 return get1002();
             }
             case 1003 -> {
-                return get1003();
+                return get1003(player);
             }
             case 1004 -> {
                 return get1004();
             }
             case 1005 -> {
-                return get1005();
+                return get1005(player);
             }
             case 1006 -> {
                 return get1006();
@@ -71,7 +67,7 @@ public class FirstBookSet {
                         + "I don't know if I should cry or laugh. The green liquid sample that I put in a vial shattered after I fell in a pit just before I reached the plains. Well, I guess I can always go back and take another sample."
         );
     }
-    private static String[] get1003() {
+    private static String[] get1003(Player player) {
         boolean IS_UNDERWATER = player.isInWater() || player.isUnderWater() || player.isInWaterOrRain();
         return addPage(
                 pText(3)
@@ -98,7 +94,7 @@ public class FirstBookSet {
                         + fText(ITALIC, "A nature's carcass, a defiled creature devoid of " + bText("meaning") + " and mercy to life. When its gaze falls upon those unfortunates, they shall see that a \"destined\" fate is nothing short of a miracle but a deep void of unending malice. O " + bText("Nature's Whisper") + ", what fate has thou chosen for us?")
         );
     }
-    private static String[] get1005() {
+    private static String[] get1005(Player player) {
         boolean IN_LOWLIGHT = player.level().getMaxLocalRawBrightness(player.blockPosition(), 0) < 9;
         return addPage(
                 tText(IN_LOWLIGHT, "The verdant people once lived in a cave system to avoid and escape the creatures from beyond that terrorized the forest every once in a while. Slowly their eyes transformed and now able to perceive the verixium-based ink. It wasn't much but they thrived."

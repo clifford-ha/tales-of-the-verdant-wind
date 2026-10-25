@@ -16,7 +16,7 @@ public class VerixiumOreBlock extends Block {
         if (level.isClientSide()) {
             double value = 0;
             for (int i = 0; i < 8; i++) {
-                level.addParticle(VWParticles.BENEDICTION_TRIGGER_PARTICLE, pos.getX() + level.getRandom().nextFloat(), pos.getY(), pos.getZ() + level.getRandom().nextFloat(), value, value, value);
+                level.addParticle(VWParticles.BENEDICTION_TRIGGER, pos.getX() + level.getRandom().nextFloat(), pos.getY(), pos.getZ() + level.getRandom().nextFloat(), value, value, value);
             }
         }
         super.destroy(level, pos, state);

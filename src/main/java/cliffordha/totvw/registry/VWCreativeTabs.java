@@ -3,9 +3,11 @@ package cliffordha.totvw.registry;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.VWItems.Pages;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
@@ -13,14 +15,17 @@ import net.minecraft.world.item.ItemStack;
 
 public class VWCreativeTabs {
     public static final ResourceKey<CreativeModeTab> TOTVW_ITEMS_TAB_KEY = ResourceKey.create(
-            BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "items_tab"));
+            BuiltInRegistries.CREATIVE_MODE_TAB.key(), TOTVW.registerID("items_tab"));
 
     public static final ResourceKey<CreativeModeTab> TOTVW_SCATTERED_PAGES_TAB_KEY = ResourceKey.create(
-            BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "scattered_pages_tab"));
+            BuiltInRegistries.CREATIVE_MODE_TAB.key(), TOTVW.registerID("scattered_pages_tab"));
 
     public static final CreativeModeTab TOTVW_ITEMS_TAB = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(VWItems.VERIXIUM_CHUNK))
-            .title(Component.literal(TOTVW.MOD_NAME_LONG).withColor(VWColors.VERDANT_WIND))
+            .title(Component.literal(TOTVW.MOD_NAME_LONG)
+                    .withStyle(style -> style
+                            .withColor(VWColors.VERDANT_WIND_MUTED))
+            )
             .displayItems((params, output) -> {
                 output.accept(VWBlocks.VERIXIUM_STONE_ORE);
                 output.accept(VWBlocks.VERIXIUM_DEEPSLATE_ORE);

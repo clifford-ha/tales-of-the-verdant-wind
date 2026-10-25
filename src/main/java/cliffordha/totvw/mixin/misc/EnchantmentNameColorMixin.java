@@ -1,7 +1,7 @@
 package cliffordha.totvw.mixin.misc;
 
-import cliffordha.totvw.registry.VWColors;
-import cliffordha.totvw.util.VWColorizeTextMixin;
+import cliffordha.totvw.util.ColorizeText;
+import cliffordha.totvw.util.VWTextUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -13,17 +13,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Enchantment.class)
 public abstract class EnchantmentNameColorMixin {
-
     @Inject(method = "getFullname", at = @At("RETURN"), cancellable = true)
     private static void colorizeEnchantmentName(Holder<Enchantment> enchantment, int level, CallbackInfoReturnable<Component> cir) {
 
         Component description = enchantment.value().description();
         if (!(description.getContents() instanceof TranslatableContents tc)) return;
 
-        Integer color = VWColorizeTextMixin.getColor(tc.getKey());
+        Integer color = ColorizeText.getColor(tc.getKey());
         if (color == null) return;
 
         MutableComponent result = cir.getReturnValue().plainCopy().setStyle(Style.EMPTY.withColor(color));
+        if (level != 1 || enchantment.value().getMaxLevel() != 1) {
+            result.append(" " + VWTextUtil.intToRoman(level));
+        }
         cir.setReturnValue(result);
     }
 }

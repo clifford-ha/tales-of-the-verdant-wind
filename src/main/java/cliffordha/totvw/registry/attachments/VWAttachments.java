@@ -4,8 +4,10 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.attachments.entity.*;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +26,14 @@ public class VWAttachments {
     public static final AttachmentType<Boolean> HAS_ENTERED_NOLAYAN = registerBool("has_entered_nolayan", true);
 
     public static final AttachmentType<UUID> WOLF_PLAYER_SHARED_ID = registerUUID("wolf_player_shared_id", true);
-    public static final AttachmentType<Integer> ATTACK_CYCLE = WolfAttachment.ATTACK_CYCLE;
+
+    public static final AttachmentType<Integer> ARCTIC_AFFLICTION = registerInt("arctic_affliction", false);
+    public static final AttachmentType<Integer> FROST_BOUND_TIMER = registerInt("frost_bound_timer", false);
+    public static final AttachmentType<BlockPos> FROST_BOUND_POS = registerBlockPos("frost_bound_pos", false);
+
+    public static final AttachmentType<Collection<MobEffectInstance>> MOB_EFFECTS = registerEffectsCollection("mob_effects");
+
+
 
 
     public static UUID getWolfPlayerSharedId(LivingEntity entity) {
@@ -56,7 +65,8 @@ public class VWAttachments {
             WolfAttachment.TETHERED_ENTITY_TYPES,
             WolfAttachment.RUNESTONE_TYPE,
             WolfAttachment.TETHER_ENTITY_BLACKLIST,
-            WolfAttachment.ATTACK_CYCLE
+            WolfAttachment.ATTACK_CYCLE,
+            WolfAttachment.FLASH_FREEZE_STACK
     );
     public static final List<AttachmentType<?>> PLAYER_ATTACHMENTS = List.of(
             PlayerAttachment.IS_DEV_MODE,
@@ -76,7 +86,8 @@ public class VWAttachments {
             PlayerAttachment.HAVOC_USAGE_COUNT,
             PlayerAttachment.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
             PlayerAttachment.RESPAWN_POINT,
-            PlayerAttachment.TRUSTED_PLAYERS
+            PlayerAttachment.TRUSTED_PLAYERS,
+            PlayerAttachment.EQUIPMENTS
     );
     public static final List<AttachmentType<?>> VILLAGER_ATTACHMENTS = List.of(
             VillagerAttachment.IS_VERDANT_TYPE,
@@ -93,7 +104,11 @@ public class VWAttachments {
             VERDANT_BLOOM_STACK,
             LAST_OVERWORLD_POS,
             LAST_NOLAYAN_POS,
-            HAS_ENTERED_NOLAYAN
+            HAS_ENTERED_NOLAYAN,
+            ARCTIC_AFFLICTION,
+            FROST_BOUND_TIMER,
+            FROST_BOUND_POS,
+            MOB_EFFECTS
     );
     public static final List<AttachmentType<?>> PLAYER_PREFS = List.of(
             PlayerPrefs.SHOW_ATROCITY_COUNTER,

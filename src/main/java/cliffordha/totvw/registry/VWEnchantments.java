@@ -24,7 +24,9 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.item.enchantment.effects.EnchantmentAttributeEffect;
 
 public class VWEnchantments {
+    public static final ResourceKey<Enchantment> BENEDICTION_OF_THE_VERDANT_MOUNTAINS = enchantmentKey("benediction_of_the_verdant_mountains");
     public static final ResourceKey<Enchantment> WOLF_ARMOR_ENHANCEMENT_KIT = enchantmentKey("wolf_armor_enhancement_kit");
+
     public static final ResourceKey<Enchantment> WOLF_EFFECT_IGNITION = enchantmentKey("wolf_effect_ignition");
     public static final ResourceKey<Enchantment> WOLF_EFFECT_POISONING = enchantmentKey("wolf_effect_poisoning");
     public static final ResourceKey<Enchantment> WOLF_EFFECT_WITHERING = enchantmentKey("wolf_effect_withering");
@@ -33,7 +35,7 @@ public class VWEnchantments {
     public static final ResourceKey<Enchantment> WOLF_EFFECT_MIGHT = enchantmentKey("wolf_effect_might");
     public static final ResourceKey<Enchantment> WOLF_EFFECT_OOZING = enchantmentKey("wolf_effect_oozing");
     public static final ResourceKey<Enchantment> WOLF_EFFECT_GNAWING = enchantmentKey("wolf_effect_gnawing");
-    public static final ResourceKey<Enchantment> BENEDICTION_OF_THE_VERDANT_MOUNTAINS = enchantmentKey("benediction_of_the_verdant_mountains");
+    public static final ResourceKey<Enchantment> WOLF_EFFECT_ARCTIC_WINDS = enchantmentKey("wolf_effect_arctic_winds");
 
 
     public static boolean getBenediction(LivingEntity entity) {
@@ -71,6 +73,9 @@ public class VWEnchantments {
     }
     public static int getGnawing(Wolf wolf) {
         return wolfEnchantmentLVL(wolf, WOLF_EFFECT_GNAWING);
+    }
+    public static int getArcticWinds(Wolf wolf) {
+        return wolfEnchantmentLVL(wolf, WOLF_EFFECT_ARCTIC_WINDS);
     }
 
     public static int getProtection(Wolf wolf) {
@@ -135,6 +140,28 @@ public class VWEnchantments {
         var wolfArmorTag = items.getOrThrow(VWItemTags.WOLF_ARMOR_ENCHANTABLE);
         var chestArmorTag = items.getOrThrow(ItemTags.CHEST_ARMOR);
 
+        register(context, BENEDICTION_OF_THE_VERDANT_MOUNTAINS, Enchantment.enchantment(
+                        Enchantment.definition(
+                                chestArmorTag,
+                                chestArmorTag,
+                                2,
+                                1,
+                                Enchantment.dynamicCost(80, 0),
+                                Enchantment.dynamicCost(80, 20),
+                                4,
+                                EquipmentSlotGroup.BODY
+                        ))
+                .withEffect(
+                        EnchantmentEffectComponents.ATTRIBUTES,
+                        new EnchantmentAttributeEffect(
+                                TOTVW.registerID( "benediction_of_the_verdant_mountains"),
+                                Attributes.ATTACK_DAMAGE,
+                                LevelBasedValue.perLevel(3.0f, 0.0f),
+                                AttributeModifier.Operation.ADD_VALUE
+                        )
+                )
+                .build(BENEDICTION_OF_THE_VERDANT_MOUNTAINS.identifier())
+        );
         register(context, WOLF_ARMOR_ENHANCEMENT_KIT, Enchantment.enchantment(
                 Enchantment.definition(
                         wolfArmorTag,
@@ -265,15 +292,6 @@ public class VWEnchantments {
                                 AttributeModifier.Operation.ADD_VALUE
                         )
                 )
-                .withEffect(
-                        EnchantmentEffectComponents.ATTRIBUTES,
-                        new EnchantmentAttributeEffect(
-                                TOTVW.registerID( "wolf_effect_bloodlust"),
-                                Attributes.KNOCKBACK_RESISTANCE,
-                                LevelBasedValue.constant(0.1F),
-                                AttributeModifier.Operation.ADD_VALUE
-                        )
-                )
                 .build(WOLF_EFFECT_BLOODLUST.identifier())
         );
         register(context, WOLF_EFFECT_MIGHT, Enchantment.enchantment(
@@ -333,27 +351,27 @@ public class VWEnchantments {
                 ))
                 .build(WOLF_EFFECT_GNAWING.identifier())
         );
-        register(context, BENEDICTION_OF_THE_VERDANT_MOUNTAINS, Enchantment.enchantment(
-                Enchantment.definition(
-                        chestArmorTag,
-                        chestArmorTag,
-                        2,
-                        1,
-                        Enchantment.dynamicCost(80, 0),
-                        Enchantment.dynamicCost(80, 20),
-                        4,
-                        EquipmentSlotGroup.BODY
-                ))
+        register(context, WOLF_EFFECT_ARCTIC_WINDS, Enchantment.enchantment(
+                        Enchantment.definition(
+                                wolfArmorTag,
+                                wolfArmorTag,
+                                4,
+                                5,
+                                Enchantment.dynamicCost(33, 0),
+                                Enchantment.dynamicCost(64, 7),
+                                4,
+                                EquipmentSlotGroup.BODY
+                        ))
                 .withEffect(
                         EnchantmentEffectComponents.ATTRIBUTES,
                         new EnchantmentAttributeEffect(
-                                TOTVW.registerID( "benediction_of_the_verdant_mountains"),
-                                Attributes.ATTACK_DAMAGE,
-                                LevelBasedValue.perLevel(3.0f, 0.0f),
+                                TOTVW.registerID( "wolf_effect_arctic_dominance"),
+                                Attributes.BURNING_TIME,
+                                LevelBasedValue.perLevel(-0.2f, -0.05f),
                                 AttributeModifier.Operation.ADD_VALUE
                         )
                 )
-                .build(BENEDICTION_OF_THE_VERDANT_MOUNTAINS.identifier())
+                .build(WOLF_EFFECT_ARCTIC_WINDS.identifier())
         );
     }
     private static void register(BootstrapContext<Enchantment> context, ResourceKey<Enchantment> key, Enchantment enchantment) {

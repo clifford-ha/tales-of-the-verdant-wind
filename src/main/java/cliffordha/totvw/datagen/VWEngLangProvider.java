@@ -1,5 +1,7 @@
 package cliffordha.totvw.datagen;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.keymapping.VWKeymap;
@@ -130,14 +132,15 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
 
 
-        text.addEnchantment(VWEnchantments.WOLF_EFFECT_IGNITION, "Wolf ATK Effect: §vIgnition");
-        text.addEnchantment(VWEnchantments.WOLF_EFFECT_POISONING, "Wolf ATK Effect: §cPoison");
-        text.addEnchantment(VWEnchantments.WOLF_EFFECT_WITHERING, "Wolf ATK Effect: §cWithering");
-        text.addEnchantment(VWEnchantments.WOLF_EFFECT_LIFTING, "Wolf ATK Effect: Lifting");
-        text.addEnchantment(VWEnchantments.WOLF_EFFECT_BLOODLUST, "Wolf ATK Effect: §cBloodlust");
-        text.addEnchantment(VWEnchantments.WOLF_EFFECT_MIGHT, "Wolf ATK Effect: §dMight");
-        text.addEnchantment(VWEnchantments.WOLF_EFFECT_OOZING, "Wolf ATK Effect: §aOozing");
-        text.addEnchantment(VWEnchantments.WOLF_EFFECT_GNAWING, "Wolf ATK Effect: §dGnawing");
+        text.addEnchantment(VWEnchantments.WOLF_EFFECT_IGNITION, "Wolf Effect: Ignition");
+        text.addEnchantment(VWEnchantments.WOLF_EFFECT_POISONING, "Wolf Effect: Poison");
+        text.addEnchantment(VWEnchantments.WOLF_EFFECT_WITHERING, "Wolf Effect: Withering");
+        text.addEnchantment(VWEnchantments.WOLF_EFFECT_LIFTING, "Wolf Effect: Lifting");
+        text.addEnchantment(VWEnchantments.WOLF_EFFECT_BLOODLUST, "Wolf Effect: Bloodlust");
+        text.addEnchantment(VWEnchantments.WOLF_EFFECT_MIGHT, "Wolf Effect: Might");
+        text.addEnchantment(VWEnchantments.WOLF_EFFECT_OOZING, "Wolf Effect: Oozing");
+        text.addEnchantment(VWEnchantments.WOLF_EFFECT_GNAWING, "Wolf Effect: Gnawing");
+        text.addEnchantment(VWEnchantments.WOLF_EFFECT_ARCTIC_WINDS, "Wolf Effect: Arctic Winds");
         text.addEnchantment(VWEnchantments.WOLF_ARMOR_ENHANCEMENT_KIT, "Wolf Armor Enhancement Kit");
         text.addEnchantment(VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS,"Benediction of the Verdant Mountains");
 
@@ -150,6 +153,8 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(effectKey("havoc"), "Havoc");
 
         text.add("effect.tales-of-the-verdant-wind.bloodlust.description", "Gives massive attack buff in exchange for constant damage while the effect is active");
+
+        /*
         
         text.add("item.minecraft.potion.effect.sacred_verdant_potion", "Sacred Verdant Potion");
         text.add("item.minecraft.splash_potion.effect.sacred_verdant_potion", "Sacred Verdant Splash Potion");
@@ -167,7 +172,20 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add("item.minecraft.tipped_arrow.effect.might_amplifier_potion", "Arrow of Amplified Might");
         text.add("item.minecraft.tipped_arrow.effect.baleful_strength_potion", "Arrow of Baleful Strength");
 
+         */
 
+        text.add(potionKey("sacred_verdant_potion"), "Sacred Verdant Potion");
+        text.add(potionSplashKey("sacred_verdant_potion"), "Sacred Verdant Splash Potion");
+        text.add(potionLingeringKey("sacred_verdant_potion"), "Sacred Verdant Lingering Potion");
+        text.add(arrowKey("sacred_verdant_potion"), "Arrow infused with Verdant Wind");
+
+        HashMap<String, String> potionTranslations = new HashMap<>();
+        potionTranslations.put("might_amplifier_potion", "Amplified Might");
+        potionTranslations.put("baleful_strength_potion", "Baleful Strength");
+
+        potionTranslations(text, potionTranslations);
+
+        /*
         text.add("death.attack.bloodlust", "%1$s died from the agonizing effects of §cBloodlust§r");
         text.add("death.attack.bloodlust.player", "%1$s died from the agonizing effects of §cBloodlust§r while fighting %2$s");
 
@@ -185,6 +203,44 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add("death.attack.tether_proxy", "%1$s got killed via proxy");
         text.add("death.attack.tether_proxy.player", "%1$s got killed via proxy while fighting %2$s");
+
+         */
+
+        HashMap<String, List<String>> deathTranslations = new HashMap<>();
+        deathTranslations.put("bloodlust", List.of(
+                "%1$s died from the agonizing effects of §cBloodlust§r",
+                "%1$s died from the agonizing effects of §cBloodlust§r while fighting %2$s"
+        ));
+        deathTranslations.put("scorching_heat", List.of(
+                "%1$s died from scorching heat",
+                "%1$s died from scorching heat while fighting %2$s"
+        ));
+        deathTranslations.put("bleeding", List.of(
+                "%1$s bled to death",
+                "%1$s bled to death while fighting %2$s"
+        ));
+        deathTranslations.put("wind_core_pulse", List.of(
+                "%1$s got incapacitated by the Wind Core's pulse",
+                "%1$s got incapacitated by the Wind Core's pulse while fighting %2$s"
+        ));
+        deathTranslations.put("havoc", List.of(
+                "%1$s got their life drained by the effects of Havoc",
+                "%1$s got their life drained by the effects of Havoc while fighting %2$s"
+        ));
+        deathTranslations.put("tether_proxy", List.of(
+                "%1$s got killed via proxy",
+                "%1$s got killed via proxy while fighting %2$s"
+        ));
+        deathTranslations.put("thermal_burn", List.of(
+                "%1$s got thermally burnt",
+                "%1$s got thermally burnt while fighting %2$s"
+        ));
+        deathTranslations.put("winterbreeze_shock", List.of(
+                "%1$s chilled to death from the effects of Winterbreeze Shock",
+                "%1$s chilled to death from the effects of Winterbreeze Shock while fighting %2$s"
+        ));
+
+        deathTranslationsBuilder(text, deathTranslations);
 
 
         text.add(VWItems.VERIXIUM_SPEAR, "Verixium Spear");
@@ -214,8 +270,10 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         // KEYMAPPINGS
         text.add(VWKeymap.TOTVW_CONFIG_SCREEN, "TOTVW Config Screen");
+        text.add(VWKeymap.TOTVW_STAT_SCREEN, "TOTVW Stats Screen");
 
         text.add(TOTVW.MOD_ID, "Tales of the Verdant Wind");
+        text.add(VWItems.EMPTY, "");
 
         //DEV
         if (TOTVW.IN_DEVELOPMENT) {
@@ -228,5 +286,38 @@ public class VWEngLangProvider extends FabricLanguageProvider {
     }
     private static String effectKey(String name) {
         return "effect." + TOTVW.MOD_ID + "." + name;
+    }
+    private static String deathKey(String name) {
+        return "death.attack." + name;
+    }
+    private static String deathPlayerKey(String name) {
+        return "death.attack." + name + ".player";
+    }
+    private static void deathTranslationsBuilder(TranslationBuilder builder, HashMap<String, List<String>> deaths) {
+        for (String death : deaths.keySet()) {
+            builder.add(deathKey(death), deaths.get(death).getFirst());
+            builder.add(deathPlayerKey(death), deaths.get(death).get(1));
+        }
+    }
+
+    private static String potionKey(String name) {
+        return "item.minecraft.potion.effect." + name;
+    }
+    private static String potionSplashKey(String name) {
+        return "item.minecraft.splash_potion.effect." + name;
+    }
+    private static String potionLingeringKey(String name) {
+        return "item.minecraft.lingering_potion.effect." + name;
+    }
+    private static String arrowKey(String name) {
+        return "item.minecraft.tipped_arrow.effect." + name;
+    }
+    private static void potionTranslations(TranslationBuilder builder, HashMap<String, String> potions) {
+        for (String potion : potions.keySet()) {
+            builder.add(potionKey(potion), potions.get(potion) + " Potion");
+            builder.add(potionSplashKey(potion), potions.get(potion) + " Splash Potion");
+            builder.add(potionLingeringKey(potion), potions.get(potion) + " Lingering Potion");
+            builder.add(arrowKey(potion), "Arrow of " + potions.get(potion));
+        }
     }
 }

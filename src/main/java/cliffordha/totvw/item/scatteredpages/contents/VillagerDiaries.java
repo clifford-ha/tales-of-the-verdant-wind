@@ -3,7 +3,7 @@ package cliffordha.totvw.item.scatteredpages.contents;
 import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
 import net.minecraft.world.entity.player.Player;
 
-import static cliffordha.totvw.util.VWUtil.TextUtil.*;
+import static cliffordha.totvw.util.VWTextUtil.*;
 
 public class VillagerDiaries {
     private static Player player;

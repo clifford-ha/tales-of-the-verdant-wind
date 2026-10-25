@@ -1,9 +1,10 @@
 package cliffordha.totvw.networking;
 
-import cliffordha.totvw.networking.packets.ClientPrefsPayload;
-import cliffordha.totvw.networking.packets.TetherBlacklistPayload;
+import cliffordha.totvw.networking.packets.*;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.Runestone;
+import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,6 +31,30 @@ public class ServerboundPackets {
                 player.setAttached(PlayerPrefs.BENEDICTION_PLAYER_TP_METHOD, payload.benedictionPlayerTPMethod());
                 player.setAttached(PlayerPrefs.BENEDICTION_WOLF_TP_ALL, payload.benedictionWolfTPAll());
             });
+        });
+        ServerPlayNetworking.registerGlobalReceiver(MobEffectInstancePayload.TYPE, (payload, context) -> {
+            context.server().getAllLevels().forEach(
+                    server -> server.getAllEntities().forEach(
+                            entity -> {
+                                if (!(entity instanceof Wolf wolf && wolf.isTame())) return;
+                                wolf.setAttached(VWAttachments.MOB_EFFECTS, payload.instance());
+                            }
+                    )
+            );
+        });
+        ServerPlayNetworking.registerGlobalReceiver(WolfDataPayload.TYPE, (payload, context) -> {
+            context.server().getAllLevels().forEach(
+                    server -> server.getAllEntities().forEach(
+                            entity -> {
+                                if (!(entity instanceof Wolf wolf && wolf.isTame())) return;
+                                wolf.setAttached(WolfAttachment.ARMOR_DATA, payload.armorData());
+                            }
+                    )
+            );
+        });
+        ServerPlayNetworking.registerGlobalReceiver(PlayerArmorDataPayload.TYPE, (payload, context) -> {
+            ServerPlayer player = context.player();
+            player.setAttached(PlayerAttachment.EQUIPMENTS, payload.armorData());
         });
 
         ServerPlayNetworking.registerGlobalReceiver(TetherBlacklistPayload.TYPE, (payload, context) -> {

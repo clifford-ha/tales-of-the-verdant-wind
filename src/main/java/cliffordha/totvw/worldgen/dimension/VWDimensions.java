@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class VWDimensions {
+    public static final ResourceKey<Level> NONE = ResourceKey.create(Registries.DIMENSION, Identifier.withDefaultNamespace("none"));
     public static final ResourceKey<Level> OVERWORLD = ResourceKey.create(Registries.DIMENSION, Identifier.withDefaultNamespace("overworld"));
     public static final ResourceKey<Level> NETHER = ResourceKey.create(Registries.DIMENSION, Identifier.withDefaultNamespace("the_nether"));
     public static final ResourceKey<Level> END = ResourceKey.create(Registries.DIMENSION, Identifier.withDefaultNamespace("the_end"));

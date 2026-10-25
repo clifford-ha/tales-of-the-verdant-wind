@@ -181,7 +181,7 @@ public class VWAdvancements extends FabricAdvancementProvider {
         Advancement.Builder.advancement()
                 .parent(powerBeyondReason)
                 .display(VWItems.TETHER_RUNESTONE_PLATE,
-                        title("Bound By A Thread", VWColors.MIGHT_EFFECT),
+                        title("Bound By A Thread", VWColors.MIGHT),
                         description("Use the power of Tether Runestone on your companion so it can gain the Link status"),
                         AdvancementType.CHALLENGE,
                         true, true, true)

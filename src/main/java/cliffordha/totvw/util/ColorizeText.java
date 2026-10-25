@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// mixin
-public final class VWColorizeTextMixin {
-
-    private static final Map<String, Integer> KEY_COLORS = new HashMap<>();
-
-    private VWColorizeTextMixin() {}
+public class ColorizeText {
+    private static Map<String, Integer> KEY_COLORS = new HashMap<>();
+    private ColorizeText() {}
 
     public static void register(int rgb, List<String> keys) {
         for (String key : keys) {
             KEY_COLORS.put(key, rgb);
         }
+    }
+    public static void register(int rgb, String key) {
+        KEY_COLORS.put(key, rgb);
     }
 
     @Nullable

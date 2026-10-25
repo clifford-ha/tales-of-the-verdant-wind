@@ -1,5 +1,6 @@
 package cliffordha.totvw.effect;
 
+import cliffordha.totvw.entity.skill.SkillCooldowns;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.attachments.HavocType;
@@ -20,7 +21,7 @@ import net.minecraft.world.entity.player.Player;
 public class HavocEffect extends MobEffect {
     public static final ParticleOptions HAVOC_PARTICLE = new DustParticleOptions(VWColors.HAVOC_PARTICLE, 1.0f);
     public HavocEffect() {
-        super(MobEffectCategory.BENEFICIAL, VWColors.BLOODLUST_EFFECT, HAVOC_PARTICLE);
+        super(MobEffectCategory.BENEFICIAL, VWColors.BLOODLUST, HAVOC_PARTICLE);
     }
     public static LivingEntity mob;
 
@@ -65,16 +66,7 @@ public class HavocEffect extends MobEffect {
 
     public static void removeHavoc(LivingEntity entity) {
         if (entity instanceof Player player) {
-            int cooldown;
-            if (HavocType.isAnnihilation(player)) {
-                cooldown = 90;
-            } else if (HavocType.isExpulsion(player)) {
-                cooldown = (60 * 2) + 30;
-            } else if (HavocType.isVoid(player)) {
-                cooldown = (60 * 7);
-            } else {
-                cooldown = 30;
-            }
+            int cooldown = SkillCooldowns.getHavoc(player);
             player.setAttached(PlayerAttachment.CD_HAVOC, cooldown);
             player.removeAttached(PlayerAttachment.HAVOC_TYPE);
             player.removeAttached(PlayerAttachment.HAVOC_USAGE_COUNT);

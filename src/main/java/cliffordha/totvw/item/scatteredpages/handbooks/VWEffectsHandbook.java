@@ -2,7 +2,7 @@ package cliffordha.totvw.item.scatteredpages.handbooks;
 
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
 import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextStyle.*;
-import static cliffordha.totvw.util.VWUtil.TextUtil.*;
+import static cliffordha.totvw.util.VWTextUtil.*;
 
 public class VWEffectsHandbook {
     private static final String descBenediction = "Benediction of the Verdant Mountains";

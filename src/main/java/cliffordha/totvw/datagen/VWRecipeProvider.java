@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.tag.VWItemTags;
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.VWTimer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.*;
@@ -112,7 +112,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         CookingBookCategory.MISC,
                         VWItems.VERIXIUM_CHUNK,
                         900.0F,
-                        VWUtil.TimeUtil.duration(3, 45),
+                        VWTimer.tickDuration(3, 45),
                         "verixium_raw_materials"
                 );
                 shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_SPEAR, 1)

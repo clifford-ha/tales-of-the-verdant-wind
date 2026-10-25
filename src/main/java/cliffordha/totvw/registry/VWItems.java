@@ -311,6 +311,11 @@ public class VWItems {
                     .fireResistant()
             ));
 
+    public static final Item EMPTY = registerItem("empty",
+            properties -> new Item(properties
+                    .stacksTo(1)
+            ));
+
     public static class Pages {
 
         /** placeholder items **/

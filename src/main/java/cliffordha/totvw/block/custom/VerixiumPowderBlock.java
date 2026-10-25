@@ -34,7 +34,7 @@ public class VerixiumPowderBlock extends SandBlock {
         if (level.isRaining() || level.isThundering()) {
             if (level.getGameTime() % 10 * ( 1+ level.getRandom().nextFloat()) == 0) {
                 for (int i = 0; i < (4 * (1 + level.getRandom().nextFloat())); i++) {
-                    level.addParticle(VWParticles.VERIXIUM_POWDER_RAIN_PARTICLE, pos.getX() + level.getRandom().nextFloat(), pos.getY() + 1, pos.getZ() + level.getRandom().nextFloat(), 0.0D, 0.0D, 0.0D);
+                    level.addParticle(VWParticles.VERIXIUM_POWDER_RAIN, pos.getX() + level.getRandom().nextFloat(), pos.getY() + 1, pos.getZ() + level.getRandom().nextFloat(), 0.0D, 0.0D, 0.0D);
                 }
                 if (level.getRandom().nextFloat() == 0.33f) {
                     level.playSound(null, pos, SoundEvents.SAND_IDLE, SoundSource.BLOCKS);
@@ -49,7 +49,7 @@ public class VerixiumPowderBlock extends SandBlock {
         if (level.isClientSide()) {
             double value = 0;
             for (int i = 0; i < 24; i++) {
-                level.addParticle(VWParticles.BENEDICTION_TRIGGER_PARTICLE, pos.getX() + level.getRandom().nextFloat(), pos.getY(), pos.getZ() + level.getRandom().nextFloat(), value, value, value);
+                level.addParticle(VWParticles.BENEDICTION_TRIGGER, pos.getX() + level.getRandom().nextFloat(), pos.getY(), pos.getZ() + level.getRandom().nextFloat(), value, value, value);
             }
         }
         super.destroy(level, pos, state);

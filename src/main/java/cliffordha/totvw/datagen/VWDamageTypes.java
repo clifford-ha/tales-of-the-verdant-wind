@@ -16,14 +16,18 @@ public class VWDamageTypes {
     public static final ResourceKey<DamageType> SCORCHING_HEAT = createDMGType("scorching_heat");
     public static final ResourceKey<DamageType> HAVOC = createDMGType("havoc");
     public static final ResourceKey<DamageType> TETHER_PROXY = createDMGType("tether_proxy");
+    public static final ResourceKey<DamageType> THERMAL_BURN = createDMGType("thermal_burn");
+    public static final ResourceKey<DamageType> WINTERBREEZE_SHOCK = createDMGType("winterbreeze_shock");
 
     public static void bootstrap(BootstrapContext<DamageType> context) {
         context.register(BLOODLUST, new DamageType("bloodlust", 0.0f, DamageEffects.HURT));
         context.register(BLEEDING, new DamageType("bleeding", 0.2f, DamageEffects.HURT));
         context.register(LODESTONE_WIND_CORE_PULSE, new DamageType("wind_core_pulse", 0.3f, DamageEffects.HURT));
-        context.register(SCORCHING_HEAT, new DamageType("scorching_heat", 0.4f, DamageEffects.HURT));
-        context.register(HAVOC, new DamageType("havoc", 1.0f, DamageEffects.HURT));
+        context.register(SCORCHING_HEAT, new DamageType("scorching_heat", 0.4f, DamageEffects.BURNING));
+        context.register(HAVOC, new DamageType("havoc", 1.0f, DamageEffects.THORNS));
         context.register(TETHER_PROXY, new DamageType("tether_proxy", 0.0f, DamageEffects.THORNS));
+        context.register(THERMAL_BURN, new DamageType("thermal_burn", 2.0f, DamageEffects.BURNING));
+        context.register(WINTERBREEZE_SHOCK, new DamageType("winterbreeze_shock", 3.2f, DamageEffects.FREEZING));
     }
 
     private static ResourceKey<DamageType> createDMGType(String name) {
@@ -51,5 +55,11 @@ public class VWDamageTypes {
     }
     public static DamageSource tetherProxy(Level level) {
         return create(level, TETHER_PROXY);
+    }
+    public static DamageSource thermalBurn(Level level) {
+        return create(level, THERMAL_BURN);
+    }
+    public static DamageSource winterShock(Level level) {
+        return create(level, WINTERBREEZE_SHOCK);
     }
 }

@@ -4,16 +4,22 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.networking.packets.ClientPrefsPayload;
 import cliffordha.totvw.registry.VWColors;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +46,13 @@ public class DedicatedConfigScreen extends Screen {
 
     private record IntEntry(String label, String description, IntSupplier get, IntConsumer set, int min, int max, int step) implements Entry {}
 
-    private static final int ROW_W = 250;
+    private static int ROW_W = 250;
     private static final int ROW_H = 20;
     private static final int VALUE_W = 80;
-    private static final int COLOR_BG = 0x80001822;
     private static final int COLOR_HOVER = 0x33FFFFFF;
+    private static final Identifier BANNER = TOTVW.registerID("textures/gui/banner.png");
+    private static final int BANNER_TEX_W = 3840;
+    private static final int BANNER_TEX_H = 1080;
 
     private final List<Entry> entries = new ArrayList<>();
 
@@ -108,14 +116,15 @@ public class DedicatedConfigScreen extends Screen {
 
     @Override
     protected void init() {
+        ROW_W = Mth.ceil(this.width * 0.6f);
         listLeft = (int) ((((double) this.width / 2) - (double) ROW_W / 2) * 0.3);
-        listTop = 32;
-        listBottom = this.height - 40;
+        listTop = Mth.ceil(this.height * 0.2f);
+        listBottom = this.height - Mth.ceil(this.height * 0.15f);
         scroll = Mth.clamp(scroll, 0, maxScroll());
 
         this.addRenderableWidget(
                 Button.builder(Component.literal("Re-sync"), b -> this.onClose())
-                        .bounds(listLeft, this.height - 40, 75, 20)
+                        .bounds(listLeft, Mth.ceil(this.height * 0.85f), 75, 20)
                         .build()
         );
     }
@@ -136,8 +145,27 @@ public class DedicatedConfigScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        int COLOR_BG = ARGB.color(0.7f, 0x001822);
         graphics.fill(0, 0, this.width, this.height, COLOR_BG);
-        graphics.text(this.font, this.title.getString(), this.width / 2 - this.font.width(this.title.getString()) / 2, 12, 0xFF000000 | VWColors.VERDANT_WIND, false);
+
+        int margin = 10;
+        int maxW = this.width - margin * 2;
+        int maxH = this.height / 4;
+
+        float scale = Math.min((float) maxW / BANNER_TEX_W, (float) maxH / BANNER_TEX_H);
+        float rescale = scale * 0.7f;
+        int w = Math.max(1, (int) (BANNER_TEX_W * rescale));
+        int h = Math.max(1, (int) (BANNER_TEX_H * rescale));
+
+        graphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                BANNER,
+                this.listLeft - 11, margin,
+                0.0F, 0.0F,
+                w, h,                          // drawn size
+                BANNER_TEX_W, BANNER_TEX_H,    // region of the texture to sample
+                BANNER_TEX_W, BANNER_TEX_H     // full texture size
+        );
 
         int hovered = rowAt(mouseX, mouseY);
         int end = Math.min(entries.size(), scroll + visibleRows());
@@ -150,7 +178,7 @@ public class DedicatedConfigScreen extends Screen {
             if (e instanceof Header) {
                 graphics.text(this.font, e.label(), listLeft, textY, 0xFF000000 | VWColors.VERDANT_WIND, false);
             } else {
-                if (i == hovered) graphics.fill(listLeft, y, listLeft + ROW_W, y + ROW_H, COLOR_HOVER);
+                if (i == hovered) graphics.fill(listLeft, y, Mth.ceil(listLeft * 0.7f) + ROW_W, y + ROW_H, COLOR_HOVER);
                 graphics.text(this.font, e.label(), listLeft + 4, textY, 0xFFFFFFFF, false);
 
                 String value;
@@ -164,37 +192,55 @@ public class DedicatedConfigScreen extends Screen {
                     value = "<  " + n.get().getAsInt() + "  >";
                     color = 0xFFFFFFFF;
                 }
-                int valueX = listLeft + ROW_W - VALUE_W + (VALUE_W - this.font.width(value)) / 2;
+                int valueX = listLeft + ROW_W - VALUE_W + (60 - this.font.width(value)) / 2;
                 graphics.text(this.font, value, valueX, textY, color, false);
             }
             y += ROW_H;
         }
 
+        int maxX = (int) (this.width * 0.25f);
+        String note;
         if (hovered >= 0) {
             String desc = entries.get(hovered).description();
+            note = !desc.isEmpty() ? "DESCRIPTION" : "";
             if (!desc.isEmpty()) {
                 List<FormattedText> wrapped = this.font.getSplitter()
-                        .splitLines(Component.translatable(desc), 170, Style.EMPTY);
+                        .splitLines(Component.translatable(desc), maxX, Style.EMPTY);
 
                 descriptionText(graphics, wrapped);
             }
         } else {
+            note = "NOTE :3";
             List<FormattedText> wrapped = this.font.getSplitter()
                     .splitLines(Component.literal(
                             "These options are automatically synced to the server."
-                    ), 170, Style.EMPTY);
+                    ), maxX, Style.EMPTY);
 
             descriptionText(graphics, wrapped);
         }
+        graphics.text(
+                this.font, note,
+                Mth.ceil(this.width * 0.675f), Mth.ceil(this.height * 0.2f),
+                0xffffffff,
+                false
+        );
+
 
         super.extractRenderState(graphics, mouseX, mouseY, a);
     }
 
     private void descriptionText(GuiGraphicsExtractor graphics, List<FormattedText> wrapped) {
-        int ySpacing = 0;
+        int leftStart = Mth.ceil(this.width * 0.675f);
+        int ySpacing = 16;
         for (FormattedText line : wrapped) {
-            int rightPos = this.width - this.font.width(line.getString());
-            graphics.text(this.font, line.getString(), rightPos - 30, (listTop + 34) - this.font.lineHeight + ySpacing, 0xFFAAAAAA, false);
+
+            graphics.text(
+                    this.font, line.getString(),
+                    leftStart, Mth.ceil(this.height * 0.2f) + ySpacing,
+                    0xffffffff,
+                    false
+            );
+
             ySpacing += 10;
         }
     }

@@ -1,6 +1,9 @@
 package cliffordha.totvw.registry.attachments;
 
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.registry.VWItems;
+import cliffordha.totvw.util.BasicArmorData;
+import cliffordha.totvw.worldgen.dimension.VWDimensions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
@@ -12,11 +15,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import oshi.util.tuples.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class AttachmentUtil {
     public static final UUID EMPTY_UUID = new UUID(0L, 0L);
@@ -42,6 +49,12 @@ public class AttachmentUtil {
             ByteBufCodecs.STRING_UTF8, Pair::getA,
             ByteBufCodecs.BOOL, Pair::getB,
             Pair::new
+    );
+    public static final Codec<Pair<ItemStack, EquipmentSlot>> ITEM_STACK = RecordCodecBuilder.create(
+            pair -> pair.group(
+                    ItemStack.CODEC.fieldOf("stack").forGetter(Pair::getA),
+                    EquipmentSlot.CODEC.fieldOf("slot").forGetter(Pair::getB)
+            ).apply(pair, Pair::new)
     );
 
     public static AttachmentType<HavocType> registerHavocType(String name, boolean copyOnDeath) {
@@ -132,6 +145,17 @@ public class AttachmentUtil {
                 }
         );
     }
+    public static AttachmentType<ResourceKey<Level>> registerLevel(String name, boolean copyOnDeath) {
+        return AttachmentRegistry.create(
+                TOTVW.registerID(name),
+                builder -> {
+                    builder.persistent(Level.RESOURCE_KEY_CODEC)
+                            .syncWith(ByteBufCodecs.fromCodec(Level.RESOURCE_KEY_CODEC), AttachmentSyncPredicate.all())
+                            .initializer(() -> VWDimensions.NONE);
+                    if (copyOnDeath) builder.copyOnDeath();
+                }
+        );
+    }
     public static AttachmentType<BlockPos> registerBlockPos(String name, boolean copyOnDeath) {
         return AttachmentRegistry.create(
                 TOTVW.registerID(name),
@@ -140,6 +164,39 @@ public class AttachmentUtil {
                             .syncWith(BlockPos.STREAM_CODEC, AttachmentSyncPredicate.all())
                             .initializer(() -> BlockPos.ZERO);
                     if (copyOnDeath) builder.copyOnDeath();
+                }
+        );
+    }
+    public static <E> Codec<Collection<E>> collectionOf(Codec<E> elementCodec) {
+        return elementCodec.listOf().xmap(
+                ArrayList::new,
+                ArrayList::new
+        );
+    }
+    public static final Codec<Collection<MobEffectInstance>> EFFECT_COLLECTION_CODEC = collectionOf(MobEffectInstance.CODEC);
+    public static AttachmentType<Collection<MobEffectInstance>> registerEffectsCollection(String name) {
+        return AttachmentRegistry.create(
+                TOTVW.registerID(name),
+                builder -> builder.persistent(EFFECT_COLLECTION_CODEC)
+                        .syncWith(ByteBufCodecs.fromCodec(EFFECT_COLLECTION_CODEC), AttachmentSyncPredicate.all())
+                        .initializer(ArrayList::new)
+        );
+    }
+    public static AttachmentType<List<BasicArmorData>> registerArmorList(String name) {
+        return AttachmentRegistry.create(
+                TOTVW.registerID(name),
+                builder -> builder.persistent(BasicArmorData.CODEC.listOf())
+                        .syncWith(ByteBufCodecs.fromCodec(BasicArmorData.CODEC.listOf()), AttachmentSyncPredicate.all())
+                        .initializer(ArrayList::new)
+        );
+    }
+    public static AttachmentType<BasicArmorData> registerArmorData(String name) {
+        return AttachmentRegistry.create(
+                TOTVW.registerID(name),
+                builder -> {
+                    builder.persistent(BasicArmorData.CODEC)
+                            .syncWith(ByteBufCodecs.fromCodec(BasicArmorData.CODEC), AttachmentSyncPredicate.all())
+                            .initializer(() -> BasicArmorData.NONE);
                 }
         );
     }
@@ -186,5 +243,22 @@ public class AttachmentUtil {
                     if (copyOnDeath) builder.copyOnDeath();
                 }
         );
+    }
+
+    public static void setAttachment(LivingEntity entity, AttachmentType<Integer> type, int amount) {
+        int current = entity.getAttachedOrElse(type, 0);
+        entity.setAttached(type, current + (amount));
+
+        if (entity.getAttachedOrElse(type, 0) <= 0) {
+            entity.removeAttached(type);
+        }
+    }
+    public static void setAttachment(LivingEntity entity, AttachmentType<Integer> type, int amount, int limit) {
+        int current = entity.getAttachedOrElse(type, 0);
+        entity.setAttached(type, Math.min(current + (amount), limit));
+
+        if (entity.getAttachedOrElse(type, 0) <= 0) {
+            entity.removeAttached(type);
+        }
     }
 }

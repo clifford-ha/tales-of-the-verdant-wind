@@ -13,17 +13,20 @@ import net.minecraft.world.entity.LivingEntity;
 import static cliffordha.totvw.TOTVW.sendClassRegisterLog;
 
 public class VWParticles {
-    public static final SimpleParticleType BENEDICTION_TRIGGER_PARTICLE =
-            registerParticle("benediction_trigger_particle", FabricParticleTypes.simple());
+    public static final SimpleParticleType BENEDICTION_TRIGGER =
+            registerParticle("benediction_trigger", FabricParticleTypes.simple());
 
-    public static final SimpleParticleType VERDANT_BIOMES_ENVIRONMENT_AMBIANCE =
-            registerParticle("verdant_biomes_environment_ambiance", FabricParticleTypes.simple());
+    public static final SimpleParticleType VERDANT_BIOMES_AMBIENCE =
+            registerParticle("verdant_biomes_ambience", FabricParticleTypes.simple());
 
-    public static final SimpleParticleType VERIXIUM_POWDER_RAIN_PARTICLE =
-            registerParticle("verixium_powder_rain_particle", FabricParticleTypes.simple());
+    public static final SimpleParticleType VERIXIUM_POWDER_RAIN =
+            registerParticle("verixium_powder_rain", FabricParticleTypes.simple());
 
-    public static final SimpleParticleType MIGHT_PARALYZE_PARTICLE =
-            registerParticle("might_paralyze_particle", FabricParticleTypes.simple());
+    public static final SimpleParticleType MIGHT_PARALYZE =
+            registerParticle("might_paralyze", FabricParticleTypes.simple());
+
+    public static final SimpleParticleType EXT_SNOWFLAKE =
+            registerParticle("ext_snowflake", FabricParticleTypes.simple());
 
 
     private static SimpleParticleType registerParticle(String name, SimpleParticleType particleType) {

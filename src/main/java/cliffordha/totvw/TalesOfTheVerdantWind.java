@@ -1,5 +1,6 @@
 package cliffordha.totvw;
 
+import cliffordha.totvw.entity.VWGlobalTickEvents;
 import cliffordha.totvw.networking.ServerboundPackets;
 import cliffordha.totvw.networking.VWNetworking;
 import cliffordha.totvw.config.VWConfig;
@@ -15,7 +16,7 @@ import terrablender.api.TerraBlenderApi;
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 	public TalesOfTheVerdantWind() {}
 
-	public static final boolean IN_DEVELOPMENT = false;
+	public static final boolean IN_DEVELOPMENT = true;
 	@Override
 	public void onInitialize() {
 		TOTVW.sendStat(TOTVW.MOD_NAME_LONG + " (or TOTVW for short) started initializing...");
@@ -38,6 +39,8 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 
 		VWRootPlacerTypes.register();
 		VWBiomeModifications.register();
+
+		VWGlobalTickEvents.register();
 
 
 		VWCommands.register();

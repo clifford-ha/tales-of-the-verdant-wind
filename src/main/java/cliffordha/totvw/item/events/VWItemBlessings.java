@@ -4,6 +4,7 @@ import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.tag.VWItemTags;
+import cliffordha.totvw.util.VWTimer;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.biome.Biome;
 import java.util.function.Predicate;
 
 import static cliffordha.totvw.util.VWUtil.*;
-import static cliffordha.totvw.util.VWUtil.TimeUtil.*;
 
 public class VWItemBlessings {
     private static final int TICK_SECONDS = 20;
@@ -100,7 +100,7 @@ public class VWItemBlessings {
 
         int targetDurationSec = targetDuration / 20;
         if (!player.hasEffect(VWEffects.BLESSING_OF_THE_VERDANT_WIND)) {
-            grantEffect(player, VWEffects.BLESSING_OF_THE_VERDANT_WIND, sec(45), 1, VWBiomeTags.IS_VERDANT_BIOMES);
+            grantEffect(player, VWEffects.BLESSING_OF_THE_VERDANT_WIND, 45, 1, VWBiomeTags.IS_VERDANT_BIOMES);
         }
 
         if (player.hasEffect(effect)) {

@@ -8,19 +8,24 @@
     "CropsBlockMixin",
     "IronGolemEntityMixin",
     "ItemsMixin",
+    "LivingEntityMixin",
     "PlayerEntityMixin",
     "PowderSnowBlockMixin",
     "TamableAnimalMixin",
     "VillagerEntityMixin",
-    "WolfEntityMixin",
-    "misc.ArrowNameColorMixin",
-    "misc.EffectNameColorMixin",
-    "misc.EnchantmentNameColorMixin"
+    "WindChargeMixin",
+    "WolfEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "overwrites": {
     "requireAnnotations": true
-	}
+  },
+  "client": [
+    "LivingEntityRendererMixin",
+    "misc.ArrowNameColorMixin",
+    "misc.EffectNameColorMixin",
+    "misc.EnchantmentNameColorMixin"
+  ]
 }
