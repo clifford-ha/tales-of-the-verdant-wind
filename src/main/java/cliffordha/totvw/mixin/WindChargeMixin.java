@@ -2,7 +2,7 @@ package cliffordha.totvw.mixin;
 
 import cliffordha.totvw.entity.skills.ArcticWindsEffect;
 import cliffordha.totvw.registry.attachments.VWAttachments;
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.ExtUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BiomeTags;
@@ -25,19 +25,19 @@ public class WindChargeMixin {
     @Inject(method = "onHitEntity", at = @At("HEAD"))
     private void onHit(EntityHitResult hitResult, CallbackInfo ci) {
         if (hitResult.getEntity() instanceof LivingEntity entity && entity.level() instanceof ServerLevel level) {
-            int pressure = entity.getAttachedOrElse(VWAttachments.PRESSURE_DIFFERENCE, 0);
+            int pressureDiff = entity.getAttachedOrElse(VWAttachments.PRESSURE_DIFFERENCE, 0);
             int arcticAffliction = ArcticWindsEffect.afflictionStack(entity);
 
             RandomSource random = level.getRandom();
 
-            if (pressure > 0) {
-                if (random.nextFloat() < (pressure * 0.01f) + 0.3f) {
-                    double kickback = Math.min(pressure * 0.05f, 3.2);
-                    this.applyKickback(entity, level, kickback);
+            if (pressureDiff > 0) {
+                if (random.nextFloat() < (pressureDiff * 0.01f) + 0.3f) {
+                    double kickback = Math.min(pressureDiff * 0.05f, 3.2);
+                    applyUpwardKick(entity, level, kickback);
 
                     List<Monster> monsters = level.getEntitiesOfClass(
                             Monster.class,
-                            VWUtil.scanArea(entity, 3),
+                            ExtUtil.scanArea(entity, 3),
                             test -> test.getAttachedOrElse(VWAttachments.PRESSURE_DIFFERENCE, 0) > 0
                     );
                     if (monsters.isEmpty()) return;
@@ -47,16 +47,16 @@ public class WindChargeMixin {
                     }
                 }
             }
-            float chance = VWUtil.isInBiome(entity, BiomeTags.SPAWNS_COLD_VARIANT_FARM_ANIMALS) ? 0.6f : 0.3f;
+            float chance = ExtUtil.isInBiome(entity, BiomeTags.SPAWNS_COLD_VARIANT_FARM_ANIMALS) ? 0.6f : 0.3f;
             if (arcticAffliction > 0 && random.nextFloat() < chance) {
-                List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, VWUtil.scanArea(entity, 5), LivingEntity::isAlive);
+                List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, ExtUtil.scanArea(entity, 5), LivingEntity::isAlive);
                 if (entities.isEmpty()) return;
 
                 for (LivingEntity livingEntity : entities) {
                     int current = livingEntity.getAttachedOrElse(VWAttachments.ARCTIC_AFFLICTION, 0);
                     livingEntity.setAttached(VWAttachments.ARCTIC_AFFLICTION, current + 2);
-                    VWUtil.sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, entity.blockPosition(), 1, 4f);
-                    VWUtil.sendParticles(ParticleTypes.SNOWFLAKE, level, entity.blockPosition(), 4, 4f, -10f);
+                    ExtUtil.sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, entity.blockPosition(), 1, 4f);
+                    ExtUtil.sendParticles(ParticleTypes.SNOWFLAKE, level, entity.blockPosition(), 4, 4f, -10f);
                 }
             }
         }
@@ -68,17 +68,17 @@ public class WindChargeMixin {
         RandomSource random = level.getRandom();
         if (random.nextFloat() < (pressure * 0.01f) + 0.3f) {
             double kickback = Math.min(pressure * 0.05f, 3.2);
-            this.applyKickback(entity, level, kickback);
+            applyUpwardKick(entity, level, kickback);
         }
     }
 
     @Unique
-    private void applyKickback(LivingEntity entity, ServerLevel level, double kickback) {
+    private static void applyUpwardKick(LivingEntity entity, ServerLevel level, double kickback) {
         entity.setDeltaMovement(
                 entity.getDeltaMovement().add(0, kickback, 0)
         );
         if (kickback > 0.5) {
-            VWUtil.sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, entity.blockPosition(), 1, 2.5f);
+            ExtUtil.sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, entity.blockPosition(), 1, 2.5f);
         }
     }
 }

@@ -9,12 +9,16 @@ import net.minecraft.world.effect.MobEffectInstance;
 
 import java.util.List;
 
-public record MobEffectInstancePayload(List<MobEffectInstance> instance) implements CustomPacketPayload {
+public record MobEffectInstancePayload(
+        int entityId,
+        List<MobEffectInstance> instance
+) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<MobEffectInstancePayload> TYPE =
             new CustomPacketPayload.Type<>(TOTVW.registerID("mob_effect_instance"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MobEffectInstancePayload> STREAM_CODEC =
             StreamCodec.composite(
+                    ByteBufCodecs.INT, MobEffectInstancePayload::entityId,
                     ByteBufCodecs.fromCodec(MobEffectInstance.CODEC.listOf()), MobEffectInstancePayload::instance,
                     MobEffectInstancePayload::new
             );

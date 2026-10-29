@@ -4,8 +4,12 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.attachments.entity.*;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,6 +43,32 @@ public class VWAttachments {
     public static UUID getWolfPlayerSharedId(LivingEntity entity) {
         return entity.getAttachedOrElse(WOLF_PLAYER_SHARED_ID, entity.getUUID());
     }
+    public static UUID validateSharedID(Entity wolf, Player player) {
+        if (!(wolf instanceof Wolf)) return AttachmentUtil.EMPTY_UUID;
+
+        AttachmentType<UUID> SHARED_ID = VWAttachments.WOLF_PLAYER_SHARED_ID;
+        UUID playerID = player.getAttachedOrElse(SHARED_ID, AttachmentUtil.EMPTY_UUID);
+        UUID wolfID = wolf.getAttachedOrElse(SHARED_ID, AttachmentUtil.EMPTY_UUID);
+
+        boolean playerHasID = !playerID.equals(AttachmentUtil.EMPTY_UUID);
+        boolean wolfHasID = !wolfID.equals(AttachmentUtil.EMPTY_UUID);
+
+        if (!wolfHasID && !playerHasID) {
+            UUID newID = UUID.randomUUID();
+            wolf.setAttached(SHARED_ID, newID);
+            player.setAttached(SHARED_ID, newID);
+
+        } else if (!playerHasID) {
+            player.setAttached(SHARED_ID, wolfID);
+
+        } else if (!wolfHasID) {
+            wolf.setAttached(SHARED_ID, playerID);
+
+        } else {
+            wolf.setAttached(SHARED_ID, playerID);
+        }
+        return playerID;
+    }
 
 
 
@@ -64,6 +94,7 @@ public class VWAttachments {
             WolfAttachment.TRUSTED_PLAYERS,
             WolfAttachment.TETHERED_ENTITY_TYPES,
             WolfAttachment.RUNESTONE_TYPE,
+            WolfAttachment.TETHER_DATA,
             WolfAttachment.TETHER_ENTITY_BLACKLIST,
             WolfAttachment.ATTACK_CYCLE,
             WolfAttachment.FLASH_FREEZE_STACK

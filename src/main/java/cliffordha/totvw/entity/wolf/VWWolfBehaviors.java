@@ -1,15 +1,14 @@
 package cliffordha.totvw.entity.wolf;
 
 import cliffordha.totvw.config.VWConfig;
+import cliffordha.totvw.entity.skill.WolfSkills;
 import cliffordha.totvw.entity.skills.RunestoneEffects;
 import cliffordha.totvw.entity.skills.VerdantWindBlessing;
-import cliffordha.totvw.entity.skills.WolfEnchantmentEffects;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
-import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.entity.skill.SkillManager;
 import cliffordha.totvw.tag.VWBiomeTags;
 
@@ -33,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static cliffordha.totvw.entity.skill.SkillManager.*;
-import static cliffordha.totvw.util.VWUtil.*;
+import static cliffordha.totvw.util.ExtUtil.*;
 
 public class VWWolfBehaviors {
     public static final SoundEvent[] DISTANT_HOWL_SOUNDS = {VWSounds.WOLF_HOWL_A, VWSounds.WOLF_HOWL_B1, VWSounds.WOLF_HOWL_B2, VWSounds.WOLF_HOWL_B3};
@@ -69,13 +68,6 @@ public class VWWolfBehaviors {
                     wolf.teleportToAroundBlockPos(owner.blockPosition());
                 })
         ));
-        TICK_RULES.add(WolfBehaviorRule.forTamed(WolfCondition.tick(), ((wolf, level) -> {
-            level.getChunkSource().addTicketAndLoadWithRadius(
-                    new TicketType(TicketType.NO_TIMEOUT, 2),
-                    wolf.chunkPosition(),
-                    0
-            );
-        })));
     }
     private static void registerWildRules() {
         ON_DAMAGE_RULES.add(WolfBehaviorRule.forWild(WolfCondition.alwaysTrue(), (wolf, level) -> {
@@ -105,7 +97,7 @@ public class VWWolfBehaviors {
                 WolfCondition.alwaysTrue(),
                 (wolf, level) -> {
                     if (wolf.isWearingBodyArmor()) {
-                        WolfEnchantmentEffects.onDamage(wolf, level, null, true, null);
+                        WolfAttackEffects.onPostAttack(wolf, level, null, true, null);
                     }
                     if (Runestone.hasRunestone(wolf)) {
                         processRunestones(wolf, level);
@@ -121,7 +113,7 @@ public class VWWolfBehaviors {
                     if (owner == null) return;
 
                     float HEALTH_THRESHOLD = owner.getAttachedOrElse(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD,
-                            VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;
+                            VWConfig.get().SYNCED_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;
 
                     if (wolf.getHealth() <= wolf.getMaxHealth() * HEALTH_THRESHOLD) {
                         VerdantWindBlessing.triggerBenedictionFromTick(wolf);
@@ -161,9 +153,8 @@ public class VWWolfBehaviors {
                 VWWolfBehaviors::runNaturalHealOnTick
         ));
         TICK_RULES.add(WolfBehaviorRule.forAny(WolfCondition.tick(), (wolf, level) -> {
-            WolfEnchantmentEffects.onTick(wolf, level);
+            WolfAttackEffects.onTick(wolf, level);
 
-            if (VWConfig.get().LOG_ENCHANTMENT_SHOW_WOLF_CD) setWolfConfiguration(wolf, 0);
             if (VWConfig.get().SERVER_OTHER_COOLDOWNS) {
                 depleteCooldown(wolf, WolfAttachment.TIMER_AIR_SUPPLY);
             }
@@ -172,7 +163,7 @@ public class VWWolfBehaviors {
                 depleteCooldown(wolf, WolfAttachment.CD_BLOODLUST_SKILL_PARALYZE);
                 depleteCooldown(wolf, WolfAttachment.CD_MIGHT_SKILL_RUPTURE);
                 depleteCooldown(wolf, WolfAttachment.CD_IGNORE_HIGH_DAMAGE);
-            } else setWolfConfiguration(wolf, 1);
+            } else setWolfConfiguration(wolf);
 
             SkillManager.notifyReset(wolf, WolfSkills.VERDANT_BLESSING);
             SkillManager.notifyReset(wolf, WolfSkills.PARALYZER);
@@ -207,7 +198,7 @@ public class VWWolfBehaviors {
         VerdantWindBlessing.applyBenedictionEffects(player, false);
 
         player.heal(VerdantWindBlessing.triggerHeal(wolf, player));
-        VWUtil.sendToChat(wolf, VWColors.VERDANT_WIND, true, wolfName(wolf) + " has granted you the §nVerdant Wind's Blessing§r");
+        ExtUtil.sendToChat(wolf, VWColors.VERDANT_WIND, true, wolfName(wolf) + " has granted you the §nVerdant Wind's Blessing§r");
 
         sendParticles(VWParticles.BENEDICTION_TRIGGER, level, player.blockPosition(), 6, 0.5);
         VerdantWindBlessing.verdantBlessingAfterEffects(level, wolf);

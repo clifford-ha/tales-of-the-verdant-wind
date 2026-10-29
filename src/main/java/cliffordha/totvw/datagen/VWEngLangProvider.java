@@ -1,18 +1,20 @@
 package cliffordha.totvw.datagen;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.keymapping.VWKeymap;
+import cliffordha.totvw.client.VWKeymap;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems.Pages;
+
 import net.minecraft.core.HolderLookup;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
-import static cliffordha.totvw.item.scatteredpages.ScatteredPageTitle.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import static cliffordha.totvw.item.pages.ScatteredPageTitle.*;
 
 public class VWEngLangProvider extends FabricLanguageProvider {
     public VWEngLangProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
@@ -154,26 +156,6 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
         text.add("effect.tales-of-the-verdant-wind.bloodlust.description", "Gives massive attack buff in exchange for constant damage while the effect is active");
 
-        /*
-        
-        text.add("item.minecraft.potion.effect.sacred_verdant_potion", "Sacred Verdant Potion");
-        text.add("item.minecraft.splash_potion.effect.sacred_verdant_potion", "Sacred Verdant Splash Potion");
-        text.add("item.minecraft.lingering_potion.effect.sacred_verdant_potion", "Sacred Verdant Lingering Potion");
-
-        text.add("item.minecraft.potion.effect.might_amplifier_potion", "Amplified Might Potion");
-        text.add("item.minecraft.splash_potion.effect.might_amplifier_potion", "Amplified Might Splash Potion");
-        text.add("item.minecraft.lingering_potion.effect.might_amplifier_potion", "Amplified Might Lingering Potion");
-
-        text.add("item.minecraft.potion.effect.baleful_strength_potion", "Baleful Strength Potion");
-        text.add("item.minecraft.splash_potion.effect.baleful_strength_potion", "Baleful Strength Splash Potion");
-        text.add("item.minecraft.lingering_potion.effect.baleful_strength_potion", "Baleful Strength Lingering Potion");
-
-        text.add("item.minecraft.tipped_arrow.effect.sacred_verdant_potion", "Arrow infused with Verdant Wind");
-        text.add("item.minecraft.tipped_arrow.effect.might_amplifier_potion", "Arrow of Amplified Might");
-        text.add("item.minecraft.tipped_arrow.effect.baleful_strength_potion", "Arrow of Baleful Strength");
-
-         */
-
         text.add(potionKey("sacred_verdant_potion"), "Sacred Verdant Potion");
         text.add(potionSplashKey("sacred_verdant_potion"), "Sacred Verdant Splash Potion");
         text.add(potionLingeringKey("sacred_verdant_potion"), "Sacred Verdant Lingering Potion");
@@ -184,27 +166,6 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         potionTranslations.put("baleful_strength_potion", "Baleful Strength");
 
         potionTranslations(text, potionTranslations);
-
-        /*
-        text.add("death.attack.bloodlust", "%1$s died from the agonizing effects of §cBloodlust§r");
-        text.add("death.attack.bloodlust.player", "%1$s died from the agonizing effects of §cBloodlust§r while fighting %2$s");
-
-        text.add("death.attack.scorching_heat", "%1$s died from scorching heat");
-        text.add("death.attack.scorching_heat.player", "%1$s died from scorching heat while fighting %2$s");
-
-        text.add("death.attack.bleeding", "%1$s bled to death");
-        text.add("death.attack.bleeding.player", "%1$s bled to death while fighting %2$s");
-
-        text.add("death.attack.wind_core_pulse", "%1$s got incapacitated by the Wind Core's pulse");
-        text.add("death.attack.wind_core_pulse.player", "%1$s got incapacitated by the Wind Core's pulse while fighting %2$s");
-
-        text.add("death.attack.havoc", "%1$s got their life drained by the effects of Havoc");
-        text.add("death.attack.havoc.player", "%1$s got their life drained by the effects of Havoc while fighting %2$s");
-
-        text.add("death.attack.tether_proxy", "%1$s got killed via proxy");
-        text.add("death.attack.tether_proxy.player", "%1$s got killed via proxy while fighting %2$s");
-
-         */
 
         HashMap<String, List<String>> deathTranslations = new HashMap<>();
         deathTranslations.put("bloodlust", List.of(

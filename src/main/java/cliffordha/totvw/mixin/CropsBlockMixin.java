@@ -3,7 +3,7 @@ package cliffordha.totvw.mixin;
 import cliffordha.totvw.item.custom.EfflorescenceRunestonePlate;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.VWAttachments;
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.ExtUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -114,7 +114,7 @@ public abstract class CropsBlockMixin {
     }
     @Unique
     private static void particle(ServerLevel level, BlockPos pos) {
-        VWUtil.sendParticles(ParticleTypes.GLOW, level, pos, 12, 0.6);
+        ExtUtil.sendParticles(ParticleTypes.GLOW, level, pos, 12, 0.6);
     }
 
     // other FlourishingFlora-related growth accelerators
@@ -154,7 +154,7 @@ public abstract class CropsBlockMixin {
                 player.setAttached(VWAttachments.VERDANT_BLOOM_STACK, Math.max(0, currentStack - 1));
 
                 ItemStack stack = EfflorescenceRunestonePlate.getBonemeal(player);
-                boolean amount = VWUtil.isInBiome(player, BiomeTags.HAS_DESERT_PYRAMID);
+                boolean amount = ExtUtil.isInBiome(player, BiomeTags.HAS_DESERT_PYRAMID);
                 if (stack != null) {
                     stack.shrink(amount ? 2 : 1);
                 }

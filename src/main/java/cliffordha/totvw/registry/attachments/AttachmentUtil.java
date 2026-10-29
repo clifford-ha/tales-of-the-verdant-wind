@@ -1,8 +1,6 @@
 package cliffordha.totvw.registry.attachments;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.registry.VWItems;
-import cliffordha.totvw.util.BasicArmorData;
 import cliffordha.totvw.worldgen.dimension.VWDimensions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -182,21 +180,32 @@ public class AttachmentUtil {
                         .initializer(ArrayList::new)
         );
     }
-    public static AttachmentType<List<BasicArmorData>> registerArmorList(String name) {
+    public static AttachmentType<List<ArmorData>> registerArmorList(String name) {
         return AttachmentRegistry.create(
                 TOTVW.registerID(name),
-                builder -> builder.persistent(BasicArmorData.CODEC.listOf())
-                        .syncWith(ByteBufCodecs.fromCodec(BasicArmorData.CODEC.listOf()), AttachmentSyncPredicate.all())
+                builder -> builder.persistent(ArmorData.CODEC.listOf())
+                        .syncWith(ByteBufCodecs.fromCodec(ArmorData.CODEC.listOf()), AttachmentSyncPredicate.all())
                         .initializer(ArrayList::new)
         );
     }
-    public static AttachmentType<BasicArmorData> registerArmorData(String name) {
+    public static AttachmentType<ArmorData> registerArmorData(String name) {
         return AttachmentRegistry.create(
                 TOTVW.registerID(name),
                 builder -> {
-                    builder.persistent(BasicArmorData.CODEC)
-                            .syncWith(ByteBufCodecs.fromCodec(BasicArmorData.CODEC), AttachmentSyncPredicate.all())
-                            .initializer(() -> BasicArmorData.NONE);
+                    builder.persistent(ArmorData.CODEC)
+                            .syncWith(ByteBufCodecs.fromCodec(ArmorData.CODEC), AttachmentSyncPredicate.all())
+                            .initializer(() -> ArmorData.NONE);
+                }
+        );
+    }
+    public static AttachmentType<TetherData> registerTetherData(String name, boolean copyOnDeath) {
+        return AttachmentRegistry.create(
+                TOTVW.registerID(name),
+                builder -> {
+                    builder.persistent(TetherData.CODEC)
+                            .syncWith(ByteBufCodecs.fromCodec(TetherData.CODEC), AttachmentSyncPredicate.all())
+                            .initializer(() -> TetherData.EMPTY);
+                    if (copyOnDeath) builder.copyOnDeath();
                 }
         );
     }

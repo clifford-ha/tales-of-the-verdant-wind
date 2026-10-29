@@ -2,13 +2,15 @@
 	"schemaVersion": 1,
 	"id": "tales-of-the-verdant-wind",
 	"version": "${version}",
-	"name": "Tales of the Verdant Wind",
+	"name": "Wolf Additions: Tales of the Verdant Wind",
 	"description": "The verdant mountains—a place where the missing wind rests.",
 	"authors": [
 		"Clifford HA"
 	],
 	"contact": {
-		"sources": "https://github.com/clifford-ha/tales-of-the-verdant-wind"
+		"sources": "https://github.com/clifford-ha/tales-of-the-verdant-wind",
+		"issues": "https://github.com/clifford-ha/tales-of-the-verdant-wind/issues",
+		"homepage": "https://modrinth.com/mod/tales-of-the-verdant-wind"
 	},
 	"license": "All rights reserved",
 	"icon": "assets/tales-of-the-verdant-wind/tales-of-the-verdant-wind.png",
@@ -27,7 +29,7 @@
 			"cliffordha.totvw.TalesOfTheVerdantWind"
 		],
 		"modmenu": [
-          "cliffordha.totvw.config.VWModMenuIntegration"
+          "cliffordha.totvw.config.ModMenuIntegration"
 		]
 	},
 	"accessWidener": "totvw.classtweaker",
@@ -39,8 +41,7 @@
 		"minecraft": "~26.3",
 		"java": ">=24",
 		"fabric-api": "*",
-		"terrablender": "*",
-		"cloth-config": "*"
+		"terrablender": "*"
 	},
 	"provides": [
 		"cliffordha-wolf-additions"

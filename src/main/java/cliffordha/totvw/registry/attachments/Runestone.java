@@ -3,9 +3,15 @@ package cliffordha.totvw.registry.attachments;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import com.mojang.serialization.Codec;
+import net.minecraft.util.Prediction;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
+import static cliffordha.totvw.util.ExtUtil.consumeItem;
+import static cliffordha.totvw.util.ExtUtil.sendToChat;
 
 public enum Runestone {
     EMPTY("EMPTY", "None"),
@@ -93,5 +99,25 @@ public enum Runestone {
     }
     public static boolean hasRunestone(LivingEntity entity) {
         return !entity.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY).equals(Runestone.EMPTY);
+    }
+    public static InteractionResult updateRunestone(Wolf wolf, Player player, Runestone type, ItemStack stack) {
+        String name = wolf.getPlainTextName();
+        Runestone current = wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY);
+
+        if (current == Runestone.EMPTY) {
+            wolf.setAttached(WolfAttachment.RUNESTONE_TYPE, type);
+            consumeItem(player, stack);
+            sendToChat(player, true, type.getName() + ": " + type.getBuff() +" buff is now activated for " + name + ".");
+            return InteractionResult.SUCCESS;
+        } else if (current == type) {
+            sendToChat(player, true, name + " already uses this runestone type.");
+            return InteractionResult.FAIL;
+        } else {
+            wolf.drop(Runestone.getStack(current), false, Prediction.SERVER_ONLY);
+            wolf.setAttached(WolfAttachment.RUNESTONE_TYPE, type);
+            consumeItem(player, stack);
+            sendToChat(player, true, name + "'s Runestone buff has been changed to " + type.getBuff() + ".");
+            return InteractionResult.SUCCESS;
+        }
     }
 }

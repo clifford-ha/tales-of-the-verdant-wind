@@ -1,21 +1,19 @@
 package cliffordha.totvw;
 
 import cliffordha.totvw.client.VWTooltips;
-import cliffordha.totvw.client.screen.DedicatedConfigScreen;
-import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
-import cliffordha.totvw.keymapping.VWKeymap;
+import cliffordha.totvw.client.screen.ConfigScreen;
+import cliffordha.totvw.item.pages.ScatteredPageItem;
+import cliffordha.totvw.client.VWKeymap;
 import cliffordha.totvw.networking.ClientboundPackets;
-import cliffordha.totvw.networking.packets.MobEffectInstancePayload;
 import cliffordha.totvw.particle.*;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.client.VWModelLayerProvider;
-import cliffordha.totvw.util.VWEffectOverlays;
+import cliffordha.totvw.client.EffectOverlay;
 import cliffordha.totvw.util.ColorizeText;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
@@ -24,6 +22,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.minecraft.client.color.block.BlockTintSources;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.object.boat.BoatModel;
+import net.minecraft.client.particle.FireflyParticle;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -88,7 +87,7 @@ public class TOTVWClient implements ClientModInitializer {
         ColorizeText.register(VWColors.HAVOC_PARTICLE, getEffectKey("havoc"));
 
         ParticleProviderRegistry.getInstance().register(VWParticles.BENEDICTION_TRIGGER, BenedictionTriggerParticle.BenedictionParticleProvider::new);
-        ParticleProviderRegistry.getInstance().register(VWParticles.VERDANT_BIOMES_AMBIENCE, VerdantBiomesEnvironmentAmbiance.VerdantBiomesEnvironmentAmbianceProvider::new);
+        ParticleProviderRegistry.getInstance().register(VWParticles.VERDANT_BIOMES_AMBIENCE, FireflyParticle.FireflyProvider::new);
         ParticleProviderRegistry.getInstance().register(VWParticles.VERIXIUM_POWDER_RAIN, VerixiumPowderRainParticle.VerixiumPowderRainParticleProvider::new);
         ParticleProviderRegistry.getInstance().register(VWParticles.MIGHT_PARALYZE, MightParalyzeParticle.MightParalyzeParticleProvider::new);
         ParticleProviderRegistry.getInstance().register(VWParticles.EXT_SNOWFLAKE, ExtendedSnowflakeParticle.Provider::new);
@@ -110,7 +109,7 @@ public class TOTVWClient implements ClientModInitializer {
         BlockEntityRenderers.register(VWBlockEntityTypes.SIGN, StandingSignRenderer::new);
         BlockEntityRenderers.register(VWBlockEntityTypes.HANGING_SIGN, HangingSignRenderer::new);
         BlockEntityRenderers.register(VWBlockEntityTypes.SHELF, ShelfRenderer::new);
-        VWEffectOverlays.register();
+        EffectOverlay.register();
         VWTooltips.register();
 
         VWKeymap.register();
@@ -121,7 +120,7 @@ public class TOTVWClient implements ClientModInitializer {
             if (player == null) return;
 
             if (VWKeymap.isWolfConfigKeyDown()) {
-                DedicatedConfigScreen.create();
+                ConfigScreen.create();
             } else if (VWKeymap.isStatusScreenKeyDown()) {
                 if (client.crosshairPickEntity == null) {
                     ScatteredPageItem.openStatScreen(client.player);

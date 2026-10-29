@@ -1,6 +1,6 @@
 package cliffordha.totvw;
 
-import cliffordha.totvw.entity.VWGlobalTickEvents;
+import cliffordha.totvw.entity.GlobalServerTickEvents;
 import cliffordha.totvw.networking.ServerboundPackets;
 import cliffordha.totvw.networking.VWNetworking;
 import cliffordha.totvw.config.VWConfig;
@@ -40,7 +40,7 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		VWRootPlacerTypes.register();
 		VWBiomeModifications.register();
 
-		VWGlobalTickEvents.register();
+		GlobalServerTickEvents.register();
 
 
 		VWCommands.register();

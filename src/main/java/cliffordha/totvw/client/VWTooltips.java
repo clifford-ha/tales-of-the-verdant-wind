@@ -17,16 +17,16 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static cliffordha.totvw.item.scatteredpages.ScatteredPageTextColor.*;
+import static cliffordha.totvw.item.pages.FTextColor.*;
 import static cliffordha.totvw.registry.VWEnchantments.entityEnchantmentLVL;
-import static cliffordha.totvw.util.VWTextUtil.*;
+import static cliffordha.totvw.util.TextUtil.*;
 
 @Environment(EnvType.CLIENT)
 public class VWTooltips {
@@ -73,8 +73,12 @@ public class VWTooltips {
 
         if (stack.is(VWItems.VERIXIUM_POWDER)) {
             addVWItem(out, "VW Slow Falling");
-        } else {
+        } else if (stack.is(Items.GLOWSTONE_DUST)) {
             addVWItem(out, "VW Night Vision");
+        } else if (stack.is(Items.GUNPOWDER)) {
+            addVWItem(out, "[VW] Gives 3 stacks of explosion nullifier that makes you invulnerable to any explosion damage and is removed after all stacks are used or when the Nausea effect expires");
+        } else if (stack.is(Items.MAGMA_CREAM) || stack.is(Items.BLAZE_POWDER)) {
+            addVWItem(out, "VW Fire Resistance");
         }
     }
     private static void handleLoreLines(ItemStack stack, List<Component> out) {
@@ -142,26 +146,26 @@ public class VWTooltips {
         if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_4)) addExpandingText(out, LORE_soulRunestoneFragment4);
 
         if (stack.is(VWItems.VERIXIUM_CHUNK)) {
-            addExpandingText(out, LORE_verixiumChunk);
+            addText(out, LORE_verixiumChunk);
 
         } else if (stack.is(VWItems.CONDENSED_VERIXIUM)) {
-            addExpandingText(out, LORE_condensedVerixium0, LORE_condensedVerixium1);
+            addText(out, LORE_condensedVerixium0, LORE_condensedVerixium1);
 
         } else if (stack.is(VWItems.VERIXIUM_SHARD)) {
-            addExpandingText(out, LORE_verixiumShard);
+            addText(out, LORE_verixiumShard);
 
         } else if (stack.is(VWItems.VERIXIUM_POWDER)) {
-            addExpandingText(out, LORE_verixiumPowder);
+            addText(out, LORE_verixiumPowder);
 
         } else if (stack.is(VWItems.VERIXIUM_INGOT)) {
-            addExpandingText(out, LORE_verixiumIngot);
+            addText(out, LORE_verixiumIngot);
 
         } else if (stack.is(VWItems.VERIXIUM_PAPER) || stack.is(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE)) {
-            addMutedItalic(out, itemVerixium);
+            addText(out, itemVerixium);
 
         } else if (stack.is(VWItems.VERIXIUM_HELMET) || stack.is(VWItems.VERIXIUM_LEGGINGS)
                 || stack.is(VWItems.VERIXIUM_BOOTS) || stack.is(VWItems.VERIXIUM_CHESTPLATE)) {
-            addMutedItalic(out, itemVerixiumArmor);
+            addText(out, itemVerixiumArmor);
         } else if (stack.is(VWItems.VERIXIUM_WOLF_ARMOR)) {
             addMutedItalic(out, itemVerixiumArmor);
             addWolfArmorBenedictionLore(out);
@@ -209,7 +213,7 @@ public class VWTooltips {
 
     private static void addVWItem(List<Component> out, String... text) {
         if (mc.hasShiftDown()) {
-            out.add(Component.literal(Arrays.toString(text)).withColor(VWColors.VERDANT_WIND));
+            addVWText(out,String.join(" ", text));
         } else {
             out.add(Component.literal("[VW] Active"));
         }
@@ -227,9 +231,7 @@ public class VWTooltips {
         if (mc.hasShiftDown()) {
             out.add(Component.literal("Verdant Wind's Blessing").withColor(VWColors.VERDANT_WIND));
             for (String key : keys) {
-                List<FormattedText> wrapped = mc.font.getSplitter()
-                        .splitLines(Component.translatable(key), 200, Style.EMPTY);
-                for (FormattedText line : wrapped) {
+                for (FormattedText line : splitText(key)) {
                     out.add(Component.literal(line.getString())
                             .withColor(VWColors.VERDANT_WIND_MUTED)
                             .withStyle(ChatFormatting.ITALIC));
@@ -240,14 +242,29 @@ public class VWTooltips {
             out.add(Component.literal("[VW] Blessing Active"));
         }
     }
+    private static void addText(List<Component> out, int color, String... keys) {
+        addStaticText(out, color, keys);
+    }
     private static void addText(List<Component> out, String... keys) {
+        addStaticText(out, VWColors.GRAY, keys);
+    }
+    private static void addStaticText(List<Component> out, int color, String... keys) {
         for (String key : keys) {
             List<FormattedText> wrapped = mc.font.getSplitter()
                     .splitLines(Component.translatable(key), 150, Style.EMPTY);
             for (FormattedText line : wrapped) {
                 out.add(Component.literal(line.getString())
-                        .withColor(VWColors.GRAY));
+                        .withColor(color));
             }
+        }
+    }
+    private static List<FormattedText> splitText(String key) {
+        return mc.font.getSplitter().splitLines(Component.translatable(key), 160, Style.EMPTY);
+    }
+    private static void addVWText(List<Component> out, String key) {
+        for (FormattedText line : splitText(key)) {
+            out.add(Component.literal(line.getString())
+                    .withColor(VWColors.VERDANT_WIND));
         }
     }
     private static void addEmpty(List<Component> out) {
@@ -256,9 +273,7 @@ public class VWTooltips {
     private static void addExpandingText(List<Component> out, int color, String... keys) {
         if (mc.hasShiftDown()) {
             for (String key : keys) {
-                List<FormattedText> wrapped = mc.font.getSplitter()
-                        .splitLines(Component.translatable(key), 150, Style.EMPTY);
-                for (FormattedText line : wrapped) {
+                for (FormattedText line : splitText(key)) {
                     out.add(Component.literal(line.getString()).withColor(color));
                 }
             }
@@ -269,9 +284,7 @@ public class VWTooltips {
     private static void addExpandingText(List<Component> out, String... keys) {
         if (mc.hasShiftDown()) {
             for (String key : keys) {
-                List<FormattedText> wrapped = mc.font.getSplitter()
-                        .splitLines(Component.translatable(key), 150, Style.EMPTY);
-                for (FormattedText line : wrapped) {
+                for (FormattedText line : splitText(key)) {
                     out.add(Component.literal(line.getString()).withColor(VWColors.VERDANT_WIND_MUTED));
                 }
             }

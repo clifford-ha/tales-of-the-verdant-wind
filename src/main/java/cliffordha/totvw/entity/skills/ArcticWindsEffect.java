@@ -1,12 +1,12 @@
 package cliffordha.totvw.entity.skills;
 
 import cliffordha.totvw.datagen.VWDamageTypes;
-import cliffordha.totvw.entity.wolf.WolfEnchants;
+import cliffordha.totvw.entity.wolf.WolfEnchantments;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWParticles;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.worldgen.dimension.VWDimensions;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
-import static cliffordha.totvw.util.VWUtil.*;
+import static cliffordha.totvw.util.ExtUtil.*;
 
 public class ArcticWindsEffect {
     public static void run(Wolf wolf, ServerLevel level, int enchantmentLevel) {
@@ -36,7 +36,7 @@ public class ArcticWindsEffect {
         }
         List<Wolf> nearby = level.getEntitiesOfClass(
                 Wolf.class,
-                VWUtil.scanArea(wolf, 12),
+                ExtUtil.scanArea(wolf, 12),
                 test -> test.getOwner() == wolf.getOwner()
         );
         if (afflictionStack(wolf) > 0 && VWEnchantments.getArcticWinds(wolf) > 2) {
@@ -111,7 +111,7 @@ public class ArcticWindsEffect {
         return false;
     }
     public static boolean negateFreezingOrFireDMG(Wolf wolf, DamageSource source) {
-        var enchants = WolfEnchants.of(wolf);
+        var enchants = WolfEnchantments.of(wolf);
         if (source.is(DamageTypeTags.IS_FREEZING)) {
             return enchants.getArcticWinds() > 0 || enchants.getIgnition() > 2;
         } else if (source.is(DamageTypeTags.IS_FIRE)) {

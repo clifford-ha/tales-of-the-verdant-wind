@@ -20,7 +20,7 @@ public record ClientPrefsPayload(
         boolean benedictionWolfTPAll
 ) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ClientPrefsPayload> TYPE =
-            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "client_prefs"));
+            new CustomPacketPayload.Type<>(TOTVW.registerID("client_prefs"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientPrefsPayload> STREAM_CODEC =
             StreamCodec.composite(

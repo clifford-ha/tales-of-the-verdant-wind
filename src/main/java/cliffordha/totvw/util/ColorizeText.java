@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ColorizeText {
-    private static Map<String, Integer> KEY_COLORS = new HashMap<>();
+    private final static Map<String, Integer> KEY_COLORS = new HashMap<>();
     private ColorizeText() {}
 
     public static void register(int rgb, List<String> keys) {

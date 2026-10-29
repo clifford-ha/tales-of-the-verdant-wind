@@ -269,7 +269,7 @@ public class VWBlocks {
             true
     );
     public static final Block FARMLAND_PLACER = registerBlock("farmland_placer",
-            properties -> new FarmlandBlockPlacer(properties
+            properties -> new FarmlandPlacerBlock(properties
                     .sound(SoundType.GRASS)
                     .mapColor(MapColor.DIRT)
                     .strength(1.0f, 1.0f)

@@ -1,12 +1,11 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.entity.WolfBenedictionHelper;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
-import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -20,10 +19,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
@@ -35,7 +34,7 @@ import oshi.util.tuples.Pair;
 
 import java.util.*;
 
-import static cliffordha.totvw.util.VWUtil.sendToChat;
+import static cliffordha.totvw.util.ExtUtil.sendToChat;
 
 public class VWCommands {
     private static final AttachmentType<List<Pair<String, UUID>>> TRUST_DATA = PlayerAttachment.TRUSTED_PLAYERS;
@@ -97,7 +96,7 @@ public class VWCommands {
                             player.setAttached(TRUST_DATA, data);
                             return data.size();
                         } else {
-                            sendFail(context, "No trust data to remove.");
+                            sendFail(context, "No trust tetherData to remove.");
                             return 0;
                         }
                     }
@@ -120,7 +119,7 @@ public class VWCommands {
                             sendSuccess(context, false, "You removed your armorData of trusted players (" + data + ").");
                             return data;
                         } else {
-                            sendFail(context, "No trust data to remove.");
+                            sendFail(context, "No trust tetherData to remove.");
                             return 0;
                         }
                     }
@@ -180,26 +179,38 @@ public class VWCommands {
                             return 0;
                         }
 
+                        UUID ownerSharedId = VWAttachments.getWolfPlayerSharedId(player);
+                        UUID ownerRealId = player.getUUID();
+
+                        List<Pair<String, UUID>> trustData = player.getAttachedOrElse(TRUST_DATA, List.of()).stream()
+                                .filter(t -> !t.getB().equals(ownerSharedId) && !t.getB().equals(ownerRealId))
+                                .toList();
+
+                        Set<UUID> trustedIds = new HashSet<>();
+                        for (Pair<String, UUID> t : trustData) trustedIds.add(t.getB());
+
                         int aggressors = 0;
-                        List<Pair<String, UUID>> trustData = player.getAttachedOrElse(TRUST_DATA, List.of());
                         for (Wolf wolf : wolves) {
-                            List<Pair<String, UUID>> aggressorList = new ArrayList<>(wolf.getAttachedOrElse(WolfAttachment.AGGRESSOR_LIST, List.of()));
-
                             if (!trustData.isEmpty()) {
-                                wolf.setAttached(WOLF_TRUST_DATA, trustData);
-
-                                if (!aggressorList.isEmpty()) {
-                                    for (Pair<String, UUID> data : aggressorList) {
-                                        if (aggressorList.contains(data)) {
-                                            aggressors++;
-                                            aggressorList.remove(data);
-                                            wolf.setAttached(WolfAttachment.AGGRESSOR_LIST, aggressorList);
-                                        }
-                                    }
-                                }
-
+                                wolf.setAttached(WOLF_TRUST_DATA, List.copyOf(trustData));
                             } else {
                                 wolf.removeAttached(WOLF_TRUST_DATA);
+                            }
+
+                            List<Pair<String, UUID>> aggressorList = new ArrayList<>(wolf.getAttachedOrElse(WolfAttachment.AGGRESSOR_LIST, List.of()));
+                            int before = aggressorList.size();
+                            aggressorList.removeIf(a -> trustedIds.contains(a.getB())
+                                    || a.getB().equals(ownerSharedId)
+                                    || a.getB().equals(ownerRealId));
+                            int removed = before - aggressorList.size();
+
+                            if (removed > 0) {
+                                aggressors += removed;
+                                if (aggressorList.isEmpty()) {
+                                    wolf.removeAttached(WolfAttachment.AGGRESSOR_LIST);
+                                } else {
+                                    wolf.setAttached(WolfAttachment.AGGRESSOR_LIST, List.copyOf(aggressorList));
+                                }
                             }
                         }
 
@@ -207,7 +218,7 @@ public class VWCommands {
                         String removedAggressors = aggressors > 0 ? " and removed " + aggressors + " aggressor" + (aggressors > 1 ? "s" : "") + "." : ".";
                         String count = "Synced " + trustData.size() + " trusted players to " + wolfCount + removedAggressors;
 
-                        String finalize = trustData.isEmpty() ? "Removed old data from " + wolfCount : count;
+                        String finalize = trustData.isEmpty() ? "Removed old tetherData from " + wolfCount : count;
 
                         sendSuccess(context, false, finalize);
                         return wolves.size();
@@ -323,24 +334,7 @@ public class VWCommands {
 
         if (!TOTVW.IN_DEVELOPMENT) return;
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            dispatcher.register(Commands.literal("totvw")
-                    .then(Commands.literal("place-village-pools")
-                    .then(Commands.argument("root", IntegerArgumentType.integer(0, 1))
-                    .then(Commands.argument("type", BoolArgumentType.bool())
-                    .then(Commands.argument("folder", StringArgumentType.string())
-                            .executes(context -> {
-                                boolean type = context.getArgument("type", Boolean.class);
-                                String folder;
-                                if (!type) {
-                                    folder = StringArgumentType.getString(context, "folder");
-                                } else {
-                                    folder = "zombie/" + StringArgumentType.getString(context, "folder");
-                                }
-                                int root = IntegerArgumentType.getInteger(context, "root");
-                                return placeTaigaVillagePools(context.getSource(), root, folder);
-                            })
-                    ))))
-            );
+
             dispatcher.register(Commands.literal("totvw")
                     .then(Commands.literal("tame_nearby_wolves").executes(context -> {
                         ServerPlayer player = getPlayer(context);
@@ -352,7 +346,7 @@ public class VWCommands {
                         ServerLevel level = player.level();
                         List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
                                 player.getBoundingBox().inflate(32),
-                                wolf -> wolf.isTame() && wolf.getUUID() != player.getUUID());
+                                wolf -> wolf.isTame() && !wolf.getUUID().equals(player.getUUID()));
 
                         if (wolves.isEmpty()) {
                             context.getSource().sendFailure(Component.literal("No nearby wolves to tame!"));
@@ -378,7 +372,7 @@ public class VWCommands {
                                 ServerLevel level = player.level();
                                 List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
                                         player.getBoundingBox().inflate(32),
-                                        wolf -> wolf.isTame() && wolf.getOwner() == player);
+                                        wolf -> wolf.isTame() && !wolf.getUUID().equals(player.getUUID()));
 
                                 if (wolves.isEmpty()) {
                                     context.getSource().sendFailure(Component.literal("No nearby wolves to un-tame!"));
@@ -393,7 +387,74 @@ public class VWCommands {
                                 return wolves.size();
                             }
                     )));
+            dispatcher.register(Commands.literal("totvw-saveFile")
+                    .executes(context -> {
+                        ServerPlayer player = getPlayer(context);
+                        if (player == null) {
+                            failed(context);
+                            return 0;
+                        }
+
+                        ServerLevel level = player.level();
+                        List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
+                                player.getBoundingBox().inflate(32),
+                                wolf -> wolf.isTame() && !wolf.getUUID().equals(player.getUUID()));
+
+                        if (wolves.isEmpty()) {
+                            context.getSource().sendFailure(Component.literal("No nearby wolves to save!"));
+                            return 0;
+                        }
+
+                        for (Wolf wolf : wolves) {
+                            WolfBenedictionHelper.saveWolfFile(level.getServer(), wolf);
+                        }
+                        context.getSource().sendSuccess(() -> Component.literal("Tamed " + wolves.size() + " nearby wolves."), true);
+                        return wolves.size();
+                    }));
+            dispatcher.register(Commands.literal("totvw-loadFile")
+                    .executes(context -> {
+                        ServerPlayer player = getPlayer(context);
+                        if (player == null) {
+                            failed(context);
+                            return 0;
+                        }
+
+                        ServerLevel level = player.level();
+                        WolfBenedictionHelper.loadWolfFilesIfPresent(player, level);
+
+                        context.getSource().sendSuccess(() -> Component.literal("Tried loading saved wolves from file"), true);
+                        return 1;
+                    }));
+            /*
+            dispatcher.register(Commands.literal("totvw")
+                    .then(Commands.literal("place-village-pools")
+                    .then(Commands.argument("root", IntegerArgumentType.integer(0, 1))
+                    .then(Commands.argument("type", BoolArgumentType.bool())
+                    .then(Commands.argument("folder", StringArgumentType.string())
+                    .executes(context -> {
+                        boolean type = context.getArgument("type", Boolean.class);
+                        String folder;
+                        if (!type) {
+                            folder = StringArgumentType.getString(context, "folder");
+                        } else {
+                            folder = "zombie/" + StringArgumentType.getString(context, "folder");
+                        }
+                        int root = IntegerArgumentType.getInteger(context, "root");
+                        return placeTaigaVillagePools(context.getSource(), root, folder);
+                    })
+                    ))))
+            );
+
+             */
         });
+    }
+    private static void removeOwnerFromAggressorList(Player player, List<Wolf> wolves) {
+        for (Wolf wolf : wolves) {
+            List<Pair<String, UUID>> aggressorList = new ArrayList<>(wolf.getAttachedOrElse(WolfAttachment.AGGRESSOR_LIST, List.of()));
+            if (aggressorList.isEmpty()) break;
+            aggressorList.removeIf(data -> data.getB().equals(player.getUUID()));
+            wolf.setAttached(WolfAttachment.AGGRESSOR_LIST, List.copyOf(aggressorList));
+        }
     }
 
     private static void giveOrDropHandbook(ServerPlayer player, int toGive) {

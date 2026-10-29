@@ -1,6 +1,6 @@
 package cliffordha.totvw.entity.wolf;
 
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.ExtUtil;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -61,7 +61,7 @@ public interface WolfCondition {
     }
 
     static WolfCondition isInBiomes(TagKey<Biome> biome) {
-        return (wolf, level) -> VWUtil.isInBiome(wolf, biome);
+        return (wolf, level) -> ExtUtil.isInBiome(wolf, biome);
     }
 
     static WolfCondition checkConfig(boolean configValue) {

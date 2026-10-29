@@ -22,10 +22,7 @@ public class VWCreativeTabs {
 
     public static final CreativeModeTab TOTVW_ITEMS_TAB = FabricCreativeModeTab.builder()
             .icon(() -> new ItemStack(VWItems.VERIXIUM_CHUNK))
-            .title(Component.literal(TOTVW.MOD_NAME_LONG)
-                    .withStyle(style -> style
-                            .withColor(VWColors.VERDANT_WIND_MUTED))
-            )
+            .title(Component.literal(TOTVW.MOD_NAME_LONG).withColor(VWColors.VERDANT_WIND))
             .displayItems((params, output) -> {
                 output.accept(VWBlocks.VERIXIUM_STONE_ORE);
                 output.accept(VWBlocks.VERIXIUM_DEEPSLATE_ORE);

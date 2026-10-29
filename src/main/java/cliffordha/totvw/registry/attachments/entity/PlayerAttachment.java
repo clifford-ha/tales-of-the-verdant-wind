@@ -3,11 +3,10 @@ package cliffordha.totvw.registry.attachments.entity;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.HavocType;
 import cliffordha.totvw.registry.attachments.VWAttachments;
-import cliffordha.totvw.util.BasicArmorData;
+import cliffordha.totvw.registry.attachments.ArmorData;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -19,6 +18,7 @@ import org.jspecify.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,12 +30,12 @@ public class PlayerAttachment {
     public static final AttachmentType<Boolean> IS_DEV_MODE = registerBool(P + "is_dev_mode", false);
     public static final AttachmentType<Integer> RANDOM_INT_10 = registerInt(P + "random_int_10", false);
 
-    public static final AttachmentType<List<CompoundTag>> WOLF_SOULS = registerCompoundList(P + "wolf_souls", true);
-
     public static final AttachmentType<Integer> RECEIVED_ENCHANTMENTS_HANDBOOK = registerInt(P + "received_enchantments_handbook", false);
     public static final AttachmentType<Integer> RECEIVED_EFFECTS_HANDBOOK = registerInt(P + "received_effects_handbook", false);
     public static final AttachmentType<Integer> RECEIVED_ITEMS_HANDBOOK = registerInt(P + "received_items_handbook", false);
     public static final AttachmentType<Integer> RECEIVED_FEATURES_HANDBOOK = registerInt(P + "received_features_handbook", false);
+
+    public static final AttachmentType<List<CompoundTag>> WOLF_SOULS = registerCompoundList(P + "wolf_souls", true);
 
     public static final AttachmentType<Integer> GENESIS_RUNESTONE_ACQUISITION_COUNT = registerInt(P + "genesis_runestone_acquisition_count", true);
 
@@ -52,24 +52,26 @@ public class PlayerAttachment {
     public static final AttachmentType<BlockPos> RESPAWN_POINT = registerBlockPos(P + "respawn_point", true);
     public static final AttachmentType<List<Pair<String, UUID>>> TRUSTED_PLAYERS = registerListPair(P + "trusted_players", true);
 
-    public static final AttachmentType<List<BasicArmorData>> EQUIPMENTS = registerArmorList(P + "equipments");
+    public static final AttachmentType<List<ArmorData>> EQUIPMENTS = registerArmorList(P + "equipments");
+
+    public static final AttachmentType<Integer> EXPLOSION_RES = registerInt(P + "explosion_resistance_points", true);
 
     public static @Nullable ItemStack getArmorFor(Player player, EquipmentSlot slot) {
-        List<BasicArmorData> armors = player.getAttachedOrElse(EQUIPMENTS, new ArrayList<>());
+        List<ArmorData> armors = player.getAttachedOrElse(EQUIPMENTS, new ArrayList<>());
         if (armors.isEmpty()) return null;
-        for (BasicArmorData data : armors) {
-            if (data.getSlot().equals(slot) && !data.getItemStack().is(VWItems.EMPTY)) {
+        for (ArmorData data : armors) {
+            if (data.slot().equals(slot) && !data.getItemStack().is(VWItems.EMPTY)) {
                 return data.getItemStack();
             }
         }
         return null;
     }
     public static void updateArmorList(Player player) {
-        List<BasicArmorData> armors = new ArrayList<>();
+        List<ArmorData> armors = new ArrayList<>();
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack stack = player.hasItemInSlot(slot) ? player.getItemBySlot(slot) : null;
             if (stack != null) {
-                armors.add(new BasicArmorData(
+                armors.add(new ArmorData(
                         stack.getDisplayName(),
                         BuiltInRegistries.ITEM.getKey(stack.getItem()),
                         stack.getMaxDamage(),
@@ -92,25 +94,34 @@ public class PlayerAttachment {
         }
         return 0;
     }
-    public static List<BasicArmorData> getArmorList(Player player) {
-        List<BasicArmorData> armors = new ArrayList<>();
+    public static List<ArmorData> getArmorList(Player player) {
+        List<ArmorData> armors = new ArrayList<>();
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack stack = player.getItemBySlot(slot);
             if (getMaxDamageValue(stack) > 0) {
-                armors.add(new BasicArmorData(
+                armors.add(new ArmorData(
                         stack.getItemName(),
-                        BasicArmorData.getID(stack),
+                        ArmorData.getID(stack),
                         stack.getMaxDamage(),
                         stack.getDamageValue(),
                         slot
                 ));
             }
         }
+        List<EquipmentSlot> slotOrder = List.of(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND,
+                EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET);
+        armors.sort(Comparator.comparing(ArmorData::slot, Comparator.comparing(slotOrder::indexOf)));
         return armors;
     }
 
     public static Pair<String, UUID> getNameAndUUID(LivingEntity entity) {
         return new Pair<>(entity.getPlainTextName(), VWAttachments.getWolfPlayerSharedId(entity));
+    }
+    public static int getWolfAtrocityCount(Player player) {
+        return player.getAttachedOrElse(WOLF_ATROCITY_COUNT, 0);
+    }
+    public static int getVillagerAtrocityCount(Player player) {
+        return player.getAttachedOrElse(VILLAGER_ATROCITY_COUNT, 0);
     }
     public static List<Pair<String, UUID>> getTrustedPlayers(Player player) {
         return player.getAttachedOrElse(TRUSTED_PLAYERS, List.of());

@@ -3,8 +3,7 @@ package cliffordha.totvw.item.custom;
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
-
-import cliffordha.totvw.util.VWTextUtil;
+import cliffordha.totvw.util.TextUtil;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
@@ -30,8 +29,9 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-import static cliffordha.totvw.util.VWUtil.*;
+import static cliffordha.totvw.util.ExtUtil.*;
 
 public class SoulRunestonePlate extends Item {
     private static final AttachmentType<List<CompoundTag>> WOLF_SOULS = PlayerAttachment.WOLF_SOULS;
@@ -61,10 +61,8 @@ public class SoulRunestonePlate extends Item {
 
         boolean notOnGround = player.isFallFlying() || level.getBlockState(player.blockPosition().below()).isAir();
         if (player.isInLiquid() || notOnGround) {
-            if (level.isClientSide()) {
-                String errorGround = "You can only summon when on ground!";
-                sendToChat(player, false, errorGround);
-            }
+            String errorGround = "You can only summon when on ground!";
+            sendToChat(player, false, errorGround);
 
             player.getCooldowns().addCooldown(new ItemStack(this), 20);
             return InteractionResult.FAIL;
@@ -72,23 +70,19 @@ public class SoulRunestonePlate extends Item {
         List<CompoundTag> souls = player.getAttachedOrElse(WOLF_SOULS, List.of());
 
         if (!player.hasAttached(WOLF_SOULS) || souls.isEmpty()) {
-            if (level.isClientSide()) {
-                sendToChat(player, false, "You currently have no wolf souls to summon!");
-            }
+            sendToChat(player, false, "You currently have no wolf souls to summon!");
+
             player.getCooldowns().addCooldown(new ItemStack(this), 20);
             return InteractionResult.FAIL;
         } else {
             if (player.getAttachedOrElse(PlayerAttachment.WOLF_ATROCITY_COUNT, 0) > 10) {
-                if (level.isClientSide()) {
-                    sendToChat(player, VWColors.BLOODLUST_MUTED, false, "The runestone rejected your summoning request...");
-                }
-
+                sendToChat(player, VWColors.BLOODLUST_MUTED, false, "The runestone rejected your summoning request...");
 
                 player.getCooldowns().addCooldown(new ItemStack(this), 60);
                 return InteractionResult.FAIL;
             }
             if ((player.level() instanceof ServerLevel serverLevel)) {
-                processAndSummonSouls(player, serverLevel, souls);
+                loadWolves(serverLevel, player, souls);
 
                 List<String> nameList = getNameForWolves(souls);
                 int pass = 0;
@@ -100,7 +94,7 @@ public class SoulRunestonePlate extends Item {
                 if (nameList.size() >= 2 && pass == nameList.size()) {
                     names = souls.size() + " wolves";
                 } else {
-                    names = VWTextUtil.iterateList(nameList, false);
+                    names = TextUtil.iterateList(nameList, false);
                 }
 
                 String message = nameList.size() > 5 ? "Summoned " + souls.size() + " wolves." : "Summoned " + names + ".";
@@ -114,48 +108,49 @@ public class SoulRunestonePlate extends Item {
         return InteractionResult.FAIL;
     }
 
-    public static void processAndSummonSouls(Player player, ServerLevel level, List<CompoundTag> souls) {
-        int pass = 0;
+    public static void loadWolves(ServerLevel level, Player player, List<CompoundTag> wolfTag) {
+        int firstPass = 0;
         List<CompoundTag> catcher = new ArrayList<>();
-
-        for (CompoundTag soul : souls) {
-            ListTag setPosition = getPosition(player);
-            soul.put("Pos", setPosition);
-
-            TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), soul);
-            Optional<Entity> wolfEntity = EntityType.create(input, level, new EntitySpawnRequest(EntitySpawnReason.LOAD, false));
-
-            if (wolfEntity.isPresent()) {
-                level.addFreshEntity(wolfEntity.get());
-                Wolf wolf = (Wolf) wolfEntity.get();
-                if (wolf.getHealth() < 2.0f) {
-                    wolf.setHealth(4.0f);
-                }
-                wolf.removeAllEffects();
-                wolf.teleportToAroundBlockPos(player.blockPosition());
-                addHiddenEffect(wolf, VWEffects.WIND_VEIL, 3, 0);
-
-                pass++;
-
-            } else {
-                catcher.add(soul);
-            }
+        for (CompoundTag tag : wolfTag) {
+            if (!loadWolf(level, player, tag)) {
+                catcher.add(tag);
+            } else firstPass++;
         }
-
-        if (pass == souls.size()) {
-            player.removeAttached(WOLF_SOULS);
+        if (firstPass == wolfTag.size()) {
+            player.removeAttached(PlayerAttachment.WOLF_SOULS);
         } else {
             if (catcher.isEmpty()) {
                 TOTVW.sendWarning("Detected an empty catcher! An error might have occurred while " + player.getPlainTextName() + " tried to summon wolves using the Soul Runestone Plate.");
-                player.removeAttached(WOLF_SOULS);
+                player.removeAttached(PlayerAttachment.WOLF_SOULS);
             } else {
-                player.setAttached(WOLF_SOULS, catcher);
-                String t = catcher.size() > 1 ? catcher.size() + " were not summoned" : "One was not summoned";
-                sendToChat(player, false, "An error getMight have occurred while trying to summon wolves.\n" + t);
+                player.setAttached(PlayerAttachment.WOLF_SOULS, catcher);
+                String t = catcher.size() > 1 ? catcher.size() + " wolves" : "a wolf" ;
+                sendToChat(player, false, "An error get have occurred while trying to summon wolves.\nFailed to summon " + t);
             }
         }
     }
+    public static boolean loadWolf(ServerLevel level, Player player, CompoundTag wolfTag) {
+        if (wolfTag.isEmpty()) return false;
+        ListTag setPosition = SoulRunestonePlate.getPosition(player);
+        wolfTag.put("Pos", setPosition);
 
+        TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), wolfTag);
+        Optional<Entity> wolfEntity = EntityType.create(input, level, new EntitySpawnRequest(EntitySpawnReason.LOAD, false));
+
+        if (wolfEntity.isPresent()) {
+            Entity wolfE = wolfEntity.get();
+            if (level.getEntity(wolfE.getUUID()) != null) {
+                wolfE.setUUID(UUID.randomUUID());
+            }
+            level.addFreshEntity(wolfE);
+            Wolf wolf = (Wolf) wolfE;
+            if (wolf.getHealth() < 2f) wolf.setHealth(4f);
+            wolf.removeAllEffects();
+            wolf.teleportToAroundBlockPos(player.blockPosition());
+            addHiddenEffect(wolf, VWEffects.WIND_VEIL, 3, 0);
+        }
+        return true;
+    }
     public static void processAdditional(Player player, int souls, boolean isSummoned) {
         if (!(player.level() instanceof ServerLevel level)) return;
 
@@ -191,7 +186,7 @@ public class SoulRunestonePlate extends Item {
         }
         return namesList;
     }
-    private static ListTag getPosition(Player player) {
+    public static ListTag getPosition(Player player) {
         ListTag pos = new ListTag();
         pos.add(DoubleTag.valueOf(player.getX()));
         pos.add(DoubleTag.valueOf(player.getY()));

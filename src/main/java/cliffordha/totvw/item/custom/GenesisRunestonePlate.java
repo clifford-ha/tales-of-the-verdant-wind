@@ -4,7 +4,7 @@ import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWParticles;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.tag.VWBiomeTags;
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.worldgen.dimension.VWDimensions;
 
 import net.minecraft.core.BlockPos;
@@ -43,7 +43,7 @@ public class GenesisRunestonePlate extends Item {
 
     @Override
     public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
-        ACTIVE = owner instanceof Player player && VWUtil.isInBiome(player, VWBiomeTags.IS_VERDANT_BIOMES);
+        ACTIVE = owner instanceof Player player && ExtUtil.isInBiome(player, VWBiomeTags.IS_VERDANT_BIOMES);
         super.inventoryTick(itemStack, level, owner, slot);
     }
 
@@ -51,8 +51,8 @@ public class GenesisRunestonePlate extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide() && !player.getCooldowns().isOnCooldown(new ItemStack(this))) {
             player.getCooldowns().addCooldown(new ItemStack(this), 100);
-            if (!VWUtil.isDimension(player, VWDimensions.NOLAYAN_LEVEL_KEY) && !VWUtil.isDimension(player, VWDimensions.OVERWORLD)) {
-                VWUtil.sendToChat(player, false, "You must be in the Overworld to establish connection");
+            if (!ExtUtil.isDimension(player, VWDimensions.NOLAYAN_LEVEL_KEY) && !ExtUtil.isDimension(player, VWDimensions.OVERWORLD)) {
+                ExtUtil.sendToChat(player, false, "You must be in the Overworld to establish connection");
                 return InteractionResult.FAIL;
             }
             player.teleport(getPortalDestination((player)));
@@ -65,7 +65,7 @@ public class GenesisRunestonePlate extends Item {
         if (!(entity instanceof ServerPlayer player)) return null;
         ServerLevel currentLevel = player.level();
 
-        VWUtil.sendParticles(VWParticles.BENEDICTION_TRIGGER, currentLevel, player.blockPosition(), 32, 1.5);
+        ExtUtil.sendParticles(VWParticles.BENEDICTION_TRIGGER, currentLevel, player.blockPosition(), 32, 1.5);
         ResourceKey<Level> currentDimension = currentLevel.dimension();
         boolean isLeavingCustomDim = currentDimension == VWDimensions.NOLAYAN_LEVEL_KEY;
 

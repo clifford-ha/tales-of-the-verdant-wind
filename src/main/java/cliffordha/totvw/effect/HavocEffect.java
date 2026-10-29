@@ -12,10 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 
 public class HavocEffect extends MobEffect {
@@ -23,7 +21,7 @@ public class HavocEffect extends MobEffect {
     public HavocEffect() {
         super(MobEffectCategory.BENEFICIAL, VWColors.BLOODLUST, HAVOC_PARTICLE);
     }
-    public static LivingEntity mob;
+    private Component setName;
 
     @Override
     public void onEffectStarted(LivingEntity entity, int amplifier) {
@@ -31,22 +29,21 @@ public class HavocEffect extends MobEffect {
     }
     @Override
     public void onEffectAdded(LivingEntity entity, int amplifier) {
-        if (entity instanceof Player || entity instanceof Wolf) {
-            mob = entity;
-        } else {
+        if (!entity.is(EntityTypes.PLAYER) || !entity.is(EntityTypes.WOLF)) {
             entity.removeEffect(VWEffects.HAVOC);
         }
     }
 
+
     @Override
-    public Component getDisplayName() {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity mob, int amplification) {
         if (mob instanceof Player player) {
             HavocType type = HavocType.getType(player);
             String value = type == HavocType.NONE ? "" : ": " + type.getName();
 
-            return Component.literal("Havoc" + value);
+            setName = Component.literal("Havoc" + value);
         }
-        return super.getDisplayName();
+        return super.applyEffectTick(serverLevel, mob, amplification);
     }
 
     @Override
@@ -55,13 +52,8 @@ public class HavocEffect extends MobEffect {
     }
 
     @Override
-    public void onMobRemoved(ServerLevel level, LivingEntity entity, int amplifier, Entity.RemovalReason reason) {
-        removeHavoc(entity);
-    }
-
-    @Override
-    public void onEffectRemoved(MobEffectInstance effectInstance, LivingEntity entity) {
-        removeHavoc(entity);
+    public Component getDisplayName() {
+        return setName != null ? setName : super.getDisplayName();
     }
 
     public static void removeHavoc(LivingEntity entity) {

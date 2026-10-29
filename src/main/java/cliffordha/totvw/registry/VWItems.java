@@ -1,10 +1,9 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.item.custom.*;
-import cliffordha.totvw.item.scatteredpages.ScatteredPageItem;
+import cliffordha.totvw.item.pages.ScatteredPageItem;
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.item.VWArmorMaterials;
-import cliffordha.totvw.item.VWToolMaterials;
+import cliffordha.totvw.item.VerixiumMaterials;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -25,10 +24,10 @@ import static cliffordha.totvw.registry.VWItems.Util.*;
 public class VWItems {
     public static final Item VERIXIUM_HELMET = registerItem("verixium_helmet",
             properties -> new Item(properties
-                    .humanoidArmor(VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL, ArmorType.HELMET)
+                    .humanoidArmor(VerixiumMaterials.ARMOR, ArmorType.HELMET)
                     .fireResistant()
                     .attributes(
-                            VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL.createAttributes(ArmorType.HELMET)
+                            VerixiumMaterials.ARMOR.createAttributes(ArmorType.HELMET)
                                     .withModifierAdded(
                                             Attributes.OXYGEN_BONUS,
                                             new AttributeModifier(
@@ -42,10 +41,10 @@ public class VWItems {
             ));
     public static final Item VERIXIUM_CHESTPLATE = registerItem("verixium_chestplate",
             properties -> new Item(properties
-                    .humanoidArmor(VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL, ArmorType.CHESTPLATE)
+                    .humanoidArmor(VerixiumMaterials.ARMOR, ArmorType.CHESTPLATE)
                     .fireResistant()
                     .attributes(
-                            VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL.createAttributes(ArmorType.CHESTPLATE)
+                            VerixiumMaterials.ARMOR.createAttributes(ArmorType.CHESTPLATE)
                                     .withModifierAdded(
                                             Attributes.KNOCKBACK_RESISTANCE,
                                             new AttributeModifier(
@@ -69,10 +68,10 @@ public class VWItems {
             ));
     public static final Item VERIXIUM_LEGGINGS = registerItem("verixium_leggings",
             properties -> new Item(properties
-                    .humanoidArmor(VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL, ArmorType.LEGGINGS)
+                    .humanoidArmor(VerixiumMaterials.ARMOR, ArmorType.LEGGINGS)
                     .fireResistant()
                     .attributes(
-                            VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL.createAttributes(ArmorType.LEGGINGS)
+                            VerixiumMaterials.ARMOR.createAttributes(ArmorType.LEGGINGS)
                                     .withModifierAdded(
                                             Attributes.SNEAKING_SPEED,
                                             new AttributeModifier(
@@ -104,10 +103,10 @@ public class VWItems {
             ));
     public static final Item VERIXIUM_BOOTS = registerItem("verixium_boots",
             properties -> new Item(properties
-                    .humanoidArmor(VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL, ArmorType.BOOTS)
+                    .humanoidArmor(VerixiumMaterials.ARMOR, ArmorType.BOOTS)
                     .fireResistant()
                     .attributes(
-                            VWArmorMaterials.VERIXIUM_ARMOR_MATERIAL.createAttributes(ArmorType.BOOTS)
+                            VerixiumMaterials.ARMOR.createAttributes(ArmorType.BOOTS)
                                     .withModifierAdded(
                                             Attributes.MOVEMENT_EFFICIENCY,
                                             new AttributeModifier(
@@ -140,10 +139,10 @@ public class VWItems {
     public static final Item VERIXIUM_WOLF_ARMOR = registerItem("verixium_wolf_armor",
             properties -> new Item(properties
                     .fireResistant()
-                    .wolfArmor(VWArmorMaterials.VERIXIUM_ENTITY_ARMOR)
+                    .wolfArmor(VerixiumMaterials.ENTITY_ARMOR)
                     .enchantable(15)
                     .attributes(
-                            VWArmorMaterials.VERIXIUM_ENTITY_ARMOR.createAttributes(ArmorType.BODY)
+                            VerixiumMaterials.ENTITY_ARMOR.createAttributes(ArmorType.BODY)
                                     .withModifierAdded(
                                             Attributes.MOVEMENT_SPEED,
                                             new AttributeModifier(
@@ -159,10 +158,10 @@ public class VWItems {
     public static final Item VERIXIUM_HORSE_ARMOR = registerItem( "verixium_horse_armor",
             properties -> new Item(properties
                     .fireResistant()
-                    .horseArmor(VWArmorMaterials.VERIXIUM_ENTITY_ARMOR)
+                    .horseArmor(VerixiumMaterials.ENTITY_ARMOR)
                     .enchantable(15)
                     .attributes(
-                            VWArmorMaterials.VERIXIUM_ENTITY_ARMOR.createAttributes(ArmorType.BODY)
+                            VerixiumMaterials.ENTITY_ARMOR.createAttributes(ArmorType.BODY)
                                     .withModifierAdded(
                                             Attributes.JUMP_STRENGTH,
                                             new AttributeModifier(
@@ -218,32 +217,32 @@ public class VWItems {
             ));
     public static final Item VERIXIUM_SPEAR = registerItem("verixium_spear",
             properties -> new Item(properties
-                    .spear(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 1.10f, 1.1f, 0.5f, 1.3f, 9.0f, 6.0f, 5.1f, 9.10f, 4.6f)
+                    .spear(VerixiumMaterials.TOOL, 1.10f, 1.1f, 0.5f, 1.3f, 9.0f, 6.0f, 5.1f, 9.10f, 4.6f)
                     .fireResistant()
             ));
     public static final Item VERIXIUM_SWORD = registerItem("verixium_sword",
             properties -> new Item(properties
-                    .sword(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 3.0F, -2.4f)
+                    .sword(VerixiumMaterials.TOOL, 3.0F, -2.4f)
                     .fireResistant()
             ));
     public static final Item VERIXIUM_AXE = registerItem("verixium_axe",
             properties -> new Item(properties
-                    .axe(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 5.0F, -2.5f)
+                    .axe(VerixiumMaterials.TOOL, 5.0F, -2.5f)
                     .fireResistant()
             ));
     public static final Item VERIXIUM_PICKAXE = registerItem("verixium_pickaxe",
             properties -> new Item(properties
-                    .pickaxe(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 1.0F, -2.8f)
+                    .pickaxe(VerixiumMaterials.TOOL, 1.0F, -2.8f)
                     .fireResistant()
             ));
     public static final Item VERIXIUM_HOE = registerItem("verixium_hoe",
             properties -> new Item(properties
-                    .hoe(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 3.0F, 0.0f)
+                    .hoe(VerixiumMaterials.TOOL, 3.0F, 0.0f)
                     .fireResistant()
             ));
     public static final Item VERIXIUM_SHOVEL = registerItem("verixium_shovel",
             properties -> new Item(properties
-                    .shovel(VWToolMaterials.VERIXIUM_TOOL_MATERIAL, 1.5F, -3.0f)
+                    .shovel(VerixiumMaterials.TOOL, 1.5F, -3.0f)
                     .fireResistant()
             ));
     public static final Item VERIXIUM_FLUID_BUCKET = registerItem("verixium_fluid_bucket",

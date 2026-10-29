@@ -1,12 +1,10 @@
 package cliffordha.totvw.datagen;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.tag.VWItemTags;
-import cliffordha.totvw.util.VWTimer;
+import cliffordha.totvw.util.TimeUtil;
+
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.*;
@@ -19,6 +17,9 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.data.recipes.SingleItemRecipeBuilder.stonecutting;
 
@@ -112,7 +113,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         CookingBookCategory.MISC,
                         VWItems.VERIXIUM_CHUNK,
                         900.0F,
-                        VWTimer.tickDuration(3, 45),
+                        TimeUtil.tickDuration(3, 45),
                         "verixium_raw_materials"
                 );
                 shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_SPEAR, 1)

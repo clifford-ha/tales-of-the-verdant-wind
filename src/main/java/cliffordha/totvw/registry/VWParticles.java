@@ -1,7 +1,7 @@
 package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.ExtUtil;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -35,7 +35,7 @@ public class VWParticles {
     public static void showBlessingParticle(LivingEntity entity, int frequency) {
         if (!(entity.level() instanceof ServerLevel level)) return;
         DustParticleOptions dust = new DustParticleOptions(VWColors.VERDANT_WIND, level.getRandom().nextFloat() + 0.5f);
-        VWUtil.sendParticles(dust, level, entity.blockPosition(), 4 * (frequency + 1), 1);
+        ExtUtil.sendParticles(dust, level, entity.blockPosition(), 4 * (frequency + 1), 1);
     }
 
     public static void register() {

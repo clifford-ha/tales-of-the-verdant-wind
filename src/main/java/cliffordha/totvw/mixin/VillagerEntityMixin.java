@@ -14,8 +14,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -38,7 +36,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static cliffordha.totvw.util.VWUtil.isInBiome;
+import static cliffordha.totvw.util.ExtUtil.isInBiome;
 
 @Mixin(Villager.class)
 public class VillagerEntityMixin {
@@ -150,19 +148,6 @@ public class VillagerEntityMixin {
                     }
                 }
             }
-        }
-    }
-
-    @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
-    private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-        Villager villager = (Villager) (Object) this;
-        if (player.getAttachedOrElse(PlayerAttachment.VILLAGER_ATROCITY_COUNT, 0) > 20) {
-            if (!villager.level().isClientSide()) {
-                villager.makeSound(SoundEvents.VILLAGER_NO);
-            }
-            int unhappiness = villager.getUnhappyCounter();
-            villager.setUnhappyCounter(unhappiness + 12);
-            cir.setReturnValue(InteractionResult.FAIL);
         }
     }
 

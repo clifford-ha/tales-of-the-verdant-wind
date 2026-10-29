@@ -68,19 +68,23 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Predicate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static cliffordha.totvw.registry.VWEnchantments.entityEnchantmentLVL;
-import static cliffordha.totvw.util.VWUtil.*;
+import static cliffordha.totvw.util.ExtUtil.*;
 
 public class LodestoneWindCoreBlock extends Block {
     public static final MapCodec<LodestoneWindCoreBlock> CODEC = MapCodec.unit(() -> new LodestoneWindCoreBlock(Properties.of()));
     private static final int ENERGY_LIMIT = 100000;
+    private static final int STRONG_THRESHOLD = 60000;
 
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
     public static final IntegerProperty WIND_ENERGY = IntegerProperty.create("wind_energy", 0, ENERGY_LIMIT);
+
+    private static final AttributeModifier.Operation ADD = AttributeModifier.Operation.ADD_VALUE;
 
     public LodestoneWindCoreBlock(Properties properties) {
         super(properties);
@@ -108,10 +112,19 @@ public class LodestoneWindCoreBlock extends Block {
                 float pitch = random.nextIntBetweenInclusive(20, 100) * 0.01f;
                 level.playLocalSound(pos, VWSounds.LODESTONE_WIND_CORE_AMBIENT, SoundSource.BLOCKS, 0.1f, pitch, false);
             }
-            if (state.getValue(WIND_ENERGY) > 0) {
-                float randomPos = level.getRandom().nextFloat();
+            float randomPos = level.getRandom().nextFloat();
+            if (state.getValue(WIND_ENERGY) < STRONG_THRESHOLD) {
                 level.addParticle(VWParticles.VERIXIUM_POWDER_RAIN,
                         pos.getX() + randomPos, pos.getY() + 1, pos.getZ() + randomPos, 0.0D, 0.0D, 0.0D);
+            } else {
+                List<BlockPos> surrounding = List.of(pos.north(), pos.north().east(), pos.east(), pos.east().south(), pos.south(), pos.south().west(), pos.west(), pos.west().north());
+                for (BlockPos blockPos : surrounding) {
+                    blockPos = blockPos.below();
+                    if (level.getBlockState(blockPos).isAir()) {
+                        level.addParticle(VWParticles.VERIXIUM_POWDER_RAIN,
+                                blockPos.getX() + randomPos, blockPos.getY() + 1, blockPos.getZ() + randomPos, 0.0D, 0.0D, 0.0D);
+                    }
+                }
             }
         }
     }
@@ -316,17 +329,17 @@ public class LodestoneWindCoreBlock extends Block {
     }
 
     private void scanAndApplyEffects(ServerLevel level, BlockState state, BlockPos pos) {
-        double rangeMultiplier = state.getValue(WIND_ENERGY) > 60000 ? 1.5 : 1;
+        double rangeMultiplier = state.getValue(WIND_ENERGY) > STRONG_THRESHOLD ? 1.5 : 1;
         AABB standardRange = scanner(pos, Mth.ceil(24 * rangeMultiplier));
         AABB monsterRange = scanner(pos, Mth.ceil(32 * rangeMultiplier));
         AABB shortRange = scanner(pos, Mth.ceil(16 * rangeMultiplier));
-        int maxEntity = state.getValue(WIND_ENERGY) > 60000 ? 32 : 18;
+        int maxEntity = state.getValue(WIND_ENERGY) > STRONG_THRESHOLD ? 32 : 18;
 
         int duration = Mth.ceil(9 * rangeMultiplier);
 
         float heal = isDifficulty(level, Difficulty.HARD) ? 2.0f : 6.0f;
 
-        if (state.getValue(WIND_ENERGY) > 60000) applyDangerousPulse(level, state, pos);
+        if (state.getValue(WIND_ENERGY) > STRONG_THRESHOLD) applyDangerousPulse(level, state, pos);
 
         List<Wolf> wolves = level.getEntitiesOfClass(
                 Wolf.class,
@@ -482,9 +495,9 @@ public class LodestoneWindCoreBlock extends Block {
         Identifier omen = VWIdentifiers.VERDANT_OMEN;
 
         addAttributeModifier(monster, omen, Attributes.MAX_HEALTH, healthDecrease, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        addAttributeModifier(monster, omen, Attributes.ATTACK_DAMAGE, -1, AttributeModifier.Operation.ADD_VALUE);
+        addAttributeModifier(monster, omen, Attributes.ATTACK_DAMAGE, -1, ADD);
         addAttributeModifier(monster, omen, Attributes.MOVEMENT_SPEED, -0.25f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        addAttributeModifier(monster, omen, Attributes.ATTACK_KNOCKBACK, -0.1f, AttributeModifier.Operation.ADD_VALUE);
+        addAttributeModifier(monster, omen, Attributes.ATTACK_KNOCKBACK, -0.1f, ADD);
 
         monster.setAttached(VWAttachments.HAS_VERDANT_OMEN, true);
         monster.level().playSound(null, monster.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 1.0F, 1.0F);
@@ -538,7 +551,13 @@ public class LodestoneWindCoreBlock extends Block {
         }
         sendToLogger(LOG_ENTITY_EVENT, name + " has a pressure difference of " + monster.getAttachedOrElse(ATTACHMENT_PRESSURE, 0));
     }
-    private static void removeImplodedStatus(ServerLevel level, BlockState state, BlockPos pos) {
+    public void turnOff() {
+        this.defaultBlockState().setValue(ACTIVE, false);
+    }
+    public boolean isActive() {
+        return this.defaultBlockState().getValue(ACTIVE);
+    }
+    private void removeImplodedStatus(ServerLevel level, BlockState state, BlockPos pos) {
         AABB test = scanner(pos, 24);
         List<Monster> monsters = level.getEntitiesOfClass(Monster.class, test, mob -> mob.getAttachedOrElse(VWAttachments.HAS_IMPLODED, false));
         if (monsters.isEmpty()) return;
@@ -554,8 +573,6 @@ public class LodestoneWindCoreBlock extends Block {
         if (!wolves.isEmpty()) {
             int random = wolves.size() == 1 ? 0 : level.getRandom().nextIntBetweenInclusive(0, wolves.size() - 1);
             Wolf wolf = wolves.get(Math.max(random, 0));
-
-            AttributeModifier.Operation ADD = AttributeModifier.Operation.ADD_VALUE;
 
             wolf.setAttached(WolfAttachment.IS_VERDANT_TYPE, true);
             Identifier verdant = VWIdentifiers.VERDANT_WOLF_PERMANENT_MODIFIERS;
@@ -586,7 +603,7 @@ public class LodestoneWindCoreBlock extends Block {
     }
 
     private static void randomNegativeEffects(ServerLevel level, BlockState state, BlockPos pos) {
-        boolean isStrong = state.getValue(WIND_ENERGY) > 60000;
+        boolean isStrong = state.getValue(WIND_ENERGY) > STRONG_THRESHOLD;
         int maxEntity = isStrong ? 32 : 18;
         List<LivingEntity> monsters = level.getEntitiesOfClass(
                 LivingEntity.class,
@@ -617,8 +634,8 @@ public class LodestoneWindCoreBlock extends Block {
     }
     private static void randomPositiveEffects(ServerLevel level, BlockState state, BlockPos pos) {
         AABB randomBound = scanner(pos, 24);
-        int maxEntity = state.getValue(WIND_ENERGY) > 60000 ? 32 : 18;
-        boolean isStrong = state.getValue(WIND_ENERGY) > 60000;
+        int maxEntity = state.getValue(WIND_ENERGY) > STRONG_THRESHOLD ? 32 : 18;
+        boolean isStrong = state.getValue(WIND_ENERGY) > STRONG_THRESHOLD;
 
         RandomSource random = level.getRandom();
 
@@ -634,9 +651,9 @@ public class LodestoneWindCoreBlock extends Block {
             for (Wolf wolf : wolves) {
                 Holder<MobEffect> effect = random.nextBoolean() ? MobEffects.STRENGTH : MobEffects.RESISTANCE;
 
-                addOrStackEffect(wolf, effect, randomDuration, randomAMP, true);
-                addOrStackEffect(wolf, VWEffects.AMPLIFIED_MIGHT, randomDuration, 0, !isStrong);
-                addOrStackEffect(wolf, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 90, 0, 2, true);
+                addOrStackEffect(wolf, effect, randomDuration, 45, randomAMP, true);
+                addOrStackEffect(wolf, VWEffects.AMPLIFIED_MIGHT, randomDuration, 90, 0, 2, !isStrong);
+                addOrStackEffect(wolf, VWEffects.BLESSING_OF_THE_VERDANT_WIND, randomDuration, 90, 0, true);
 
                 if (wolf.isAngry() && wolf.getHealth() > wolf.getMaxHealth() * 0.5f) {
                     addOrStackEffect(wolf, VWEffects.BLOODLUST, 15, randomAMP, true);

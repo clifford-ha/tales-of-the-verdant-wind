@@ -36,19 +36,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static cliffordha.totvw.util.VWUtil.*;
+import static cliffordha.totvw.util.ExtUtil.*;
 
 public class RevivalByProxy {
     public static boolean revivePlayerIfPossible(LivingEntity entity, DamageSource damageSource, float damage) {
         boolean hasTotem = entity.getMainHandItem().is(Items.TOTEM_OF_UNDYING) || entity.getOffhandItem().is(Items.TOTEM_OF_UNDYING);
         if (entity instanceof Player player && !hasTotem) {
             if (damageSource.is(DamageTypes.GENERIC_KILL)) return true;
-            if (!player.getAttachedOrElse(PlayerPrefs.BENEDICTION_SHARE_STACK, VWConfig.get().SERVER_WOLF_SHARES_BENEDICTION_STACK)) return true;
+            if (!player.getAttachedOrElse(PlayerPrefs.BENEDICTION_SHARE_STACK, VWConfig.get().SYNCED_WOLF_SHARES_BENEDICTION_STACK)) return true;
 
             Level getLevel = player.level();
             ServerLevel level = (ServerLevel) getLevel;
 
-            double distance = VWConfig.get().SERVER_WOLF_PLAYER_SCAN_DISTANCE * 16;
+            double distance = level.getServer().getPlayerList().getSimulationDistance() * 16;
             AttachmentType<Integer> BENEDICTION_STACK = WolfAttachment.BENEDICTION;
 
             List<Wolf> wolves = level.getEntities(EntityTypes.WOLF, player.getBoundingBox().inflate(distance), wolf ->
@@ -63,7 +63,7 @@ public class RevivalByProxy {
                     Wolf mainWolf = wolfWithStack.getFirst();
                     getTeleportToWolf(player, mainWolf, false, mainWolf);
 
-                    if (player.getAttachedOrElse(PlayerPrefs.BENEDICTION_WOLF_TP_ALL, VWConfig.get().SERVER_WOLF_TP_ALL)) {
+                    if (player.getAttachedOrElse(PlayerPrefs.BENEDICTION_WOLF_TP_ALL, VWConfig.get().SYNCED_WOLF_TP_ALL)) {
                         for (Wolf wolf : wolves) {
                             getTeleportToWolf(player, wolf, true, mainWolf);
                         }
@@ -117,31 +117,27 @@ public class RevivalByProxy {
     }
     private static void getTeleportToWolf(Player player, Wolf wolf, boolean tpAll, Wolf mainWolf) {
         if (!player.canTeleport(player.level(), wolf.level())) return;
-        if (!player.getAttachedOrElse(PlayerPrefs.BENEDICTION_TELEPORT_AFTER_SAVE, VWConfig.get().SERVER_TELEPORT_AFTER_SAVE)) return;
+        if (!player.getAttachedOrElse(PlayerPrefs.BENEDICTION_TELEPORT_AFTER_SAVE, VWConfig.get().SYNCED_TELEPORT_AFTER_SAVE)) return;
         if (player.distanceTo(wolf) < 12) return;
 
         BlockPos wolfPos = wolf.blockPosition();
         BlockPos playerPos = player.blockPosition();
-        boolean tpMode = player.getAttachedOrElse(PlayerPrefs.BENEDICTION_PLAYER_TP_METHOD, VWConfig.get().SERVER_PLAYER_TP_METHOD) < 1;
+        boolean tpMode = player.getAttachedOrElse(PlayerPrefs.BENEDICTION_PLAYER_TP_METHOD, VWConfig.get().SYNCED_PLAYER_TP_METHOD) < 1;
 
         if (tpAll) {
             BlockPos mainWolfPos = mainWolf.blockPosition();
             if (tpMode) {
-                if (isNotValidForTP(mainWolf.level(), mainWolfPos)) return;
                 player.teleportTo(mainWolfPos.getX(), mainWolfPos.getY(), mainWolfPos.getZ());
                 wolf.teleportToAroundBlockPos(mainWolfPos);
             } else {
-                if (isNotValidForTP(player.level(), playerPos)) return;
                 wolf.teleportToAroundBlockPos(playerPos);
                 mainWolf.teleportToAroundBlockPos(mainWolfPos);
             }
             untetherWolf(mainWolf);
         } else {
             if (tpMode) {
-                if (isNotValidForTP(wolf.level(), wolfPos)) return;
                 player.teleportTo(wolfPos.getX(), wolfPos.getY(), wolfPos.getZ());
             } else {
-                if (isNotValidForTP(player.level(), playerPos)) return;
                 wolf.teleportToAroundBlockPos(playerPos);
             }
         }
@@ -179,7 +175,7 @@ public class RevivalByProxy {
             validateLocationBeforeRevival(level, player);
         }
         if (!checkDMGSource && souls.size() > 3 && random.nextFloat() < (0.33f + chance)) {
-            SoulRunestonePlate.processAndSummonSouls(player, level, souls);
+            SoulRunestonePlate.loadWolves(level, player, souls);
 
             int slot = inv.findSlotMatchingItem(new ItemStack(VWItems.SOUL_RUNESTONE_PLATE));
             inv.removeItem(slot, 1);

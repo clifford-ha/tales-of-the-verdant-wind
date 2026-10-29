@@ -1,7 +1,7 @@
 package cliffordha.totvw.entity.player;
 
 import cliffordha.totvw.config.VWConfig;
-import cliffordha.totvw.entity.skill.PlayerSkillDefinition;
+import cliffordha.totvw.entity.skill.PlayerSkills;
 import cliffordha.totvw.entity.skill.SkillManager;
 import cliffordha.totvw.entity.skills.RunestoneEffects;
 import cliffordha.totvw.entity.skills.VerdantWindBlessing;
@@ -11,7 +11,6 @@ import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.tag.VWBiomeTags;
-import cliffordha.totvw.util.VWTimer;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -34,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static cliffordha.totvw.entity.skill.SkillManager.*;
-import static cliffordha.totvw.util.VWUtil.*;
+import static cliffordha.totvw.util.ExtUtil.*;
 
 public class VWPlayerBehaviors {
     private static final List<PlayerBehaviorRule> ON_DAMAGE_RULES = new ArrayList<>();
@@ -44,7 +43,6 @@ public class VWPlayerBehaviors {
         registerRules();
         playerOnDamageEvent();
         playerOnTickEvent();
-        VWPlayerInteractions.onInteractEvents();
     }
 
     private static void registerRules() {
@@ -104,7 +102,7 @@ public class VWPlayerBehaviors {
                     }
 
                     float HEALTH_THRESHOLD = player.getAttachedOrElse(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD,
-                            VWConfig.get().SERVER_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;
+                            VWConfig.get().SYNCED_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;
                     if (player.getHealth() <= player.getMaxHealth() * HEALTH_THRESHOLD) {
                         VerdantWindBlessing.triggerBenedictionFromTick(player);
                     }
@@ -113,18 +111,16 @@ public class VWPlayerBehaviors {
         TICK_RULES.add(PlayerBehaviorRule.register(
                 PlayerCondition.tick(),
                 (player, _) -> {
-
-                    if (VWConfig.get().LOG_ENCHANTMENT_SHOW_PLAYER_CD) setPlayerConfiguration(player, 0);
                     if (VWConfig.get().SERVER_SKILL_COOLDOWNS) {
                         depleteCooldown(player, PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND);
                         depleteCooldown(player, PlayerAttachment.CD_HAVOC);
                     } else {
-                        setPlayerConfiguration(player, 1);
+                        setPlayerConfiguration(player);
                     }
 
-                    if (!VWConfig.get().SERVER_OTHER_COOLDOWNS) setPlayerOtherConfig(player);
+                    if (!VWConfig.get().SERVER_OTHER_COOLDOWNS) setPlayerOtherConfiguration(player);
 
-                    SkillManager.notifyReset(player, VERDANT_BLESSING);
+                    SkillManager.notifyReset(player, PlayerSkills.VERDANT_BLESSING);
                     processCDNotify(player,
                             PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND,
                             PlayerAttachment.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
@@ -168,14 +164,6 @@ public class VWPlayerBehaviors {
             victim.hurtServer(level, level.damageSources().onFire(), 1.0f + FIRE_PROTECTION);
         }
     }
-
-
-    public static final PlayerSkillDefinition VERDANT_BLESSING = new PlayerSkillDefinition(
-            PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND,
-            PlayerAttachment.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
-            VWColors.VERDANT_WIND_MUTED,
-            "§nVerdant Wind's Blessing§r"
-    );
 
     private static String wolfName(Wolf wolf) {
         String wolfName;

@@ -1,9 +1,9 @@
 package cliffordha.totvw.registry.attachments.entity;
 
-import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.Runestone;
+import cliffordha.totvw.registry.attachments.TetherData;
 import cliffordha.totvw.registry.attachments.VWAttachments;
-import cliffordha.totvw.util.BasicArmorData;
+import cliffordha.totvw.registry.attachments.ArmorData;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,7 +24,7 @@ import static cliffordha.totvw.registry.attachments.AttachmentUtil.*;
 public class WolfAttachment {
     private static final String WOLF = "wolf_";
 
-    public static final AttachmentType<BasicArmorData> ARMOR_DATA = registerArmorData(WOLF + "armor_data");
+    public static final AttachmentType<ArmorData> ARMOR_DATA = registerArmorData(WOLF + "armor_data");
     
     public static final AttachmentType<Boolean> IS_VERDANT_TYPE = registerBool(WOLF + "is_verdant_type", true);
     public static final AttachmentType<Boolean> IS_VILLAGE_GUARD = registerBool(WOLF + "is_village_guard", true);
@@ -57,17 +57,25 @@ public class WolfAttachment {
 
     public static final AttachmentType<Runestone> RUNESTONE_TYPE = registerRunestone(WOLF + "runestone_type", false);
     public static final AttachmentType<List<String>> TETHER_ENTITY_BLACKLIST = registerStringList(WOLF + "tether_entity_blacklist", true);
+    public static final AttachmentType<TetherData> TETHER_DATA = registerTetherData(WOLF + "tick_from_technology", true);
     public static final AttachmentType<Integer> ATTACK_CYCLE = registerInt(WOLF + "attack_cycle", false);
     public static final AttachmentType<Integer> FLASH_FREEZE_STACK = registerInt(WOLF + "flash_freeze_stack", false);
 
 
+    public static boolean tetherChunkTicks(Wolf wolf) {
+        TetherData data = wolf.getAttachedOrElse(TETHER_DATA, TetherData.EMPTY);
+        if (data.equals(TetherData.EMPTY)) return false;
+        return data.tetherChunkTicks();
+    }
 
     public static List<String> getTetherBlacklist(Wolf wolf) {
-        return wolf.getAttachedOrElse(TETHER_ENTITY_BLACKLIST, List.of());
+        return wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, TetherData.EMPTY).tetheredEntities();
     }
 
     public static boolean isTetherBlacklisted(Wolf wolf, Entity entity) {
-        return getTetherBlacklist(wolf).contains(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
+        List<String> blacklist = getTetherBlacklist(wolf);
+        if (blacklist.isEmpty()) return false;
+        return blacklist.contains(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
     }
     public static boolean isFamilyRelated(Wolf wolf, Wolf baby) {
         UUID wolfID = wolf.getAttachedOrElse(WolfAttachment.FAMILY_ID, EMPTY_UUID);
@@ -114,17 +122,17 @@ public class WolfAttachment {
 
         Pair<String, UUID> mobData = getNameAndUUID(entity);
 
-        boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.getB() == mobData.getB());
+        boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.getB().equals(mobData.getB()));
         if (oldPlayerData.size() >= 6 && !hasPriorData) {
             return;
         }
         if (hasPriorData) {
-            var index = oldPlayerData.stream().findFirst().filter(data -> data.getB() == mobData.getB()).map(oldPlayerData::indexOf).orElse(null);
+            var index = oldPlayerData.stream().findFirst().filter(data -> data.getB().equals(mobData.getB())).map(oldPlayerData::indexOf).orElse(null);
             if (index == null) return;
 
             Pair<String, UUID> data = oldPlayerData.get(index);
 
-            if (!data.getA().equals(mobData.getA()) && data.getB() == mobData.getB()) {
+            if (!data.getA().equals(mobData.getA()) && data.getB().equals(mobData.getB())) {
                 Pair<String, UUID> update = new Pair<>(mobData.getA(), mobData.getB());
 
                 newPlayerData.set(newPlayerData.indexOf(data), update);
@@ -136,7 +144,7 @@ public class WolfAttachment {
         }
     }
     public static ItemStack getArmorData(Wolf wolf) {
-        return wolf.getAttachedOrElse(ARMOR_DATA, BasicArmorData.NONE).getItemStack();
+        return wolf.getAttachedOrElse(ARMOR_DATA, ArmorData.NONE).getItemStack();
     }
     public static List<AttachmentType<Integer>> WOLF_COOLDOWNS = List.of(
             CD_BLOODLUST_SKILL_PARALYZE,

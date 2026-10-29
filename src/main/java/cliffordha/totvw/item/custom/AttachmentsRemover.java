@@ -1,7 +1,7 @@
 package cliffordha.totvw.item.custom;
 
 import cliffordha.totvw.registry.attachments.VWAttachments;
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.ExtUtil;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -30,7 +30,7 @@ public class AttachmentsRemover extends Item {
         String empty = "No attachments were removed";
         String one = "1 attachment was removed";
         String many = count + " attachments were removed";
-        VWUtil.sendToChat(player, true, count > 0 ? (count == 1 ? one: many) : empty);
+        ExtUtil.sendToChat(player, true, count > 0 ? (count == 1 ? one: many) : empty);
 
         return super.use(level, player, hand);
     }

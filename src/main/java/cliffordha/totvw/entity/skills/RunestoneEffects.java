@@ -2,14 +2,16 @@ package cliffordha.totvw.entity.skills;
 
 import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.effect.HavocEffect;
+import cliffordha.totvw.entity.wolf.WolfAttackEffects;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.HavocType;
 import cliffordha.totvw.registry.attachments.Runestone;
+import cliffordha.totvw.registry.attachments.TetherData;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
-import cliffordha.totvw.util.VWTimer;
-import cliffordha.totvw.util.VWUtil;
+import cliffordha.totvw.util.TimeUtil;
+import cliffordha.totvw.util.ExtUtil;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.server.level.ServerLevel;
@@ -30,7 +32,7 @@ import net.minecraft.world.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cliffordha.totvw.util.VWUtil.*;
+import static cliffordha.totvw.util.ExtUtil.*;
 
 public class RunestoneEffects {
     public static final AttachmentType<Runestone> RUNESTONE_TYPE = WolfAttachment.RUNESTONE_TYPE;
@@ -88,7 +90,7 @@ public class RunestoneEffects {
             attacker.setHealth(4);
         }
         ServerLevel level = (ServerLevel) attacker.level();
-        int duration = type == HavocType.VOID ? VWTimer.minToSec(5) : VWTimer.minToSec(2) + 30;
+        int duration = type == HavocType.VOID ? TimeUtil.minToSec(5) : TimeUtil.minToSec(2) + 30;
         attacker.hurtServer(level, VWDamageTypes.havoc(level), 4f);
         addEffect(attacker, VWEffects.PARALYZE, 10, 0);
         addEffect(attacker, MobEffects.GLOWING, duration, 0);
@@ -167,7 +169,8 @@ public class RunestoneEffects {
         processLinkStatus(wolf, victim, level);
     }
     public static void processLinkStatus(Wolf wolf, LivingEntity victim, ServerLevel level) {
-        List<String> entities = new ArrayList<>(wolf.getAttachedOrElse(TETHERED_ENTITIES, List.of()));
+        TetherData data = wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, TetherData.EMPTY);
+        List<String> entities = new ArrayList<>(data.tetheredEntities());
 
         if (victim != null) {
             updateLinkRecord(wolf, victim, entities, level);
@@ -182,7 +185,7 @@ public class RunestoneEffects {
 
             List<Entity> scanner = level.getEntities(
                     wolf,
-                    VWUtil.scanArea(wolf, Math.min(SCAN_SIZE, 24)),
+                    ExtUtil.scanArea(wolf, Math.min(SCAN_SIZE, 24)),
                     test -> isEqualEntityID(entity, test)
             ).stream().limit(LINK_LIMIT).toList();
 
@@ -216,9 +219,9 @@ public class RunestoneEffects {
     private static void applyLink(Wolf wolf, LivingEntity target, ServerLevel level) {
         DamageSource source = VWDamageTypes.tetherProxy(level);
         if (wolf.isWearingBodyArmor()) {
-            WolfEnchantmentEffects.onDamage(wolf, level, target, false, source);
+            WolfAttackEffects.onPostAttack(wolf, level, target, false, source);
         } else {
-            WolfEnchantmentEffects.applyFinalDamage(level, wolf, target,
+            WolfAttackEffects.applyFinalDamage(level, wolf, target,
                     source,
                     0,
                     false
@@ -247,7 +250,9 @@ public class RunestoneEffects {
                 }
             }
         }
-        wolf.setAttached(TETHERED_ENTITIES, newEntities);
+        TetherData data = wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, TetherData.EMPTY);
+        wolf.setAttached(WolfAttachment.TETHER_DATA, TetherData.updateEntities(data, newEntities));
+        //wolf.setAttached(TETHERED_ENTITIES, newEntities);
 
         String targetType = getEntityID(victim);
         if (newEntities.contains(targetType)) return;
@@ -260,7 +265,9 @@ public class RunestoneEffects {
             }
         }
         newEntities.add(targetType);
-        wolf.setAttached(TETHERED_ENTITIES, newEntities);
+        data = wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, TetherData.EMPTY);
+        wolf.setAttached(WolfAttachment.TETHER_DATA, TetherData.updateEntities(data, newEntities));
+        //wolf.setAttached(TETHERED_ENTITIES, newEntities);
     }
 
 

@@ -1,7 +1,7 @@
 package cliffordha.totvw.mixin.misc;
 
 import cliffordha.totvw.util.ColorizeText;
-import cliffordha.totvw.util.VWTextUtil;
+import cliffordha.totvw.util.TextUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -24,7 +24,7 @@ public abstract class EnchantmentNameColorMixin {
 
         MutableComponent result = cir.getReturnValue().plainCopy().setStyle(Style.EMPTY.withColor(color));
         if (level != 1 || enchantment.value().getMaxLevel() != 1) {
-            result.append(" " + VWTextUtil.intToRoman(level));
+            result.append(" " + TextUtil.intToRoman(level));
         }
         cir.setReturnValue(result);
     }
