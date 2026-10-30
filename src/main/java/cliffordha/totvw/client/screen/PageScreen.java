@@ -7,7 +7,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.animal.wolf.Wolf;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -23,8 +22,6 @@ public class PageScreen extends Screen {
     private List<String> pages;
     private final List<FormattedCharSequence> allLines = new ArrayList<>();
     private final @Nullable Supplier<String[]> liveSupplier;
-    private @Nullable Wolf wolf;
-    private static boolean wolfStat = false;
     private int textAreaWidth;
     private int refreshTimer = 0;
 
@@ -56,14 +53,6 @@ public class PageScreen extends Screen {
         this.pageTitle = pageTitle;
         this.pages = Arrays.asList(liveSupplier.get());
         this.liveSupplier = liveSupplier;
-    }
-    public PageScreen(String pageTitle, Supplier<String[]> liveSupplier, Supplier<Wolf> wolfSupplier) {
-        super(Component.literal(pageTitle));
-        this.pageTitle = pageTitle;
-        this.pages = Arrays.asList(liveSupplier.get());
-        this.liveSupplier = liveSupplier;
-        this.wolf = wolfSupplier.get();
-        wolfStat = true;
     }
 
     @Override
@@ -161,15 +150,6 @@ public class PageScreen extends Screen {
         this.pages = next;
         this.buildLines();
         this.scrollOffset = Mth.clamp(keepScroll, 0, this.maxScroll);
-
-        if (wolfStat && wolf != null && minecraft.player != null) {
-            if (wolf.getOwner() != minecraft.player) {
-                this.onClose();
-            }
-            if (wolf.distanceTo(minecraft.player) > 8) {
-                this.onClose();
-            }
-        }
     }
 
     @Override

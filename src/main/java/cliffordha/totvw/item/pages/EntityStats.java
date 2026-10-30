@@ -7,6 +7,7 @@ import cliffordha.totvw.entity.status.WolfStats;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.Runestone;
+import cliffordha.totvw.registry.attachments.TetherData;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
@@ -67,7 +68,7 @@ public class EntityStats {
         int arcticAffliction = wolf.getAttachedOrElse(VWAttachments.ARCTIC_AFFLICTION, 0);
         int frostBound = wolf.getAttachedOrElse(VWAttachments.FROST_BOUND_TIMER, 0);
 
-        List<String> tetheredEntities = wolf.getAttachedOrElse(WolfAttachment.TETHERED_ENTITY_TYPES, List.of());
+        List<String> tetheredEntities = wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, TetherData.EMPTY).tetheredEntities();
         int trustedPlayers = s.trustedPlayers().size();
         int aggressors = s.aggressors().size();
 

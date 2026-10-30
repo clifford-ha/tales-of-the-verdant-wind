@@ -86,13 +86,13 @@ public class VWFeaturesHandbook {
     }
     private static String trustSystemInfo() {
         return titleTrustSystem.toUpperCase() + nextLine
-                + "Reintroduced from earlier versions of the mod. To utilize this feature, a player can use a Paper or Verixium Paper towards a fellow player by right clicking them. A text prompt should notify you upon succeeding. These Trust System is currently being used for Wolf-Player interaction."
+                + "Reintroduced from earlier versions of the mod. To utilize this feature, a player can recordAfter a Paper or Verixium Paper towards a fellow player by right clicking them. A text prompt should notify you upon succeeding. These Trust System is currently being used for Wolf-Player interaction."
                 + nextParagraph
 
-                + "When a player has a tamed wolf, they can use the command to perform various actions like syncing the tetherData from player to wolf: " + bold("[  /totvw trustData wolf sync  ]")
+                + "When a player has a tamed wolf, they can recordAfter the command to perform various actions like syncing the list from player to wolf: " + bold("[  /totvw trust_data wolf sync  ]")
                 + nextParagraph
 
-                + "The player can also remove all or specific trusted players from their tetherData. You need to query"
+                + "The player can also remove all or specific trusted players from their list. You need to query"
                 ;
     }
 
@@ -100,7 +100,7 @@ public class VWFeaturesHandbook {
     public static String[] FEATURES_HANDBOOK_CONTENTS() {
         return addPage(
                 fText(BOLD, "INTRODUCTION") + nextLine
-                        + "A armorData of new features and mechanics that aren't introduced in other handbooks."
+                        + "A list of new features and mechanics that aren't introduced in other handbooks."
                         + addSeparator
                         + revivalByProxy()
                         + addSeparator

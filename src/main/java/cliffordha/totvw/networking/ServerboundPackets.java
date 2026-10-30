@@ -3,6 +3,7 @@ package cliffordha.totvw.networking;
 import cliffordha.totvw.entity.WolfBenedictionHelper;
 import cliffordha.totvw.networking.packets.*;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
+import cliffordha.totvw.registry.attachments.ReturnPointData;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.TetherData;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
@@ -43,6 +44,29 @@ public class ServerboundPackets {
                 WolfBenedictionHelper.deleteLoadedWolfFiles(player, level);
             }
         });
+        ServerPlayNetworking.registerGlobalReceiver(WolfEventsPayload.TYPE, (payload, context) -> {
+            ServerPlayer player = context.player();
+            player.level().getServer().execute(() -> {
+                if (!(player.level().getEntity(payload.integerFlags().getFirst()) instanceof Wolf wolf)) return;
+                if (wolf.getOwner() != player || player.distanceTo(wolf) > 12) return;
+
+                ReturnPointData data = wolf.getAttachedOrElse(WolfAttachment.RETURN_POINT, ReturnPointData.DEFAULT);
+
+                int type = payload.integerFlags().get(1);
+                switch (type) {
+                    case WolfEventsPayload.DROP_RUNESTONE_FROM_SHEARED -> {
+                        Runestone.dropRunestone(wolf, player);
+                    }
+                    case WolfEventsPayload.CHANGE_BENEDICTION_RETURN_METHOD -> {
+                        wolf.setAttached(WolfAttachment.RETURN_POINT, ReturnPointData.changeReturnMethod(data, !data.recordAfter()));
+                    }
+                    case WolfEventsPayload.REMOVE_RETURN_POINT -> {
+                        wolf.setAttached(WolfAttachment.RETURN_POINT, ReturnPointData.removeReturnPoint(data));
+                    }
+                    default -> {}
+                }
+            });
+        });
 
         ServerPlayNetworking.registerGlobalReceiver(TetherDataPayload.TYPE, (payload, context) -> {
             ServerPlayer player = context.player();
@@ -51,19 +75,18 @@ public class ServerboundPackets {
                 if (wolf.getOwner() != player || player.distanceTo(wolf) > 8 || !Runestone.hasTether(wolf)) return;
 
                 TetherData data = wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, TetherData.EMPTY);
-                List<String> tethered = new ArrayList<>(data.tetheredEntities());
-                List<String> blacklisted = payload.tetherData().blacklistedEntities();
                 List<String> newBlacklist = new ArrayList<>();
-                if (payload.tetherData().blacklistedEntities().isEmpty()) return;
-
-                for (String type : blacklisted) {
+                for (String type : payload.tetherData().blacklistedEntities()) {
                     Identifier id = Identifier.tryParse(type);
                     if (id == null || !BuiltInRegistries.ENTITY_TYPE.containsKey(id)) return;
-
                     newBlacklist.add(id.toString());
                 }
-                tethered.removeIf(blacklisted::contains);
-                wolf.setAttached(WolfAttachment.TETHER_DATA, TetherData.updateEntities(data, List.copyOf(tethered), List.copyOf(newBlacklist)));
+                List<String> tethered = new ArrayList<>(data.tetheredEntities());
+                tethered.removeIf(newBlacklist::contains);
+                wolf.setAttached(WolfAttachment.TETHER_DATA, new TetherData(
+                        List.copyOf(tethered), List.copyOf(newBlacklist),
+                        payload.tetherData().autoAttackTethered(),
+                        payload.tetherData().tetherChunkTicks()));
             });
         });
     }

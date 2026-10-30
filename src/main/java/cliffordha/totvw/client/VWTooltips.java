@@ -99,7 +99,7 @@ public class VWTooltips {
 
         String LORE_genesisRunestonePlate = "A fragment of unknown origin...";
         String LORE_efflorescenceRunestonePlate = "You feel as though you are revitalized by the subtle powered contained by this item...";
-        String LORE_tetherRunestonePlate = "You can feel a strange connection to the world itself... Perhaps you can use it for something great?";
+        String LORE_tetherRunestonePlate = "You can feel a strange connection to the world itself... Perhaps you can recordAfter it for something great?";
         String LORE_havocRunestonePlate = "It appears this item is fluctuating on its own...";
 
         String LORE_verixiumChunk = "\"For the land that they call 'home' and for the people they protect.\"";
@@ -258,7 +258,7 @@ public class VWTooltips {
             }
         }
     }
-    private static List<FormattedText> splitText(String key) {
+    public static List<FormattedText> splitText(String key) {
         return mc.font.getSplitter().splitLines(Component.translatable(key), 160, Style.EMPTY);
     }
     private static void addVWText(List<Component> out, String key) {

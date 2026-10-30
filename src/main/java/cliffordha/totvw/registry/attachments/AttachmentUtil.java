@@ -37,17 +37,6 @@ public class AttachmentUtil {
             UUIDUtil.STREAM_CODEC, Pair::getB,
             Pair::new
     );
-    public static final Codec<Pair<String, Boolean>> STRING_BOOLEAN_CODEC = RecordCodecBuilder.create(
-            pair -> pair.group(
-                    Codec.STRING.fieldOf("id").forGetter(Pair::getA),
-                    Codec.BOOL.fieldOf("value").forGetter(Pair::getB)
-            ).apply(pair, Pair::new)
-    );
-    public static final StreamCodec<FriendlyByteBuf, Pair<String, Boolean>> STRING_BOOLEAN_CODEC_STREAM = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8, Pair::getA,
-            ByteBufCodecs.BOOL, Pair::getB,
-            Pair::new
-    );
     public static final Codec<Pair<ItemStack, EquipmentSlot>> ITEM_STACK = RecordCodecBuilder.create(
             pair -> pair.group(
                     ItemStack.CODEC.fieldOf("stack").forGetter(Pair::getA),
@@ -83,17 +72,6 @@ public class AttachmentUtil {
                 builder -> {
                     builder.persistent(ENTITY_DATA_CODEC.listOf())
                             .syncWith(ENTITY_DATA_CODEC_STREAM.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all())
-                            .initializer(ArrayList::new);
-                    if (copyOnDeath) builder.copyOnDeath();
-                }
-        );
-    }
-    public static AttachmentType<List<Pair<String, Boolean>>> registerListPairEntities(String name, boolean copyOnDeath) {
-        return AttachmentRegistry.create(
-                TOTVW.registerID(name),
-                builder -> {
-                    builder.persistent(STRING_BOOLEAN_CODEC.listOf())
-                            .syncWith(STRING_BOOLEAN_CODEC_STREAM.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all())
                             .initializer(ArrayList::new);
                     if (copyOnDeath) builder.copyOnDeath();
                 }
@@ -143,13 +121,13 @@ public class AttachmentUtil {
                 }
         );
     }
-    public static AttachmentType<ResourceKey<Level>> registerLevel(String name, boolean copyOnDeath) {
+    public static AttachmentType<ReturnPointData> registerReturnPointData(String name, boolean copyOnDeath) {
         return AttachmentRegistry.create(
                 TOTVW.registerID(name),
                 builder -> {
-                    builder.persistent(Level.RESOURCE_KEY_CODEC)
-                            .syncWith(ByteBufCodecs.fromCodec(Level.RESOURCE_KEY_CODEC), AttachmentSyncPredicate.all())
-                            .initializer(() -> VWDimensions.NONE);
+                    builder.persistent(ReturnPointData.CODEC)
+                            .syncWith(ByteBufCodecs.fromCodec(ReturnPointData.CODEC), AttachmentSyncPredicate.all())
+                            .initializer(() -> ReturnPointData.DEFAULT);
                     if (copyOnDeath) builder.copyOnDeath();
                 }
         );

@@ -61,7 +61,7 @@ public class MiscBookSet {
                 + nextParagraph
 
                 + fText(BOLD, "APPROVAL") + nextLine
-                + "\"By virtue granted by our god, 'we', the people who reside among the Verdant Forest, grant the qualified Scholars access to resources nurtured by our land for an indefinite period of time. Purpose of access extends only to the following agreed upon use: studying, developing, and manufacturing solutions that may bring end to disasters caused by the creatures from beyond.\""
+                + "\"By virtue granted by our god, 'we', the people who reside among the Verdant Forest, grant the qualified Scholars access to resources nurtured by our land for an indefinite period of time. Purpose of access extends only to the following agreed upon recordAfter: studying, developing, and manufacturing solutions that may bring end to disasters caused by the creatures from beyond.\""
                 + nextParagraph
 
                 + "Grantor(s): Signed by " + bText("the people's chief.") + nextLine
@@ -76,7 +76,7 @@ public class MiscBookSet {
                 + fText(BOLD, "METHOD") + nextLine
                 + "To operate the Lodestone Wind Core (proposed name), an energy source is required before it can be activated by a special Verixium-based paper. Usable energy types are as follows: " + fText(STRIKETHROUGH, "Block of Redstone") + ", Verixium Powder Block, Verixium Powder, " + fText(STRIKETHROUGH, "Water Fluid") + ", Wind Charge. " + cText(GRAY, "Request for additional information for other energy sources is pending...")
                 + nextParagraph
-                + "Energy consumption may vary depending on the environment. That being said, the core will operate at stronger frequencies when enough energy is readily available for use."
+                + "Energy consumption may vary depending on the environment. That being said, the core will operate at stronger frequencies when enough energy is readily available for recordAfter."
                 + nextParagraph
                 + "Normal Parameters: Wind energy < 60000, stable, qualified subjects are scanned at optimal distance." + nextLine
                 + "High Parameters: Wind energy > 60000, unstable, close contact with the core may cause nausea and fatigue however, qualified subjects are scanned at longer distances."
@@ -97,7 +97,7 @@ public class MiscBookSet {
                 + "• High Priority: If any related incident arises, be it from using this material or its content(s), please notify and report to the Head of Scholars or authorities from the " + bText("Nolayan") + " people immediately." + nextLine
                 + "• High Priority: DO NOT STAND VERY CLOSELY TO THE CORE WHEN TESTING FOR HIGH ENERGY EFFICIENCY!" + nextLine
                 + "• Recalibrate the qualified variables every day to prevent unnecessary checks and save energy." + nextLine
-                + "• Report energy use every 30 minutes." + nextLine
+                + "• Report energy recordAfter every 30 minutes." + nextLine
                 + "• Do not let the core run indefinitely in scorching environments."
 
                 + addSeparator

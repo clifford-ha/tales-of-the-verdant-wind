@@ -1,6 +1,7 @@
 package cliffordha.totvw.item.pages;
 
 import cliffordha.totvw.client.screen.PageScreen;
+import cliffordha.totvw.client.screen.WolfPageScreen;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.entity.status.WolfStats;
 import cliffordha.totvw.item.pages.contents.FirstBookSet;
@@ -134,7 +135,7 @@ public class ScatteredPageItem extends Item {
         //if (!wolf.level().isClientSide()) return;
         int id = wolf.getId();
         WolfStats stats = WolfStats.valueOf(wolf);
-        Minecraft.getInstance().setScreenAndShow(new PageScreen(
+        Minecraft.getInstance().setScreenAndShow(new WolfPageScreen(
                 fText(BOLD, stats.name() + "'s Stats"),
                 () -> {
                     Minecraft mc = Minecraft.getInstance();
@@ -142,7 +143,7 @@ public class ScatteredPageItem extends Item {
                             ? EntityStats.wolfStats(wolf, stats)
                             : invalidRef;
                 },
-                () -> wolf
+                () -> wolf, false
         ));
     }
 

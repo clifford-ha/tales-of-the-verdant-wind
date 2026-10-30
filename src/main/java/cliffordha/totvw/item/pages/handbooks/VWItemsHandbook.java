@@ -30,15 +30,15 @@ public class VWItemsHandbook {
 
     private static String verixiumResourcesInfo() {
         return titleVerixiumResources.toUpperCase() + nextLine
-                + "A collection of items that are used to craft Verixium-based items. Starting with the Verixium Chunks that are found exclusively in the Verdant Biomes, you can use it to make a Condensed Verixium which can be cut into shards by using a stonecutter. Upon obtaining a Verixium Shard, you can then smelt it and turn it into Verixium Powder. The last step needs a diamond and by covering it up with the powder, the product, Verixium Ingot, can be obtained."
+                + "A collection of items that are used to craft Verixium-based items. Starting with the Verixium Chunks that are found exclusively in the Verdant Biomes, you can recordAfter it to make a Condensed Verixium which can be cut into shards by using a stonecutter. Upon obtaining a Verixium Shard, you can then smelt it and turn it into Verixium Powder. The last step needs a diamond and by covering it up with the powder, the product, Verixium Ingot, can be obtained."
                 + nextParagraph
 
                 + "Additional Info:" + nextLine
-                + "Smelting the shards into its powder form gives you a substantial amount of experience points. The Verixium Powder can be used to obtain the Verixium Fluid Bucket, and when you have the " + descBenediction + " enchantment, you may be able to use it and obtain a certain effect.";
+                + "Smelting the shards into its powder form gives you a substantial amount of experience points. The Verixium Powder can be used to obtain the Verixium Fluid Bucket, and when you have the " + descBenediction + " enchantment, you may be able to recordAfter it and obtain a certain effect.";
     }
     private static String lodestoneWindCoreInfo() {
         return titleLodestoneWindCore.toUpperCase() + nextLine
-                + "A block that can be obtained inside the Ancient Pillars that are found in Verdant Villages. Its core function is to buff nearby players and wolves while debuffing enemies and damaging them at intervals. The core can be activated with a Verixium Paper and while active, use these to add Wind Energy: " + descWindCoreEnergySources
+                + "A block that can be obtained inside the Ancient Pillars that are found in Verdant Villages. Its core function is to buff nearby players and wolves while debuffing enemies and damaging them at intervals. The core can be activated with a Verixium Paper and while active, recordAfter these to add Wind Energy: " + descWindCoreEnergySources
                 + nextParagraph
 
                 + fText(BOLD, "Functions:") + nextLine
@@ -72,7 +72,7 @@ public class VWItemsHandbook {
                 + "While active for wolf, nearby crops that are detected by the runestone within a 16 block radius gets a growth boost at random and have its light requirements bypassed. Additionally, if the wolf is standing inside the crop block, the runestone will provide additional power which will make the crop grow directly to its final stage (Growth Burst)."
                 + nextParagraph
 
-                + "While active for player, or when the runestone is in their inventory, the crop growth boost will occur. However, the player must have at least one bonemeal in their inventory and use the item to gain 50 Verdant Bloom Stacks that will be used to amount the additional effects mentioned above for wolves. Each time Growth Burst is triggered, a stack is consumed and there is a 20% chance it will consume one bonemeal (2 if the player is within desert biomes). Additionally, when player have remaining stack but no longer have bonemeal in their inventory, 2 stacks will be removed every 3 seconds until fully exhausted."
+                + "While active for player, or when the runestone is in their inventory, the crop growth boost will occur. However, the player must have at least one bonemeal in their inventory and recordAfter the item to gain 50 Verdant Bloom Stacks that will be used to amount the additional effects mentioned above for wolves. Each time Growth Burst is triggered, a stack is consumed and there is a 20% chance it will consume one bonemeal (2 if the player is within desert biomes). Additionally, when player have remaining stack but no longer have bonemeal in their inventory, 2 stacks will be removed every 3 seconds until fully exhausted."
                 + nextParagraph
 
                 + "This item can be found in the pyramids of desert.";
@@ -92,7 +92,7 @@ public class VWItemsHandbook {
     }
     private static String tetherRunestonePlateInfo() {
         return titleTetherRunestonePlate.toUpperCase() + nextLine
-                + "An item that can be used to extend your wolf companion's attack capabilities. To use, simply hold this item and right click your companion. After that, wolf will unlock LINK status and will be able to record entity types."
+                + "An item that can be used to extend your wolf companion's attack capabilities. To recordAfter, simply hold this item and right click your companion. After that, wolf will unlock LINK status and will be able to record entity types."
                 + nextParagraph
 
                 + "LINK STATUS:" + nextLine
@@ -106,11 +106,11 @@ public class VWItemsHandbook {
     }
     private static String havocRunestonePlateInfo() {
         return titleHavocRunestonePlate.toUpperCase() + nextLine
-                + "An item that can grant effects to the player via proxy (wolf). To use, simply hold this item and use it to interact with your wolf companion. This will unlock the HAVOC status and will give its owner the Havoc effect that can be triggered. When this effect is not triggered all throughout its duration, the cooldown will be set to a constant 30 seconds."
+                + "An item that can grant effects to the player via proxy (wolf). To recordAfter, simply hold this item and recordAfter it to interact with your wolf companion. This will unlock the HAVOC status and will give its owner the Havoc effect that can be triggered. When this effect is not triggered all throughout its duration, the cooldown will be set to a constant 30 seconds."
                 + nextParagraph
 
                 + "HAVOC STATUS:" + nextLine
-                + "Trigger: When active and player has the effect, and gets hit by a mob, the effect will undergo a change to certain Havoc Types depending on the circumstance(s) and provides a buff: a Usage Points that the player can use when successfully hitting a target. The usage point is reset to 0 when the Havoc effect gets removed and vice versa." + nextLine
+                + "Trigger: When active and player has the effect, and gets hit by a mob, the effect will undergo a change to certain Havoc Types depending on the circumstance(s) and provides a buff: a Usage Points that the player can recordAfter when successfully hitting a target. The usage point is reset to 0 when the Havoc effect gets removed and vice versa." + nextLine
                 + "• Void: Player gets damaged and the damage exceeds 60% of their current health, and they have no Totem of Undying in their offhand or mainhand inventory slot." + nextLine
                 + "• Expulsion: Player gets attacked by a mob that carries a shield, any armor, or totem of undying in their respective inventory slots, where at least 3 are occupied." + nextLine
                 + "• Annihilation: Activated when the conditions for Void and Expulsion type are not met."

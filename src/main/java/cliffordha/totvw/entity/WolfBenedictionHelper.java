@@ -9,17 +9,15 @@ import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.attachments.AttachmentUtil;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
+import cliffordha.totvw.registry.attachments.ReturnPointData;
 import cliffordha.totvw.registry.attachments.VWAttachments;
-import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ExtUtil;
-import cliffordha.totvw.worldgen.dimension.VWDimensions;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.*;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
@@ -28,7 +26,6 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.Vec3;
@@ -85,16 +82,21 @@ public class WolfBenedictionHelper {
             LivingEntity owner = wolf.getOwner();
 
             if (owner == null) {
-                saveWolfFile(level.getServer(), wolf);
-                //teleportToSpawn(wolf, null);
+                ReturnPointData data = wolf.getAttachedOrElse(WolfAttachment.RETURN_POINT, ReturnPointData.DEFAULT);
+                if (data.recordAfter()) {
+                    teleportToReturnPointOrOwner(wolf, null);
+                } else {
+                    saveWolfFile(level.getServer(), wolf);
+                }
             } else {
                 boolean canTP = wolf.canTeleport(wolf.level(), owner.level())
                         && wolf.level().dimensionType().equals(owner.level().dimensionType())
                         && owner.getAttachedOrElse(PlayerPrefs.BENEDICTION_TELEPORT_AFTER_SAVE, VWConfig.get().SYNCED_TELEPORT_AFTER_SAVE);
                 if (canTP) {
+                    if (wolf.distanceTo(owner) < 14) return true;
                     tryTeleport(wolf, owner);
                 } else {
-                    teleportToSpawn(wolf, owner);
+                    teleportToReturnPointOrOwner(wolf, owner);
                 }
             }
         }
@@ -213,46 +215,51 @@ public class WolfBenedictionHelper {
     }
 
 
-    private static void teleportToSpawn(Wolf wolf, @Nullable LivingEntity owner) {
-        if (owner != null && !wolf.level().dimension().equals(owner.level().dimension())) {
-            wolf.teleport(
-                    new TeleportTransition(
-                            (ServerLevel) owner.level(),
-                            new Vec3(owner.getX(), owner.getY(), owner.getZ()),
-                            Vec3.ZERO,
-                            owner.level().getRespawnData().yaw(),
-                            owner.level().getRespawnData().pitch(),
-                            TeleportTransition.PLACE_PORTAL_TICKET
-                    )
-            );
+    private static void teleportToReturnPointOrOwner(Wolf wolf, @Nullable LivingEntity owner) {
+        if (owner != null && !isSameDimension(wolf, owner)) {
+            ServerLevel level = (ServerLevel) owner.level();
+            List<Wolf> wolves = wolf.level().getEntitiesOfClass(
+                    Wolf.class,
+                    scanArea(wolf, 48),
+                    other -> other.getOwner() == owner);
+            boolean tpAll = owner.getAttachedOrElse(PlayerPrefs.BENEDICTION_WOLF_TP_ALL, VWConfig.get().SYNCED_WOLF_TP_ALL);
+            int tpMethod = owner.getAttachedOrElse(PlayerPrefs.BENEDICTION_WOLF_TP_METHOD, VWConfig.get().SYNCED_WOLF_TP_METHOD);
+
+            if (!wolves.isEmpty() && tpAll) {
+                for (Wolf other : wolves) {
+                    if (tpMethod == 0) {
+                        other.teleport(teleporter(level, owner));
+                    } else {
+                        addEffect(owner, VWEffects.WIND_VEIL, 3, 0);
+                        owner.teleport(teleporter(level, wolf));
+                        other.teleport(teleporter(level, wolf));
+                    }
+                    addEffect(other, VWEffects.WIND_VEIL, 3, 0);
+                }
+            }
+
+            if (tpMethod == 0) wolf.teleport(teleporter(level, owner));
             addEffect(wolf, VWEffects.WIND_VEIL, 3, 0);
             return;
         }
-        BlockPos target = wolf.getAttachedOrElse(WolfAttachment.RESPAWN_POINT, BlockPos.ZERO);
-        if (target.equals(BlockPos.ZERO)) return;
-
-        ResourceKey<Level> dimension = wolf.getAttachedOrElse(WolfAttachment.RESPAWN_DIMENSION, VWDimensions.NONE);
-        if (dimension.equals(VWDimensions.NONE)) return;
-
-        if (!wolf.level().dimension().equals(dimension)) {
-            ServerLevel level = wolf.level().getServer().getLevel(dimension);
-            if (level == null) return;
-            wolf.teleport(
-                    new TeleportTransition(
-                            level,
-                            new Vec3(target.getX(), target.getY(), target.getZ()),
-                            Vec3.ZERO,
-                            level.getRespawnData().yaw(),
-                            level.getRespawnData().pitch(),
-                            TeleportTransition.PLACE_PORTAL_TICKET
-                    )
-            );
+        ReturnPointData data = wolf.getAttachedOrElse(WolfAttachment.RETURN_POINT, ReturnPointData.DEFAULT);
+        if (data.isValid() && ReturnPointData.returnToTargetOrDefault(wolf, data, false)) {
             addEffect(wolf, VWEffects.WIND_VEIL, 3, 0);
+            wolf.teleportToAroundBlockPos(data.pos());
         }
-        wolf.teleportToAroundBlockPos(target);
+
+    }
+    private static TeleportTransition teleporter(ServerLevel level, LivingEntity entity) {
+        return new TeleportTransition(
+                level,
+                new Vec3(entity.getX(), entity.getY(), entity.getZ()),
+                Vec3.ZERO,
+                level.getRespawnData().yaw(),
+                level.getRespawnData().pitch(),
+                TeleportTransition.PLACE_PORTAL_TICKET
+        );
     }
     private static void tryTeleport(Wolf wolf, LivingEntity owner) {
-        if (wolf.distanceTo(owner) < 14) return;
         BlockPos playerPos = owner.blockPosition();
         BlockPos wolfPos = wolf.blockPosition();
         if (owner.getAttachedOrElse(PlayerPrefs.BENEDICTION_WOLF_TP_METHOD, VWConfig.get().SYNCED_WOLF_TP_METHOD) < 1) {

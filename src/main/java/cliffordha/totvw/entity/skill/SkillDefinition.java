@@ -5,6 +5,5 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 public record SkillDefinition(
         AttachmentType<Integer> cooldown,
         AttachmentType<Integer> notifier,
-        int notifierColor,
         String skillName
 ){}

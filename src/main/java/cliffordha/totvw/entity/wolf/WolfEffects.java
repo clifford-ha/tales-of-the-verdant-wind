@@ -39,11 +39,10 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
-import static cliffordha.totvw.util.TimeUtil.tickSeconds;
 import static cliffordha.totvw.util.ExtUtil.*;
 import static cliffordha.totvw.util.ExtUtil.removeEffect;
 
-public class WolfAttackEffects {
+public class WolfEffects {
     public static void onPostAttack(Wolf wolf, ServerLevel level, @Nullable LivingEntity linkVictim, boolean enchantmentExclusive, DamageSource override) {
         var victim = enchantmentExclusive ? VWWolfBehaviors.CURRENT_VICTIM.get() : linkVictim;
         if (victim == null) return;
@@ -139,7 +138,7 @@ public class WolfAttackEffects {
 
         if (enchantment.hasBloodLust() && enchantmentExclusive) {
             int ACTIVE_BLOODLUST = enchantment.getBloodlust();
-            int paralyzeTime = 3 + (tickSeconds(ACTIVE_BLOODLUST * 3));
+            int paralyzeTime = 3 + (ACTIVE_BLOODLUST * 3);
 
             addEffect(wolf, VWEffects.BLOODLUST, 6, ACTIVE_BLOODLUST - 1);
 
@@ -151,7 +150,7 @@ public class WolfAttackEffects {
             }
             addOrStackEffect(victim, MobEffects.WEAKNESS, 2, 0, true);
             boolean checkVictim = victim.is(EntityTypes.PLAYER) || victim.getMaxHealth() > 20.0;
-            boolean isNotParalyzed = !victim.hasEffect(VWEffects.PARALYZE) || victim.getAttachedOrElse(VWAttachments.FROST_BOUND_TIMER, 0) <= 0;
+            boolean isNotParalyzed = !victim.hasEffect(VWEffects.PARALYZE) && victim.getAttachedOrElse(VWAttachments.FROST_BOUND_TIMER, 0) <= 0;
             if (checkVictim && !SkillManager.isOnCooldown(wolf, WolfSkills.PARALYZER) && isNotParalyzed) {
                 addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
 
@@ -287,12 +286,13 @@ public class WolfAttackEffects {
             buffForBabyWolves(wolf, babyWolves, enchantment, 2);
         }
         if (ACTIVE_MIGHT > 0 && wolf.getTarget() != null) {
+            addEffect(wolf, MobEffects.SPEED, ACTIVE_MIGHT, 1);
             addEffect(wolf, VWEffects.AMPLIFIED_MIGHT, ACTIVE_MIGHT * 3, Math.min(ACTIVE_MIGHT - 1, 2));
 
             // CASE 1
             buffForBabyWolves(wolf, babyWolves, enchantment, 1);
         }
-        if (ACTIVE_IGNITION > 0 || ACTIVE_MIGHT > 3) {
+        if (ACTIVE_IGNITION > 0 || ACTIVE_MIGHT >= 3 || enchantment.getArcticWinds() > 3) {
             if (wolf.isOnFire()) {
                 wolf.extinguishFire();
             }

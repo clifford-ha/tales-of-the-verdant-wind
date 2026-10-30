@@ -41,7 +41,7 @@ public class EfflorescenceRunestonePlate extends Item {
         ItemStack stack = getBonemeal(player);
 
         if (stack == null || stack.count() < 5) {
-            sendToChat(player, true, "You need at least 5 bonemeal to use this!");
+            sendToChat(player, true, "You need at least 5 bonemeal to recordAfter this!");
             player.getCooldowns().addCooldown(new ItemStack(this), 10);
             return InteractionResult.FAIL;
         }

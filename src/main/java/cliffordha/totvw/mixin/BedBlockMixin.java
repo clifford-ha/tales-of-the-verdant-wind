@@ -1,7 +1,7 @@
 package cliffordha.totvw.mixin;
 
+import cliffordha.totvw.registry.attachments.ReturnPointData;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.attribute.BedRule;
@@ -23,10 +23,11 @@ public class BedBlockMixin {
     private void onInteract(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
         BedRule bedRule = level.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pos);
 
-        AttachmentType<BlockPos> PLAYER_RESPAWN_POINT = PlayerAttachment.RESPAWN_POINT;
         if (!level.isClientSide() && bedRule.canSetSpawn(player.level()) && !bedRule.destroyOnUse()) {
-            player.setAttached(PLAYER_RESPAWN_POINT, pos);
-            player.setAttached(PlayerAttachment.RESPAWN_DIMENSION, player.level().dimension());
+            if (cir.getReturnValue() != InteractionResult.SUCCESS) return;
+            player.setAttached(PlayerAttachment.RETURN_POINT,
+                    new ReturnPointData(player.level().dimension(), player.blockPosition(), true)
+            );
         }
     }
 }

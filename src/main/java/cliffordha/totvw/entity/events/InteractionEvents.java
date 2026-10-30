@@ -80,7 +80,7 @@ public class InteractionEvents {
 
         boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.getB().equals(mobData.getB()));
         if (oldPlayerData.size() >= 4 && !hasPriorData) {
-            sendToChat(player, true, "You can only armorData 4 trusted players at a time.");
+            sendToChat(player, true, "You can only add 4 trusted players at a time.");
             return InteractionResult.FAIL;
         }
         if (hasPriorData) {

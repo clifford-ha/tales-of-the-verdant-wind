@@ -49,6 +49,9 @@ public class ExtUtil {
     public static boolean isDimension(ServerLevel level, ResourceKey<Level> dimension) {
         return level.dimension().equals(dimension);
     }
+    public static boolean isSameDimension(LivingEntity from, LivingEntity to) {
+        return from.level().dimension().equals(to.level().dimension());
+    }
 
     public static boolean isSolidBelow(BlockPos pos, LevelAccessor level) {
         return !level.getBlockState(pos).isAir();
@@ -90,7 +93,7 @@ public class ExtUtil {
         Inventory inv = player.getInventory();
         int slot = inv.getFreeSlot();
 
-        if (slot > 0) {
+        if (slot >= 0) {
             inv.setItem(slot, item);
         } else {
             LivingEntity mob = dropFrom != null ? dropFrom : player;
@@ -102,7 +105,7 @@ public class ExtUtil {
         Inventory inv = player.getInventory();
         int slot = inv.getFreeSlot();
 
-        if (slot > 0) {
+        if (slot >= 0) {
             inv.setItem(slot, item);
         } else {
             player.drop(item, false, Prediction.SERVER_ONLY);
@@ -150,7 +153,16 @@ public class ExtUtil {
         }
         return finalCD;
     }
-
+    public static void playStaticSound(LivingEntity entity, SoundEvent sound, SoundSource source, boolean local) {
+        if (local) {
+            if (!(entity.level() instanceof Level level && level.isClientSide())) return;
+            level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), sound, source, 1.0f, 1.0f, false);
+        } else {
+            if (!(entity.level() instanceof ServerLevel level)) return;
+            BlockPos pos = entity.blockPosition();
+            level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), sound, source, 1.0f, 1.0f);
+        }
+    }
     public static void playSound(LivingEntity entity, SoundEvent sound, SoundSource source, boolean local) {
         if (local) {
             if (!(entity.level() instanceof Level level && level.isClientSide())) return;

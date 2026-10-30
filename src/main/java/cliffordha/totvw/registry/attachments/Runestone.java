@@ -2,12 +2,14 @@ package cliffordha.totvw.registry.attachments;
 
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
+import cliffordha.totvw.util.ExtUtil;
 import com.mojang.serialization.Codec;
 import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import static cliffordha.totvw.util.ExtUtil.consumeItem;
@@ -59,6 +61,9 @@ public enum Runestone {
             return "Invalid Runestone";
         }
     }
+    public Item getRunestoneItem(Wolf wolf) {
+        return getStack(wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY)).getItem();
+    }
     public static ItemStack getStack(Runestone type) {
         ItemStack stack;
         final ItemStack DEFAULT = new ItemStack(VWItems.GENESIS_RUNESTONE_PLATE);
@@ -96,6 +101,18 @@ public enum Runestone {
 
     private static boolean hasRunestone(LivingEntity entity, Runestone type) {
         return entity.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY) == type;
+    }
+    public static void dropRunestone(Wolf wolf) {
+        Runestone type = wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY);
+        if (type.equals(Runestone.EMPTY)) return;
+        wolf.drop(Runestone.getStack(type), false, Prediction.SERVER_ONLY);
+        wolf.removeAttached(WolfAttachment.RUNESTONE_TYPE);
+    }
+    public static void dropRunestone(Wolf wolf, Player receiver) {
+        Runestone type = wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY);
+        if (type.equals(Runestone.EMPTY)) return;
+        ExtUtil.addToInventory(receiver, type.getRunestoneItem(wolf));
+        wolf.removeAttached(WolfAttachment.RUNESTONE_TYPE);
     }
     public static boolean hasRunestone(LivingEntity entity) {
         return !entity.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY).equals(Runestone.EMPTY);

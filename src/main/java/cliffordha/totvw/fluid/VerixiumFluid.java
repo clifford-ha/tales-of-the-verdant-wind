@@ -48,7 +48,7 @@ import net.minecraft.world.level.material.FluidState;
 
 import java.util.Optional;
 
-import static cliffordha.totvw.util.ExtUtil.addHiddenEffect;
+import static cliffordha.totvw.util.ExtUtil.*;
 
 @SuppressWarnings("NullableProblems")
 public abstract class VerixiumFluid extends FlowingFluid {
@@ -192,14 +192,14 @@ public abstract class VerixiumFluid extends FlowingFluid {
         int time;
         int amplifier;
         if (entity.level().getBiome(entity.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES)) {
-            bossTime = setTime(1, 30);
+            bossTime = 90;
             bossAmp = 1;
-            time = setTime(0, 12);
+            time = 12;
             amplifier = 0;
         } else {
-            bossTime = setTime(0, 40);
+            bossTime = 40;
             bossAmp = 0;
-            time = setTime(0, 3);
+            time = 3;
             amplifier = -1;
         }
         switch (entity) {
@@ -241,9 +241,9 @@ public abstract class VerixiumFluid extends FlowingFluid {
     private static void evaluateSlowness(LivingEntity livingEntity) {
         int defaultDuration;
         int defaultAmp;
-        boolean inVerdantBiome = livingEntity.level().getBiome(livingEntity.blockPosition()).is(VWBiomeTags.IS_VERDANT_BIOMES);
-        boolean inForest = livingEntity.level().getBiome(livingEntity.blockPosition()).is(BiomeTags.IS_FOREST);
-        boolean inEnd = livingEntity.level().getBiome(livingEntity.blockPosition()).is(BiomeTags.IS_END);
+        boolean inVerdantBiome = isInBiome(livingEntity, VWBiomeTags.IS_VERDANT_BIOMES);
+        boolean inForest = isInBiome(livingEntity, BiomeTags.IS_FOREST);
+        boolean inEnd = isDimension(livingEntity, Level.END);
         if (inVerdantBiome) {
             defaultDuration = setTime(0, 3);
             defaultAmp = 0;

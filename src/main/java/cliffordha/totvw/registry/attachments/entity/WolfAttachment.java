@@ -1,9 +1,6 @@
 package cliffordha.totvw.registry.attachments.entity;
 
-import cliffordha.totvw.registry.attachments.Runestone;
-import cliffordha.totvw.registry.attachments.TetherData;
-import cliffordha.totvw.registry.attachments.VWAttachments;
-import cliffordha.totvw.registry.attachments.ArmorData;
+import cliffordha.totvw.registry.attachments.*;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -49,15 +46,13 @@ public class WolfAttachment {
     public static final AttachmentType<UUID> SOUL_ID = registerUUID(WOLF + "soul_id", true);
     public static final AttachmentType<UUID> FAMILY_ID = registerUUID(WOLF + "family_id", true);
 
-    public static final AttachmentType<ResourceKey<Level>> RESPAWN_DIMENSION = registerLevel(WOLF + "respawn_dimension", true);
-    public static final AttachmentType<BlockPos> RESPAWN_POINT = registerBlockPos(WOLF + "respawn_point", true);
+    public static final AttachmentType<ReturnPointData> RETURN_POINT = registerReturnPointData(WOLF + "return_point", true);
     public static final AttachmentType<List<Pair<String, UUID>>> AGGRESSOR_LIST = registerListPair(WOLF + "aggressor_list", true);
     public static final AttachmentType<List<Pair<String, UUID>>> TRUSTED_PLAYERS = registerListPair(WOLF + "trusted_players", true);
     public static final AttachmentType<List<String>> TETHERED_ENTITY_TYPES = registerStringList(WOLF + "tethered_entity_types", false);
 
     public static final AttachmentType<Runestone> RUNESTONE_TYPE = registerRunestone(WOLF + "runestone_type", false);
-    public static final AttachmentType<List<String>> TETHER_ENTITY_BLACKLIST = registerStringList(WOLF + "tether_entity_blacklist", true);
-    public static final AttachmentType<TetherData> TETHER_DATA = registerTetherData(WOLF + "tick_from_technology", true);
+    public static final AttachmentType<TetherData> TETHER_DATA = registerTetherData(WOLF + "tether_data", true);
     public static final AttachmentType<Integer> ATTACK_CYCLE = registerInt(WOLF + "attack_cycle", false);
     public static final AttachmentType<Integer> FLASH_FREEZE_STACK = registerInt(WOLF + "flash_freeze_stack", false);
 
@@ -69,7 +64,7 @@ public class WolfAttachment {
     }
 
     public static List<String> getTetherBlacklist(Wolf wolf) {
-        return wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, TetherData.EMPTY).tetheredEntities();
+        return wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, TetherData.EMPTY).blacklistedEntities();
     }
 
     public static boolean isTetherBlacklisted(Wolf wolf, Entity entity) {

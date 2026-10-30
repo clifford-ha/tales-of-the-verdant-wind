@@ -40,7 +40,7 @@ public class VWEnchantmentsHandbook {
                 + nextParagraph
 
                 + bold("Core Features:") + nextLine
-                + "• If your wolf companion has the enchantment, you may want to give them a Totem of Undying and it will be automatically converted into a Benediction Stack. They will automatically use it to revive themselves when they get knocked down. The stack will also remain even if the armor is removed or destroyed during combat."
+                + "• If your wolf companion has the enchantment, you may want to give them a Totem of Undying and it will be automatically converted into a Benediction Stack. They will automatically recordAfter it to revive themselves when they get knocked down. The stack will also remain even if the armor is removed or destroyed during combat."
                 + nextParagraph
 
                 + "• Your companion can also share their stack through " + fText(UNDERLINED, "Revival by Proxy") + cText(DARK_GRAY, " (Enabled by default)") + ". Additional information can be found in the Features Handbook."

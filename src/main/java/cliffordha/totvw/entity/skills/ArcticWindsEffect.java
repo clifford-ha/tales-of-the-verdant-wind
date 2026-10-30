@@ -63,7 +63,11 @@ public class ArcticWindsEffect {
             setAffliction(victim, applyAffliction + add);
             setFlashFreeze(wolf, -trigger);
         }
-        if (random.nextFloat() < enchantmentLevel * 0.15f && flashFreeze >= trigger && afflictionStack(victim) >= trigger) {
+        boolean applyFrostBound = random.nextFloat() < enchantmentLevel * 0.15f && flashFreeze >= trigger && afflictionStack(victim) >= trigger;
+        if (level.isRainingAt(victim.blockPosition())) {
+            applyFrostBound = random.nextFloat() < 0.7f;
+        }
+        if (applyFrostBound) {
             setFrostBound(victim, 1);
             setFlashFreeze(wolf, -trigger);
             setAffliction(victim, -trigger);

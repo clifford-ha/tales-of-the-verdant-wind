@@ -10,7 +10,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 // client -> server
 public record TetherDataPayload(int entityId, TetherData tetherData) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<TetherDataPayload> TYPE =
-            new CustomPacketPayload.Type<>(TOTVW.registerID("tether_blacklist"));
+            new CustomPacketPayload.Type<>(TOTVW.registerID("tether_data"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TetherDataPayload> STREAM_CODEC =
             StreamCodec.composite(

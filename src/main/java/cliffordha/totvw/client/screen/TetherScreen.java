@@ -1,10 +1,15 @@
 package cliffordha.totvw.client.screen;
 
+import cliffordha.totvw.TOTVW;
+import cliffordha.totvw.item.pages.FTextStyle;
 import cliffordha.totvw.networking.packets.TetherDataPayload;
+import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.TetherData;
+import cliffordha.totvw.util.TextUtil;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -12,8 +17,11 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -22,34 +30,44 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 
 import java.util.*;
 
+import static cliffordha.totvw.client.screen.ConfigScreen.getCenter;
+import static cliffordha.totvw.client.screen.ConfigScreen.rescale;
+
 public class TetherScreen extends Screen {
     private record Entry(String id, String name, String search) {}
 
     private static final int LIST_W = 450;
     private static final int ROW_H = 14;
-    private static final int COLOR_BG = 0x80001822;
     private static final int COLOR_HOVER = 0x33FFFFFF;
 
     private final int wolfId;
     private final List<Entry> entries = new ArrayList<>();
     private List<Entry> filtered = new ArrayList<>();
 
+    private static final Identifier ICON = TOTVW.registerID("textures/gui/tether_translucent.png");
+    private static final int ICON_TEX_W = 1920;
+    private static final int ICON_TEX_H = 1080;
+
     private EditBox search;
     private boolean onlyListed = false;
-    private boolean autoAttack = false;
-    private boolean loadChunks = false;
+    private boolean autoAttack;
+    private boolean loadChunks;
     private int scroll = 0;
     private int listLeft, listTop, listBottom;
-    private static TetherData tetherData = TetherData.EMPTY;
+    private TetherData tetherData;
+    private final Screen parentScreen;
 
-    public TetherScreen(int wolfId, TetherData newData) {
-        tetherData = newData;
+    public TetherScreen(int wolfId, TetherData newData, Screen parent) {
         super(text("Tether Manager"));
+        this.tetherData = newData;
+        this.autoAttack = newData.autoAttackTethered();
+        this.loadChunks = newData.tetherChunkTicks();
         this.wolfId = wolfId;
+        this.parentScreen = parent;
 
         for (var e : BuiltInRegistries.ENTITY_TYPE.entrySet()) {
             EntityType<?> type = e.getValue();
-            if (type == EntityTypes.PLAYER) continue;
+            if (type == EntityTypes.WOLF) continue;
             if (!DefaultAttributes.hasSupplier(type)) continue;
 
             String id = e.getKey().identifier().toString();
@@ -88,18 +106,19 @@ public class TetherScreen extends Screen {
 
     @Override
     protected void init() {
-        listLeft = this.width / 2 - LIST_W / 2;
-        listTop = 46;
+        listLeft = Mth.ceil(this.width * 0.05);
+        listTop = Mth.ceil(this.height * 0.25);;
         listBottom = this.height - 20;
+        int btnY = Mth.ceil(this.height * 0.15);
 
         int searchX = Mth.ceil(this.width * 0.2);
-        search = new EditBox(this.font, listLeft, 18, searchX, 18, text("Search"));
-        search.setHint(text("Search name or mod id..."));
+        search = new EditBox(this.font, Mth.ceil(this.width * 0.05), btnY + 1, searchX, 18, text("Search"));
+        search.setHint(text("Name..."));
         search.setResponder(s -> { scroll = 0; refresh(); });
         this.addRenderableWidget(search);
         this.setInitialFocus(search);
 
-        int btnLeft = listLeft + searchX + 5;
+        int btnLeft = listLeft + searchX + 2;
         this.addRenderableWidget(
                 Button.builder(text("Filter: " + (onlyListed ? "ON" : "OFF")), b -> {
                     onlyListed = !onlyListed;
@@ -108,30 +127,30 @@ public class TetherScreen extends Screen {
                     refresh();
                 }).tooltip(Tooltip.create(
                         text("Only show blacklisted entities")
-                )).bounds(btnLeft, 17, 80, 20).build()
+                )).bounds(btnLeft, btnY, 70, 20).build()
         );
         this.addRenderableWidget(
-                Button.builder(text("Auto Attack: " + (autoAttack ? "ON" : "OFF")), button -> {
+                Button.builder(autoAttack ? text("Auto Attack") : mute("Auto Attack"), button -> {
                     autoAttack = !autoAttack;
-                    button.setMessage(text("Auto Attack: " + (autoAttack ? "ON" : "OFF")));
+                    button.setMessage(autoAttack ? text("Auto Attack") : mute("Auto Attack"));
                     update();
                 }).tooltip(Tooltip.create(
-                        text("Tethered entities will be automatically attacked when they are within 8 blocks")
-                )).bounds(btnLeft + 80, 17, 80, 20).build()
+                        text("When you have less than 50% health, tethered entities will be automatically attacked when they are within 8 blocks")
+                )).bounds(btnLeft + 72, btnY, 70, 20).build()
         );
         this.addRenderableWidget(
-                Button.builder(text("Load Chunk: " + (loadChunks ? "ON" : "OFF")), button -> {
+                Button.builder(loadChunks ? text("Load Chunk") : mute("Load Chunk"), button -> {
                     loadChunks = !loadChunks;
-                    button.setMessage(text("Load Chunk: " + (loadChunks ? "ON" : "OFF")));
+                    button.setMessage(loadChunks ? text("Load Chunk") : mute("Load Chunk"));
                     update();
                 }).tooltip(Tooltip.create(
                         text("Allow wolf to load chunks")
-                )).bounds(btnLeft + 160, 17, 80, 20).build()
+                )).bounds(btnLeft + 144, btnY, 70, 20).build()
         );
         this.addRenderableWidget(
                 Button.builder(text("✖"), button ->
                         this.onClose()
-                ).bounds(btnLeft + 240, 17, 20, 20).build()
+                ).bounds(Mth.ceil(this.width * 0.91), btnY, 20, 20).build()
         );
         refresh();
     }
@@ -147,19 +166,41 @@ public class TetherScreen extends Screen {
             return;
         }
         refresh();
-    }
-
-    @Override
-    public void onClose() {
-        super.onClose();
-        if (wolf() == null) return;
         update();
     }
 
     @Override
+    public void onClose() {
+        if (parentScreen != null) {
+            Minecraft.getInstance().setScreenAndShow(parentScreen);
+            return;
+        }
+        super.onClose();
+    }
+
+    @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        graphics.fill(0, 0, this.width, this.height, 0x80000000);
-        graphics.fill(0, 0, this.width, this.height, COLOR_BG);
+        int TITLE_COLOR = ARGB.color(1.0f, VWColors.RUNESTONE_TETHER);
+        int COLOR_SHADE = ARGB.color(0.4f, 0x001822);
+        int COLOR_BG = ARGB.color(1.0f, 0x001822);
+
+        int baseHeight = this.height;
+        graphics.fill(0, 0, this.width, baseHeight, COLOR_SHADE);
+
+        int imgX = rescale(ICON_TEX_W, 0.2);
+        int imgY = rescale(ICON_TEX_H, 0.2);
+        graphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                ICON,
+                getCenter(this.width, imgX), getCenter(this.height, imgY),
+                0.0F, 0.0F,
+                imgX, imgY, // drawn size
+                ICON_TEX_W, ICON_TEX_H, // full texture size
+                ICON_TEX_W, ICON_TEX_H // full texture size
+        );
+
+        graphics.fillGradient(0, 0, this.width, this.height, COLOR_BG, COLOR_SHADE);
+        graphics.text(this.font, TextUtil.fText(FTextStyle.BOLD, "Runestone: Tether Manager"), listLeft, Mth.ceil(this.height * 0.1), TITLE_COLOR, false);
 
         Set<String> listed = new HashSet<>(blacklist());
         int end = Math.min(filtered.size(), scroll + visibleRows());
@@ -170,14 +211,14 @@ public class TetherScreen extends Screen {
             boolean hovered = mouseX >= listLeft && mouseX < listLeft + LIST_W && mouseY >= y && mouseY < y + ROW_H;
             boolean isListed = listed.contains(e.id());
 
-            if (hovered) graphics.fill(listLeft, y, listLeft + LIST_W, y + ROW_H, COLOR_HOVER);
+            if (hovered) graphics.fill(listLeft, y, Mth.ceil(this.width * 0.9) + listLeft, y + ROW_H, COLOR_HOVER);
 
             String mark = isListed ? "•  " : "   ";
             int idWidth = this.font.width(e.id());
             String name = this.font.plainSubstrByWidth(mark + e.name(), LIST_W - idWidth - 12);
 
-            graphics.text(this.font, name, listLeft + 2, y + 3, isListed ? 0xFFFF5555 : 0xFFFFFFFF, false);
-            graphics.text(this.font, e.id(), listLeft + LIST_W - idWidth - 2, y + 3, 0xFF888888, false);
+            graphics.text(this.font, name, listLeft, y + 3, isListed ? 0xFFFF5555 : 0xFFFFFFFF, false);
+            graphics.text(this.font, e.id(), this.width - idWidth - Mth.ceil(this.width * 0.05), y + 3, 0xFF888888, false);
             y += ROW_H;
         }
         if (!onlyListed) {
@@ -193,8 +234,9 @@ public class TetherScreen extends Screen {
         super.extractRenderState(graphics, mouseX, mouseY, a);
     }
     public void update() {
-        TetherData data = new TetherData(tetherData.tetheredEntities(), tetherData.blacklistedEntities(), autoAttack, loadChunks);
-        ClientPlayNetworking.send(new TetherDataPayload(wolfId, data));
+        ClientPlayNetworking.send(new TetherDataPayload(wolfId,
+                new TetherData(tetherData.tetheredEntities(), tetherData.blacklistedEntities(), autoAttack, loadChunks)
+        ));
     }
 
     @Override
@@ -208,10 +250,10 @@ public class TetherScreen extends Screen {
         if (index < 0 || index >= filtered.size()) return false;
 
         Entry e = filtered.get(index);
-        if (!tetherData.blacklistedEntities().contains(e.id())) {
-            tetherData.blacklistedEntities().add(e.id());
-        }
-        ClientPlayNetworking.send(new TetherDataPayload(wolfId, tetherData));
+        List<String> list = new ArrayList<>(tetherData.blacklistedEntities());
+        if (!list.remove(e.id())) list.add(e.id());
+        tetherData = TetherData.updateBlacklisted(tetherData, List.copyOf(list));
+        update();
         return true;
     }
 
@@ -227,5 +269,8 @@ public class TetherScreen extends Screen {
     }
     private static Component text(String s) {
         return Component.literal(s);
+    }
+    private static Component mute(String s) {
+        return Component.literal(s).withColor(VWColors.GRAY).withStyle(ChatFormatting.STRIKETHROUGH);
     }
 }

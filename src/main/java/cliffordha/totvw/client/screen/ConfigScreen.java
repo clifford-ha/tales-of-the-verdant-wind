@@ -5,6 +5,7 @@ import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.networking.packets.ClientPrefsPayload;
 import cliffordha.totvw.registry.VWColors;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -28,7 +29,7 @@ import java.util.function.IntSupplier;
 
 public class ConfigScreen extends Screen {
     private enum ListShown {
-        CLIENT("Client"), SERVER("Server"), DEBUG("Debug");
+        CLIENT("Client"), SERVER("Server"), DEBUG("Debug"), INFO("Info");
         private final String label;
         ListShown(String label) { this.label = label; }
         public String getLabel() {
@@ -39,11 +40,15 @@ public class ConfigScreen extends Screen {
         String label();
         String description();
     }
+    private static final List<String> RANDOM_HELLO = List.of(
+            ""
+    );
 
     private record Header(String label) implements ConfigScreen.Entry {
         public String description() { return ""; }
     }
 
+    private record DescEntry(String label, String description) implements ConfigScreen.Entry {}
     private record BoolEntry(String label, String description, BooleanSupplier get, Consumer<Boolean> set) implements ConfigScreen.Entry {}
     private record IntEntry(String label, String description, IntSupplier get, IntConsumer set, int min, int max, int step) implements ConfigScreen.Entry {}
 
@@ -52,9 +57,13 @@ public class ConfigScreen extends Screen {
     private static final int ROW_H = 20;
     private static final int VALUE_W = 80;
     private static final int COLOR_HOVER = 0x33FFFFFF;
+
+    private static final Identifier ICON = TOTVW.registerID("textures/gui/totvw_translucent.png");
     private static final Identifier BANNER = TOTVW.registerID("textures/gui/banner.png");
     private static final int BANNER_TEX_W = 3840;
     private static final int BANNER_TEX_H = 1080;
+    private static final int ICON_TEX_W = 1080;
+    private static final int ICON_TEX_H = 1080;
 
     // SCROLLBAR RELATED
     private static final int SCROLLBAR_W = 5;
@@ -122,6 +131,15 @@ public class ConfigScreen extends Screen {
                         .bounds(listLeft + 80, Mth.ceil(this.height * 0.85f), 75, 20)
                         .build()
         );
+        this.addRenderableWidget(
+                Button.builder(Component.literal("?").withStyle(ChatFormatting.BOLD), b -> {
+                    listShown = ListShown.INFO;
+                    buildEntries();
+                })
+                        .tooltip(Tooltip.create(text("Check info")))
+                        .bounds(listLeft + 160, Mth.ceil(this.height * 0.85f), 20, 20)
+                        .build()
+        );
     }
 
     private String nextLabel() {
@@ -140,36 +158,73 @@ public class ConfigScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        int GRADIENT = ARGB.color(0.5f, 0x000000);
-        int COLOR_BG = ARGB.color(0.8f, 0x001822);
-        int COLOR_FG = VWColors.shadeColor(0x001822, 1.2f);
+        int TITLE_COLOR = ARGB.color(1.0f, VWColors.RUNESTONE_TETHER);
+        int COLOR_SHADE = ARGB.color(0.4f, 0x001822);
+        int COLOR_BG = ARGB.color(0.7f, 0x001822);
+        graphics.fillGradient(0, 0, this.width, this.height, COLOR_BG, COLOR_SHADE);
+
+        int halfH = Mth.ceil(this.height * 0.5f);
+        int halfX = Mth.ceil(this.width * 0.5f);
+        graphics.blit(
+                RenderPipelines.GUI_TEXTURED,
+                ICON,
+                (this.width / 2) - halfH / 2, (this.height / 2) - halfH / 2,
+                0.0F, 0.0F,
+                halfH, halfH, // drawn size
+                ICON_TEX_W, ICON_TEX_H, // full texture size
+                ICON_TEX_W, ICON_TEX_H // full texture size
+        );
+
         graphics.fill(0, 0, this.width, this.height, COLOR_BG);
-        graphics.fillGradient(0, 0, this.width, this.height, COLOR_BG, ARGB.color(0.1f, 0x001822));
-        //graphics.fill(this.width / 2 + (Mth.ceil(this.width * 0.15f)), 0, this.width, this.height, COLOR_FG);
 
         int margin = 10;
         int maxW = this.width - margin * 2;
         int maxH = this.height / 4;
 
         float scale = Math.min((float) maxW / BANNER_TEX_W, (float) maxH / BANNER_TEX_H);
-        float rescale = scale * 0.7f;
+        float rescale = listShown == ListShown.INFO ? scale * 1.3f : scale * 0.7f;
         int w = Math.max(1, (int) (BANNER_TEX_W * rescale));
         int h = Math.max(1, (int) (BANNER_TEX_H * rescale));
-
+        int bannerXPos;
+        int bannerYPos;
+        if (listShown == ListShown.INFO) {
+            bannerXPos = (this.width / 2) - w / 2;
+            bannerYPos = Mth.ceil(this.height * 0.15f);
+        } else {
+            bannerXPos = this.listLeft - 11;
+            bannerYPos = margin;
+        }
         graphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 BANNER,
-                this.listLeft - 11, margin,
+                bannerXPos, bannerYPos,
                 0.0F, 0.0F,
                 w, h, // drawn size
                 BANNER_TEX_W, BANNER_TEX_H, // full texture size
                 BANNER_TEX_W, BANNER_TEX_H // full texture size
         );
 
-        int hovered = rowAt(mouseX, mouseY);
         int end = Math.min(entries.size(), scroll + visibleRows());
         int y = listTop;
 
+        if (listShown == ListShown.INFO) {
+            int spacing = 0;
+            for (int i = scroll; i < end; i++) {
+                ConfigScreen.Entry e = entries.get(i);
+
+                if (e instanceof ConfigScreen.Header header) {
+                    //graphics.text(this.font, e.label(), listLeft, textY, 0xFF000000 | VWColors.VERDANT_WIND, false);
+                } else {
+                    graphics.text(this.font, e.label(), halfX - (font.width(e.label()) + 15) / 2, Mth.ceil(this.height * 0.4) + spacing, 0xFFFFFFFF, false);
+                }
+                spacing += 12;
+            }
+
+            super.extractRenderState(graphics, mouseX, mouseY, a);
+            return;
+        }
+
+        int hovered = rowAt(mouseX, mouseY);
         for (int i = scroll; i < end; i++) {
             ConfigScreen.Entry e = entries.get(i);
             int textY = y + (ROW_H - this.font.lineHeight) / 2;
@@ -226,6 +281,7 @@ public class ConfigScreen extends Screen {
                                 case CLIENT -> "These options are automatically synced to the server.";
                                 case SERVER -> "For server-side only. Changes to these options will only apply if you are the host or when in singleplayer mode";
                                 case DEBUG -> "For debugging purposes only (server-side)";
+                                case INFO -> "Mod Info";
                             }
                     ), maxX, Style.EMPTY);
 
@@ -289,7 +345,7 @@ public class ConfigScreen extends Screen {
                     "When enabled, show texts on pages that contain lore regardless if the player is not in survival mode.",
                     () -> c.CLIENT_ALLOW_LORE_SPOILERS, v -> c.CLIENT_ALLOW_LORE_SPOILERS = v));
 
-            entries.add(new ConfigScreen.Header(""));
+
             entries.add(new ConfigScreen.Header("Benediction of the Verdant Mountains"));
 
             entries.add(new ConfigScreen.IntEntry(
@@ -297,36 +353,30 @@ public class ConfigScreen extends Screen {
                     "Grant Blessing when health percent is met",
                     () -> c.SYNCED_BENEDICTION_HEALTH_THRESHOLD, v -> c.SYNCED_BENEDICTION_HEALTH_THRESHOLD = v, 10, 50, 5));
 
-
             entries.add(new ConfigScreen.BoolEntry(
                     "Share Benediction Stack",
                     "Wolf will share their Benediction Stack with you when you are near them",
                     () -> c.SYNCED_WOLF_SHARES_BENEDICTION_STACK, v -> c.SYNCED_WOLF_SHARES_BENEDICTION_STACK = v));
-
 
             entries.add(new ConfigScreen.BoolEntry(
                     "Always Trigger Blessing",
                     "Grant Blessing even if the wolf could revive you",
                     () -> c.SYNCED_ALWAYS_TRIGGER_BLESSING, v -> c.SYNCED_ALWAYS_TRIGGER_BLESSING = v));
 
-
             entries.add(new ConfigScreen.BoolEntry(
                     "Teleport After Revival",
                     "Teleport to nearest wolf/owner after revival; Affects both Wolf and Player TP Methods",
                     () -> c.SYNCED_TELEPORT_AFTER_SAVE, v -> c.SYNCED_TELEPORT_AFTER_SAVE = v));
-
 
             entries.add(new ConfigScreen.IntEntry(
                     "Wolf TP Method",
                     "0: wolf goes to player, 1: reverse",
                     () -> c.SYNCED_WOLF_TP_METHOD, v -> c.SYNCED_WOLF_TP_METHOD = v, 0, 1, 1));
 
-
             entries.add(new ConfigScreen.IntEntry(
                     "Player TP Method",
                     "0: player goes to wolf, 1: reverse",
                     () -> c.SYNCED_PLAYER_TP_METHOD, v -> c.SYNCED_PLAYER_TP_METHOD = v, 0, 1, 1));
-
 
             entries.add(new ConfigScreen.BoolEntry(
                     "All Wolves Get TP",
@@ -341,24 +391,22 @@ public class ConfigScreen extends Screen {
                     "Use the new damage distribution where wolf with armors, applied damage is distributed: 25% to wolf, 75% to the armor",
                     () -> c.SERVER_WOLF_DMG_DISTRIBUTION, v -> c.SERVER_WOLF_DMG_DISTRIBUTION = v));
 
-
             entries.add(new ConfigScreen.BoolEntry(
                     "Skill Cooldowns",
                     "If disabled, active cooldowns for skills will reset",
                     () -> c.SERVER_SKILL_COOLDOWNS, v -> c.SERVER_SKILL_COOLDOWNS = v));
-
 
             entries.add(new ConfigScreen.BoolEntry(
                     "Item Cooldowns",
                     "If disabled, certain item usage won't trigger cooldowns",
                     () -> c.SERVER_ITEM_COOLDOWNS, v -> c.SERVER_ITEM_COOLDOWNS = v));
 
-
             entries.add(new ConfigScreen.BoolEntry(
                     "Other Cooldowns",
                     "",
                     () -> c.SERVER_OTHER_COOLDOWNS, v -> c.SERVER_OTHER_COOLDOWNS = v));
-        } else {
+
+        } else if (listShown == ListShown.DEBUG) {
             entries.add(new ConfigScreen.Header("DEBUG"));
 
 
@@ -383,6 +431,14 @@ public class ConfigScreen extends Screen {
                     "Entity Events",
                     "On terminal log, show entities that have imploded",
                     () -> c.LOG_WINDCORE_ENTITY_EVENT, v -> c.LOG_WINDCORE_ENTITY_EVENT = v));
+
+        } else {
+            entries.add(new ConfigScreen.Header("INFORMATION"));
+
+            entries.add(new DescEntry("Version: " + TOTVW.VERSION, ""));
+            entries.add(new DescEntry("", ""));
+            entries.add(new DescEntry("All Rights Reserved", ""));
+            entries.add(new DescEntry("Copyright (C) 2026 Clifford HA", ""));
         }
         scroll = Mth.clamp(scroll, 0, maxScroll());
     }
@@ -502,10 +558,16 @@ public class ConfigScreen extends Screen {
 
     @Override
     public boolean isPauseScreen() {
-        return false;
+        return !Minecraft.getInstance().isMultiplayerServer() && Minecraft.getInstance().isLocalServer();
     }
 
-    private static Component text(String s) {
+    protected static Component text(String s) {
         return Component.literal(s);
+    }
+    protected static int getCenter(int base, int src) {
+        return (base / 2) - src / 2;
+    }
+    protected static int rescale(int value, double amount) {
+        return Mth.ceil(value * amount);
     }
 }

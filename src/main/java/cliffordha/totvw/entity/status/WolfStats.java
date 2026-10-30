@@ -1,6 +1,7 @@
 package cliffordha.totvw.entity.status;
 
 import cliffordha.totvw.registry.attachments.AttachmentUtil;
+import cliffordha.totvw.registry.attachments.ReturnPointData;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
@@ -46,8 +47,9 @@ public record WolfStats(
         String IS_VERDANT = wolf.getAttachedOrElse(WolfAttachment.IS_VERDANT_TYPE, false) + "";
         String BENEDICTION_STACK = wolf.getAttachedOrElse(WolfAttachment.BENEDICTION, 0) + "";
         String ATTACK_CYCLE = wolf.getAttachedOrElse(WolfAttachment.ATTACK_CYCLE, 0) + "";
-        BlockPos returnPoint = wolf.getAttachedOrElse(WolfAttachment.RESPAWN_POINT, BlockPos.ZERO);
-        String RETURN_POINT = returnPoint != BlockPos.ZERO ? returnPoint.getX() + ", " + returnPoint.getY() + ", " + returnPoint.getZ() : "None";
+        ReturnPointData returnPoint = wolf.getAttachedOrElse(WolfAttachment.RETURN_POINT, ReturnPointData.DEFAULT);
+        boolean hasReturnPoint = returnPoint.levelKey() != VWDimensions.NONE && returnPoint.pos() != BlockPos.ZERO;
+        String RETURN_POINT = hasReturnPoint ? returnPoint.pos().getX() + ", " + returnPoint.pos().getY() + ", " + returnPoint.pos().getZ() : "None";
         return new WolfStats(
                 wolf.getPlainTextName(),
                 wolf.getStringUUID(),
@@ -62,7 +64,7 @@ public record WolfStats(
                 BENEDICTION_STACK,
                 ATTACK_CYCLE,
                 wolf.getAttachedOrElse(WolfAttachment.TRY_SAVE_POINTS, 0),
-                String.valueOf(wolf.getAttachedOrElse(WolfAttachment.RESPAWN_DIMENSION, VWDimensions.NONE).identifier()),
+                returnPoint.levelKey().identifier().toString(),
                 RETURN_POINT,
                 wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY),
                 wolf.getAttachedOrElse(VWAttachments.ARCTIC_AFFLICTION, 0) > 0,

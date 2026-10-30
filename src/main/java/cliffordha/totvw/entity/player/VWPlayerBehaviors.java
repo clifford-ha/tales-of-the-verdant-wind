@@ -119,14 +119,7 @@ public class VWPlayerBehaviors {
                     }
 
                     if (!VWConfig.get().SERVER_OTHER_COOLDOWNS) setPlayerOtherConfiguration(player);
-
-                    SkillManager.notifyReset(player, PlayerSkills.VERDANT_BLESSING);
-                    processCDNotify(player,
-                            PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND,
-                            PlayerAttachment.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
-                            VWColors.VERDANT_WIND,
-                            "§nVerdant Wind's Blessing§f cooldown reset for §r"
-                    );
+                    processCDNotify(player, PlayerSkills.VERDANT_BLESSING);
                 }
         ));
     }

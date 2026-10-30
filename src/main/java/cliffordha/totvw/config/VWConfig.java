@@ -3,16 +3,15 @@ package cliffordha.totvw.config;
 import cliffordha.totvw.TOTVW;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import net.fabricmc.loader.api.FabricLoader;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class VWConfig {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
     private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("tales-of-the-verdant-wind.json");
 
     private static VWConfig INSTANCE = new VWConfig();
@@ -31,7 +30,6 @@ public class VWConfig {
     public int SYNCED_PLAYER_TP_METHOD = 0;
     public boolean SYNCED_WOLF_TP_ALL = false;
 
-    public boolean SERVER_MULTI_ATTACK = true;
     public boolean SERVER_WOLF_DMG_DISTRIBUTION = true;
 
     public boolean SERVER_SKILL_COOLDOWNS = true;
@@ -43,15 +41,10 @@ public class VWConfig {
     public boolean LOG_WINDCORE_ENTITY_EVENT = false;
     public boolean LOG_WINDCORE_ENTITY_CONVERSION = false;
 
-    public static void load() {
-        if (Files.exists(CONFIG_PATH)) {
-            try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
-                INSTANCE = GSON.fromJson(reader, VWConfig.class);
-            } catch (IOException e) {
-                INSTANCE = new VWConfig();
-            }
-        }
+    public static VWConfig get() {
+        return INSTANCE;
     }
+
 
     public static void save() {
         try (Writer writer = Files.newBufferedWriter(CONFIG_PATH)) {
@@ -60,7 +53,61 @@ public class VWConfig {
             TOTVW.sendError("Failed to save config!");
         }
     }
-    public static VWConfig get() {
-        return INSTANCE;
+    public static void loadAndVerify() {
+        if (Files.exists(CONFIG_PATH)) {
+            try (Reader reader = Files.newBufferedReader(CONFIG_PATH)) {
+                INSTANCE = GSON.fromJson(reader, VWConfig.class);
+            } catch (IOException e) {
+                INSTANCE = new VWConfig();
+            }
+        } else {
+            save();
+        }
+
+        boolean requiresFixing = false;
+
+        try (BufferedReader reader = Files.newBufferedReader(CONFIG_PATH)) {
+            INSTANCE = GSON.fromJson(reader, VWConfig.class);
+
+            if (INSTANCE == null) {
+                INSTANCE = new VWConfig();
+                requiresFixing = true;
+            }
+        } catch (JsonSyntaxException e) {
+            TOTVW.sendWarning("Config file is malformed! Resetting to default values.");
+            INSTANCE = new VWConfig();
+            requiresFixing = true;
+
+        } catch (IOException e) {
+            TOTVW.sendError("Failed to read config file!");
+
+        }
+
+        if (INSTANCE.verifyAndSanitizeValues()) {
+            requiresFixing = true;
+        }
+
+        if (requiresFixing) {
+            save();
+        }
+    }
+    private boolean verifyAndSanitizeValues() {
+        int count = 0;
+
+        if (this.SYNCED_BENEDICTION_HEALTH_THRESHOLD > 50) {
+            this.SYNCED_BENEDICTION_HEALTH_THRESHOLD = 50;
+            count++;
+        }
+
+        if (this.SYNCED_WOLF_TP_METHOD > 1) {
+            this.SYNCED_WOLF_TP_METHOD = 1;
+            count++;
+        }
+        if (this.SYNCED_PLAYER_TP_METHOD > 1) {
+            this.SYNCED_PLAYER_TP_METHOD = 1;
+            count++;
+        }
+
+        return count > 0;
     }
 }

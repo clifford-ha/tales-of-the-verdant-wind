@@ -6,6 +6,7 @@ import cliffordha.totvw.item.custom.SoulRunestonePlate;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
+import cliffordha.totvw.registry.attachments.ReturnPointData;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.worldgen.dimension.VWDimensions;
@@ -16,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -203,13 +205,12 @@ public class RevivalByProxy {
     }
     private static void validateLocationBeforeRevival(ServerLevel level, Player player) {
         if (player.blockPosition().getY() > 0) return;
+        ReturnPointData playerData = player.getAttachedOrElse(PlayerAttachment.RETURN_POINT, ReturnPointData.DEFAULT);
 
-        ResourceKey<Level> dimension = player.getAttachedOrElse(PlayerAttachment.RESPAWN_DIMENSION, VWDimensions.NONE);
-        ServerLevel serverLevel = level.getServer().getLevel(dimension);
-        BlockPos pos = player.getAttachedOrElse(PlayerAttachment.RESPAWN_POINT, new BlockPos(0, 0, 0));
+        ServerLevel serverLevel = playerData.getDimensionLevel(level);
+        BlockPos pos = playerData.pos();
 
-        if (!dimension.equals(VWDimensions.NONE)) {
-            if (serverLevel == null && pos.equals(new BlockPos(0, 0, 0))) return;
+        if (playerData.isValid() && serverLevel != null) {
             player.teleport(
                     new TeleportTransition(
                             serverLevel,
@@ -220,16 +221,24 @@ public class RevivalByProxy {
                             TeleportTransition.PLACE_PORTAL_TICKET.then(TeleportTransition.PLAY_PORTAL_SOUND)
                     )
             );
-            sendToChat(player, VWColors.BLOODLUST_MUTED, "Player is out of bounds! Attempted to return to last bed location.");
-        } else {
+            sendToChat(player, VWColors.GRAY, "Attempted to return to last bed location.");
 
+        } else {
             serverLevel = level.getServer().getLevel(player.level().dimension());
+            LevelData.RespawnData data = player.level().getLevelData().getRespawnData();
+            if (player instanceof ServerPlayer serverPlayer) {
+                ServerPlayer.RespawnConfig config = serverPlayer.getRespawnConfig();
+                if (config != null) {
+                    serverLevel = level.getServer().getLevel(config.respawnData().dimension());
+                    data = config.respawnData();
+                    pos = config.respawnData().pos();
+                }
+            }
+
             if (serverLevel == null) {
                 TOTVW.sendError("Failed to validate player location at " + player.blockPosition() + " in dimension " + player.level().dimension() + ".");
                 return;
             }
-            LevelData.RespawnData data = serverLevel.getRespawnData();
-            pos = serverLevel.getRespawnData().pos();
 
             player.teleport(
                     new TeleportTransition(

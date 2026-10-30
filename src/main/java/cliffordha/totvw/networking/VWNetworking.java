@@ -19,7 +19,7 @@ import java.util.List;
 
 public class VWNetworking {
     public static void registerClientboundPackets(PayloadTypeRegistry<RegistryFriendlyByteBuf> registry) {
-        registry.register(OpenTetherBlacklistPayload.TYPE, OpenTetherBlacklistPayload.STREAM_CODEC);
+        registry.register(OpenTetherManagerPayload.TYPE, OpenTetherManagerPayload.STREAM_CODEC);
         registry.register(MobEffectInstancePayload.TYPE, MobEffectInstancePayload.STREAM_CODEC);
         registry.register(WolfDataPayload.TYPE, WolfDataPayload.STREAM_CODEC);
         registry.register(PlayerArmorDataPayload.TYPE, PlayerArmorDataPayload.STREAM_CODEC);
@@ -28,6 +28,7 @@ public class VWNetworking {
     public static void registerServerboundPackets(PayloadTypeRegistry<RegistryFriendlyByteBuf> registry) {
         registry.register(ClientPrefsPayload.TYPE, ClientPrefsPayload.STREAM_CODEC);
         registry.register(TetherDataPayload.TYPE, TetherDataPayload.STREAM_CODEC);
+        registry.register(WolfEventsPayload.TYPE, WolfEventsPayload.STREAM_CODEC);
 
     }
 

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class ClientboundPackets {
     public static void registerPackets() {
-        ClientPlayNetworking.registerGlobalReceiver(OpenTetherBlacklistPayload.TYPE, (payload, context) ->
-                context.client().setScreenAndShow(new TetherScreen(payload.entityId(), payload.tetherData())));
+        ClientPlayNetworking.registerGlobalReceiver(OpenTetherManagerPayload.TYPE, (payload, context) ->
+                context.client().setScreenAndShow(new TetherScreen(payload.entityId(), payload.tetherData(), null)));
 
         ClientPlayNetworking.registerGlobalReceiver(MobEffectInstancePayload.TYPE, (payload, context) -> {
             if (context.client().level != null && context.client().level.getEntity(payload.entityId()) instanceof Wolf wolf) {

@@ -9,7 +9,6 @@ import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ExtUtil;
-import cliffordha.totvw.entity.skill.SkillManager;
 import cliffordha.totvw.tag.VWBiomeTags;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -17,7 +16,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Difficulty;
@@ -97,7 +95,7 @@ public class VWWolfBehaviors {
                 WolfCondition.alwaysTrue(),
                 (wolf, level) -> {
                     if (wolf.isWearingBodyArmor()) {
-                        WolfAttackEffects.onPostAttack(wolf, level, null, true, null);
+                        WolfEffects.onPostAttack(wolf, level, null, true, null);
                     }
                     if (Runestone.hasRunestone(wolf)) {
                         processRunestones(wolf, level);
@@ -108,8 +106,6 @@ public class VWWolfBehaviors {
                 WolfCondition.tick(0, 3),
                 (wolf, level) ->  {
                     LivingEntity owner = wolf.getOwner();
-
-                    //actions with owner check
                     if (owner == null) return;
 
                     float HEALTH_THRESHOLD = owner.getAttachedOrElse(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD,
@@ -153,7 +149,7 @@ public class VWWolfBehaviors {
                 VWWolfBehaviors::runNaturalHealOnTick
         ));
         TICK_RULES.add(WolfBehaviorRule.forAny(WolfCondition.tick(), (wolf, level) -> {
-            WolfAttackEffects.onTick(wolf, level);
+            WolfEffects.onTick(wolf, level);
 
             if (VWConfig.get().SERVER_OTHER_COOLDOWNS) {
                 depleteCooldown(wolf, WolfAttachment.TIMER_AIR_SUPPLY);
@@ -165,21 +161,8 @@ public class VWWolfBehaviors {
                 depleteCooldown(wolf, WolfAttachment.CD_IGNORE_HIGH_DAMAGE);
             } else setWolfConfiguration(wolf);
 
-            SkillManager.notifyReset(wolf, WolfSkills.VERDANT_BLESSING);
-            SkillManager.notifyReset(wolf, WolfSkills.PARALYZER);
-
-            processCDNotify(wolf,
-                    WolfAttachment.CD_BLESSING_OF_THE_VERDANT_WIND,
-                    WolfAttachment.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
-                    VWColors.VERDANT_WIND_MUTED,
-                    "§nVerdant Wind's Blessing§f cooldown reset for §r" + wolfName(wolf)
-            );
-            processCDNotify(wolf,
-                    WolfAttachment.CD_BLOODLUST_SKILL_PARALYZE,
-                    WolfAttachment.NOTIFY_BLOODLUST_SKILL_PARALYZE,
-                    VWColors.BLOODLUST_MUTED,
-                    "§nBloodlust Skill: Paralyzer§r cooldown reset for §r" + wolfName(wolf)
-            );
+            processCDNotify(wolf, WolfSkills.VERDANT_BLESSING);
+            processCDNotify(wolf, WolfSkills.PARALYZER);
         }));
     }
 

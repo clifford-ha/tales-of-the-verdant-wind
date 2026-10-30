@@ -15,6 +15,7 @@ import cliffordha.totvw.util.DamageZip;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
@@ -28,6 +29,7 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.animal.wolf.WolfSoundVariants;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.skeleton.Skeleton;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -223,13 +225,12 @@ public abstract class WolfEntityMixin extends LivingEntity {
             if (wolf.isTame() && wolf.getOwner() instanceof Player player) {
                 VWAttachments.validateSharedID(wolf, player);
 
-                if (Runestone.hasTether(wolf) && wolf.getTarget() == null) {
+                if (player.getHealth() > player.getMaxHealth() * 0.5 && Runestone.hasTether(wolf) && (wolf.getTarget() == null || wolf.distanceTo(wolf.getTarget()) > 20)) {
                     TetherData data = TetherData.of(wolf);
-                    if (!data.tetheredEntities().isEmpty()) {
-                        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, scanArea(wolf, 8));
-                        if (!entities.isEmpty() && entities.getFirst().getType().getDescriptionId().equals(data.tetheredEntities().getFirst())) {
-                            wolf.setTarget(entities.getFirst());
-                        }
+                    if (data.autoAttackTethered() && !data.tetheredEntities().isEmpty()) {
+                        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, scanArea(wolf, 8),
+                                e -> data.tetheredEntities().contains(BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).toString()));
+                        if (!entities.isEmpty()) wolf.setTarget(entities.getFirst());
                     }
                 }
             }
@@ -241,7 +242,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
                                 && (VWEnchantments.getIgnition(test) > 0 || VWEnchantments.getMight(test) >= 3));
 
                 if (!parents.isEmpty()) {
-                    wolf.getNavigation().moveTo(parents.getFirst(), 1.1);
+                    if (wolf.distanceTo(parents.getFirst()) > 6) wolf.getNavigation().moveTo(parents.getFirst(), 1.1);
                     wolf.extinguishFire();
                 }
             }
@@ -264,6 +265,10 @@ public abstract class WolfEntityMixin extends LivingEntity {
         boolean targetPlayer = target instanceof Player player && wolf.getOwner() != player && WolfAttachment.shouldAttackEntity(wolf, player);
         if (targetPlayer) {
             cir.setReturnValue(true);
+
+        } else if (target instanceof Skeleton skeleton && skeleton.getVehicle() instanceof LivingEntity vehicle) {
+            wolf.setTarget(vehicle);
+            cir.setReturnValue(false);
 
         } else if (target instanceof Creeper) {
             if (wolf.getHealth() < wolf.getMaxHealth() * 0.5f) return;

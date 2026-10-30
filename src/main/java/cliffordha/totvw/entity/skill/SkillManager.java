@@ -5,7 +5,6 @@ import cliffordha.totvw.registry.VWSounds;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
-import cliffordha.totvw.util.ExtUtil;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.sounds.SoundSource;
@@ -14,37 +13,23 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 
+import static cliffordha.totvw.util.ExtUtil.playStaticSound;
 import static cliffordha.totvw.util.ExtUtil.sendToChat;
 
 public class SkillManager {
     public static void startCooldown(LivingEntity entity, SkillDefinition skill, int duration) {
         if (!VWConfig.get().SERVER_SKILL_COOLDOWNS) return;
-        if (!entity.is(EntityTypes.WOLF) || !entity.is(EntityTypes.PLAYER)) return;
-        entity.setAttached(skill.cooldown(), duration);
-        entity.setAttached(skill.notifier(), 1);
+        if (entity instanceof Wolf wolf) {
+            wolf.setAttached(skill.cooldown(), duration);
+            wolf.setAttached(skill.notifier(), 1);
+        } else if (entity instanceof Player player) {
+            player.setAttached(skill.cooldown(), duration);
+            player.setAttached(skill.notifier(), 1);
+        }
     }
 
     public static boolean isOnCooldown(LivingEntity entity, SkillDefinition skill) {
         return entity.getAttachedOrElse(skill.cooldown(), 0) > 0;
-    }
-
-    public static void notifyReset(LivingEntity entity, SkillDefinition skill) {
-        if (!entity.is(EntityTypes.WOLF) || !entity.is(EntityTypes.PLAYER)) return;
-        int cooldown = entity.getAttachedOrElse(skill.cooldown(), 0);
-        int notify = entity.getAttachedOrElse(skill.notifier(), 0);
-        if (cooldown <= 0 && notify == 1) {
-            entity.setAttached(skill.notifier(), 0);
-            sendToChat(entity, skill.notifierColor(), true, name(entity) + skill.skillName() + " is ready!");
-        }
-    }
-
-    private static String name(LivingEntity entity) {
-        if (entity instanceof Player player) {
-            return player.getName().getString() + ": ";
-        } else if (entity instanceof Wolf wolf) {
-            return wolf.getName().getString() + ": ";
-        }
-        return "Invalid Entity";
     }
 
     public static void depleteCooldown(LivingEntity entity, AttachmentType<Integer> skillCD) {
@@ -54,30 +39,31 @@ public class SkillManager {
     }
 
     public static void playNotification(LivingEntity entity) {
-        if (entity instanceof Wolf wolf && wolf.getOwner() instanceof Player player) {
+        if (entity instanceof Player player) {
             if (cannotPlaySound(player)) return;
-            player.level().playSound(null, player.blockPosition(), VWSounds.NOTIFY, SoundSource.PLAYERS);
-        } else if (entity instanceof Player player) {
+            playStaticSound(player, VWSounds.NOTIFY, SoundSource.PLAYERS, false);
+
+        } else if (entity instanceof Wolf wolf && wolf.getOwner() instanceof Player player) {
             if (cannotPlaySound(player)) return;
-            player.level().playSound(null, player.blockPosition(), VWSounds.NOTIFY, SoundSource.PLAYERS);
+            playStaticSound(player, VWSounds.NOTIFY, SoundSource.PLAYERS, false);
         }
     }
     private static boolean cannotPlaySound(Player player) {
         return !player.getAttachedOrElse(PlayerPrefs.ENABLE_NOTIFIERS, VWConfig.get().SYNCED_ENABLE_NOTIFIERS);
     }
 
-    public static void processCDNotify(LivingEntity entity, AttachmentType<Integer> cooldown, AttachmentType<Integer> notify, int color, String... msg) {
-        int cd = entity.getAttachedOrElse(cooldown, 0);
-        int notifyFlag = entity.getAttachedOrElse(notify, 0);
+    public static void processCDNotify(LivingEntity entity, SkillDefinition skill) {
+        int cd = entity.getAttachedOrElse(skill.cooldown(), 0);
+        int notifyFlag = entity.getAttachedOrElse(skill.notifier(), 0);
 
         if (notifyFlag == 1 && cd == 0) {
             if (entity instanceof Wolf wolf) {
-                sendToChat(wolf, color, msg);
+                sendToChat(wolf, false, skill.skillName() + " is ready!");
             } else if (entity instanceof Player player) {
-                sendToChat(player, color, msg);
+                sendToChat(player, false, skill.skillName() + " is ready!");
             }
-            ExtUtil.playSound(entity, VWSounds.NOTIFY, SoundSource.PLAYERS, false);
-            entity.setAttached(notify, 0);
+            playStaticSound(entity, VWSounds.NOTIFY, SoundSource.PLAYERS, false);
+            entity.setAttached(skill.notifier(), 0);
         }
     }
 

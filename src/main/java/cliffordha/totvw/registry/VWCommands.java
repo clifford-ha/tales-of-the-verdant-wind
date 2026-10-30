@@ -64,7 +64,7 @@ public class VWCommands {
 
                             return data.size();
                         } else {
-                            sendFail(context, VWColors.GRAY, "You don't have any trusted players in your armorData.");
+                            sendFail(context, VWColors.GRAY, "You don't have any trusted players in your list.");
                             return 0;
                         }
                     }
@@ -91,12 +91,12 @@ public class VWCommands {
                             }
 
                             Pair<String, UUID> removed = data.get(index - 1);
-                            sendSuccess(context, false, "You removed " + removed.getA() + " from your armorData of trusted players.");
+                            sendSuccess(context, false, "You removed " + removed.getA() + " from your list of trusted players.");
                             data.remove(index - 1);
                             player.setAttached(TRUST_DATA, data);
                             return data.size();
                         } else {
-                            sendFail(context, "No trust tetherData to remove.");
+                            sendFail(context, "No trust data to remove.");
                             return 0;
                         }
                     }
@@ -116,10 +116,10 @@ public class VWCommands {
                         int data = player.getAttachedOrElse(TRUST_DATA, List.of()).size();
                         if (data > 0) {
                             player.removeAttached(TRUST_DATA);
-                            sendSuccess(context, false, "You removed your armorData of trusted players (" + data + ").");
+                            sendSuccess(context, false, "You removed your list of trusted players (" + data + ").");
                             return data;
                         } else {
-                            sendFail(context, "No trust tetherData to remove.");
+                            sendFail(context, "No trust data to remove.");
                             return 0;
                         }
                     }
@@ -152,7 +152,7 @@ public class VWCommands {
                         }
 
                         String w = wolves.size() > 1 ? "nearby wolves" : wolves.getFirst().getPlainTextName();
-                        sendSuccess(context, false, "Removed the aggressor armorData of " + w + ".");
+                        sendSuccess(context, false, "Removed the aggressor list of " + w + ".");
                         return wolves.size();
                     }
                     )))));
@@ -218,7 +218,7 @@ public class VWCommands {
                         String removedAggressors = aggressors > 0 ? " and removed " + aggressors + " aggressor" + (aggressors > 1 ? "s" : "") + "." : ".";
                         String count = "Synced " + trustData.size() + " trusted players to " + wolfCount + removedAggressors;
 
-                        String finalize = trustData.isEmpty() ? "Removed old tetherData from " + wolfCount : count;
+                        String finalize = trustData.isEmpty() ? "Removed old data from " + wolfCount : count;
 
                         sendSuccess(context, false, finalize);
                         return wolves.size();

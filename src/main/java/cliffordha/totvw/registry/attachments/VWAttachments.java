@@ -4,7 +4,6 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.registry.attachments.entity.*;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -89,13 +88,12 @@ public class VWAttachments {
             WolfAttachment.FAMILY_ID,
             WolfAttachment.TRY_SAVE_POINTS,
             WolfAttachment.TRY_SAVE_STATUS,
-            WolfAttachment.RESPAWN_POINT,
+            WolfAttachment.RETURN_POINT,
             WolfAttachment.AGGRESSOR_LIST,
             WolfAttachment.TRUSTED_PLAYERS,
             WolfAttachment.TETHERED_ENTITY_TYPES,
             WolfAttachment.RUNESTONE_TYPE,
             WolfAttachment.TETHER_DATA,
-            WolfAttachment.TETHER_ENTITY_BLACKLIST,
             WolfAttachment.ATTACK_CYCLE,
             WolfAttachment.FLASH_FREEZE_STACK
     );
@@ -116,7 +114,7 @@ public class VWAttachments {
             PlayerAttachment.HAVOC_TYPE,
             PlayerAttachment.HAVOC_USAGE_COUNT,
             PlayerAttachment.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
-            PlayerAttachment.RESPAWN_POINT,
+            PlayerAttachment.RETURN_POINT,
             PlayerAttachment.TRUSTED_PLAYERS,
             PlayerAttachment.EQUIPMENTS
     );

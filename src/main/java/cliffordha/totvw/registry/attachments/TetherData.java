@@ -15,7 +15,7 @@ public record TetherData(List<String> tetheredEntities, List<String> blacklisted
     public static final Codec<TetherData> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     Codec.STRING.listOf().fieldOf("tetheredEntities").forGetter(TetherData::tetheredEntities),
-                    Codec.STRING.listOf().fieldOf("blacklistEntities").forGetter(TetherData::tetheredEntities),
+                    Codec.STRING.listOf().fieldOf("blacklistEntities").forGetter(TetherData::blacklistedEntities),
                     Codec.BOOL.fieldOf("autoAttackTethered").forGetter(TetherData::autoAttackTethered),
                     Codec.BOOL.fieldOf("tetherChunkTicks").forGetter(TetherData::tetherChunkTicks)
             ).apply(instance, TetherData::new)
@@ -49,6 +49,6 @@ public record TetherData(List<String> tetheredEntities, List<String> blacklisted
         return new TetherData(data.tetheredEntities(), data.blacklistedEntities(), data.autoAttackTethered(), value);
     }
     public static TetherData of(Wolf wolf) {
-        return wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, EMPTY);
+        return wolf.getAttachedOrCreate(WolfAttachment.TETHER_DATA, () -> EMPTY);
     }
 }

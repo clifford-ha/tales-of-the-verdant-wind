@@ -2,6 +2,7 @@ package cliffordha.totvw.registry.attachments.entity;
 
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.HavocType;
+import cliffordha.totvw.registry.attachments.ReturnPointData;
 import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.ArmorData;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -48,8 +49,7 @@ public class PlayerAttachment {
     public static final AttachmentType<Integer> VILLAGER_ATROCITY_COUNT = registerInt(P + "villager_atrocity_count", false);
     public static final AttachmentType<Integer> WOLF_ATROCITY_COUNT = registerInt(P + "wolf_atrocity_count", false);
 
-    public static final AttachmentType<ResourceKey<Level>> RESPAWN_DIMENSION = registerLevel(P + "respawn_dimension", true);
-    public static final AttachmentType<BlockPos> RESPAWN_POINT = registerBlockPos(P + "respawn_point", true);
+    public static final AttachmentType<ReturnPointData> RETURN_POINT = registerReturnPointData(P + "return_point", true);
     public static final AttachmentType<List<Pair<String, UUID>>> TRUSTED_PLAYERS = registerListPair(P + "trusted_players", true);
 
     public static final AttachmentType<List<ArmorData>> EQUIPMENTS = registerArmorList(P + "equipments");

@@ -46,8 +46,7 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		VWCommands.register();
 		VWLootTables.registerModifiers();
 
-		VWConfig.load();
-		VWConfig.save();
+		VWConfig.loadAndVerify();
 
 		VWNetworking.register();
 		ServerboundPackets.register();

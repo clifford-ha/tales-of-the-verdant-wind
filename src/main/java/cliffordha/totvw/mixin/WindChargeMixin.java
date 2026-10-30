@@ -40,10 +40,10 @@ public class WindChargeMixin {
                             ExtUtil.scanArea(entity, 3),
                             test -> test.getAttachedOrElse(VWAttachments.PRESSURE_DIFFERENCE, 0) > 0
                     );
-                    if (monsters.isEmpty()) return;
-
-                    for (Monster monster : monsters) {
-                        this.onIndirectHit(monster, level);
+                    if (monsters.isEmpty()) {
+                        for (Monster monster : monsters) {
+                            this.onIndirectHit(monster, level);
+                        }
                     }
                 }
             }
@@ -55,9 +55,9 @@ public class WindChargeMixin {
                 for (LivingEntity livingEntity : entities) {
                     int current = livingEntity.getAttachedOrElse(VWAttachments.ARCTIC_AFFLICTION, 0);
                     livingEntity.setAttached(VWAttachments.ARCTIC_AFFLICTION, current + 2);
-                    ExtUtil.sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, entity.blockPosition(), 1, 4f);
-                    ExtUtil.sendParticles(ParticleTypes.SNOWFLAKE, level, entity.blockPosition(), 4, 4f, -10f);
+                    ExtUtil.sendParticles(ParticleTypes.SNOWFLAKE, level, entity.blockPosition(), 2, 4f, -10f);
                 }
+                ExtUtil.sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, entity.blockPosition(), 1, 4f);
             }
         }
     }
