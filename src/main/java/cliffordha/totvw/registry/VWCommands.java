@@ -2,7 +2,7 @@ package cliffordha.totvw.registry;
 
 import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.entity.WolfBenedictionHelper;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.NameHolder;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -30,15 +30,14 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import oshi.util.tuples.Pair;
 
 import java.util.*;
 
 import static cliffordha.totvw.util.ExtUtil.sendToChat;
 
 public class VWCommands {
-    private static final AttachmentType<List<Pair<String, UUID>>> TRUST_DATA = PlayerAttachment.TRUSTED_PLAYERS;
-    private static final AttachmentType<List<Pair<String, UUID>>> WOLF_TRUST_DATA = WolfAttachment.TRUSTED_PLAYERS;
+    private static final AttachmentType<List<NameHolder>> TRUST_DATA = PlayerAttachment.TRUSTED_PLAYERS;
+    private static final AttachmentType<List<NameHolder>> WOLF_TRUST_DATA = WolfAttachment.TRUSTED_PLAYERS;
 
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
@@ -52,14 +51,14 @@ public class VWCommands {
                             return 0;
                         }
 
-                        List<Pair<String, UUID>> data = player.getAttachedOrElse(TRUST_DATA, List.of());
+                        List<NameHolder> data = player.getAttachedOrElse(TRUST_DATA, List.of());
                         if (!data.isEmpty()) {
                             String firstPart = data.size() > 1 ? "These are currently " : "There is currently ";
                             sendSuccess(context, false, firstPart + data.size() + " player" + (data.size() > 1 ? "s" : "") + " you trust.");
 
                             sendToChat(player, false, "Index  |  Name");
-                            for (Pair<String, UUID> pair : player.getAttachedOrElse(TRUST_DATA, List.of())) {
-                                sendToChat(player, false, data.indexOf(pair) + 1 + " " + pair.getA());
+                            for (NameHolder pair : player.getAttachedOrElse(TRUST_DATA, List.of())) {
+                                sendToChat(player, false, data.indexOf(pair) + 1 + " " + pair.name());
                             }
 
                             return data.size();
@@ -82,7 +81,7 @@ public class VWCommands {
                         }
 
                         int index = context.getArgument("entity", Integer.class);
-                        List<Pair<String, UUID>> data = new ArrayList<>(player.getAttachedOrElse(TRUST_DATA, List.of()));
+                        List<NameHolder> data = new ArrayList<>(player.getAttachedOrElse(TRUST_DATA, List.of()));
 
                         if (!data.isEmpty()) {
                             if (index < 1 || index > data.size()) {
@@ -90,8 +89,8 @@ public class VWCommands {
                                 return 0;
                             }
 
-                            Pair<String, UUID> removed = data.get(index - 1);
-                            sendSuccess(context, false, "You removed " + removed.getA() + " from your list of trusted players.");
+                            NameHolder removed = data.get(index - 1);
+                            sendSuccess(context, false, "You removed " + removed.name() + " from your list of trusted players.");
                             data.remove(index - 1);
                             player.setAttached(TRUST_DATA, data);
                             return data.size();
@@ -179,15 +178,14 @@ public class VWCommands {
                             return 0;
                         }
 
-                        UUID ownerSharedId = VWAttachments.getWolfPlayerSharedId(player);
                         UUID ownerRealId = player.getUUID();
 
-                        List<Pair<String, UUID>> trustData = player.getAttachedOrElse(TRUST_DATA, List.of()).stream()
-                                .filter(t -> !t.getB().equals(ownerSharedId) && !t.getB().equals(ownerRealId))
+                        List<NameHolder> trustData = player.getAttachedOrElse(TRUST_DATA, List.of()).stream()
+                                .filter(t -> !t.uuid().equals(ownerRealId))
                                 .toList();
 
                         Set<UUID> trustedIds = new HashSet<>();
-                        for (Pair<String, UUID> t : trustData) trustedIds.add(t.getB());
+                        for (NameHolder t : trustData) trustedIds.add(t.uuid());
 
                         int aggressors = 0;
                         for (Wolf wolf : wolves) {
@@ -197,11 +195,9 @@ public class VWCommands {
                                 wolf.removeAttached(WOLF_TRUST_DATA);
                             }
 
-                            List<Pair<String, UUID>> aggressorList = new ArrayList<>(wolf.getAttachedOrElse(WolfAttachment.AGGRESSOR_LIST, List.of()));
+                            List<NameHolder> aggressorList = new ArrayList<>(WolfAttachment.getAggressors(wolf));
                             int before = aggressorList.size();
-                            aggressorList.removeIf(a -> trustedIds.contains(a.getB())
-                                    || a.getB().equals(ownerSharedId)
-                                    || a.getB().equals(ownerRealId));
+                            aggressorList.removeIf(a -> trustedIds.contains(a.uuid()));
                             int removed = before - aggressorList.size();
 
                             if (removed > 0) {
@@ -450,9 +446,9 @@ public class VWCommands {
     }
     private static void removeOwnerFromAggressorList(Player player, List<Wolf> wolves) {
         for (Wolf wolf : wolves) {
-            List<Pair<String, UUID>> aggressorList = new ArrayList<>(wolf.getAttachedOrElse(WolfAttachment.AGGRESSOR_LIST, List.of()));
+            List<NameHolder> aggressorList = new ArrayList<>(WolfAttachment.getAggressors(wolf));
             if (aggressorList.isEmpty()) break;
-            aggressorList.removeIf(data -> data.getB().equals(player.getUUID()));
+            aggressorList.removeIf(data -> data.uuid().equals(player.getUUID()));
             wolf.setAttached(WolfAttachment.AGGRESSOR_LIST, List.copyOf(aggressorList));
         }
     }

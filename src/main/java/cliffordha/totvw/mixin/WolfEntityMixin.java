@@ -2,20 +2,16 @@ package cliffordha.totvw.mixin;
 
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.entity.WolfBenedictionHelper;
-import cliffordha.totvw.registry.attachments.Runestone;
-import cliffordha.totvw.registry.attachments.TetherData;
-import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.VillagerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWItemTags;
-
 import cliffordha.totvw.util.DamageZip;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
@@ -28,7 +24,6 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.animal.wolf.WolfSoundVariants;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.skeleton.Skeleton;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
@@ -46,7 +41,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
 import java.util.UUID;
 
 import static cliffordha.totvw.registry.VWEnchantments.*;
@@ -128,10 +122,8 @@ public abstract class WolfEntityMixin extends LivingEntity {
                 baby.setAttached(WolfAttachment.FAMILY_ID, value);
             }
 
-
-
-            if (wolf.getAttachedOrElse(WolfAttachment.IS_VERDANT_TYPE, false)
-                    || wolfPartner.getAttachedOrElse(WolfAttachment.IS_VERDANT_TYPE, false)
+            if (WolfAttachment.isVerdant(wolf)
+                    || WolfAttachment.isVerdant(wolfPartner)
                     || isInBiome(wolf, VWBiomeTags.IS_VERDANT_BIOMES)
                     || isInBiome(wolfPartner, VWBiomeTags.IS_VERDANT_BIOMES)) {
                 baby.setAttached(WolfAttachment.IS_VERDANT_TYPE, true);
@@ -179,11 +171,6 @@ public abstract class WolfEntityMixin extends LivingEntity {
         if (wolf.isTame()) {
             setAttributeBaseValue(wolf, Attributes.MAX_HEALTH, 40.0);
             wolf.setHealth(40.0f);
-            if (wolf.getOwner() instanceof Player player) {
-                UUID SHARED = UUID.randomUUID();
-                player.setAttached(VWAttachments.WOLF_PLAYER_SHARED_ID, SHARED);
-                wolf.setAttached(VWAttachments.WOLF_PLAYER_SHARED_ID, SHARED);
-            }
         } else {
             setAttributeBaseValue(wolf, Attributes.MAX_HEALTH, 20.0);
         }
@@ -198,55 +185,6 @@ public abstract class WolfEntityMixin extends LivingEntity {
                 .add(Attributes.WATER_MOVEMENT_EFFICIENCY, 0.125)
                 .add(Attributes.SCALE, 1.0)
         );
-    }
-    @Inject(method = "tick", at = @At("HEAD"))
-    private void onTick(CallbackInfo ci) {
-        Wolf wolf = (Wolf) (Object) this;
-        Level level = wolf.level();
-
-        if (!wolf.isTame() && level.getGameTime() % 60 == 0) {
-            if (wolf.getAttachedOrElse(WolfAttachment.IS_VERDANT_TYPE, false)) {
-                List<Monster> monsters = level.getEntitiesOfClass(Monster.class, wolf.getBoundingBox().inflate(12), z -> wolf.getTarget() == null && z.getTarget() != null && z.getTarget().is(EntityTypes.VILLAGER));
-                if (monsters.isEmpty()) {
-                    if (!(wolf.getAttachedOrElse(WolfAttachment.TRY_SAVE_STATUS, 0) > 0 && !wolf.isAngry())) return;
-                    if (!level.getRandom().nextBoolean()) return;
-                    wolf.setAttached(WolfAttachment.TRY_SAVE_STATUS, 0);
-                    return;
-                }
-
-                for (Monster monster : monsters) {
-                    wolf.setTarget(monster);
-                    wolf.setAttached(WolfAttachment.TRY_SAVE_STATUS, 1);
-                }
-            }
-        }
-
-        if (level.getGameTime() % 20 == 0) {
-            if (wolf.isTame() && wolf.getOwner() instanceof Player player) {
-                VWAttachments.validateSharedID(wolf, player);
-
-                if (player.getHealth() > player.getMaxHealth() * 0.5 && Runestone.hasTether(wolf) && (wolf.getTarget() == null || wolf.distanceTo(wolf.getTarget()) > 20)) {
-                    TetherData data = TetherData.of(wolf);
-                    if (data.autoAttackTethered() && !data.tetheredEntities().isEmpty()) {
-                        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, scanArea(wolf, 8),
-                                e -> data.tetheredEntities().contains(BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).toString()));
-                        if (!entities.isEmpty()) wolf.setTarget(entities.getFirst());
-                    }
-                }
-            }
-            if (wolf.isBaby() && wolf.isOnFire()) {
-                List<Wolf> parents = level.getEntitiesOfClass(
-                        Wolf.class,
-                        scanArea(wolf, 16),
-                        test -> WolfAttachment.isFamilyRelated(wolf, test)
-                                && (VWEnchantments.getIgnition(test) > 0 || VWEnchantments.getMight(test) >= 3));
-
-                if (!parents.isEmpty()) {
-                    if (wolf.distanceTo(parents.getFirst()) > 6) wolf.getNavigation().moveTo(parents.getFirst(), 1.1);
-                    wolf.extinguishFire();
-                }
-            }
-        }
     }
 
     @Inject(method = "die", at = @At("HEAD"), cancellable = true)
@@ -287,7 +225,6 @@ public abstract class WolfEntityMixin extends LivingEntity {
             }
         }
     }
-
 
     @Inject(method = "canArmorAbsorb", at = @At("RETURN"), cancellable = true)
     private void absorbDMG(DamageSource source, CallbackInfoReturnable<Boolean> cir) {

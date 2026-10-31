@@ -8,7 +8,6 @@ import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
@@ -58,12 +57,12 @@ public class SkillManager {
 
         if (notifyFlag == 1 && cd == 0) {
             if (entity instanceof Wolf wolf) {
-                sendToChat(wolf, false, skill.skillName() + " is ready!");
+                sendToChat(wolf, false, wolf.getPlainTextName() + ": " + skill.skillName() + " is ready!");
             } else if (entity instanceof Player player) {
                 sendToChat(player, false, skill.skillName() + " is ready!");
             }
             playStaticSound(entity, VWSounds.NOTIFY, SoundSource.PLAYERS, false);
-            entity.setAttached(skill.notifier(), 0);
+            entity.removeAttached(skill.notifier());
         }
     }
 

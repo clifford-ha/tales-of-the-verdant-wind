@@ -5,18 +5,13 @@ import cliffordha.totvw.registry.attachments.entity.*;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.entity.player.Player;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import static cliffordha.totvw.registry.attachments.AttachmentUtil.*;
 
-public class VWAttachments {
+public class VWAttachment {
     public static final AttachmentType<Boolean> HAS_VERDANT_OMEN = registerBool("has_verdant_omen", false);
 
     public static final AttachmentType<Integer> PRESSURE_DIFFERENCE = registerInt("pressure_difference", false);
@@ -28,46 +23,11 @@ public class VWAttachments {
     public static final AttachmentType<BlockPos> LAST_NOLAYAN_POS = registerBlockPos("last_nolayan_pos", true);
     public static final AttachmentType<Boolean> HAS_ENTERED_NOLAYAN = registerBool("has_entered_nolayan", true);
 
-    public static final AttachmentType<UUID> WOLF_PLAYER_SHARED_ID = registerUUID("wolf_player_shared_id", true);
-
     public static final AttachmentType<Integer> ARCTIC_AFFLICTION = registerInt("arctic_affliction", false);
     public static final AttachmentType<Integer> FROST_BOUND_TIMER = registerInt("frost_bound_timer", false);
     public static final AttachmentType<BlockPos> FROST_BOUND_POS = registerBlockPos("frost_bound_pos", false);
 
     public static final AttachmentType<Collection<MobEffectInstance>> MOB_EFFECTS = registerEffectsCollection("mob_effects");
-
-
-
-
-    public static UUID getWolfPlayerSharedId(LivingEntity entity) {
-        return entity.getAttachedOrElse(WOLF_PLAYER_SHARED_ID, entity.getUUID());
-    }
-    public static UUID validateSharedID(Entity wolf, Player player) {
-        if (!(wolf instanceof Wolf)) return AttachmentUtil.EMPTY_UUID;
-
-        AttachmentType<UUID> SHARED_ID = VWAttachments.WOLF_PLAYER_SHARED_ID;
-        UUID playerID = player.getAttachedOrElse(SHARED_ID, AttachmentUtil.EMPTY_UUID);
-        UUID wolfID = wolf.getAttachedOrElse(SHARED_ID, AttachmentUtil.EMPTY_UUID);
-
-        boolean playerHasID = !playerID.equals(AttachmentUtil.EMPTY_UUID);
-        boolean wolfHasID = !wolfID.equals(AttachmentUtil.EMPTY_UUID);
-
-        if (!wolfHasID && !playerHasID) {
-            UUID newID = UUID.randomUUID();
-            wolf.setAttached(SHARED_ID, newID);
-            player.setAttached(SHARED_ID, newID);
-
-        } else if (!playerHasID) {
-            player.setAttached(SHARED_ID, wolfID);
-
-        } else if (!wolfHasID) {
-            wolf.setAttached(SHARED_ID, playerID);
-
-        } else {
-            wolf.setAttached(SHARED_ID, playerID);
-        }
-        return playerID;
-    }
 
 
 
@@ -114,7 +74,6 @@ public class VWAttachments {
             PlayerAttachment.HAVOC_TYPE,
             PlayerAttachment.HAVOC_USAGE_COUNT,
             PlayerAttachment.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
-            PlayerAttachment.RETURN_POINT,
             PlayerAttachment.TRUSTED_PLAYERS,
             PlayerAttachment.EQUIPMENTS
     );

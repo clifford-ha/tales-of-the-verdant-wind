@@ -3,7 +3,7 @@ package cliffordha.totvw.networking;
 import cliffordha.totvw.client.screen.TetherScreen;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.networking.packets.*;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -19,7 +19,7 @@ public class ClientboundPackets {
 
         ClientPlayNetworking.registerGlobalReceiver(MobEffectInstancePayload.TYPE, (payload, context) -> {
             if (context.client().level != null && context.client().level.getEntity(payload.entityId()) instanceof Wolf wolf) {
-                wolf.setAttached(VWAttachments.MOB_EFFECTS, new ArrayList<>(payload.instance()));
+                wolf.setAttached(VWAttachment.MOB_EFFECTS, new ArrayList<>(payload.instance()));
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(WolfDataPayload.TYPE, (payload, context) -> {

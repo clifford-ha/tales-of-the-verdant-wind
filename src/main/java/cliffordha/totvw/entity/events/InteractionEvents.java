@@ -5,6 +5,7 @@ import cliffordha.totvw.entity.interactions.WolfInteractions;
 import cliffordha.totvw.item.events.VWItemBlessings;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWSounds;
+import cliffordha.totvw.registry.attachments.NameHolder;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.tag.VWItemTags;
 
@@ -19,11 +20,9 @@ import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 import static cliffordha.totvw.util.ExtUtil.sendToChat;
@@ -72,35 +71,36 @@ public class InteractionEvents {
     private static InteractionResult processTrust(Player player, Player other) {
         if (player == other) return InteractionResult.PASS;
 
-        AttachmentType<List<Pair<String, UUID>>> T_LIST = PlayerAttachment.TRUSTED_PLAYERS;
-        List<Pair<String, UUID>> oldPlayerData = player.getAttachedOrElse(T_LIST, List.of());
-        List<Pair<String, UUID>> newPlayerData = new ArrayList<>(oldPlayerData);
+        AttachmentType<List<NameHolder>> T_LIST = PlayerAttachment.TRUSTED_PLAYERS;
+        List<NameHolder> oldPlayerData = player.getAttachedOrElse(T_LIST, List.of());
+        List<NameHolder> newPlayerData = new ArrayList<>(oldPlayerData);
 
-        Pair<String, UUID> mobData = PlayerAttachment.getNameAndUUID(other);
+        NameHolder mobData = NameHolder.of(other);
 
-        boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.getB().equals(mobData.getB()));
+        boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.uuid().equals(mobData.uuid()));
         if (oldPlayerData.size() >= 4 && !hasPriorData) {
             sendToChat(player, true, "You can only add 4 trusted players at a time.");
             return InteractionResult.FAIL;
         }
         if (hasPriorData) {
-            var index = oldPlayerData.stream().findFirst().filter(data -> data.getB().equals(mobData.getB())).map(oldPlayerData::indexOf).orElse(null);
+            var index = oldPlayerData.stream().findFirst().filter(data -> data.uuid().equals(mobData.uuid())).map(oldPlayerData::indexOf).orElse(null);
             if (index == null) return InteractionResult.PASS;
 
-            Pair<String, UUID> data = oldPlayerData.get(index);
+            NameHolder data = oldPlayerData.get(index);
 
-            if (!data.getA().equals(mobData.getA()) && data.getB().equals(mobData.getB())) {
-                Pair<String, UUID> update = new Pair<>(mobData.getA(), mobData.getB());
+            if (!data.name().equals(mobData.name()) && data.uuid().equals(mobData.uuid())) {
+                NameHolder update = new NameHolder(mobData.name(), mobData.uuid());
 
                 newPlayerData.set(newPlayerData.indexOf(data), update);
                 player.setAttached(T_LIST, List.copyOf(newPlayerData));
-                sendToChat(player, true, "Updated name for " + data.getA() + " to " + update.getA() + ".");
+                sendToChat(player, true, "Updated name for " + data.name() + " to " + update.name() + ".");
                 return InteractionResult.SUCCESS;
 
             } else {
-                sendToChat(player, true, "You already trust " + mobData.getA());
+                sendToChat(player, true, "You already trust " + mobData.name());
                 return InteractionResult.FAIL;
             }
+            
         } else {
             newPlayerData.add(mobData);
             player.setAttached(PlayerAttachment.TRUSTED_PLAYERS, List.copyOf(newPlayerData));

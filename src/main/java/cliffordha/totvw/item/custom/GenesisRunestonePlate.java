@@ -2,7 +2,7 @@ package cliffordha.totvw.item.custom;
 
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWParticles;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.worldgen.dimension.VWDimensions;
@@ -77,8 +77,8 @@ public class GenesisRunestonePlate extends Item {
             return null;
         }
 
-        BlockPos nolayanPos = player.getAttachedOrElse(VWAttachments.LAST_NOLAYAN_POS, ServerLevel.END_SPAWN_POINT.above(14));
-        BlockPos overworldPos = player.getAttachedOrElse(VWAttachments.LAST_OVERWORLD_POS, respawnData.pos());
+        BlockPos nolayanPos = player.getAttachedOrElse(VWAttachment.LAST_NOLAYAN_POS, ServerLevel.END_SPAWN_POINT.above(14));
+        BlockPos overworldPos = player.getAttachedOrElse(VWAttachment.LAST_OVERWORLD_POS, respawnData.pos());
 
         BlockPos baseSpawnPos = isLeavingCustomDim ? overworldPos : nolayanPos;
 
@@ -88,7 +88,7 @@ public class GenesisRunestonePlate extends Item {
 
         if (isLeavingCustomDim) {
             // Save current Nolayan pos before leaving
-            player.setAttached(VWAttachments.LAST_NOLAYAN_POS, player.blockPosition().above());
+            player.setAttached(VWAttachment.LAST_NOLAYAN_POS, player.blockPosition().above());
 
             //exactSpawnPos = Vec3.atBottomCenterOf(entity.adjustSpawnLocation(targetLevel, baseSpawnPos));
             exactSpawnPos = Vec3.atBottomCenterOf(baseSpawnPos);
@@ -106,7 +106,7 @@ public class GenesisRunestonePlate extends Item {
             boolean createPlatform = !targetLevel.getBlockState(portalPos.above()).is(Blocks.AIR)
                     && !targetLevel.getBlockState(portalPos).is(Blocks.AIR);
 
-            boolean firstEntrance = !entity.getAttachedOrElse(VWAttachments.HAS_ENTERED_NOLAYAN, false);
+            boolean firstEntrance = !entity.getAttachedOrElse(VWAttachment.HAS_ENTERED_NOLAYAN, false);
 
             if (firstEntrance && createPlatform) {
                 targetLevel.setBlockAndUpdate(portalPos, Blocks.AIR.defaultBlockState());
@@ -117,7 +117,7 @@ public class GenesisRunestonePlate extends Item {
             exactSpawnPos = exactSpawnPos.subtract(0, 1, 0);
 
             // Save current overworld pos before leaving
-            player.setAttached(VWAttachments.LAST_OVERWORLD_POS, player.blockPosition());
+            player.setAttached(VWAttachment.LAST_OVERWORLD_POS, player.blockPosition());
         }
 
         return new TeleportTransition(

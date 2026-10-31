@@ -143,7 +143,7 @@ public class ScatteredPageItem extends Item {
                             ? EntityStats.wolfStats(wolf, stats)
                             : invalidRef;
                 },
-                () -> wolf, false
+                () -> wolf
         ));
     }
 

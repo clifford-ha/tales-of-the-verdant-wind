@@ -1,24 +1,20 @@
 package cliffordha.totvw.entity.status;
 
-import cliffordha.totvw.registry.attachments.AttachmentUtil;
 import cliffordha.totvw.registry.attachments.HavocType;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.NameHolder;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import oshi.util.tuples.Pair;
 
 import java.util.List;
-import java.util.UUID;
 
 import static cliffordha.totvw.registry.attachments.entity.PlayerAttachment.*;
 
 public record PlayerStats(
         String name,
         String UUID,
-        String sharedUUID,
 
         boolean hasHelmet,
         boolean hasChestplate,
@@ -50,7 +46,7 @@ public record PlayerStats(
         HavocType havocType,
         int havocUsageCount,
 
-        List<Pair<String, UUID>> trustedPlayers,
+        List<NameHolder> trustedPlayers,
 
         boolean receivedEnchantmentsHandbook,
         boolean receivedItemsHandbook,
@@ -58,8 +54,6 @@ public record PlayerStats(
         boolean receivedEffectsHandbook
 ) {
     public static PlayerStats valueOf(Player player) {
-        var sharedID = player.getAttachedOrElse(VWAttachments.WOLF_PLAYER_SHARED_ID, AttachmentUtil.EMPTY_UUID);
-        String SHARED_UUID = sharedID != AttachmentUtil.EMPTY_UUID ? String.valueOf(sharedID) : "None";
         List<CompoundTag> souls = player.getAttachedOrElse(PlayerAttachment.WOLF_SOULS, List.of());
 
         boolean enchantmentHandbook = player.getAttachedOrElse(PlayerAttachment.RECEIVED_ENCHANTMENTS_HANDBOOK, 0) > 0;
@@ -98,7 +92,6 @@ public record PlayerStats(
         return new PlayerStats(
                 player.getPlainTextName(),
                 player.getStringUUID(),
-                SHARED_UUID,
 
                 hasHelmet,
                 hasChestplate,

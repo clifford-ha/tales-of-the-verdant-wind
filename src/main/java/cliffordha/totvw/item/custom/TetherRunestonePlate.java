@@ -103,15 +103,15 @@ public class TetherRunestonePlate extends Item {
                 int countA = recall.size();
                 int countB = multiLevelRecall.size();
 
-                String main = countA == 1 ? recall.getFirst().getPlainTextName() : countA + " tamed wolves";
-                String other = countB == 1 ? multiLevelRecall.getFirst().getPlainTextName() : countB + " tamed wolves";
+                String main = countA == 1 ? recall.getFirst().getPlainTextName() : countA + " wolves";
+                String other = countB == 1 ? multiLevelRecall.getFirst().getPlainTextName() : countB + " wolves";
 
                 if (countA > 0 && countB == 0) {
-                    sendToChat(player, false, "Recalled " + main + " to your location");
+                    sendToChat(player, false, "Recalled " + main);
                 } else if (countA == 0) {
-                    sendToChat(player, false, "Recalled " + other + " from other dimensions to your location");
+                    sendToChat(player, false, "Recalled " + other + " from other dimensions");
                 } else {
-                    sendToChat(player, false, "Recalled " + main + " and " + other + " from other dimensions to your location");
+                    sendToChat(player, false, "Recalled " + main + " and " + other + " from other dimensions");
                 }
                 player.getCooldowns().addCooldown(new ItemStack(this), 200);
                 return InteractionResult.SUCCESS_SERVER;

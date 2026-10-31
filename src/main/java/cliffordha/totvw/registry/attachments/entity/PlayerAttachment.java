@@ -2,19 +2,15 @@ package cliffordha.totvw.registry.attachments.entity;
 
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.HavocType;
-import cliffordha.totvw.registry.attachments.ReturnPointData;
-import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.ArmorData;
+import cliffordha.totvw.registry.attachments.NameHolder;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
@@ -48,9 +44,7 @@ public class PlayerAttachment {
 
     public static final AttachmentType<Integer> VILLAGER_ATROCITY_COUNT = registerInt(P + "villager_atrocity_count", false);
     public static final AttachmentType<Integer> WOLF_ATROCITY_COUNT = registerInt(P + "wolf_atrocity_count", false);
-
-    public static final AttachmentType<ReturnPointData> RETURN_POINT = registerReturnPointData(P + "return_point", true);
-    public static final AttachmentType<List<Pair<String, UUID>>> TRUSTED_PLAYERS = registerListPair(P + "trusted_players", true);
+    public static final AttachmentType<List<NameHolder>> TRUSTED_PLAYERS = registerTrustData(P + "trusted_players", true);
 
     public static final AttachmentType<List<ArmorData>> EQUIPMENTS = registerArmorList(P + "equipments");
 
@@ -113,9 +107,12 @@ public class PlayerAttachment {
         armors.sort(Comparator.comparing(ArmorData::slot, Comparator.comparing(slotOrder::indexOf)));
         return armors;
     }
+    public static boolean hasWolfSoul(Player player) {
+        return !player.getAttachedOrElse(WOLF_SOULS, List.of()).isEmpty();
+    }
 
     public static Pair<String, UUID> getNameAndUUID(LivingEntity entity) {
-        return new Pair<>(entity.getPlainTextName(), VWAttachments.getWolfPlayerSharedId(entity));
+        return new Pair<>(entity.getPlainTextName(), entity.getUUID());
     }
     public static int getWolfAtrocityCount(Player player) {
         return player.getAttachedOrElse(WOLF_ATROCITY_COUNT, 0);
@@ -123,15 +120,15 @@ public class PlayerAttachment {
     public static int getVillagerAtrocityCount(Player player) {
         return player.getAttachedOrElse(VILLAGER_ATROCITY_COUNT, 0);
     }
-    public static List<Pair<String, UUID>> getTrustedPlayers(Player player) {
+    public static List<NameHolder> getTrustedPlayers(Player player) {
         return player.getAttachedOrElse(TRUSTED_PLAYERS, List.of());
     }
-    public static boolean trustOther(Player player, Player other) {
-        List<Pair<String, UUID>> playerData = getTrustedPlayers(player);
-        List<Pair<String, UUID>> otherData = getTrustedPlayers(other);
+    public static boolean isTrusted(Player player, Player other) {
+        List<NameHolder> playerData = getTrustedPlayers(player);
+        List<NameHolder> otherData = getTrustedPlayers(other);
 
-        List<Pair<String, UUID>> checkA = playerData.stream().filter(data -> data.getB().equals(VWAttachments.getWolfPlayerSharedId(other))).toList();
-        List<Pair<String, UUID>> checkB = otherData.stream().filter(data -> data.getB().equals(VWAttachments.getWolfPlayerSharedId(player))).toList();
+        List<NameHolder> checkA = playerData.stream().filter(data -> data.uuid().equals(other.getUUID())).toList();
+        List<NameHolder> checkB = otherData.stream().filter(data -> data.uuid().equals(player.getUUID())).toList();
 
         return !checkA.isEmpty() && !checkB.isEmpty();
     }

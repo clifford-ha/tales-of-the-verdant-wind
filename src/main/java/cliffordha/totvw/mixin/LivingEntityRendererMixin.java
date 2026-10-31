@@ -1,6 +1,6 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -22,7 +22,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
 
     @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V", at = @At("TAIL"))
     private void getRenderState(T entity, S state, float partialTicks, CallbackInfo ci) {
-        if (entity.getAttachedOrElse(VWAttachments.FROST_BOUND_TIMER, 0) <= 0) {
+        if (entity.getAttachedOrElse(VWAttachment.FROST_BOUND_TIMER, 0) <= 0) {
             FROZEN.remove(entity.getUUID());
             return;
         }

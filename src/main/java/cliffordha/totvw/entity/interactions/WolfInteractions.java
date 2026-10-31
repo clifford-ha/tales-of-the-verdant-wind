@@ -7,7 +7,6 @@ import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.ReturnPointData;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.TetherData;
-import cliffordha.totvw.registry.attachments.VWAttachments;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.tag.VWItemTags;
@@ -17,7 +16,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
@@ -58,7 +56,6 @@ public class WolfInteractions {
         return InteractionResult.PASS;
     }
     private static InteractionResult tamedInteraction(ServerLevel level, Player player, Wolf wolf, ItemStack stack) {
-        VWAttachments.validateSharedID(wolf, player);
         String name = wolf.getPlainTextName();
         
         if (player.isShiftKeyDown() && Runestone.hasTether(wolf)) {
@@ -72,24 +69,14 @@ public class WolfInteractions {
             sendToChat(player, true, name + "'s return point has been removed.");
             return InteractionResult.SUCCESS;
 
-        } else if (stack.is(ItemTags.BEDS)) {
-            if (player instanceof ServerPlayer serverPlayer) {
-                ServerPlayer.RespawnConfig config = serverPlayer.getRespawnConfig();
-                if (config != null) {
-                    player.setAttached(PlayerAttachment.RETURN_POINT, new ReturnPointData(config.respawnData().dimension(), config.respawnData().pos(), true));
-                }
-            }
-            ReturnPointData playerData = player.getAttachedOrElse(PlayerAttachment.RETURN_POINT, ReturnPointData.DEFAULT);
-            if (!playerData.isValid()) {
+        } else if (stack.is(ItemTags.BEDS) && player instanceof ServerPlayer serverPlayer) {
+            ServerPlayer.RespawnConfig config = serverPlayer.getRespawnConfig();
+            if (config == null) {
                 sendToChat(player, true, "You must first set your return point before " + name + " can set a return point.");
-                return InteractionResult.FAIL;
-            }
-            if (player.isInFloatableFluid() || !(player.onGround() && !level.getBlockState(player.blockPosition()).is(BlockTags.CAUSES_SUFFOCATION)) || level.getBlockState(player.blockPosition()).is(BlockTags.CAUSES_SUFFOCATION)) {
-                sendToChat(player, true, "You must be standing on the ground to set a return point.");
                 return InteractionResult.FAIL;
 
             } else {
-                ReturnPointData data = new ReturnPointData(playerData.levelKey(), playerData.pos(), false);
+                ReturnPointData data = new ReturnPointData(config.respawnData().dimension(), config.respawnData().pos(), false);
                 wolf.setAttached(WolfAttachment.RETURN_POINT, data);
                 sendToChat(player, VWColors.VERDANT_WIND, true, name + " has been set to return to " + data.pos().getX() + ", " + data.pos().getY() + ", " + data.pos().getZ());
                 player.playSound(VWSounds.NOTIFY);

@@ -1,7 +1,7 @@
 package cliffordha.totvw.mixin;
 
 import cliffordha.totvw.entity.skills.ArcticWindsEffect;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.util.ExtUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +25,7 @@ public class WindChargeMixin {
     @Inject(method = "onHitEntity", at = @At("HEAD"))
     private void onHit(EntityHitResult hitResult, CallbackInfo ci) {
         if (hitResult.getEntity() instanceof LivingEntity entity && entity.level() instanceof ServerLevel level) {
-            int pressureDiff = entity.getAttachedOrElse(VWAttachments.PRESSURE_DIFFERENCE, 0);
+            int pressureDiff = entity.getAttachedOrElse(VWAttachment.PRESSURE_DIFFERENCE, 0);
             int arcticAffliction = ArcticWindsEffect.afflictionStack(entity);
 
             RandomSource random = level.getRandom();
@@ -38,7 +38,7 @@ public class WindChargeMixin {
                     List<Monster> monsters = level.getEntitiesOfClass(
                             Monster.class,
                             ExtUtil.scanArea(entity, 3),
-                            test -> test.getAttachedOrElse(VWAttachments.PRESSURE_DIFFERENCE, 0) > 0
+                            test -> test.getAttachedOrElse(VWAttachment.PRESSURE_DIFFERENCE, 0) > 0
                     );
                     if (monsters.isEmpty()) {
                         for (Monster monster : monsters) {
@@ -53,8 +53,8 @@ public class WindChargeMixin {
                 if (entities.isEmpty()) return;
 
                 for (LivingEntity livingEntity : entities) {
-                    int current = livingEntity.getAttachedOrElse(VWAttachments.ARCTIC_AFFLICTION, 0);
-                    livingEntity.setAttached(VWAttachments.ARCTIC_AFFLICTION, current + 2);
+                    int current = livingEntity.getAttachedOrElse(VWAttachment.ARCTIC_AFFLICTION, 0);
+                    livingEntity.setAttached(VWAttachment.ARCTIC_AFFLICTION, current + 2);
                     ExtUtil.sendParticles(ParticleTypes.SNOWFLAKE, level, entity.blockPosition(), 2, 4f, -10f);
                 }
                 ExtUtil.sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, entity.blockPosition(), 1, 4f);
@@ -64,7 +64,7 @@ public class WindChargeMixin {
 
     @Unique
     private void onIndirectHit(LivingEntity entity, ServerLevel level) {
-        int pressure = entity.getAttachedOrElse(VWAttachments.PRESSURE_DIFFERENCE, 0);
+        int pressure = entity.getAttachedOrElse(VWAttachment.PRESSURE_DIFFERENCE, 0);
         RandomSource random = level.getRandom();
         if (random.nextFloat() < (pressure * 0.01f) + 0.3f) {
             double kickback = Math.min(pressure * 0.05f, 3.2);

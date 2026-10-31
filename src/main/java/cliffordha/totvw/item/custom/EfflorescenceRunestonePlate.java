@@ -1,7 +1,7 @@
 package cliffordha.totvw.item.custom;
 
 import cliffordha.totvw.registry.VWColors;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.util.TimeUtil;
 
 import net.minecraft.network.chat.Component;
@@ -47,8 +47,8 @@ public class EfflorescenceRunestonePlate extends Item {
         }
 
         if (stack.count() >= 5) {
-            int currentStacks = player.getAttachedOrElse(VWAttachments.VERDANT_BLOOM_STACK, 0);
-            player.setAttached(VWAttachments.VERDANT_BLOOM_STACK, currentStacks + 50);
+            int currentStacks = player.getAttachedOrElse(VWAttachment.VERDANT_BLOOM_STACK, 0);
+            player.setAttached(VWAttachment.VERDANT_BLOOM_STACK, currentStacks + 50);
             stack.consume(5, player);
             player.getCooldowns().addCooldown(new ItemStack(this), TimeUtil.tickDuration(1, 30));
 
@@ -67,7 +67,7 @@ public class EfflorescenceRunestonePlate extends Item {
     public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
         if (owner instanceof Player player) {
             getPlayer = player;
-            ACTIVE = player.getAttachedOrElse(VWAttachments.VERDANT_BLOOM_STACK, 0) > 0;
+            ACTIVE = player.getAttachedOrElse(VWAttachment.VERDANT_BLOOM_STACK, 0) > 0;
         }
         super.inventoryTick(itemStack, level, owner, slot);
     }
@@ -77,7 +77,7 @@ public class EfflorescenceRunestonePlate extends Item {
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
         if (getPlayer == null) return;
-        int amount = getPlayer.getAttachedOrElse(VWAttachments.VERDANT_BLOOM_STACK, 0);
+        int amount = getPlayer.getAttachedOrElse(VWAttachment.VERDANT_BLOOM_STACK, 0);
         if (amount > 0) {
             builder.accept(Component.literal("Verdant Bloom Stacks: " + amount).withColor(VWColors.RUNESTONE_EFFLORESCENCE));
         }

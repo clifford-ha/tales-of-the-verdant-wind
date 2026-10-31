@@ -1,8 +1,6 @@
 package cliffordha.totvw.client.screen;
 
-import cliffordha.totvw.entity.status.WolfStats;
 import cliffordha.totvw.item.pages.FTextColor;
-import cliffordha.totvw.networking.packets.OpenTetherManagerPayload;
 import cliffordha.totvw.networking.packets.WolfEventsPayload;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.attachments.ReturnPointData;
@@ -62,16 +60,14 @@ public class WolfPageScreen extends Screen {
 
     //other stat
     private boolean record;
-    private boolean fromWolfConfig;
 
-    public WolfPageScreen(String pageTitle, Supplier<String[]> liveSupplier, Supplier<Wolf> wolfSupplier, boolean fromConfig) {
+    public WolfPageScreen(String pageTitle, Supplier<String[]> liveSupplier, Supplier<Wolf> wolfSupplier) {
         super(Component.literal(pageTitle));
         this.pageTitle = pageTitle;
         this.pages = Arrays.asList(liveSupplier.get());
         this.liveSupplier = liveSupplier;
         this.wolf = wolfSupplier.get();
         record = ReturnPointData.forCurrent(wolfSupplier.get()).recordAfter();
-        fromWolfConfig = fromConfig;
     }
 
     @Override
@@ -120,13 +116,12 @@ public class WolfPageScreen extends Screen {
                         if (Minecraft.getInstance().hasShiftDown()) {
                             ClientPlayNetworking.send(new WolfEventsPayload(List.of(wolf.getId(), 2)));
                             this.onClose();
+
                         } else {
-                            //ClientPlayNetworking.send(new OpenTetherManagerPayload(wolf.getId(), TetherData.of(wolf), true));
                             Minecraft.getInstance().setScreenAndShow(new TetherScreen(wolf.getId(), TetherData.of(wolf), this));
-                            //this.onClose();
                         }
                     }).tooltip(Tooltip.create(
-                            text(cText(FTextColor.GRAY, "Currently using " + runestoneType.getName() + "\n\n" + cText(FTextColor.GRAY, "Hold shift to drop item")))
+                            text(cText(FTextColor.GRAY, "Click to open " + runestoneType.getName().replace("Runestone", " Manager screen") + "\n\n" + cText(FTextColor.GRAY, "Hold shift to drop item")))
                             )).bounds(exitButtonX - (returnMethod ? 97 : 0), yposBTN, 95, xySize).build()
             );
         }
@@ -147,40 +142,34 @@ public class WolfPageScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        int TEXT_COLOR = ARGB.color(1.0f, VWColors.DEFAULT);
         int COLOR_SHADE = ARGB.color(0.4f, 0x001822);
         int COLOR_BG = ARGB.color(1.0f, 0x001822);
         graphics.fill(0, 0, this.width, this.height, COLOR_SHADE);
         graphics.fillGradient(0, 0, this.width, this.height, COLOR_BG, COLOR_SHADE);
 
-
-        int COLOR_LINE = 0x66FFFFFF;
-        int COLOR_TEXT = 0xFFFFFFFF;
-        int COLOR_SCROLLBAR_TRACK = 0x33FFFFFF;
-        int COLOR_SCROLLBAR_THUMB = 0xAAFFFFFF;
         int x = this.leftPos;
         int y = this.topPos;
 
         // title separator
-        graphics.fill(x + PADDING, y + 26, x + this.panelWidth - PADDING, y + 27, COLOR_LINE);
+        graphics.fill(x + PADDING, y + 26, x + this.panelWidth - PADDING, y + 27, PageScreen.COLOR_LINE);
 
         // title
-        graphics.text(this.font, this.pageTitle, x + PADDING, y + 11, COLOR_TEXT, false);
+        graphics.text(this.font, this.pageTitle, x + PADDING, y + 11, PageScreen.COLOR_TEXT, false);
 
         // text
         int lineY = this.textStartY;
         int end = Math.min(this.allLines.size(), this.scrollOffset + this.visibleLines);
         for (int i = this.scrollOffset; i < end; i++) {
-            graphics.text(this.font, this.allLines.get(i), x + PADDING, lineY, COLOR_TEXT, false);
+            graphics.text(this.font, this.allLines.get(i), x + PADDING, lineY, PageScreen.COLOR_TEXT, false);
             lineY += this.lineHeight;
         }
 
         // scrollbar
         if (this.maxScroll > 0) {
-            graphics.fill(this.scrollbarX, this.scrollbarY, this.scrollbarX + scrollbarWidth, this.scrollbarY + this.scrollbarHeight, COLOR_SCROLLBAR_TRACK);
+            graphics.fill(this.scrollbarX, this.scrollbarY, this.scrollbarX + scrollbarWidth, this.scrollbarY + this.scrollbarHeight, PageScreen.COLOR_SCROLLBAR_TRACK);
             int ty = thumbY();
             graphics.fill(this.scrollbarX, ty, this.scrollbarX + scrollbarWidth, ty + thumbHeight(),
-                    this.draggingScrollbar ? 0xFFFFFFFF : COLOR_SCROLLBAR_THUMB);
+                    this.draggingScrollbar ? 0xFFFFFFFF : PageScreen.COLOR_SCROLLBAR_THUMB);
         }
 
         super.extractRenderState(graphics, mouseX, mouseY, a);

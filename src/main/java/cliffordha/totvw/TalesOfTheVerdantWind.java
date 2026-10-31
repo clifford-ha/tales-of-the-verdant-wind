@@ -6,7 +6,7 @@ import cliffordha.totvw.networking.VWNetworking;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.loot.VWLootTables;
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.world.*;
 import cliffordha.totvw.world.tree.VWRootPlacerTypes;
 
@@ -26,7 +26,7 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		VWBlockProperties.register();
 		VWFluids.register();
 
-		VWAttachments.register();
+		VWAttachment.register();
 		VWEntities.register();
 		VWBlockEntityTypes.register();
 		VWEnchantments.register();

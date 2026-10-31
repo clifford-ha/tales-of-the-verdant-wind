@@ -5,6 +5,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +16,10 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class PageScreen extends Screen {
+    public static final int COLOR_LINE = 0x66FFFFFF;
+    public static final int COLOR_TEXT = 0xFFFFFFFF;
+    public static final int COLOR_SCROLLBAR_TRACK = 0x33FFFFFF;
+    public static final int COLOR_SCROLLBAR_THUMB = 0xAAFFFFFF;
     private static final float PADDING_RATIO = 0.05F;
     private static final int PADDING = 10;
 
@@ -88,17 +93,21 @@ public class PageScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        int COLOR_BG = 0x80001822;
-        int COLOR_LINE = 0x66FFFFFF;
-        int COLOR_TEXT = 0xFFFFFFFF;
-        int COLOR_SCROLLBAR_TRACK = 0x33FFFFFF;
-        int COLOR_SCROLLBAR_THUMB = 0xAAFFFFFF;
+        int COLOR_SHADE = ARGB.color(0.4f, 0x001822);
+        int COLOR_BG = ARGB.color(1.0f, 0x001822);
         int x = this.leftPos;
         int y = this.topPos;
 
-        // background
-        graphics.fill((int) Math.floor(x * PADDING_RATIO), (int) Math.floor(y * PADDING_RATIO), this.width, this.height, 0x80000000);
-        graphics.fill(x, y, x + this.panelWidth, y + this.panelHeight, COLOR_BG);
+        if (liveSupplier != null) {
+            graphics.fill(0, 0, this.width, this.height, COLOR_SHADE);
+            graphics.fillGradient(0, 0, this.width, this.height, COLOR_BG, COLOR_SHADE);
+
+        } else {
+            int fillX = x + this.panelWidth;
+            int fillY = y + this.panelHeight;
+            graphics.fill(0, 0, this.width, this.height, COLOR_SHADE);
+            graphics.fill(x, y, fillX, fillY, COLOR_SHADE);
+        }
 
         // title separator
         graphics.fill(x + PADDING, y + 26, x + this.panelWidth - PADDING, y + 27, COLOR_LINE);

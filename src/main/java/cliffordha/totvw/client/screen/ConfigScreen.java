@@ -183,16 +183,22 @@ public class ConfigScreen extends Screen {
 
         float scale = Math.min((float) maxW / BANNER_TEX_W, (float) maxH / BANNER_TEX_H);
         float rescale = listShown == ListShown.INFO ? scale * 1.3f : scale * 0.7f;
+
         int w = Math.max(1, (int) (BANNER_TEX_W * rescale));
         int h = Math.max(1, (int) (BANNER_TEX_H * rescale));
         int bannerXPos;
         int bannerYPos;
         if (listShown == ListShown.INFO) {
+            if (this.width <= 1080) {
+                rescale *= 0.8f;
+                w = Math.max(1, (int) (BANNER_TEX_W * rescale));
+                h = Math.max(1, (int) (BANNER_TEX_H * rescale));
+            }
             bannerXPos = (this.width / 2) - w / 2;
             bannerYPos = Mth.ceil(this.height * 0.15f);
         } else {
             bannerXPos = this.listLeft - 11;
-            bannerYPos = margin;
+            bannerYPos = Mth.ceil(this.height * 0.1f) - margin;
         }
         graphics.blit(
                 RenderPipelines.GUI_TEXTURED,
@@ -205,7 +211,6 @@ public class ConfigScreen extends Screen {
         );
 
         int end = Math.min(entries.size(), scroll + visibleRows());
-        int y = listTop;
 
         if (listShown == ListShown.INFO) {
             int spacing = 0;
@@ -215,7 +220,7 @@ public class ConfigScreen extends Screen {
                 if (e instanceof ConfigScreen.Header header) {
                     //graphics.text(this.font, e.label(), listLeft, textY, 0xFF000000 | VWColors.VERDANT_WIND, false);
                 } else {
-                    graphics.text(this.font, e.label(), halfX - (font.width(e.label()) + 15) / 2, Mth.ceil(this.height * 0.4) + spacing, 0xFFFFFFFF, false);
+                    graphics.text(this.font, e.label(), halfX - (font.width(e.label())) / 2, Mth.ceil(this.height * 0.4) + spacing, 0xFFFFFFFF, false);
                 }
                 spacing += 12;
             }
@@ -225,6 +230,7 @@ public class ConfigScreen extends Screen {
         }
 
         int hovered = rowAt(mouseX, mouseY);
+        int y = listTop;
         for (int i = scroll; i < end; i++) {
             ConfigScreen.Entry e = entries.get(i);
             int textY = y + (ROW_H - this.font.lineHeight) / 2;
@@ -365,7 +371,7 @@ public class ConfigScreen extends Screen {
 
             entries.add(new ConfigScreen.BoolEntry(
                     "Teleport After Revival",
-                    "Teleport to nearest wolf/owner after revival; Affects both Wolf and Player TP Methods",
+                    "Teleport to nearest wolf/owner after revival. If teleport location is out of bounds, teleport to last saved position or world respawn point; Affects both Wolf and Player TP Methods",
                     () -> c.SYNCED_TELEPORT_AFTER_SAVE, v -> c.SYNCED_TELEPORT_AFTER_SAVE = v));
 
             entries.add(new ConfigScreen.IntEntry(
@@ -380,11 +386,16 @@ public class ConfigScreen extends Screen {
 
             entries.add(new ConfigScreen.BoolEntry(
                     "All Wolves Get TP",
-                    "Teleport all tamed wolves to the player. Only applies for the Player TP Method and requires if both in the same dimension",
+                    "Teleport all tamed wolves to the player and vice versa. Affects both Wolf and Player TP Methods.",
                     () -> c.SYNCED_WOLF_TP_ALL, v -> c.SYNCED_WOLF_TP_ALL = v));
 
         } else if (listShown == ListShown.SERVER) {
-            entries.add(new ConfigScreen.Header("SERVER-SIDE"));
+            entries.add(new ConfigScreen.Header("SERVER-SIDE CONFIG"));
+
+            entries.add(new ConfigScreen.BoolEntry(
+                    "Wolf Behaviour Extensions",
+                    "Adds and modifies (some) of the wolf's behaviour to account for the different enchantment mechanics.",
+                    () -> c.SERVER_WOLF_BEHAVIOUR_EXTENSIONS, v -> c.SERVER_WOLF_BEHAVIOUR_EXTENSIONS = v));
 
             entries.add(new ConfigScreen.BoolEntry(
                     "Wolf Damage Distribution",

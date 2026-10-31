@@ -1,6 +1,5 @@
 package cliffordha.totvw.entity.skill;
 
-import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 
 public class WolfSkills {

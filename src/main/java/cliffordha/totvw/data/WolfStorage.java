@@ -1,14 +1,11 @@
 package cliffordha.totvw.data;
 
-import cliffordha.totvw.registry.attachments.AttachmentUtil;
-import cliffordha.totvw.registry.attachments.VWAttachments;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-
 import net.minecraft.world.level.storage.TagValueOutput;
 
 import java.io.IOException;
@@ -50,6 +47,9 @@ public class WolfStorage {
         }
     }
     public static boolean saveWolfNbt(MinecraftServer server, Wolf wolf) {
+        UUID sharedID = wolf.getOwnerReference() != null ? wolf.getOwnerReference().getUUID() : null;
+        if (sharedID == null) return false;
+
         wolf.unRide();
         wolf.dropLeash();
 
@@ -58,11 +58,10 @@ public class WolfStorage {
         wolf.setOrderedToSit(false);
 
         TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, wolf.registryAccess());
-        wolf.save(output);
+        boolean saved = wolf.save(output);
         CompoundTag data = output.buildResult();
+        if (!saved || data.isEmpty()) return false;
         data.remove("Pos");
-        UUID sharedID = wolf.getAttachedOrElse(VWAttachments.WOLF_PLAYER_SHARED_ID, AttachmentUtil.EMPTY_UUID);
-        if (sharedID.equals(AttachmentUtil.EMPTY_UUID)) return false;
 
         try {
             Path path = benedictionDirectory(server, sharedID).resolve(wolf.getStringUUID() + ".nbt");

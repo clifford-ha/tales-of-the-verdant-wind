@@ -6,12 +6,9 @@ import cliffordha.totvw.entity.wolf.WolfEnchantments;
 import cliffordha.totvw.entity.status.WolfStats;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWItems;
-import cliffordha.totvw.registry.attachments.Runestone;
-import cliffordha.totvw.registry.attachments.TetherData;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.*;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
-import cliffordha.totvw.registry.attachments.ArmorData;
 import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.worldgen.dimension.VWDimensions;
 
@@ -27,12 +24,10 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import static cliffordha.totvw.item.pages.FTextColor.*;
 import static cliffordha.totvw.item.pages.FTextStyle.*;
@@ -65,8 +60,8 @@ public class EntityStats {
         int ignoreHighDamageCD = wolf.getAttachedOrElse(WolfAttachment.CD_IGNORE_HIGH_DAMAGE, 0);
 
         int flashFreezeStack = wolf.getAttachedOrElse(WolfAttachment.FLASH_FREEZE_STACK, 0);
-        int arcticAffliction = wolf.getAttachedOrElse(VWAttachments.ARCTIC_AFFLICTION, 0);
-        int frostBound = wolf.getAttachedOrElse(VWAttachments.FROST_BOUND_TIMER, 0);
+        int arcticAffliction = wolf.getAttachedOrElse(VWAttachment.ARCTIC_AFFLICTION, 0);
+        int frostBound = wolf.getAttachedOrElse(VWAttachment.FROST_BOUND_TIMER, 0);
 
         List<String> tetheredEntities = wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, TetherData.EMPTY).tetheredEntities();
         int trustedPlayers = s.trustedPlayers().size();
@@ -106,8 +101,7 @@ public class EntityStats {
                                 + "Soul ID: " + s.soulID() + nextLine
                                 + "Family ID: " + s.familyID() + nextLine
                                 + "Owner: " + s.owner() + nextLine
-                                + "Owner UUID: " + s.ownerUUID() + nextLine
-                                + "Shared UUID: " + s.sharedUUID(),
+                                + "Owner UUID: " + s.ownerUUID(),
                         true)
 
                         + nextParagraph
@@ -159,7 +153,7 @@ public class EntityStats {
         );
     }
     private static List<String> getActiveEffects(Wolf wolf) {
-        Collection<MobEffectInstance> effects = wolf.getAttachedOrElse(VWAttachments.MOB_EFFECTS, List.of());
+        Collection<MobEffectInstance> effects = wolf.getAttachedOrElse(VWAttachment.MOB_EFFECTS, List.of());
         List<String> constructed = new ArrayList<>();
 
         if (!effects.isEmpty()) {
@@ -187,7 +181,7 @@ public class EntityStats {
                 test -> test.getOwner() == player && Runestone.hasHavoc(test)
         );
         boolean havocReady = !wolves.isEmpty();
-        int verdantBloom = player.getAttachedOrElse(VWAttachments.VERDANT_BLOOM_STACK, 0);
+        int verdantBloom = player.getAttachedOrElse(VWAttachment.VERDANT_BLOOM_STACK, 0);
 
         boolean hasAtrocity = stat.wolfAtrocityCount() + stat.villagerAtrocityCount() > 0;
 
@@ -202,8 +196,7 @@ public class EntityStats {
                         + "Health: " + percentText(player.getHealth(), player.getMaxHealth(), true) + nextLine
                         + "Hunger: " + percentText(player.getFoodData().getFoodLevel(), 20, true) + nextLine
                         + tText(shiftKeyDown(),
-                        "UUID: " + stat.UUID() + nextLine
-                                + "Shared UUID: " + stat.sharedUUID(), true)
+                        "UUID: " + stat.UUID(), true)
                         + tText(stat.wolfSouls() > 0, "Wolf Souls: " + stat.wolfSouls() + nextLine)
                         + nextParagraph
 
@@ -243,17 +236,17 @@ public class EntityStats {
         );
     }
 
-    private static List<String> getPairs(List<Pair<String, UUID>> list) {
+    private static List<String> getPairs(List<NameHolder> list) {
         List<String> constructed = new ArrayList<>();
         if (list.isEmpty()) return constructed;
 
         if (shiftKeyDown()) {
-            for (Pair<String, UUID> data : list) {
-                constructed.add(String.valueOf(data.getB()));
+            for (NameHolder data : list) {
+                constructed.add(String.valueOf(data.uuid()));
             }
         } else {
-            for (Pair<String, UUID> data : list) {
-                constructed.add(data.getA());
+            for (NameHolder data : list) {
+                constructed.add(data.name());
             }
         }
         return constructed;

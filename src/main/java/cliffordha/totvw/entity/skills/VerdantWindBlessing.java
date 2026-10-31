@@ -49,7 +49,7 @@ public class VerdantWindBlessing {
     public static boolean triggerBenediction(LivingEntity entity, DamageSource source, float damage) {
         if (damage < 4) return true;
         if (!(entity.level() instanceof ServerLevel level)) return true;
-        double SCAN_LIMIT = level.getServer().getPlayerList().getSimulationDistance() * 16;
+        double SCAN_LIMIT = (level.getServer().getPlayerList().getSimulationDistance() * 16) * 2;
         float HEALTH_THRESHOLD;
         boolean IS_LOW_HEALTH;
         boolean IS_HIGH_DMG;
@@ -126,7 +126,7 @@ public class VerdantWindBlessing {
     }
     public static void triggerBenedictionFromTick(LivingEntity entity) {
         if (!(entity.level() instanceof ServerLevel level)) return;
-        double SCAN_LIMIT = level.getServer().getPlayerList().getSimulationDistance() * 16;
+        double SCAN_LIMIT = (level.getServer().getPlayerList().getSimulationDistance() * 16) * 2;
 
         if (entity instanceof Player player) {
             List<Wolf> wolves = getWolvesInRange(level, player, SCAN_LIMIT);

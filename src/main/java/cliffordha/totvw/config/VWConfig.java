@@ -31,6 +31,7 @@ public class VWConfig {
     public boolean SYNCED_WOLF_TP_ALL = false;
 
     public boolean SERVER_WOLF_DMG_DISTRIBUTION = true;
+    public boolean SERVER_WOLF_BEHAVIOUR_EXTENSIONS = true;
 
     public boolean SERVER_SKILL_COOLDOWNS = true;
     public boolean SERVER_ITEM_COOLDOWNS = true;

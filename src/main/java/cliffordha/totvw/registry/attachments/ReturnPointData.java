@@ -51,6 +51,7 @@ public record ReturnPointData(ResourceKey<Level> levelKey, BlockPos pos, Boolean
         if (data.isValid()) {
             if (levelKey.equals(currentLevelKey)) {
                 entity.teleportTo(data.pos().getX(), data.pos().getY(), data.pos().getZ());
+
             } else {
                 ServerLevel newLevel = entity.level().getServer().getLevel(levelKey);
                 if (newLevel == null) return false;

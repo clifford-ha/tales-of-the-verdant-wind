@@ -68,6 +68,7 @@ public class TetherScreen extends Screen {
         for (var e : BuiltInRegistries.ENTITY_TYPE.entrySet()) {
             EntityType<?> type = e.getValue();
             if (type == EntityTypes.WOLF) continue;
+            if (type == EntityTypes.ARMOR_STAND) continue;
             if (!DefaultAttributes.hasSupplier(type)) continue;
 
             String id = e.getKey().identifier().toString();
@@ -171,7 +172,11 @@ public class TetherScreen extends Screen {
 
     @Override
     public void onClose() {
+        Wolf wolf = wolf();
+        Minecraft mc = Minecraft.getInstance();
+        boolean close = wolf != null && mc.player != null && mc.player.distanceTo(wolf) > 8;
         if (parentScreen != null) {
+            if (close) super.onClose();
             Minecraft.getInstance().setScreenAndShow(parentScreen);
             return;
         }

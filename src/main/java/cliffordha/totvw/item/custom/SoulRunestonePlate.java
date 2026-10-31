@@ -10,6 +10,7 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ProblemReporter;
@@ -56,6 +57,7 @@ public class SoulRunestonePlate extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
+        if (!(player.level() instanceof ServerLevel serverLevel)) return InteractionResult.FAIL;
         if (player.getCooldowns().isOnCooldown(new ItemStack(this))) return InteractionResult.FAIL;
         if (!player.isCrouching()) return InteractionResult.FAIL;
 
@@ -74,6 +76,7 @@ public class SoulRunestonePlate extends Item {
 
             player.getCooldowns().addCooldown(new ItemStack(this), 20);
             return InteractionResult.FAIL;
+
         } else {
             if (player.getAttachedOrElse(PlayerAttachment.WOLF_ATROCITY_COUNT, 0) > 10) {
                 sendToChat(player, VWColors.BLOODLUST_MUTED, false, "The runestone rejected your summoning request...");
@@ -81,31 +84,29 @@ public class SoulRunestonePlate extends Item {
                 player.getCooldowns().addCooldown(new ItemStack(this), 60);
                 return InteractionResult.FAIL;
             }
-            if ((player.level() instanceof ServerLevel serverLevel)) {
-                loadWolves(serverLevel, player, souls);
 
-                List<String> nameList = getNameForWolves(souls);
-                int pass = 0;
-                for (String name : nameList) {
-                    if (name.equals("Wolf")) pass++;
-                }
+            loadWolves(serverLevel, player, souls);
 
-                String names;
-                if (nameList.size() >= 2 && pass == nameList.size()) {
-                    names = souls.size() + " wolves";
-                } else {
-                    names = TextUtil.iterateList(nameList, false);
-                }
-
-                String message = nameList.size() > 5 ? "Summoned " + souls.size() + " wolves." : "Summoned " + names + ".";
-                sendToChat(player, false, message);
-
-                processAdditional(player, souls.size(), true);
-                player.getCooldowns().addCooldown(new ItemStack(this), 30);
-                return InteractionResult.SUCCESS;
+            List<String> nameList = getNameForWolves(souls);
+            int pass = 0;
+            for (String name : nameList) {
+                if (name.equals("Wolf")) pass++;
             }
+
+            String names;
+            if (nameList.size() >= 2 && pass == nameList.size()) {
+                names = souls.size() + " wolves";
+            } else {
+                names = TextUtil.iterateList(nameList, false);
+            }
+
+            String message = nameList.size() > 5 ? "Summoned " + souls.size() + " wolves." : "Summoned " + names + ".";
+            sendToChat(player, false, message);
+
+            processAdditional(player, souls.size(), true);
+            player.getCooldowns().addCooldown(new ItemStack(this), 30);
+            return InteractionResult.SUCCESS;
         }
-        return InteractionResult.FAIL;
     }
 
     public static void loadWolves(ServerLevel level, Player player, List<CompoundTag> wolfTag) {

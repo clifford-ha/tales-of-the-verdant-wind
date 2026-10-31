@@ -1,6 +1,6 @@
 package cliffordha.totvw.item.custom;
 
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.util.ExtUtil;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.world.InteractionHand;
@@ -18,7 +18,7 @@ public class AttachmentsRemover extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        List<AttachmentType<?>> PLAYER_ATTACHMENTS = VWAttachments.PLAYER_ATTACHMENTS;
+        List<AttachmentType<?>> PLAYER_ATTACHMENTS = VWAttachment.PLAYER_ATTACHMENTS;
 
         int count = 0;
         for (AttachmentType<?> attachment : PLAYER_ATTACHMENTS) {

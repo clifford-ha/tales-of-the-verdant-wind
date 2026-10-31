@@ -7,7 +7,7 @@ import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.HavocType;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.TetherData;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.TimeUtil;
@@ -209,7 +209,7 @@ public class RunestoneEffects {
         if (wolf.getOwner() != null && wolf.getOwner().equals(player)) {
             return;
         } else {
-            boolean isNotAggressor = !WolfAttachment.isListedAggressor(wolf, VWAttachments.getWolfPlayerSharedId(player));
+            boolean isNotAggressor = !WolfAttachment.isListedAggressor(wolf, player.getUUID());
             if (isNotAggressor) {
                 return;
             }

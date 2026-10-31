@@ -4,7 +4,7 @@ import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.entity.skills.ArcticWindsEffect;
 import cliffordha.totvw.registry.*;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.VillagerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
@@ -434,14 +434,14 @@ public class LodestoneWindCoreBlock extends Block {
         ).stream().limit(maxEntity).toList();
 
         for (LivingEntity monster : monsters) {
-            boolean shouldPressurize = !monster.getAttachedOrElse(VWAttachments.HAS_IMPLODED, false);
+            boolean shouldPressurize = !monster.getAttachedOrElse(VWAttachment.HAS_IMPLODED, false);
             if (shouldPressurize) {
                 addPressureDifferenceToEnemy(monster, level, pos, state);
             }
 
             removeEffect(monster, MobEffects.INVISIBILITY);
 
-            if (!monster.getAttachedOrElse(VWAttachments.HAS_VERDANT_OMEN, false)) {
+            if (!monster.getAttachedOrElse(VWAttachment.HAS_VERDANT_OMEN, false)) {
                 applyVerdantOmen(monster);
                 sendParticles(VWParticles.MIGHT_PARALYZE, level, monster.blockPosition(), 24, 0.5);
                 //VWParticleEffects.triggerMightParalyzeParticles(monster, 4);
@@ -499,12 +499,12 @@ public class LodestoneWindCoreBlock extends Block {
         addAttributeModifier(monster, omen, Attributes.MOVEMENT_SPEED, -0.25f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         addAttributeModifier(monster, omen, Attributes.ATTACK_KNOCKBACK, -0.1f, ADD);
 
-        monster.setAttached(VWAttachments.HAS_VERDANT_OMEN, true);
+        monster.setAttached(VWAttachment.HAS_VERDANT_OMEN, true);
         monster.level().playSound(null, monster.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 1.0F, 1.0F);
     }
     private static void addPressureDifferenceToEnemy(LivingEntity monster, ServerLevel level, BlockPos pos, BlockState state) {
-        AttachmentType<Boolean> ATTACHMENT_IMPLODE = VWAttachments.HAS_IMPLODED;
-        AttachmentType<Integer> ATTACHMENT_PRESSURE = VWAttachments.PRESSURE_DIFFERENCE;
+        AttachmentType<Boolean> ATTACHMENT_IMPLODE = VWAttachment.HAS_IMPLODED;
+        AttachmentType<Integer> ATTACHMENT_PRESSURE = VWAttachment.PRESSURE_DIFFERENCE;
         boolean hardMode = level.getDifficulty() == Difficulty.HARD;
 
         int currentPressure = monster.getAttachedOrElse(ATTACHMENT_PRESSURE, 0);
@@ -559,17 +559,17 @@ public class LodestoneWindCoreBlock extends Block {
     }
     private void removeImplodedStatus(ServerLevel level, BlockState state, BlockPos pos) {
         AABB test = scanner(pos, 24);
-        List<Monster> monsters = level.getEntitiesOfClass(Monster.class, test, mob -> mob.getAttachedOrElse(VWAttachments.HAS_IMPLODED, false));
+        List<Monster> monsters = level.getEntitiesOfClass(Monster.class, test, mob -> mob.getAttachedOrElse(VWAttachment.HAS_IMPLODED, false));
         if (monsters.isEmpty()) return;
         for (Monster monster : monsters) {
-            monster.removeAttached(VWAttachments.HAS_IMPLODED);
+            monster.removeAttached(VWAttachment.HAS_IMPLODED);
             depleteEnergy(level, pos, state, 50);
         }
     }
 
     private static void transformToVerdantType(ServerLevel level, BlockPos pos, BlockState state) {
         AABB test = scanner(pos, 12);
-        List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, test, wolf -> !wolf.getAttachedOrElse(WolfAttachment.IS_VERDANT_TYPE, false));
+        List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, test, wolf -> !WolfAttachment.isVerdant(wolf));
         if (!wolves.isEmpty()) {
             int random = wolves.size() == 1 ? 0 : level.getRandom().nextIntBetweenInclusive(0, wolves.size() - 1);
             Wolf wolf = wolves.get(Math.max(random, 0));

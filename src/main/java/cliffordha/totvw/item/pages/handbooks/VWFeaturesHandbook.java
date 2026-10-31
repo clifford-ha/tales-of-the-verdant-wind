@@ -11,7 +11,7 @@ public class VWFeaturesHandbook {
 
     private static final String titleVerdantTypeWolves = cText(AQUA, bold("Verdant-type Wolves"));
     private static final String titleVerdantTypeVillagers = cText(AQUA, bold("Verdant-type Villagers"));
-    private static final String titleBenedictionReturnPosition = cText(AQUA, bold("Benediction Return Position"));
+    private static final String titleBenedictionReturnPosition = cText(AQUA, bold("Benediction Return Point"));
     private static final String titleRevivalByProxy = cText(AQUA, bold("Revival by Proxy"));
     private static final String titleTrustSystem = cText(GOLD, bold("Trust System"));
 
@@ -82,7 +82,11 @@ public class VWFeaturesHandbook {
     }
     private static String benedictionSpawnpointInfo() {
         return titleBenedictionReturnPosition.toUpperCase() + nextLine
-                + "When a wolf has the " + descBenediction + " enchantment, the player will be able to set a return point for the wolf. When the wolf gets knocked down and said return point is present and valid, and Teleport After Save is enabled, wolf will atempt to teleport to thet return point if it is valid.";
+                + "Holding any bed then interacting it with your wolf companion will set a Benediction Return Point for them. When they get knocked down and said return point is present and valid, wolf will attempt to teleport to the return point. If said position is invalid, they will be recorded instead."
+                + nextParagraph
+
+                + "However, if you are not present when your wolf gets knocked down, override this and record them instead. The recorded wolves will respawn when you load back in."
+                ;
     }
     private static String trustSystemInfo() {
         return titleTrustSystem.toUpperCase() + nextLine
@@ -109,6 +113,8 @@ public class VWFeaturesHandbook {
                         + verdantTypeVillagers()
                         + addSeparator
                         + benedictionSpawnpointInfo()
+                        + addSeparator
+                        + trustSystemInfo()
                 + addSeparator
 
         );

@@ -4,7 +4,7 @@ import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.entity.wolf.WolfEnchantments;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWParticles;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.worldgen.dimension.VWDimensions;
@@ -41,7 +41,7 @@ public class ArcticWindsEffect {
         );
         if (afflictionStack(wolf) > 0 && VWEnchantments.getArcticWinds(wolf) > 2) {
             setFlashFreeze(wolf, afflictionStack(wolf));
-            wolf.setAttached(VWAttachments.ARCTIC_AFFLICTION, 0);
+            wolf.setAttached(VWAttachment.ARCTIC_AFFLICTION, 0);
 
             if (nearby.isEmpty()) return;
             for (Wolf afflicted : nearby) {
@@ -51,7 +51,7 @@ public class ArcticWindsEffect {
     }
     private static void getStacksFromAfflictedFriendlyWolves(Wolf wolf, Wolf afflicted) {
         setFlashFreeze(wolf, afflictionStack(afflicted));
-        afflicted.removeAttached(VWAttachments.ARCTIC_AFFLICTION);
+        afflicted.removeAttached(VWAttachment.ARCTIC_AFFLICTION);
     }
     public static void applyEffectsOnHit(Wolf wolf, LivingEntity victim, ServerLevel level, int enchantmentLevel, boolean enchantmentExclusive) {
         int flashFreeze = flashFreezeStack(wolf);
@@ -173,11 +173,11 @@ public class ArcticWindsEffect {
         return isInBiome(entity, BiomeTags.SPAWNS_COLD_VARIANT_FARM_ANIMALS) || isDimension(entity, VWDimensions.END);
     }
     public static void setFrostBound(LivingEntity entity, int amount) {
-        setStack(entity, VWAttachments.FROST_BOUND_TIMER, amount, 3);
-        entity.setAttached(VWAttachments.FROST_BOUND_POS, entity.blockPosition());
+        setStack(entity, VWAttachment.FROST_BOUND_TIMER, amount, 3);
+        entity.setAttached(VWAttachment.FROST_BOUND_POS, entity.blockPosition());
     }
     public static void setAffliction(LivingEntity entity, int amount) {
-        setStack(entity, VWAttachments.ARCTIC_AFFLICTION, amount, 24);
+        setStack(entity, VWAttachment.ARCTIC_AFFLICTION, amount, 24);
     }
     public static void setFlashFreeze(Wolf wolf, int amount) {
         setStack(wolf, WolfAttachment.FLASH_FREEZE_STACK, amount, 50);
@@ -186,8 +186,8 @@ public class ArcticWindsEffect {
         int current = entity.getAttachedOrElse(type, 0);
         entity.setAttached(type, Math.min((current + (amount)), limit));
         if (entity.getAttachedOrElse(type, 0) <= 0) {
-            if (type == VWAttachments.FROST_BOUND_TIMER) {
-                entity.removeAttached(VWAttachments.FROST_BOUND_POS);
+            if (type == VWAttachment.FROST_BOUND_TIMER) {
+                entity.removeAttached(VWAttachment.FROST_BOUND_POS);
             }
             entity.removeAttached(type);
         }
@@ -196,9 +196,9 @@ public class ArcticWindsEffect {
         return wolf.getAttachedOrElse(WolfAttachment.FLASH_FREEZE_STACK, 0);
     }
     public static int afflictionStack(LivingEntity entity) {
-        return entity.getAttachedOrElse(VWAttachments.ARCTIC_AFFLICTION, 0);
+        return entity.getAttachedOrElse(VWAttachment.ARCTIC_AFFLICTION, 0);
     }
     public static int frostBoundStack(LivingEntity entity) {
-        return entity.getAttachedOrElse(VWAttachments.FROST_BOUND_TIMER, 0);
+        return entity.getAttachedOrElse(VWAttachment.FROST_BOUND_TIMER, 0);
     }
 }

@@ -1,21 +1,27 @@
 package cliffordha.totvw.entity.wolf;
 
 import cliffordha.totvw.config.VWConfig;
+import cliffordha.totvw.entity.TickCondition;
 import cliffordha.totvw.entity.skill.WolfSkills;
 import cliffordha.totvw.entity.skills.RunestoneEffects;
 import cliffordha.totvw.entity.skills.VerdantWindBlessing;
+import cliffordha.totvw.networking.VWNetworking;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
+import cliffordha.totvw.registry.attachments.TetherData;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.tag.VWBiomeTags;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Difficulty;
@@ -24,6 +30,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,31 +55,65 @@ public class VWWolfBehaviors {
     }
 
     private static void registerTamedRules() {
-        TICK_RULES.add(WolfBehaviorRule.forTamed(
-                WolfCondition.tick()
-                        .and(WolfCondition.noAttachment(WolfAttachment.TIMER_AIR_SUPPLY))
-                        .and(WolfCondition.isUnderWater())
-                        .and(WolfCondition.airSupplyLowerThan(0.5f))
-                        .and(WolfCondition.unableToTeleport()),
-                VWWolfBehaviors::warnOwner
-        ));
-        TICK_RULES.add(WolfBehaviorRule.forTamed(
-                WolfCondition.tick()
-                        .and(WolfCondition.isInLava())
-                        .and(WolfCondition.ownerFarther(4)),
-                ((wolf, level) -> {
-                    LivingEntity owner = wolf.getOwner();
-                    if (owner == null) return;
-                    wolf.teleportToAroundBlockPos(owner.blockPosition());
-                })
-        ));
+        TICK_RULES.add(WolfBehaviorRule.forTamed(TickCondition.tick(), ((wolf, level) -> {
+            LivingEntity owner = wolf.getOwner();
+
+            if (WolfAttachment.tetherChunkTicks(wolf)) {
+                level.getChunkSource().addTicketAndLoadWithRadius(
+                        TicketType.FORCED,
+                        wolf.chunkPosition(),
+                        1
+                );
+            }
+            VWNetworking.syncWolfEffects(wolf);
+            VWNetworking.syncWolfArmor(wolf);
+
+
+            if (!VWConfig.get().SERVER_WOLF_BEHAVIOUR_EXTENSIONS) return;
+            boolean checkAirSupply = wolf.getAirSupply() <= wolf.getMaxAirSupply() * 0.5;
+            if (wolf.isUnderWater() && checkAirSupply && wolf.unableToMoveToOwner() && !wolf.hasAttached(WolfAttachment.TIMER_AIR_SUPPLY)) {
+                warnOwner(wolf, level);
+            }
+
+            if (owner instanceof Player player) {
+                if (wolf.isInLava()) {
+                    wolf.tryToTeleportToOwner();
+                }
+
+                if (player.getHealth() > player.getMaxHealth() * 0.5 && Runestone.hasTether(wolf) && (wolf.getTarget() == null || wolf.distanceTo(wolf.getTarget()) > 20)) {
+                    TetherData data = TetherData.of(wolf);
+                    if (data.autoAttackTethered() && !data.tetheredEntities().isEmpty()) {
+                        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, scanArea(wolf, 8),
+                                e -> data.tetheredEntities().contains(BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).toString()));
+                        if (!entities.isEmpty()) wolf.setTarget(entities.getFirst());
+                    }
+                }
+            }
+        })));
     }
     private static void registerWildRules() {
-        ON_DAMAGE_RULES.add(WolfBehaviorRule.forWild(WolfCondition.alwaysTrue(), (wolf, level) -> {
+        TICK_RULES.add(WolfBehaviorRule.forWild(TickCondition.tick(0, 3), (wolf, level) -> {
+            if (WolfAttachment.isVerdant(wolf)) {
+                List<Monster> monsters = level.getEntitiesOfClass(Monster.class, wolf.getBoundingBox().inflate(12), z -> wolf.getTarget() == null && z.getTarget() != null && z.getTarget().is(EntityTypes.VILLAGER));
+                if (monsters.isEmpty()) {
+                    if (!(wolf.getAttachedOrElse(WolfAttachment.TRY_SAVE_STATUS, 0) > 0 && !wolf.isAngry())) return;
+                    if (!level.getRandom().nextBoolean()) return;
+                    wolf.setAttached(WolfAttachment.TRY_SAVE_STATUS, 0);
+                    return;
+                }
+
+                for (Monster monster : monsters) {
+                    wolf.setTarget(monster);
+                    wolf.setAttached(WolfAttachment.TRY_SAVE_STATUS, 1);
+                }
+            }
+        }));
+        ON_DAMAGE_RULES.add(WolfBehaviorRule.forWild(TickCondition.alwaysTrue(), (wolf, level) -> {
             boolean hardMode = level.getDifficulty() == Difficulty.HARD || level.getServer().isHardcore();
             var victim = CURRENT_VICTIM.get();
             if (victim == null) return;
-            if (wolf.isAngry()) {
+
+            if (wolf.isAngry() && VWConfig.get().SERVER_WOLF_BEHAVIOUR_EXTENSIONS) {
                 int additional = isInBiome(wolf, VWBiomeTags.IS_VERDANT_BIOMES) ? 3 : 0;
                 int duration = (hardMode ? 7 : 3) + additional;
                 int amplifier = hardMode ? 1 : 0;
@@ -92,7 +133,7 @@ public class VWWolfBehaviors {
     }
     private static void registerSharedRules() {
         ON_DAMAGE_RULES.add(WolfBehaviorRule.forAny(
-                WolfCondition.alwaysTrue(),
+                TickCondition.alwaysTrue(),
                 (wolf, level) -> {
                     if (wolf.isWearingBodyArmor()) {
                         WolfEffects.onPostAttack(wolf, level, null, true, null);
@@ -103,7 +144,7 @@ public class VWWolfBehaviors {
                 }
         ));
         TICK_RULES.add(WolfBehaviorRule.forTamed(
-                WolfCondition.tick(0, 3),
+                TickCondition.tick(0, 3),
                 (wolf, level) ->  {
                     LivingEntity owner = wolf.getOwner();
                     if (owner == null) return;
@@ -115,41 +156,58 @@ public class VWWolfBehaviors {
                         VerdantWindBlessing.triggerBenedictionFromTick(wolf);
                     }
 
-                    boolean shouldBiteOffLeash = wolf.isAngry()
-                            && wolf.getTarget() != null
-                            && wolf.distanceTo(wolf.getTarget()) < 6;
+                    if (VWConfig.get().SERVER_WOLF_BEHAVIOUR_EXTENSIONS) {
+                        boolean shouldBiteOffLeash = wolf.isAngry()
+                                && wolf.getTarget() != null
+                                && wolf.distanceTo(wolf.getTarget()) < 6;
 
-                    if (shouldBiteOffLeash) {
-                        wolf.unRide();
-                        wolf.dropLeash();
-                        wolf.setOrderedToSit(false);
-                    }
+                        if (shouldBiteOffLeash) {
+                            wolf.unRide();
+                            wolf.dropLeash();
+                            wolf.setOrderedToSit(false);
+                        }
 
-                    boolean tryToTeleport = wolf.isInWater() && wolf.distanceToSqr(owner) > 6;
-                    if (tryToTeleport) {
-                        wolf.tryToTeleportToOwner();
-                    }
-                }
-        ));
-        TICK_RULES.add(WolfBehaviorRule.forAny(
-               WolfCondition.isInBiomes(VWBiomeTags.FOREST_WHERE_WOLVES_HOWL)
-                        .and(WolfCondition.tick(0, 30)),
-                (wolf, level) -> {
-                    if (wolf.isAngry()) return;
-                    if (wolf.level().getMaxLocalRawBrightness(wolf.blockPosition()) > 11) return;
-
-                    if (level.getRandom().nextFloat() < 0.05f) {
-                        SoundEvent sound = DISTANT_HOWL_SOUNDS[level.getRandom().nextInt(DISTANT_HOWL_SOUNDS.length)];
-                        level.playSound(null, wolf.blockPosition(), sound, SoundSource.AMBIENT, 0.2f + level.getRandom().nextFloat() * 0.5f, 0.8f + level.getRandom().nextFloat() * 0.4f);
+                        boolean tryToTeleport = wolf.isInWater() && wolf.distanceToSqr(owner) > 6;
+                        if (tryToTeleport) {
+                            wolf.tryToTeleportToOwner();
+                        }
                     }
                 }
         ));
-        TICK_RULES.add(WolfBehaviorRule.forAny(
-                WolfCondition.tick(1, 0).and(WolfCondition.healthBelow(0.8f)),
-                VWWolfBehaviors::runNaturalHealOnTick
+        TICK_RULES.add(WolfBehaviorRule.forAny(TickCondition.tick(0, 30), (wolf, level) -> {
+            if (!isInBiome(wolf, VWBiomeTags.FOREST_WHERE_WOLVES_HOWL)) return;
+            if (wolf.isAngry()) return;
+            if (wolf.level().getMaxLocalRawBrightness(wolf.blockPosition()) > 11) return;
+
+            if (level.getRandom().nextFloat() < 0.05f) {
+                SoundEvent sound = DISTANT_HOWL_SOUNDS[level.getRandom().nextInt(DISTANT_HOWL_SOUNDS.length)];
+                level.playSound(null, wolf.blockPosition(), sound, SoundSource.AMBIENT, 0.2f + level.getRandom().nextFloat() * 0.5f, 0.8f + level.getRandom().nextFloat() * 0.4f);
+            }
+        }
         ));
-        TICK_RULES.add(WolfBehaviorRule.forAny(WolfCondition.tick(), (wolf, level) -> {
+        TICK_RULES.add(WolfBehaviorRule.forAny(
+                TickCondition.tick(1, 0),
+                (player, level) -> {
+                    if (player.getHealth() <= player.getMaxHealth() * 0.8) {
+                        runNaturalHealOnTick(player, level);
+                    }
+                }
+        ));
+        TICK_RULES.add(WolfBehaviorRule.forAny(TickCondition.tick(), (wolf, level) -> {
             WolfEffects.onTick(wolf, level);
+
+            if (wolf.isBaby() && wolf.isOnFire()) {
+                List<Wolf> parents = level.getEntitiesOfClass(
+                        Wolf.class,
+                        scanArea(wolf, 16),
+                        test -> WolfAttachment.isFamilyRelated(wolf, test)
+                                && (VWEnchantments.getIgnition(test) > 0 || VWEnchantments.getMight(test) >= 3));
+
+                if (!parents.isEmpty()) {
+                    if (wolf.distanceTo(parents.getFirst()) > 6) wolf.getNavigation().moveTo(parents.getFirst(), 1.1);
+                    wolf.extinguishFire();
+                }
+            }
 
             if (VWConfig.get().SERVER_OTHER_COOLDOWNS) {
                 depleteCooldown(wolf, WolfAttachment.TIMER_AIR_SUPPLY);

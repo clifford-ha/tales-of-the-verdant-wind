@@ -12,7 +12,7 @@ import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.VWSounds;
 import cliffordha.totvw.registry.attachments.Runestone;
-import cliffordha.totvw.registry.attachments.VWAttachments;
+import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.DamageZip;
 import cliffordha.totvw.util.ExtUtil;
@@ -150,7 +150,7 @@ public class WolfEffects {
             }
             addOrStackEffect(victim, MobEffects.WEAKNESS, 2, 0, true);
             boolean checkVictim = victim.is(EntityTypes.PLAYER) || victim.getMaxHealth() > 20.0;
-            boolean isNotParalyzed = !victim.hasEffect(VWEffects.PARALYZE) && victim.getAttachedOrElse(VWAttachments.FROST_BOUND_TIMER, 0) <= 0;
+            boolean isNotParalyzed = !victim.hasEffect(VWEffects.PARALYZE) && victim.getAttachedOrElse(VWAttachment.FROST_BOUND_TIMER, 0) <= 0;
             if (checkVictim && !SkillManager.isOnCooldown(wolf, WolfSkills.PARALYZER) && isNotParalyzed) {
                 addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
 
@@ -286,7 +286,7 @@ public class WolfEffects {
             buffForBabyWolves(wolf, babyWolves, enchantment, 2);
         }
         if (ACTIVE_MIGHT > 0 && wolf.getTarget() != null) {
-            addEffect(wolf, MobEffects.SPEED, ACTIVE_MIGHT, 1);
+            if (!wolf.hasEffect(VWEffects.BLOODLUST)) addEffect(wolf, MobEffects.SPEED, 1, Math.min(ACTIVE_MIGHT - 1, 3));
             addEffect(wolf, VWEffects.AMPLIFIED_MIGHT, ACTIVE_MIGHT * 3, Math.min(ACTIVE_MIGHT - 1, 2));
 
             // CASE 1

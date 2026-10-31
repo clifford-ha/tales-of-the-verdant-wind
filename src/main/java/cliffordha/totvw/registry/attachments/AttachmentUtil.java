@@ -1,7 +1,6 @@
 package cliffordha.totvw.registry.attachments;
 
 import cliffordha.totvw.TOTVW;
-import cliffordha.totvw.worldgen.dimension.VWDimensions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
@@ -13,12 +12,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import oshi.util.tuples.Pair;
 
 import java.util.*;
@@ -66,12 +63,12 @@ public class AttachmentUtil {
                 }
         );
     }
-    public static AttachmentType<List<Pair<String, UUID>>> registerListPair(String name, boolean copyOnDeath) {
+    public static AttachmentType<List<NameHolder>> registerTrustData(String name, boolean copyOnDeath) {
         return AttachmentRegistry.create(
                 TOTVW.registerID(name),
                 builder -> {
-                    builder.persistent(ENTITY_DATA_CODEC.listOf())
-                            .syncWith(ENTITY_DATA_CODEC_STREAM.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all())
+                    builder.persistent(NameHolder.CODEC.listOf())
+                            .syncWith(ByteBufCodecs.fromCodec(NameHolder.CODEC.listOf()), AttachmentSyncPredicate.all())
                             .initializer(ArrayList::new);
                     if (copyOnDeath) builder.copyOnDeath();
                 }
