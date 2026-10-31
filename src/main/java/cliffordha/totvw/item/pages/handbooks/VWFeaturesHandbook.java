@@ -5,26 +5,11 @@ import static cliffordha.totvw.item.pages.FTextStyle.*;
 import static cliffordha.totvw.util.TextUtil.*;
 
 public class VWFeaturesHandbook {
-    private static final String descAttackDMG = "Attack Damage";
-    private static final String descBenediction = "Benediction of the Verdant Mountains";
-    private static final String descBleedingDMG = cText(RED, "Bleeding damage");
-
     private static final String titleVerdantTypeWolves = cText(AQUA, bold("Verdant-type Wolves"));
     private static final String titleVerdantTypeVillagers = cText(AQUA, bold("Verdant-type Villagers"));
     private static final String titleBenedictionReturnPosition = cText(AQUA, bold("Benediction Return Point"));
     private static final String titleRevivalByProxy = cText(AQUA, bold("Revival by Proxy"));
     private static final String titleTrustSystem = cText(GOLD, bold("Trust System"));
-
-    private static final String titleWolfArmorEnhancementKit = cText(YELLOW, bold("Wolf Armor Enhancement Kit"));
-    private static final String titleMight = cText(AQUA, bold("Might"));
-    private static final String titleBloodlust = cText(RED, bold("Bloodlust"));
-    private static final String titleOozing = cText(GREEN, bold("Oozing"));
-    private static final String titleIgnition = cText(GOLD, bold("Ignition"));
-    private static final String titleLifting = cText(DARK_PURPLE, bold("Lifting"));
-    private static final String titleGnawing = cText(LIGHT_PURPLE, bold("Gnawing"));
-    private static final String titlePoisoning = cText(DARK_GREEN, bold("Poisoning"));
-    private static final String titleWithering = cText(DARK_RED, bold("Withering"));
-    private static final String titleMending = cText(LIGHT_PURPLE, bold("Mending"));
 
     private static String italic(String t) {
         return fText(ITALIC, t);
@@ -90,14 +75,13 @@ public class VWFeaturesHandbook {
     }
     private static String trustSystemInfo() {
         return titleTrustSystem.toUpperCase() + nextLine
-                + "Reintroduced from earlier versions of the mod. To utilize this feature, a player can recordAfter a Paper or Verixium Paper towards a fellow player by right clicking them. A text prompt should notify you upon succeeding. These Trust System is currently being used for Wolf-Player interaction."
+                + "Reintroduced from earlier versions of the mod. To utilize this feature, a player can use a Paper or Verixium Paper towards a fellow player by right clicking them. A text prompt should notify you upon succeeding. This Trust System is currently being used for Wolf-Player interaction."
                 + nextParagraph
 
-                + "When a player has a tamed wolf, they can recordAfter the command to perform various actions like syncing the list from player to wolf: " + bold("[  /totvw trust_data wolf sync  ]")
+                + "For wolves: Wolf will ignore damage from players that you trust provided that they also listed you as trustee. Your list of trusted players is auto synced to wolf every 3 seconds."
                 + nextParagraph
 
-                + "The player can also remove all or specific trusted players from their list. You need to query"
-                ;
+                + "For players: Trusted players that also list you as trustee won't be affected by your attacks. This also applies to them.";
     }
 
 

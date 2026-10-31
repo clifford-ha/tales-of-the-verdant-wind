@@ -2,15 +2,12 @@ package cliffordha.totvw.entity.interactions;
 
 import cliffordha.totvw.entity.skills.RunestoneEffects;
 import cliffordha.totvw.item.custom.SoulRunestonePlate;
-import cliffordha.totvw.networking.packets.OpenTetherManagerPayload;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.ReturnPointData;
 import cliffordha.totvw.registry.attachments.Runestone;
-import cliffordha.totvw.registry.attachments.TetherData;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.tag.VWItemTags;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,18 +55,7 @@ public class WolfInteractions {
     private static InteractionResult tamedInteraction(ServerLevel level, Player player, Wolf wolf, ItemStack stack) {
         String name = wolf.getPlainTextName();
         
-        if (player.isShiftKeyDown() && Runestone.hasTether(wolf)) {
-            if (player instanceof ServerPlayer serverPlayer) {
-                ServerPlayNetworking.send(serverPlayer, new OpenTetherManagerPayload(wolf.getId(), TetherData.of(wolf), false));
-            }
-            return InteractionResult.SUCCESS;
-
-        } else if (stack.is(Items.COMPASS)) {
-            wolf.removeAttached(WolfAttachment.RETURN_POINT);
-            sendToChat(player, true, name + "'s return point has been removed.");
-            return InteractionResult.SUCCESS;
-
-        } else if (stack.is(ItemTags.BEDS) && player instanceof ServerPlayer serverPlayer) {
+        if (stack.is(ItemTags.BEDS) && player instanceof ServerPlayer serverPlayer) {
             ServerPlayer.RespawnConfig config = serverPlayer.getRespawnConfig();
             if (config == null) {
                 sendToChat(player, true, "You must first set your return point before " + name + " can set a return point.");

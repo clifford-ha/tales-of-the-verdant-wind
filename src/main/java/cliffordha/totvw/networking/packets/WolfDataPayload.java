@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 public record WolfDataPayload(
         int wolfId,
         ArmorData armorData
+
 ) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<WolfDataPayload> TYPE =
             new CustomPacketPayload.Type<>(TOTVW.registerID("wolf_data"));

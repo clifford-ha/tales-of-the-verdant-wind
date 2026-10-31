@@ -7,8 +7,11 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-// client -> server
-public record TetherDataPayload(int entityId, TetherData tetherData) implements CustomPacketPayload {
+public record TetherDataPayload(
+        int entityId,
+        TetherData tetherData
+
+) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<TetherDataPayload> TYPE =
             new CustomPacketPayload.Type<>(TOTVW.registerID("tether_data"));
 

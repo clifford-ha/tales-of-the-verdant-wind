@@ -16,7 +16,10 @@ import java.util.List;
  * <p> RULES: The first index is the wolf's entity id then set the second for ACTIONS defined here:
  * <p> 0 = test, for debugging only, 1 = reserved for other purposes
  */
-public record WolfEventsPayload(List<Integer> integerFlags) implements CustomPacketPayload {
+public record WolfEventsPayload(
+        List<Integer> integerFlags
+
+) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<WolfEventsPayload> TYPE =
             new CustomPacketPayload.Type<>(TOTVW.registerID("wolf_events"));
 

@@ -40,16 +40,20 @@ public class WindChargeMixin {
                             ExtUtil.scanArea(entity, 3),
                             test -> test.getAttachedOrElse(VWAttachment.PRESSURE_DIFFERENCE, 0) > 0
                     );
-                    if (monsters.isEmpty()) {
+                    if (!monsters.isEmpty()) {
                         for (Monster monster : monsters) {
                             this.onIndirectHit(monster, level);
                         }
                     }
                 }
             }
-            float chance = ExtUtil.isInBiome(entity, BiomeTags.SPAWNS_COLD_VARIANT_FARM_ANIMALS) ? 0.6f : 0.3f;
+            float chance = ExtUtil.isInBiome(entity, BiomeTags.SPAWNS_COLD_VARIANT_FARM_ANIMALS) ? 0.8f : 0.65f;
             if (arcticAffliction > 0 && random.nextFloat() < chance) {
-                List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, ExtUtil.scanArea(entity, 5), LivingEntity::isAlive);
+                List<LivingEntity> entities = level.getEntitiesOfClass(
+                        LivingEntity.class,
+                        ExtUtil.scanArea(entity, 3),
+                        test -> ArcticWindsEffect.afflictionStack(test) > 5 || ArcticWindsEffect.frostBoundStack(test) > 0
+                );
                 if (entities.isEmpty()) return;
 
                 for (LivingEntity livingEntity : entities) {

@@ -8,16 +8,13 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
-import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 import static cliffordha.totvw.registry.attachments.AttachmentUtil.*;
 
@@ -110,10 +107,6 @@ public class PlayerAttachment {
     public static boolean hasWolfSoul(Player player) {
         return !player.getAttachedOrElse(WOLF_SOULS, List.of()).isEmpty();
     }
-
-    public static Pair<String, UUID> getNameAndUUID(LivingEntity entity) {
-        return new Pair<>(entity.getPlainTextName(), entity.getUUID());
-    }
     public static int getWolfAtrocityCount(Player player) {
         return player.getAttachedOrElse(WOLF_ATROCITY_COUNT, 0);
     }
@@ -124,12 +117,9 @@ public class PlayerAttachment {
         return player.getAttachedOrElse(TRUSTED_PLAYERS, List.of());
     }
     public static boolean isTrusted(Player player, Player other) {
-        List<NameHolder> playerData = getTrustedPlayers(player);
-        List<NameHolder> otherData = getTrustedPlayers(other);
+        boolean checkA = getTrustedPlayers(player).stream().anyMatch(data -> data.uuid().equals(other.getUUID()));
+        boolean checkB = getTrustedPlayers(other).stream().anyMatch(data -> data.uuid().equals(player.getUUID()));
 
-        List<NameHolder> checkA = playerData.stream().filter(data -> data.uuid().equals(other.getUUID())).toList();
-        List<NameHolder> checkB = otherData.stream().filter(data -> data.uuid().equals(player.getUUID())).toList();
-
-        return !checkA.isEmpty() && !checkB.isEmpty();
+        return checkA && checkB;
     }
 }

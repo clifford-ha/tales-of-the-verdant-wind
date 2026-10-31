@@ -4,6 +4,7 @@ import cliffordha.totvw.entity.interactions.VillagerInteractions;
 import cliffordha.totvw.entity.interactions.WolfInteractions;
 import cliffordha.totvw.item.events.VWItemBlessings;
 import cliffordha.totvw.registry.VWEnchantments;
+import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.VWSounds;
 import cliffordha.totvw.registry.attachments.NameHolder;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,7 @@ import java.util.function.Predicate;
 
 import static cliffordha.totvw.util.ExtUtil.sendToChat;
 
-public class InteractionEvents {
+public class InteractionEvent {
     public static InteractionResult onEntityInteractEvent(Player player, Entity entity, InteractionHand hand) {
         if (!(player.level() instanceof ServerLevel level)) return InteractionResult.PASS;
         if (!(entity instanceof LivingEntity livingEntity)) return InteractionResult.PASS;
@@ -36,7 +38,7 @@ public class InteractionEvents {
 
         switch (livingEntity) {
             case Player otherPlayer -> {
-                return processTrust(player, otherPlayer);
+                return processTrust(player, otherPlayer, stack);
             }
             case Wolf wolf -> {
                 return WolfInteractions.handleInteraction(level, player, wolf, stack);
@@ -68,8 +70,9 @@ public class InteractionEvents {
         return InteractionResult.PASS;
     }
 
-    private static InteractionResult processTrust(Player player, Player other) {
+    private static InteractionResult processTrust(Player player, Player other, ItemStack stack) {
         if (player == other) return InteractionResult.PASS;
+        if (!(stack.is(VWItems.VERIXIUM_PAPER) || stack.is(Items.PAPER))) return InteractionResult.PASS;
 
         AttachmentType<List<NameHolder>> T_LIST = PlayerAttachment.TRUSTED_PLAYERS;
         List<NameHolder> oldPlayerData = player.getAttachedOrElse(T_LIST, List.of());
@@ -77,18 +80,18 @@ public class InteractionEvents {
 
         NameHolder mobData = NameHolder.of(other);
 
-        boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.uuid().equals(mobData.uuid()));
+        boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.sameUUID(mobData));
         if (oldPlayerData.size() >= 4 && !hasPriorData) {
             sendToChat(player, true, "You can only add 4 trusted players at a time.");
             return InteractionResult.FAIL;
         }
         if (hasPriorData) {
-            var index = oldPlayerData.stream().findFirst().filter(data -> data.uuid().equals(mobData.uuid())).map(oldPlayerData::indexOf).orElse(null);
+            var index = oldPlayerData.stream().findFirst().filter(data -> data.sameUUID(mobData)).map(oldPlayerData::indexOf).orElse(null);
             if (index == null) return InteractionResult.PASS;
 
             NameHolder data = oldPlayerData.get(index);
 
-            if (!data.name().equals(mobData.name()) && data.uuid().equals(mobData.uuid())) {
+            if (!data.sameName(mobData) && data.sameUUID(mobData)) {
                 NameHolder update = new NameHolder(mobData.name(), mobData.uuid());
 
                 newPlayerData.set(newPlayerData.indexOf(data), update);

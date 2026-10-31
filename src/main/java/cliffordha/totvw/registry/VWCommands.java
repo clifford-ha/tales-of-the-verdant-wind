@@ -36,9 +36,6 @@ import java.util.*;
 import static cliffordha.totvw.util.ExtUtil.sendToChat;
 
 public class VWCommands {
-    private static final AttachmentType<List<NameHolder>> TRUST_DATA = PlayerAttachment.TRUSTED_PLAYERS;
-    private static final AttachmentType<List<NameHolder>> WOLF_TRUST_DATA = WolfAttachment.TRUSTED_PLAYERS;
-
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(Commands.literal("totvw")
@@ -51,13 +48,13 @@ public class VWCommands {
                             return 0;
                         }
 
-                        List<NameHolder> data = player.getAttachedOrElse(TRUST_DATA, List.of());
+                        List<NameHolder> data = PlayerAttachment.getTrustedPlayers(player);
                         if (!data.isEmpty()) {
                             String firstPart = data.size() > 1 ? "These are currently " : "There is currently ";
                             sendSuccess(context, false, firstPart + data.size() + " player" + (data.size() > 1 ? "s" : "") + " you trust.");
 
                             sendToChat(player, false, "Index  |  Name");
-                            for (NameHolder pair : player.getAttachedOrElse(TRUST_DATA, List.of())) {
+                            for (NameHolder pair : data) {
                                 sendToChat(player, false, data.indexOf(pair) + 1 + " " + pair.name());
                             }
 
@@ -81,7 +78,7 @@ public class VWCommands {
                         }
 
                         int index = context.getArgument("entity", Integer.class);
-                        List<NameHolder> data = new ArrayList<>(player.getAttachedOrElse(TRUST_DATA, List.of()));
+                        List<NameHolder> data = new ArrayList<>(PlayerAttachment.getTrustedPlayers(player));
 
                         if (!data.isEmpty()) {
                             if (index < 1 || index > data.size()) {
@@ -92,7 +89,7 @@ public class VWCommands {
                             NameHolder removed = data.get(index - 1);
                             sendSuccess(context, false, "You removed " + removed.name() + " from your list of trusted players.");
                             data.remove(index - 1);
-                            player.setAttached(TRUST_DATA, data);
+                            player.setAttached(PlayerAttachment.TRUSTED_PLAYERS, data);
                             return data.size();
                         } else {
                             sendFail(context, "No trust data to remove.");
@@ -112,9 +109,9 @@ public class VWCommands {
                             return 0;
                         }
 
-                        int data = player.getAttachedOrElse(TRUST_DATA, List.of()).size();
+                        int data = PlayerAttachment.getTrustedPlayers(player).size();
                         if (data > 0) {
-                            player.removeAttached(TRUST_DATA);
+                            player.removeAttached(PlayerAttachment.TRUSTED_PLAYERS);
                             sendSuccess(context, false, "You removed your list of trusted players (" + data + ").");
                             return data;
                         } else {
@@ -152,71 +149,6 @@ public class VWCommands {
 
                         String w = wolves.size() > 1 ? "nearby wolves" : wolves.getFirst().getPlainTextName();
                         sendSuccess(context, false, "Removed the aggressor list of " + w + ".");
-                        return wolves.size();
-                    }
-                    )))));
-
-            dispatcher.register(Commands.literal("totvw")
-                    .then(Commands.literal("trust_data")
-                    .then(Commands.literal("wolf")
-                    .then(Commands.literal("sync")
-                    .executes(context -> {
-                        ServerPlayer player = getPlayer(context);
-                        if (player == null) {
-                            failed(context);
-                            return 0;
-                        }
-                        ServerLevel level = player.level();
-
-                        List<Wolf> wolves = level.getEntities(
-                                EntityTypes.WOLF,
-                                player.getBoundingBox().inflate(16),
-                                t -> t.getOwner() == player);
-
-                        if (wolves.isEmpty()) {
-                            sendFail(context, "No nearby wolves to sync to!");
-                            return 0;
-                        }
-
-                        UUID ownerRealId = player.getUUID();
-
-                        List<NameHolder> trustData = player.getAttachedOrElse(TRUST_DATA, List.of()).stream()
-                                .filter(t -> !t.uuid().equals(ownerRealId))
-                                .toList();
-
-                        Set<UUID> trustedIds = new HashSet<>();
-                        for (NameHolder t : trustData) trustedIds.add(t.uuid());
-
-                        int aggressors = 0;
-                        for (Wolf wolf : wolves) {
-                            if (!trustData.isEmpty()) {
-                                wolf.setAttached(WOLF_TRUST_DATA, List.copyOf(trustData));
-                            } else {
-                                wolf.removeAttached(WOLF_TRUST_DATA);
-                            }
-
-                            List<NameHolder> aggressorList = new ArrayList<>(WolfAttachment.getAggressors(wolf));
-                            int before = aggressorList.size();
-                            aggressorList.removeIf(a -> trustedIds.contains(a.uuid()));
-                            int removed = before - aggressorList.size();
-
-                            if (removed > 0) {
-                                aggressors += removed;
-                                if (aggressorList.isEmpty()) {
-                                    wolf.removeAttached(WolfAttachment.AGGRESSOR_LIST);
-                                } else {
-                                    wolf.setAttached(WolfAttachment.AGGRESSOR_LIST, List.copyOf(aggressorList));
-                                }
-                            }
-                        }
-
-                        String wolfCount = wolves.size() > 1 ? "nearby wolves" : wolves.getFirst().getPlainTextName();
-                        String removedAggressors = aggressors > 0 ? " and removed " + aggressors + " aggressor" + (aggressors > 1 ? "s" : "") + "." : ".";
-                        String count = "Synced " + trustData.size() + " trusted players to " + wolfCount + removedAggressors;
-
-                        String finalize = trustData.isEmpty() ? "Removed old data from " + wolfCount : count;
-
-                        sendSuccess(context, false, finalize);
                         return wolves.size();
                     }
                     )))));

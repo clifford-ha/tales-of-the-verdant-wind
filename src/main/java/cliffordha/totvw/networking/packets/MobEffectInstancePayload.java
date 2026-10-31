@@ -12,6 +12,7 @@ import java.util.List;
 public record MobEffectInstancePayload(
         int entityId,
         List<MobEffectInstance> instance
+
 ) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<MobEffectInstancePayload> TYPE =
             new CustomPacketPayload.Type<>(TOTVW.registerID("mob_effect_instance"));

@@ -274,6 +274,7 @@ public class WolfEffects {
         );
         if (enchantment.hasArcticWinds()) {
             ArcticWindsEffect.run(wolf, level, enchantment.getArcticWinds());
+
         } else {
             ArcticWindsEffect.removeResidualStacks(wolf);
         }
@@ -292,8 +293,8 @@ public class WolfEffects {
             // CASE 1
             buffForBabyWolves(wolf, babyWolves, enchantment, 1);
         }
-        if (ACTIVE_IGNITION > 0 || ACTIVE_MIGHT >= 3 || enchantment.getArcticWinds() > 3) {
-            if (wolf.isOnFire()) {
+        if (ACTIVE_IGNITION > 0 || ACTIVE_MIGHT >= 5) {
+            if (wolf.isOnFire() && !wolf.isInLava()) {
                 wolf.extinguishFire();
             }
         }
@@ -323,8 +324,8 @@ public class WolfEffects {
             switch (stat) {
                 //ARMOR TICK
                 case 1 -> {
-                    addEffect(wolf, VWEffects.AMPLIFIED_MIGHT, enchants.getMight() * 3, Math.min(enchants.getMight() - 1, 2));
-                    addEffect(wolf, MobEffects.ABSORPTION, enchants.getMight() * 3, 1);
+                    addEffect(wolf, VWEffects.AMPLIFIED_MIGHT, enchants.getMight() * 3, 0);
+                    addEffect(wolf, MobEffects.ABSORPTION, enchants.getMight() * 3, 0);
                 }
                 case 2 -> {
                     if (isInBiome(wolf, BiomeTags.IS_NETHER) && wolf.distanceTo(parent) < 24) {

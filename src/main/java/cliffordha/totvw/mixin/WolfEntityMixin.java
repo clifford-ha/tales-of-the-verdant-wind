@@ -200,9 +200,16 @@ public abstract class WolfEntityMixin extends LivingEntity {
     @Inject(method = "wantsToAttack", at = @At("RETURN"), cancellable = true)
     private void wantsToAttack(LivingEntity target, LivingEntity owner, CallbackInfoReturnable<Boolean> cir) {
         Wolf wolf = (Wolf) (Object) this;
-        boolean targetPlayer = target instanceof Player player && wolf.getOwner() != player && WolfAttachment.shouldAttackEntity(wolf, player);
-        if (targetPlayer) {
-            cir.setReturnValue(true);
+        if (WolfAttachment.isVerdant(wolf) && target instanceof Wolf other && WolfAttachment.isVerdant(other)) {
+            wolf.stopBeingAngry();
+            wolf.setTarget(null);
+            cir.setReturnValue(false);
+
+        }
+        if (WolfAttachment.isTrusted(wolf, target)) {
+            wolf.stopBeingAngry();
+            wolf.setTarget(null);
+            cir.setReturnValue(false);
 
         } else if (target instanceof Skeleton skeleton && skeleton.getVehicle() instanceof LivingEntity vehicle) {
             wolf.setTarget(vehicle);

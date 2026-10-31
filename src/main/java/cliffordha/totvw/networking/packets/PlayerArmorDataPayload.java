@@ -11,6 +11,7 @@ import java.util.List;
 
 public record PlayerArmorDataPayload(
         List<ArmorData> armorData
+
 ) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<PlayerArmorDataPayload> TYPE =
             new CustomPacketPayload.Type<>(TOTVW.registerID("player_armor_data"));

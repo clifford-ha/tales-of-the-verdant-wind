@@ -265,7 +265,7 @@ public class WolfBenedictionHelper {
                 }
                 if (success > 0) {
                     String message = success == 1 ? "1 recorded wolf" : success + " recorded wolves";
-                    ExtUtil.sendToChat(player, VWColors.VERDANT_WIND_MUTED, "Loaded " + message);
+                    ExtUtil.sendToChat(player, VWColors.VERDANT_WIND_MUTED, "[Wolf Additions: TOTVW] Loaded " + message);
                     return true;
                 } else {
                     if (TOTVW.IN_DEVELOPMENT) {

@@ -24,6 +24,7 @@ public class VWEnchantmentsHandbook {
     private static final String titlePoisoning = cText(DARK_GREEN, bold("Poisoning"));
     private static final String titleWithering = cText(DARK_RED, bold("Withering"));
     private static final String titleMending = cText(LIGHT_PURPLE, bold("Mending"));
+    private static final String titleArcticWinds = cText(BLUE, bold("Arctic Winds"));
 
     private static String italic(String t) {
         return fText(ITALIC, t);
@@ -75,7 +76,8 @@ public class VWEnchantmentsHandbook {
                 + nextParagraph
 
                 + italic("At level 5 or higher:") + nextLine
-                + "• Deal another instance of " + descBleedingDMG + " equal to 10% of wolf's max health.";
+                + "• Deal another instance of " + descBleedingDMG + " equal to 10% of wolf's max health." + nextLine
+                + "• Wolf will be able to extinguish themselves when they get caught on fire.";
     }
     private static String bloodlustEnchantmentInfo() {
         return titleBloodlust.toUpperCase() + nextLine
@@ -96,12 +98,17 @@ public class VWEnchantmentsHandbook {
     }
     private static String ignitionEnchantmentInfo() {
         return titleIgnition.toUpperCase() + nextLine
-                + "Wolf will now ignore any damages that inflict " + cText(AQUA, "freezing") + " (vanilla). On attack, ignite target for 3 seconds (multiplied by enchantment level). If target is immune to fire, deal " + cText(GOLD, "Scorching Heat") + " instead. Additionally, wolf will automatically extinguish itself when on fire, and if wolf has a baby wolf nearby that is on fire, extend the effect to them as well, including the passive."
+                + "Wolf will now ignore any damages that inflict " + cText(AQUA, "freezing") + " (vanilla). On attack, ignite target for 3 seconds (multiplied by enchantment level). If target is immune to fire, deal " + cText(GOLD, "Scorching Heat") + " instead."
+                + nextParagraph
+
+                + italic("At level 2 or higher:") + nextLine
+                + "• Wolf will automatically extinguish itself when on fire, and if wolf has a baby wolf nearby that is on fire, extend the effect to them as well, including the passive." + nextLine
                 + nextParagraph
 
                 + italic("At level 3 or higher:") + nextLine
                 + "• Forcibly remove the Fire Resistance effect from the target if present." + nextLine
-                + "• There is a small chance to break the Powdered Snow block when wolf is inside of it."
+                + "• There is a small chance to break the Powdered Snow block when wolf is inside of it." + nextLine
+                + "• Wolf will ignore any forms of freezing damage."
                 + nextParagraph
 
                 + "Passive: When wolf is within the Nether biomes and also has " + descBenediction + " and Fire Protection equal to or more than 3 enchantment level, grant a strong Fire Resistance effect. This passive is extended when their owner is also present and is nearby."
@@ -109,7 +116,7 @@ public class VWEnchantmentsHandbook {
 
                 + "Bonuses:" + nextLine
                 + "• Damage and duration of fire increases when wolf is within Nether or hot biomes." + nextLine
-                + "• If wolf has the Havoc Runestone, extend duration by another 3 seconds (applied after calculation of the duration).";
+                + "• If wolf has the Havoc Runestone, extend duration by another 3 seconds.";
     }
     private static String liftingEnchantmentInfo() {
         return titleLifting.toUpperCase() + nextLine
@@ -152,6 +159,28 @@ public class VWEnchantmentsHandbook {
         return titleMending.toUpperCase() + nextLine
                 + "On attack, if wolf's armor has been damaged, restore durability based on wolf's current total " + descAttackDMG + ". If wolf also has the " + descBenediction + " enchantment, the restoration efficiency will further improve.";
     }
+    private static String arcticWindsEnchantmentInfo() {
+        return titleArcticWinds.toUpperCase() + nextLine
+                + "While active, wolf will continuously gain Flash Freeze Stacks for up to a max of 50 and the rate at which they gain stacks is based on their environment. Cold biomes provide additional stacks."
+                + nextParagraph
+
+                + "On attack, apply Arctic Affliction to target that can stack up to a max of 24. When target has enough affliction, there is a chance to trigger Frost Bound status and this chance is increased for every enchantment level. However, if target is in water or affected by rain, the chance to trigger Frost Bound status is set to a constant 70%. In addition to that, while target is in: "
+                + nextParagraph
+
+                + "Nether: When an afflicted mob has 9 or more stacks, there is a chance to trigger Thermal Burn which will apply a certain amount of damage. This damage will not be lower than 60% of the Affliction Stack."
+                + nextParagraph
+
+                + "Any other dimension: Each Affliction Stack increases the probability of inflictng a certain amount of damage. When this triggers while target is affected by fire, Thermal Burn is triggered and said fire is extinguished. If the aforementioned condition is not met, the damage applied will be converted to Wintershock instead."
+                + nextParagraph
+
+                + bold("Status: Frost Bound") + nextLine
+                + "When a target has Arctic Affliction and this status is triggered, freeze target for 1 second. This can stack up to a max of 3 seconds. While Frost Bound status is active or Arctic Affliction is 6 ore more, when target gets hit by a Wind Charge, the affliction will be dispersed to nearby mobs."
+                + nextParagraph
+
+                + italic("At level 3 or higher:") + nextLine
+                + "• While wolf has enough Flash Freeze Stacks and they are inside lava, consume a number amount of stacks to negate damage. This effect is also triggered when you are the one on fire instead." + nextLine
+                + "• When wolf gets afflicted by Arctic Affliction by other means, convert it to a Flash Freeze Stack. Wolf will also collect Arctic Afflictions from other nearby tamed wolves provided that they don't have this enchantment.";
+    }
 
 
     public static String[] ENCHANTMENTS_HANDBOOK_CONTENTS(Player player) {
@@ -180,6 +209,8 @@ public class VWEnchantmentsHandbook {
                         + witheringEnchantmentInfo()
                         + addSeparator
                         + mendingEnchantmentInfo()
+                        + addSeparator
+                        + arcticWindsEnchantmentInfo()
                         + addSeparator
                         + bold("OTHER EFFECTS") + nextLine
                         + "• When wolf has a baby wolf nearby and has the following enchantments: Protection, Blast Protection, or Fire Protection, the baby will be granted a strong effect based on the enchantment type."

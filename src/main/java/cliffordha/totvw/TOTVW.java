@@ -1,5 +1,6 @@
 package cliffordha.totvw;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,7 @@ public class TOTVW {
     public static final String MOD_NAME_LONG = "Tales of the Verdant Wind";
     public static final String MOD_NAME = "TOTVW";
 
-    public static final String VERSION = "1.2.0";
+    public static final String VERSION = FabricLoader.getInstance().getModContainer(TOTVW.MOD_ID).get().getMetadata().getVersion().getFriendlyString();
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);

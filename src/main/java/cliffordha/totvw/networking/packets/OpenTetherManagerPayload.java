@@ -7,8 +7,11 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-// server -> client
-public record OpenTetherManagerPayload(int entityId, TetherData tetherData, boolean fromWolfConfig) implements CustomPacketPayload {
+public record OpenTetherManagerPayload(
+        int entityId,
+        TetherData tetherData
+
+) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<OpenTetherManagerPayload> TYPE =
             new CustomPacketPayload.Type<>(TOTVW.registerID("tether_manager"));
 
@@ -16,7 +19,6 @@ public record OpenTetherManagerPayload(int entityId, TetherData tetherData, bool
             StreamCodec.composite(
                     ByteBufCodecs.INT, OpenTetherManagerPayload::entityId,
                     ByteBufCodecs.fromCodec(TetherData.CODEC), OpenTetherManagerPayload::tetherData,
-                    ByteBufCodecs.BOOL, OpenTetherManagerPayload::fromWolfConfig,
                     OpenTetherManagerPayload::new
             );
 

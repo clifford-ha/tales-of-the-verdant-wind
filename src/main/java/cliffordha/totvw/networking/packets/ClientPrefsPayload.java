@@ -18,6 +18,7 @@ public record ClientPrefsPayload(
         int benedictionWolfTPMethod,
         int benedictionPlayerTPMethod,
         boolean benedictionWolfTPAll
+
 ) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ClientPrefsPayload> TYPE =
             new CustomPacketPayload.Type<>(TOTVW.registerID("client_prefs"));

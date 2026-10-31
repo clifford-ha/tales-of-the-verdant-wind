@@ -11,6 +11,7 @@ import cliffordha.totvw.registry.attachments.HavocType;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
+import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.tag.VWBiomeTags;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -74,7 +75,14 @@ public class VWPlayerBehaviors {
                 depleteCooldown(player, PlayerAttachment.WOLF_ATROCITY_COUNT);
             }
         }));
-        TICK_RULES.add(PlayerBehaviorRule.register(TickCondition.tick(0, 3), (player, _) -> {
+        TICK_RULES.add(PlayerBehaviorRule.register(TickCondition.tick(0, 3), (player, level) -> {
+            if (!PlayerAttachment.getTrustedPlayers(player).isEmpty()) {
+                List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, scanArea(player, 16), wolf -> wolf.getOwner() == player);
+                for (Wolf wolf : wolves) {
+                    WolfAttachment.syncTrustedPlayers(wolf);
+                }
+            }
+
             AttachmentType<Integer> BLOOM_STACKS = VWAttachment.VERDANT_BLOOM_STACK;
             if (player.hasAttached(BLOOM_STACKS)) {
                 int remaining = player.getAttachedOrElse(BLOOM_STACKS, 0);

@@ -56,7 +56,7 @@ public class ArcticWindsEffect {
     public static void applyEffectsOnHit(Wolf wolf, LivingEntity victim, ServerLevel level, int enchantmentLevel, boolean enchantmentExclusive) {
         int flashFreeze = flashFreezeStack(wolf);
         int trigger = inColdEnv(victim) ? 2 : 3;
-        trigger = enchantmentExclusive ? trigger : 1;
+        trigger = enchantmentExclusive ? trigger : 2;
         int applyAffliction = inColdEnv(victim) ? 2 : 1;
         int add = level.getRandom().nextFloat() < enchantmentLevel * 0.10f ? 1 : 0;
         if (flashFreeze > 0 && afflictionStack(victim) < 24) {
@@ -64,8 +64,8 @@ public class ArcticWindsEffect {
             setFlashFreeze(wolf, -trigger);
         }
         boolean applyFrostBound = random.nextFloat() < enchantmentLevel * 0.15f && flashFreeze >= trigger && afflictionStack(victim) >= trigger;
-        if (level.isRainingAt(victim.blockPosition())) {
-            applyFrostBound = random.nextFloat() < 0.7f;
+        if (victim.isInWaterOrRain()) {
+            applyFrostBound = random.nextFloat() < 0.8f;
         }
         if (applyFrostBound) {
             setFrostBound(victim, 1);
@@ -117,9 +117,18 @@ public class ArcticWindsEffect {
     public static boolean negateFreezingOrFireDMG(Wolf wolf, DamageSource source) {
         var enchants = WolfEnchantments.of(wolf);
         if (source.is(DamageTypeTags.IS_FREEZING)) {
-            return enchants.getArcticWinds() > 0 || enchants.getIgnition() > 2;
-        } else if (source.is(DamageTypeTags.IS_FIRE)) {
-            return enchants.getArcticWinds() > 2 || enchants.getIgnition() > 0;
+            return enchants.hasArcticWinds() || enchants.getIgnition() >= 3;
+
+        } else if (wolf.isInLava()) {
+            if (flashFreezeStack(wolf) > 0) {
+                if (random.nextFloat() < 0.8f) setFlashFreeze(wolf, -1);
+                wolf.extinguishFire();
+                playSound(wolf, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, false);
+                return true;
+
+            } else {
+                return enchants.getIgnition() > 0;
+            }
         }
         return false;
     }

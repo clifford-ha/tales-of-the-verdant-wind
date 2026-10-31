@@ -174,7 +174,6 @@ public class ConfigScreen extends Screen {
                 ICON_TEX_W, ICON_TEX_H, // full texture size
                 ICON_TEX_W, ICON_TEX_H // full texture size
         );
-
         graphics.fill(0, 0, this.width, this.height, COLOR_BG);
 
         int margin = 10;

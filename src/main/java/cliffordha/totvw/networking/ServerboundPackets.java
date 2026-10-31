@@ -1,11 +1,14 @@
 package cliffordha.totvw.networking;
 
+import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.entity.WolfBenedictionHelper;
 import cliffordha.totvw.networking.packets.*;
+import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.ReturnPointData;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.TetherData;
+import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -17,6 +20,8 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static cliffordha.totvw.util.ExtUtil.sendToChat;
 
 public class ServerboundPackets {
     public static void register() {
@@ -39,6 +44,13 @@ public class ServerboundPackets {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayer player = handler.getPlayer();
             ServerLevel level = player.level();
+
+            if (TOTVW.IN_DEVELOPMENT) {
+                sendToChat(player, VWColors.DEFAULT, false, "TOTVW mod version is a development build.");
+                sendToChat(player, VWColors.DEFAULT, false, "Bugs and potential crashes are to be expected");
+                player.setAttached(PlayerAttachment.IS_DEV_MODE, true);
+
+            }
 
             if (WolfBenedictionHelper.loadWolfFiles(player, level)) {
                 WolfBenedictionHelper.deleteLoadedWolfFiles(player, level);

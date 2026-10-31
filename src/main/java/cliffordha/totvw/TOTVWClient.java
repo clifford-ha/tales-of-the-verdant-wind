@@ -11,19 +11,15 @@ import cliffordha.totvw.client.VWModelLayerProvider;
 import cliffordha.totvw.client.EffectOverlay;
 import cliffordha.totvw.util.ColorizeText;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.minecraft.client.color.block.BlockTintSources;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.object.boat.BoatModel;
 import net.minecraft.client.particle.FireflyParticle;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
@@ -31,10 +27,6 @@ import net.minecraft.client.renderer.blockentity.ShelfRenderer;
 import net.minecraft.client.renderer.blockentity.StandingSignRenderer;
 import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -98,14 +90,6 @@ public class TOTVWClient implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(VWModelLayerProvider.VERDANT_SPRUCE_BOAT, BoatModel::createBoatModel);
         ModelLayerRegistry.registerModelLayer(VWModelLayerProvider.VERDANT_SPRUCE_CHEST_BOAT, BoatModel::createChestBoatModel);
 
-        LivingEntityRenderLayerRegistrationCallback.EVENT.register(
-                (entityType, renderer, helper, context) -> {
-                    helper.register(
-                           new ArcticOverlayLayer<>(renderer)
-                   );
-                });
-
-
         BlockEntityRenderers.register(VWBlockEntityTypes.SIGN, StandingSignRenderer::new);
         BlockEntityRenderers.register(VWBlockEntityTypes.HANGING_SIGN, HangingSignRenderer::new);
         BlockEntityRenderers.register(VWBlockEntityTypes.SHELF, ShelfRenderer::new);
@@ -138,19 +122,6 @@ public class TOTVWClient implements ClientModInitializer {
     private static int getRainbowColor() {
         float hue = (System.currentTimeMillis() % 4000) / 1000.0f;
         return Color.HSBtoRGB(hue, 0.75f, 1.0f);
-    }
-    private static class ArcticOverlayLayer<S extends LivingEntityRenderState, M extends EntityModel<? super S>>
-            extends RenderLayer<S, M> {
-        private static final Identifier TEXTURE = TOTVW.registerID("textures/blocks/ice.png");
-
-        public ArcticOverlayLayer(LivingEntityRenderer<?, ?, ?> renderer) {
-            super((RenderLayerParent<S, M>) renderer);
-        }
-
-        @Override
-        public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, S state, float yRot, float xRot) {
-
-        }
     }
     private static String getEnchantmentKey(String key) {
         return "enchantment." + TOTVW.MOD_ID + "." + key;

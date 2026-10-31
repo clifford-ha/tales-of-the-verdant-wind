@@ -45,7 +45,10 @@ public class VWItemsHandbook {
                 + "• While the core has remaining energy, it will continuously consume it to run and the amount of energy consumed depends on what biome the block is in." + nextLine
                 + "• At random, the core will \"pulse\" and give random positive and negative effects to nearby mobs." + nextLine
                 + "• When the core has more than 2000 energy, it will convert nearby wolves and villagers (random single target selection) with a 3% chance." + nextLine
-                + "• Pressure Status: If a monster is nearby, the core will continuously remove their internal pressure, giving them a Pressure Difference Point. The monster's chance of imploding will start to rise after their Pressure Difference Point reaches more than 100. When the monster implodes, the monster suffers a single instance of DMG equal to 30% of its total max health (current health if in Hard game difficulty).";
+                + "• Pressure Status: If a monster is nearby, the core will continuously remove their internal pressure, giving them a Pressure Difference Point. The monster's chance of imploding will start to rise after their Pressure Difference Point reaches more than 100. When the monster implodes, the monster suffers a single instance of DMG equal to 30% of its total max health (current health if in Hard game difficulty)."
+                + nextParagraph
+
+                + "Additionally, monsters that are hit with a Wind Charge and have a Pressure Difference may suffer an upward force. Each point increases this chance and when it is triggered, nearby monsters with pressure diffence will be affect by this.";
     }
     private static String iridescentGlassInfo() {
         return titleIridescentGlass.toUpperCase() + nextLine

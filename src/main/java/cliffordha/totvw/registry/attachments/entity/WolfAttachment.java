@@ -1,6 +1,8 @@
 package cliffordha.totvw.registry.attachments.entity;
 
+import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.attachments.*;
+import cliffordha.totvw.util.ExtUtil;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
@@ -98,6 +100,25 @@ public class WolfAttachment {
     }
     public static List<NameHolder> getTrustedPlayers(Wolf wolf) {
         return wolf.getAttachedOrElse(TRUSTED_PLAYERS, List.of());
+    }
+    public static boolean isTrusted(Wolf wolf, LivingEntity other) {
+        return getTrustedPlayers(wolf).stream().anyMatch(data -> data.uuid().equals(other.getUUID()));
+    }
+    public static void removeTrustedPlayer(Wolf wolf, Entity entity, boolean notify) {
+        if (notify) {
+            ExtUtil.sendToChat(wolf, false, wolf.getPlainTextName() + " removed " + entity.getPlainTextName() + " from trusted players");
+        }
+        removeTrustedPlayer(wolf, entity);
+    }
+    public static void removeTrustedPlayer(Wolf wolf, Entity entity) {
+        if ((!(entity instanceof LivingEntity attacker))) return;
+        List<NameHolder> newData = new ArrayList<>(getTrustedPlayers(wolf));
+        newData.removeIf(data -> data.uuid().equals(attacker.getUUID()));
+        wolf.setAttached(TRUSTED_PLAYERS, List.copyOf(newData));
+    }
+    public static void syncTrustedPlayers(Wolf wolf) {
+        if (!(wolf.getOwner() instanceof Player player)) return;
+        wolf.setAttached(TRUSTED_PLAYERS, PlayerAttachment.getTrustedPlayers(player));
     }
     public static List<NameHolder> getAggressors(Wolf wolf) {
         return wolf.getAttachedOrElse(AGGRESSOR_LIST, List.of());
