@@ -1,5 +1,6 @@
 package cliffordha.totvw.item.pages.contents;
 
+import cliffordha.totvw.item.pages.FTextStyle;
 import cliffordha.totvw.item.pages.ScatteredPageItem;
 import net.minecraft.world.entity.player.Player;
 
@@ -8,9 +9,10 @@ import static cliffordha.totvw.item.pages.FTextStyle.*;
 import static cliffordha.totvw.util.TextUtil.*;
 
 public class FirstBookSet {
-    public static String[] get(Player player, int id) {
+    public static String get(Player player, int id) {
         if (player == null)
             return ScatteredPageItem.invalidPlayer;
+
         switch (id) {
             case 1001 -> {
                 return get1001();
@@ -30,10 +32,16 @@ public class FirstBookSet {
             case 1006 -> {
                 return get1006();
             }
+            case 1007 -> {
+                return get1007();
+            }
+            case 1008 -> {
+                return get1008();
+            }
         }
         return ScatteredPageItem.invalidRef;
     }
-    private static String[] get1001() {
+    private static String get1001() {
         return addPage(
                 pText(1)
                         + "...3 days later, the village cleric successfully healed the wounded villagers. The relocation to the deep forest was a success but not without problems. " + fText(STRIKETHROUGH, "Fog") + " is quite a big problem in this forest making us vulnerable to to hidden enemies and the environment itself. There was one time one of the kids nearly fell into a ravine."
@@ -53,7 +61,7 @@ public class FirstBookSet {
                         + pText(2)
         );
     }
-    private static String[] get1002() {
+    private static String get1002() {
         return addPage(
                 pText(3)
                         + dText(3, 6, 724)
@@ -67,7 +75,7 @@ public class FirstBookSet {
                         + "I don't know if I should cry or laugh. The green liquid sample that I put in a vial shattered after I fell in a pit just before I reached the plains. Well, I guess I can always go back and take another sample."
         );
     }
-    private static String[] get1003(Player player) {
+    private static String get1003(Player player) {
         boolean IS_UNDERWATER = player.isInWater() || player.isUnderWater() || player.isInWaterOrRain();
         return addPage(
                 pText(3)
@@ -77,7 +85,7 @@ public class FirstBookSet {
                         + "Perhaps I could go borrow some more powder to create a more complex rule..."
         );
     }
-    private static String[] get1004() {
+    private static String get1004() {
         return addPage(
                 pText(3)
                         + dText(20, 9, 726)
@@ -94,7 +102,7 @@ public class FirstBookSet {
                         + fText(ITALIC, "A nature's carcass, a defiled creature devoid of " + bText("meaning") + " and mercy to life. When its gaze falls upon those unfortunates, they shall see that a \"destined\" fate is nothing short of a miracle but a deep void of unending malice. O " + bText("Nature's Whisper") + ", what fate has thou chosen for us?")
         );
     }
-    private static String[] get1005(Player player) {
+    private static String get1005(Player player) {
         boolean IN_LOWLIGHT = player.level().getMaxLocalRawBrightness(player.blockPosition(), 0) < 9;
         return addPage(
                 tText(IN_LOWLIGHT, "The verdant people once lived in a cave system to avoid and escape the creatures from beyond that terrorized the forest every once in a while. Slowly their eyes transformed and now able to perceive the verixium-based ink. It wasn't much but they thrived."
@@ -104,7 +112,7 @@ public class FirstBookSet {
                         + pText(4))
         );
     }
-    private static String[] get1006() {
+    private static String get1006() {
         return addPage(
                 pText(4)
                         + "The remaining stock has been successfully transferred to the affected bunkers to alleviate the situation caused by starvation. The creatures from beyond, or what our scholars call the " + fText(ITALIC, "ongtan(s)") + ", have multiplied in numbers since the rift appeared. Threat level remains the same."
@@ -112,6 +120,55 @@ public class FirstBookSet {
                         + "My companions and I have failed to secure the scholars' defense pillar... Fortunately, all of them have been rescued on time, including their papers that may help us in formulating an offensive strategy. Second problem, due to said failure of securing the defense pillar, we had to prioritize evacuation and halt the reconstruction of another core to prevent further casualty."
                         + nextParagraph
                         + pText(4)
+        );
+    }
+    private static String get1007() {
+        return addPage(pText(4)
+                + "...many opposed the idea of using past memories as 'anchors' to guide them when summoned and it was not the first time either. The common reason they state is that 'the past is as fragile as sheet of thin ice.'"
+                + nextParagraph
+
+                + "Truly, I fail to see the rationale behind such, thus I took it upon myself and decided to find a way to stabilize the extraction process. During this time, I have come across a rather interesting interaction between the thing they call 'soul' with the extracted memories... they seem to strengthen each of their own while I was in the Nether. A working theory is that, the Nether can maintain a relatively strong connection to the fragmented world unlike any other dimensions. A colleague of mine have suggested that it may be due to the Nether being a 'world full of undead souls.' Another suggested that it is where the undead are from."
+                + nextParagraph
+                + nextParagraph
+
+                + pText(1)
+                + "Oh how I despise their incompetence... It wasn't supposed to be permanently stabilized but to make it stable enough that it would be usable for a period of time! That way, I could anchor multiple memories to multiple souls at once after which I can command them to annihilate those pesky creatures from beyond. Truly, a marvelous work of mine!"
+                + nextParagraph
+
+                + "Just a little more time and you'll both be recognized too for your efforts."
+                + nextParagraph
+                + nextParagraph
+
+                + pText(3)
+                + "The withering... I have underestimated its speed and it appears I too will succumb to its effect in just a short while. Paralyzed from the waist down, I can only do so much with a left arm that have already started to crumble and fall bit-by-bit. My son didn't say a word too when he saw the current predicament I was in when he found me collapsed during that time. I'm sure he has a myriad of reasons to scold me now but I guess this is his way of showing he cares..."
+                + nextParagraph
+
+                + "Rather than sit idly by and wait for my demise, I have written the process of extracting memories from the fragmented world and use it to form a temporary projection of a soul. I just hope they won't burn it to save others from pursuing the same endeavors I once had. But even if they did, I would still be grateful... in a way."
+                + nextParagraph
+
+                + pText(3)
+                + pText(3)
+                + pText(4)
+                + fText(ITALIC, "May your soul rest peacefully, dear Pa...")
+        );
+    }
+    private static String get1008() {
+        return addPage(fText(BOLD, fText(ITALIC, "Memory Extraction Method for ∎∎∎∎ Projection"))
+               + nextParagraph
+
+                + pText("A glued page with heavy highlights appears to be attached...", false) + nextLine
+                + "Due to severe health-related concerns, public distribution of this material is prohibited. Anyone who is caught violating this order will be prosecuted to the full extent of the law and disbarred from further participation in the research field." + nextLine
+                + "Signed by: ∎∎∎∎∎∎∎∎∎∎∎"
+                + nextParagraph
+
+                + "As established by the former late ∎∎∎∎∎∎, a memory is an unstable form of energy and extracting it is tantamount to directly holding a burning coal without gloves or any protection for that matter. The duration of extraction heavily depends on the environment and quality of equipment used. ∎∎∎∎∎∎ has greatly contributed on that part as he was able to document and list out the following criterion for such environment: " + pText(1)
+
+                + "An anonymous individual from ∎∎∎∎∎∎ helped and lead the chanting process, allowing us two extract the memories more efficiently. After such, we utilized the the Lodestone ∎∎∎∎ ∎∎∎∎ as it has an unintended effect of being able to also record the wolves that helped in eliminating the threat of the creatures from beyond. More importantly, the " + pText(1)
+
+                + "The last and crucial step is to anchor the memories onto the projected soul before it naturally fades away. To do so, a volunteer must be close to the core to constantly stabilize it while the extracted memories are being written into the soul. We have also found out that ∎∎∎∎∎∎ roses are efficient at nullifying the..."
+                + nextParagraph
+
+                + pText(1)
         );
     }
 }

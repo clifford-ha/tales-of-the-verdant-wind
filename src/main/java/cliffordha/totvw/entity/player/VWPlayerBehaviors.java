@@ -55,7 +55,7 @@ public class VWPlayerBehaviors {
 
             boolean hasHavoc = player.hasEffect(VWEffects.HAVOC) && !HavocType.isNone(player);
             if (hasHavoc) {
-                RunestoneEffects.havocPlayerOnAttack(player, CURRENT_VICTIM.get());
+                RunestoneEffects.havocPlayerOnAttack(level, player, CURRENT_VICTIM.get());
             }
         }));
         TICK_RULES.add(PlayerBehaviorRule.register(TickCondition.tick(1, 0), ((player, level) -> {
@@ -101,7 +101,7 @@ public class VWPlayerBehaviors {
                 VerdantWindBlessing.triggerBenedictionFromTick(player);
             }
         }));
-        TICK_RULES.add(PlayerBehaviorRule.register(TickCondition.tick(), (player, _) -> {
+        TICK_RULES.add(PlayerBehaviorRule.register(TickCondition.tick(), (player, level) -> {
             VWNetworking.syncPlayerArmor(player);
 
             if (VWConfig.get().SERVER_SKILL_COOLDOWNS) {

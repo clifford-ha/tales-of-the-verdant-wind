@@ -22,12 +22,11 @@ public class PowderSnowBlockMixin {
     private static void breakUponContact(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise, CallbackInfo ci) {
         if (entity instanceof Wolf wolf) {
             int hasIgnition = VWEnchantments.getIgnition(wolf);
-            if (hasIgnition > 0) {
-                boolean destroyBlock = level.getRandom().nextFloat() < 0.03f && level.getGameTime() % 60 == 0;
-                if (hasIgnition > 2 && destroyBlock) {
-                    level.destroyBlock(pos, false);
-                    level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS);
-                }
+            boolean destroyBlock = level.getRandom().nextFloat() < 0.03f && level.getGameTime() % 60 == 0;
+
+            if (hasIgnition > 2 && destroyBlock) {
+                level.destroyBlock(pos, false);
+                level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS);
                 ci.cancel();
             }
         }

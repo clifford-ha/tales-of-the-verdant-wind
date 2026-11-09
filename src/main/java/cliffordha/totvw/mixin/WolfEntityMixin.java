@@ -7,7 +7,6 @@ import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.tag.VWItemTags;
-import cliffordha.totvw.util.DamageZip;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -168,23 +167,33 @@ public abstract class WolfEntityMixin extends LivingEntity {
     @Inject(method = "applyTamingSideEffects", at = @At("HEAD"), cancellable = true)
     private void createAttributes(CallbackInfo ci) {
         Wolf wolf = (Wolf) (Object) this;
-        if (wolf.isTame()) {
-            setAttributeBaseValue(wolf, Attributes.MAX_HEALTH, 40.0);
-            wolf.setHealth(40.0f);
-        } else {
-            setAttributeBaseValue(wolf, Attributes.MAX_HEALTH, 20.0);
+        if (VWConfig.get().SERVER_WOLF_BEHAVIOUR_EXTENSIONS) {
+            if (wolf.isTame()) {
+                setAttributeBaseValue(wolf, Attributes.MAX_HEALTH, 40.0);
+                wolf.setHealth(40.0f);
+            } else {
+                setAttributeBaseValue(wolf, Attributes.MAX_HEALTH, 20.0);
+            }
+            ci.cancel();
         }
-        ci.cancel();
     }
     @Inject(method = "createAttributes", at = @At("RETURN"), cancellable = true)
     private static void initializeAttributes(CallbackInfoReturnable<AttributeSupplier.Builder> cir) {
-        cir.setReturnValue(Animal.createAnimalAttributes()
-                .add(Attributes.MOVEMENT_SPEED, 0.305)
-                .add(Attributes.MAX_HEALTH, 20.0)
-                .add(Attributes.ATTACK_DAMAGE, 4.0)
-                .add(Attributes.WATER_MOVEMENT_EFFICIENCY, 0.125)
-                .add(Attributes.SCALE, 1.0)
-        );
+        if (VWConfig.get().SERVER_WOLF_BEHAVIOUR_EXTENSIONS) {
+            cir.setReturnValue(Animal.createAnimalAttributes()
+                    .add(Attributes.MOVEMENT_SPEED, 0.305)
+                    .add(Attributes.MAX_HEALTH, 20.0)
+                    .add(Attributes.ATTACK_DAMAGE, 4.0)
+                    .add(Attributes.WATER_MOVEMENT_EFFICIENCY, 0.125)
+                    .add(Attributes.SCALE, 1.0)
+            );
+        }
+    }
+
+    @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
+    private void onInteract(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+        Wolf wolf = (Wolf) (Object) this;
+        if (wolf.hasAttached(WolfAttachment.FRAGMENT_DATA)) cir.setReturnValue(InteractionResult.PASS);
     }
 
     @Inject(method = "die", at = @At("HEAD"), cancellable = true)
@@ -212,8 +221,9 @@ public abstract class WolfEntityMixin extends LivingEntity {
             cir.setReturnValue(false);
 
         } else if (target instanceof Skeleton skeleton && skeleton.getVehicle() instanceof LivingEntity vehicle) {
+            wolf.setTarget(null);
             wolf.setTarget(vehicle);
-            cir.setReturnValue(false);
+            cir.setReturnValue(true);
 
         } else if (target instanceof Creeper) {
             if (wolf.getHealth() < wolf.getMaxHealth() * 0.5f) return;
@@ -247,10 +257,9 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
         ItemStack armor = wolf.getBodyArmorItem();
         float computedDMG = VWEnchantments.getEnhancementKit(wolf) ? damage * 0.8f : damage;
-        float reduction = VWEnchantments.getEnhancementKit(wolf) ? 0.8f : 0f;
 
         if (!VWConfig.get().SERVER_WOLF_DMG_DISTRIBUTION || !wolf.canArmorAbsorb(source)) {
-            DamageZip.apply(new DamageZip(source, computedDMG, reduction, wolf), level);
+            wolf.hurtServer(level, source, computedDMG);
             ci.cancel();
             return;
         }

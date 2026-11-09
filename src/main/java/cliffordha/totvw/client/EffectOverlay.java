@@ -15,21 +15,17 @@ import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 
 public final class EffectOverlay {
+    private static final Identifier BLOODLUST_OVERLAY = TOTVW.registerID("bloodlust_overlay");
+    private static final Identifier PARALYZE_OVERLAY = TOTVW.registerID("paralyze_overlay");
+
     private static final float BLOODLUST_PULSE_SPEED_MS = (float) (Math.PI * 2.0 / 2000.0);
     public static float SINE = Mth.sin(Util.getMillis() * BLOODLUST_PULSE_SPEED_MS);
 
-    private EffectOverlay() {}
-
     public static void register() {
-        HudElementRegistry.addFirst(
-                register("bloodlust_overlay"),
-                EffectOverlay::bloodlustOverlay
-        );
-        HudElementRegistry.addFirst(
-                register("paralyze_overlay"),
-                EffectOverlay::paralyzeOverlay
-        );
+        HudElementRegistry.addFirst(BLOODLUST_OVERLAY, EffectOverlay::bloodlustOverlay);
+        HudElementRegistry.attachElementAfter(BLOODLUST_OVERLAY, PARALYZE_OVERLAY, EffectOverlay::paralyzeOverlay);
     }
+
     private static int getWidth() {return Minecraft.getInstance().getWindow().getGuiScaledWidth();}
     private static int getHeight() {return Minecraft.getInstance().getWindow().getGuiScaledHeight();}
 
@@ -89,9 +85,5 @@ public final class EffectOverlay {
     }
     private static boolean notSurvival() {
         return player().isCreative() || player().isSpectator();
-    }
-
-    private static Identifier register(String name) {
-        return TOTVW.registerID(name);
     }
 }

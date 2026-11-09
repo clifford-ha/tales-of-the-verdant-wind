@@ -1,6 +1,8 @@
 package cliffordha.totvw.entity;
 
 import cliffordha.totvw.effect.HavocEffect;
+import cliffordha.totvw.enchantment.ArcticWindsEffect;
+import cliffordha.totvw.enchantment.WitheringEffect;
 import cliffordha.totvw.entity.events.InteractionEvent;
 import cliffordha.totvw.entity.player.AtrocityManager;
 import cliffordha.totvw.entity.skills.*;
@@ -9,8 +11,10 @@ import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.item.events.VWItemBlessings;
 import cliffordha.totvw.networking.VWNetworking;
 import cliffordha.totvw.registry.*;
+import cliffordha.totvw.registry.attachments.HavocData;
 import cliffordha.totvw.registry.attachments.HavocType;
 import cliffordha.totvw.registry.attachments.VWAttachment;
+import cliffordha.totvw.registry.attachments.WolfFragmentData;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.tag.VWBiomeTags;
@@ -20,9 +24,12 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.entity.event.v1.effect.EffectEventContext;
 import net.fabricmc.fabric.api.entity.event.v1.effect.ServerMobEffectEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -57,34 +64,52 @@ public class GlobalEntityEvents {
     }
 
     private static void registerGlobalEvents() {
+        ServerLifecycleEvents.SERVER_STARTED.register(GlobalEntityEvents::onServerStarted);
+        ServerLevelEvents.UNLOAD.register(GlobalEntityEvents::onLevelUnload);
+
         UseEntityCallback.EVENT.register( (player, level, hand, entity, _)
                 -> InteractionEvent.onEntityInteractEvent(player, entity, hand));
 
         UseItemCallback.EVENT.register((player, level, _)
                 -> InteractionEvent.onUseItemEvent(player));
 
+        ServerEntityEvents.EQUIPMENT_CHANGE.register(GlobalEntityEvents::onEquipmentChanged);
         ServerMobEffectEvents.AFTER_REMOVE.register(GlobalEntityEvents::onMobEffectsRemoved);
-        ServerEntityEvents.EQUIPMENT_CHANGE.register(GlobalEntityEvents::onEquipmentChange);
-        ServerPlayerEvents.AFTER_RESPAWN.register(GlobalEntityEvents::afterRespawnEvent);
 
         ServerLivingEntityEvents.ALLOW_DAMAGE.register(GlobalEntityEvents::allowDamageEvent);
         ServerLivingEntityEvents.AFTER_DAMAGE.register(
                 (victim, damageSource, _, damage, _)
                         -> afterDamageEvent(victim, damageSource, damage));
 
+        ServerLivingEntityEvents.ALLOW_DEATH.register(RevivalByProxy::allowPlayerDeath);
         ServerLivingEntityEvents.AFTER_DEATH.register(GlobalEntityEvents::afterDeathEvent);
         ServerLivingEntityEvents.AFTER_DEATH.register(RunestoneEffects::reapplyLinkStatus);
-        ServerLivingEntityEvents.ALLOW_DEATH.register(RevivalByProxy::allowPlayerDeath);
+
+        ServerPlayerEvents.AFTER_RESPAWN.register(GlobalEntityEvents::afterRespawnEvent);
     }
+
+    private static void onLevelUnload(MinecraftServer server, ServerLevel level) {
+        WitheringEffect.unloadPreviouslySummoned(level);
+    }
+
+    private static void onServerStarted(MinecraftServer server) {
+        for (ServerLevel level : server.getAllLevels()) {
+            WitheringEffect.unloadPreviouslySummoned(level);
+        }
+    }
+
+    private static void onEquipmentChanged(LivingEntity entity, EquipmentSlot equipmentSlot, ItemStack stack, ItemStack stack1) {
+        if (!(entity.level() instanceof ServerLevel level)) return;
+
+        if (entity instanceof Wolf wolf) {
+            VWNetworking.syncWolfArmor(wolf);
+        } else if (entity instanceof Player player) VWNetworking.syncPlayerArmor(player);
+    }
+
     private static void afterRespawnEvent(ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean alive) {
         if (alive) {
             WolfBenedictionHelper.loadWolfFilesIfPresent(newPlayer, newPlayer.level());
         }
-    }
-    private static void onEquipmentChange(LivingEntity entity, EquipmentSlot slot, ItemStack from, ItemStack to) {
-        if (!(entity.level() instanceof ServerLevel)) return;
-        if (entity instanceof Player player) VWNetworking.syncPlayerArmor(player);
-        if (entity instanceof Wolf wolf && wolf.isTame()) VWNetworking.syncWolfArmor(wolf);
     }
     private static void onMobEffectsRemoved(MobEffectInstance instance, LivingEntity entity, EffectEventContext ctx) {
         if (!(entity.level() instanceof ServerLevel)) return;
@@ -96,8 +121,7 @@ public class GlobalEntityEvents {
             } else if (instance.getEffect().is(Predicate.isEqual(MobEffects.NAUSEA))) {
                 player.removeAttached(PlayerAttachment.EXPLOSION_RES);
             }
-        }
-        if (entity instanceof Wolf wolf) VWNetworking.syncWolfEffects(wolf);
+        } else if (entity instanceof Wolf wolf) VWNetworking.syncWolfEffects(wolf);
     }
 
     private static void afterDeathEvent(LivingEntity entity, DamageSource damageSource) {
@@ -144,7 +168,7 @@ public class GlobalEntityEvents {
                 updateNearbyWolvesOnDamage(player, attackerPlayer, true);
             }
 
-            HavocType type = HavocType.getType(player);
+            HavocType type = HavocData.getType(player);
             boolean hasType = HavocType.isAnnihilation(player) || HavocType.isVoid(player);
             boolean havocPenalty = player.hasEffect(VWEffects.HAVOC) && hasType;
 
@@ -153,7 +177,7 @@ public class GlobalEntityEvents {
             }
         }
     }
-    private static void afterDamageEvent(LivingEntity victim, DamageSource damageSource, float dmg) {
+    private static void afterDamageEvent(LivingEntity victim, DamageSource damageSource, float damage) {
         if (victim == null) return;
         Entity attacker = damageSource.getEntity();
 
@@ -163,14 +187,13 @@ public class GlobalEntityEvents {
             }
         }
         if (victim instanceof Player player) {
-            if (player.hasEffect(VWEffects.HAVOC) && attacker instanceof LivingEntity) {
-                RunestoneEffects.getHavocForPlayer(player, (LivingEntity) attacker, dmg);
-            }
             if (attacker instanceof Player attackerPlayer) {
                 updateNearbyWolvesOnDamage(player, attackerPlayer, false);
             }
         }
         if (victim instanceof Wolf wolf && attacker instanceof Player player) {
+            if (wolf.getOwner() == player) return;
+
             if (wolf.isTame() && wolf.getOwner() != null && wolf.getOwner() != player) {
                 WolfAttachment.addPlayerToAggressors(wolf, player);
             }
@@ -178,12 +201,16 @@ public class GlobalEntityEvents {
     }
     private static boolean allowDamageEvent(LivingEntity entity, DamageSource source, float damage) {
         Entity attacker = source.getEntity();
+
         if (entity.hasEffect(VWEffects.WIND_VEIL)) {
             return windVeilEffect(entity, source, damage);
         }
 
-        if (attacker instanceof LivingEntity mob && mob.getAttachedOrElse(VWAttachment.FROST_BOUND_TIMER, 0) > 0) {
-            return false;
+        boolean attackerIsLive = attacker instanceof LivingEntity;
+
+        if (attackerIsLive) {
+            if (ArcticWindsEffect.frostBoundStack(attacker) > 0) return false;
+            if (attacker.getAttachedOrElse(VWAttachment.LIFT_DURATION, 0) > 0) return false;
         }
 
         if (entity instanceof Wolf wolf) {
@@ -194,6 +221,17 @@ public class GlobalEntityEvents {
             if (isPeer || isAccidentalDMG) {
                 return false;
             }
+
+            if (wolf.hasAttached(WolfAttachment.FRAGMENT_DATA)) {
+                if (!(attacker instanceof LivingEntity)) return false;
+                if (WolfFragmentData.getHits(wolf) <= 0) {
+                    WitheringEffect.unloadFragmentedWolf((ServerLevel) wolf.level(), wolf);
+                    return false;
+                }
+                WolfFragmentData.decrementHit(wolf);
+                return false;
+            }
+
             if (attacker instanceof Player player) {
                 if (wolf.getOwner() instanceof Player owner && PlayerAttachment.isTrusted(owner, player)) {
                     return false;
@@ -228,7 +266,7 @@ public class GlobalEntityEvents {
             } else if (disableAccidentalDMG) {
                 return false;
 
-            } else if (ArcticWindsEffect.negateFireDamageForOwner(player, (ServerLevel) player.level(), source, damage)) {
+            } else if (source.is(DamageTypeTags.IS_FIRE) && ArcticWindsEffect.negateFireDamageForOwner(player, (ServerLevel) player.level(), source, damage)) {
                 return false;
 
             } else {

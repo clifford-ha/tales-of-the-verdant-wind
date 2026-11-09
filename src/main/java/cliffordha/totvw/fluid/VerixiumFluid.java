@@ -5,7 +5,6 @@ import cliffordha.totvw.registry.VWFluids;
 import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.VWParticles;
 import cliffordha.totvw.tag.VWBiomeTags;
-import cliffordha.totvw.tag.VWFluidTags;
 import cliffordha.totvw.util.ExtUtil;
 
 import net.minecraft.tags.BiomeTags;
@@ -218,9 +217,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
                 if (wolf.isBaby()) return;
                 evaluateSlowness(wolf);
             }
-            case Sniffer sniffer -> {
-                addHiddenEffect(sniffer, MobEffects.REGENERATION, time, amplifier);
-            }
+            case Sniffer sniffer -> addHiddenEffect(sniffer, MobEffects.REGENERATION, time, amplifier);
             case Villager villager -> {
                 addHiddenEffect(villager, MobEffects.REGENERATION, Mth.ceil(time * 1.2), amplifier);
                 if (villager.isBaby()) return;
@@ -275,7 +272,7 @@ public abstract class VerixiumFluid extends FlowingFluid {
 
     @Override
     public boolean canBeReplacedWith(final FluidState state, final BlockGetter level, final BlockPos pos, final Fluid other, final Direction direction) {
-        return direction == Direction.DOWN && !other.is(VWFluidTags.VERIXIUM_FLUID);
+        return direction == Direction.DOWN && (!other.isSame(VWFluids.VERIXIUM_FLUID) || !other.isSame(VWFluids.FLOWING_VERIXIUM_FLUID));
     }
 
     @Override

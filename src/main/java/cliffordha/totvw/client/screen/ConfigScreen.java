@@ -331,6 +331,11 @@ public class ConfigScreen extends Screen {
                     () -> c.SYNCED_ENABLE_NOTIFIERS, v -> c.SYNCED_ENABLE_NOTIFIERS = v));
 
             entries.add(new ConfigScreen.BoolEntry(
+                    "Show Wolf Effect Indicators",
+                    "When an effect is triggered by a wolf's enchantment, show an indicator on the screen. 'Show Effect Indicators' must be enabled to work. Currently an experimental content!",
+                    () -> c.SYNCED_SHOW_WOLF_EFFECT_INDICATORS, v -> c.SYNCED_SHOW_WOLF_EFFECT_INDICATORS = v));
+
+            entries.add(new ConfigScreen.BoolEntry(
                     "Allow Effect Overlays",
                     "Certain mob effects will affect the screen",
                     () -> c.CLIENT_ALLOW_EFFECT_OVERLAYS, v -> c.CLIENT_ALLOW_EFFECT_OVERLAYS = v));
@@ -390,6 +395,11 @@ public class ConfigScreen extends Screen {
 
         } else if (listShown == ListShown.SERVER) {
             entries.add(new ConfigScreen.Header("SERVER-SIDE CONFIG"));
+
+            entries.add(new ConfigScreen.BoolEntry(
+                    "Show Effect Indicators",
+                    "An indicator will be displayed on the screen. Currently an experimental content!",
+                    () -> c.SERVER_SHOW_EFFECT_INDICATORS, v -> c.SERVER_SHOW_EFFECT_INDICATORS = v));
 
             entries.add(new ConfigScreen.BoolEntry(
                     "Wolf Behaviour Extensions",
@@ -550,6 +560,8 @@ public class ConfigScreen extends Screen {
             ClientPlayNetworking.send(new ClientPrefsPayload(
                     c.SYNCED_SHOW_ATROCITY_COUNTER,
                     c.SYNCED_ENABLE_NOTIFIERS,
+                    c.SYNCED_SHOW_WOLF_EFFECT_INDICATORS,
+
                     c.SYNCED_BENEDICTION_HEALTH_THRESHOLD,
                     c.SYNCED_WOLF_SHARES_BENEDICTION_STACK,
                     c.SYNCED_ALWAYS_TRIGGER_BLESSING,

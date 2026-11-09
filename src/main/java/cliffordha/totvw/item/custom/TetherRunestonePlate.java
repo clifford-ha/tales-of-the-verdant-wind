@@ -97,7 +97,7 @@ public class TetherRunestonePlate extends Item {
                         wolf.dropLeash();
 
                         wolf.teleportTo(player.getX(), player.getY(), player.getZ());
-                        ExtUtil.addEffect(wolf, VWEffects.WIND_VEIL, 60, 0);
+                        ExtUtil.addEffect(wolf, VWEffects.WIND_VEIL, 3, 0);
                     }
                 }
                 int countA = recall.size();

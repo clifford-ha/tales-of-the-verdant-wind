@@ -30,6 +30,7 @@ public class ServerboundPackets {
             player.level().getServer().execute(() -> {
                 player.setAttached(PlayerPrefs.ENABLE_NOTIFIERS, payload.enableNotifiers());
                 player.setAttached(PlayerPrefs.SHOW_ATROCITY_COUNTER, payload.showAtrocityCounter());
+                player.setAttached(PlayerPrefs.SHOW_WOLF_EFFECT_INDICATORS, payload.wolfEffectIndicators());
 
                 player.setAttached(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD, payload.benedictionLowHealthThreshold());
                 player.setAttached(PlayerPrefs.BENEDICTION_SHARE_STACK, payload.benedictionShareStack());
@@ -45,10 +46,9 @@ public class ServerboundPackets {
             ServerPlayer player = handler.getPlayer();
             ServerLevel level = player.level();
 
-            if (TOTVW.IN_DEVELOPMENT) {
+            if (TOTVW.VERSION.contains("beta") || TOTVW.IN_DEVELOPMENT) {
                 sendToChat(player, VWColors.DEFAULT, false, "TOTVW mod version is a development build.");
                 sendToChat(player, VWColors.DEFAULT, false, "Bugs and potential crashes are to be expected");
-                player.setAttached(PlayerAttachment.IS_DEV_MODE, true);
 
             }
 

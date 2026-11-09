@@ -99,7 +99,7 @@ public class VWTooltips {
 
         String LORE_genesisRunestonePlate = "A fragment of unknown origin...";
         String LORE_efflorescenceRunestonePlate = "You feel as though you are revitalized by the subtle powered contained by this item...";
-        String LORE_tetherRunestonePlate = "You can feel a strange connection to the world itself... Perhaps you can recordAfter it for something great?";
+        String LORE_tetherRunestonePlate = "You can feel a strange connection to the world itself... Perhaps you can use it for something great?";
         String LORE_havocRunestonePlate = "It appears this item is fluctuating on its own...";
 
         String LORE_verixiumChunk = "\"For the land that they call 'home' and for the people they protect.\"";
@@ -146,19 +146,19 @@ public class VWTooltips {
         if (stack.is(VWItems.SOUL_RUNESTONE_FRAGMENT_4)) addExpandingText(out, LORE_soulRunestoneFragment4);
 
         if (stack.is(VWItems.VERIXIUM_CHUNK)) {
-            addText(out, LORE_verixiumChunk);
+            addETForSurvival(out, LORE_verixiumChunk);
 
         } else if (stack.is(VWItems.CONDENSED_VERIXIUM)) {
-            addText(out, LORE_condensedVerixium0, LORE_condensedVerixium1);
+            addETForSurvival(out, LORE_condensedVerixium0, LORE_condensedVerixium1);
 
         } else if (stack.is(VWItems.VERIXIUM_SHARD)) {
-            addText(out, LORE_verixiumShard);
+            addETForSurvival(out, LORE_verixiumShard);
 
         } else if (stack.is(VWItems.VERIXIUM_POWDER)) {
-            addText(out, LORE_verixiumPowder);
+            addETForSurvival(out, LORE_verixiumPowder);
 
         } else if (stack.is(VWItems.VERIXIUM_INGOT)) {
-            addText(out, LORE_verixiumIngot);
+            addETForSurvival(out, LORE_verixiumIngot);
 
         } else if (stack.is(VWItems.VERIXIUM_PAPER) || stack.is(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE)) {
             addText(out, itemVerixium);

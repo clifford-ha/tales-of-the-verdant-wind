@@ -1,9 +1,11 @@
-package cliffordha.totvw.entity.skills;
+package cliffordha.totvw.enchantment;
 
 import cliffordha.totvw.datagen.VWDamageTypes;
-import cliffordha.totvw.entity.wolf.WolfEnchantments;
-import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWParticles;
+import cliffordha.totvw.util.TextPopup;
+import cliffordha.totvw.entity.wolf.WolfEnchantmentRecord;
+import cliffordha.totvw.registry.VWColors;
+import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ExtUtil;
@@ -16,8 +18,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
@@ -25,18 +29,19 @@ import net.minecraft.world.entity.player.Player;
 import java.util.List;
 
 import static cliffordha.totvw.util.ExtUtil.*;
+import static cliffordha.totvw.util.ExtUtil.random;
 
 public class ArcticWindsEffect {
     public static void run(Wolf wolf, ServerLevel level, int enchantmentLevel) {
         applyEnvironmentEffects(wolf, level);
-        if (flashFreezeStack(wolf) < 50) {
+        if (flashFreezeStack(wolf) < 100) {
             int generate = isInBiome(wolf, BiomeTags.SPAWNS_COLD_VARIANT_FARM_ANIMALS) ? 2 : 1;
             int add = level.getRandom().nextFloat() < enchantmentLevel * 0.10f ? 1 : 0;
             setFlashFreeze(wolf, generate + add);
         }
         List<Wolf> nearby = level.getEntitiesOfClass(
                 Wolf.class,
-                ExtUtil.scanArea(wolf, 12),
+                scanArea(wolf, 12),
                 test -> test.getOwner() == wolf.getOwner()
         );
         if (afflictionStack(wolf) > 0 && VWEnchantments.getArcticWinds(wolf) > 2) {
@@ -53,122 +58,79 @@ public class ArcticWindsEffect {
         setFlashFreeze(wolf, afflictionStack(afflicted));
         afflicted.removeAttached(VWAttachment.ARCTIC_AFFLICTION);
     }
-    public static void applyEffectsOnHit(Wolf wolf, LivingEntity victim, ServerLevel level, int enchantmentLevel, boolean enchantmentExclusive) {
+    public static void applyEffectsOnHit(Wolf wolf, LivingEntity victim, ServerLevel level, int enchantmentLevel, boolean exclusive) {
+        RandomSource random = level.getRandom();
         int flashFreeze = flashFreezeStack(wolf);
-        int trigger = inColdEnv(victim) ? 2 : 3;
-        trigger = enchantmentExclusive ? trigger : 2;
+        int trigger = inColdEnv(victim) ? 1 : 2;
         int applyAffliction = inColdEnv(victim) ? 2 : 1;
-        int add = level.getRandom().nextFloat() < enchantmentLevel * 0.10f ? 1 : 0;
+
         if (flashFreeze > 0 && afflictionStack(victim) < 24) {
-            setAffliction(victim, applyAffliction + add);
-            setFlashFreeze(wolf, -trigger);
+            setAffliction(victim, applyAffliction + Math.min(enchantmentLevel, 3));
+            setFlashFreeze(wolf, -1);
         }
-        boolean applyFrostBound = random.nextFloat() < enchantmentLevel * 0.15f && flashFreeze >= trigger && afflictionStack(victim) >= trigger;
-        if (victim.isInWaterOrRain()) {
-            applyFrostBound = random.nextFloat() < 0.8f;
-        }
-        if (applyFrostBound) {
-            setFrostBound(victim, 1);
-            setFlashFreeze(wolf, -trigger);
-            setAffliction(victim, -trigger);
-            if (enchantmentExclusive) {
+
+        int scorching = victim.getAttachedOrElse(VWAttachment.SCORCHING_HEAT, 0);
+        if (scorching >= 3) {
+            applyThermalBurn(level, wolf, victim, scorching * trigger);
+
+        } else {
+            boolean applyFrostBound = flashFreeze > 0 && random.nextFloat() < enchantmentLevel * 0.21f;
+            if (victim.isInWaterOrRain()) applyFrostBound = random.nextFloat() < 0.8f;
+
+            if (applyFrostBound) {
+                TextPopup.showBold(victim, "Frostbound!", VWColors.ARCTIC_WINDS);
+                setFrostBound(victim, 1);
+                if (exclusive) setFlashFreeze(wolf, -trigger);
+                setAffliction(victim, -trigger);
                 playSound(victim, SoundEvents.PLAYER_HURT_FREEZE, SoundSource.HOSTILE, false);
             }
         }
 
-        // DEV
-        //sendToChat(wolf.getOwner(), false, "Affliction Stack: " + afflictionStack(victim) + " | Frost Bound Stack: " + frostBoundStack(victim));
-    }
-    public static void removeResidualStacks(Wolf wolf) {
-        if (!isInBiome(wolf, BiomeTags.SPAWNS_COLD_VARIANT_FARM_ANIMALS)) {
-            setFlashFreeze(wolf, -1);
-        }
-    }
-
-    private static void applyEnvironmentEffects(Wolf wolf, ServerLevel level) {
-        List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class,
-                scanArea(wolf, 8),
-                test -> VWEnchantments.getArcticWinds(test) > 0);
-        sendParticles(VWParticles.EXT_SNOWFLAKE, level, wolf.blockPosition(), Math.clamp(25 - (wolves.size() * 2L), 4, 24), 8.0, -5.0f);
-    }
-    public static boolean negateFireDamageForOwner(Player owner, ServerLevel level, DamageSource source, float dmg) {
-        if (!source.is(DamageTypeTags.IS_FIRE)) return false;
-        boolean isHurtFromFire = owner.isOnFire() && !owner.isInvulnerableTo(level, source);
-
-        if (isHurtFromFire) {
-            List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class,
-                    scanArea(owner, 16),
-                    wolf -> VWEnchantments.getArcticWinds(wolf) >= 3
-                            && flashFreezeStack(wolf) > dmg
-                            && wolf.getOwner() == owner);
-
-            if (!wolves.isEmpty()) {
-                Wolf wolf = wolves.getFirst();
-                if (level.getRandom().nextFloat() < 0.15f) {
-                    setFlashFreeze(wolf, -(int)dmg);
-                    playSound(owner, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, false);
-                    owner.extinguishFire();
+        int affliction = afflictionStack(victim);
+        if (affliction > 0) {
+            if (isDimension(victim, VWDimensions.NETHER)) {
+                if (random.nextFloat() < affliction * 0.06 && affliction >= 9) {
+                    float dmg = Math.max(affliction + trigger, affliction * 0.6f);
+                    applyThermalBurn(level, wolf, victim, getDMGValue(victim, dmg));
                 }
-                return true;
-            }
-        }
-        return false;
-    }
-    public static boolean negateFreezingOrFireDMG(Wolf wolf, DamageSource source) {
-        var enchants = WolfEnchantments.of(wolf);
-        if (source.is(DamageTypeTags.IS_FREEZING)) {
-            return enchants.hasArcticWinds() || enchants.getIgnition() >= 3;
-
-        } else if (wolf.isInLava()) {
-            if (flashFreezeStack(wolf) > 0) {
-                if (random.nextFloat() < 0.8f) setFlashFreeze(wolf, -1);
-                wolf.extinguishFire();
-                playSound(wolf, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, false);
-                return true;
-
             } else {
-                return enchants.getIgnition() > 0;
-            }
-        }
-        return false;
-    }
+                if (random.nextFloat() < affliction * 0.025) {
+                    int afflictionReduction = inColdEnv(victim) ? -5 : -7;
 
-    public static void afflictionTick(ServerLevel level, LivingEntity entity) {
-        int affliction = afflictionStack(entity);
-        RandomSource random = level.getRandom();
-        int trigger = inColdEnv(entity) ? 2 : 3;
+                    if (victim.isOnFire() || victim.isInLava()) {
+                        applyThermalBurn(level, wolf, victim, Math.max(affliction + trigger, 4));
 
-        if (isDimension(entity, VWDimensions.NETHER)) {
-            if (random.nextFloat() < affliction * 0.035 && affliction >= 9) {
-                float dmg = Math.max(affliction + trigger, affliction * 0.6f);
-                entity.hurtServer(level, VWDamageTypes.thermalBurn(level), getDMGValue(entity, dmg));
-                setAffliction(entity, -9);
-                playSound(entity, SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, false);
-                sendParticles(ParticleTypes.SMOKE, level, entity.blockPosition(), 3, 0.5f);
-            }
-        } else {
-            if (random.nextFloat() < affliction * 0.025f) {
-                setFrostBound(entity, 1);
-                playSound(entity, SoundEvents.PLAYER_HURT_FREEZE, SoundSource.NEUTRAL, false);
-            }
-            if (affliction > trigger && random.nextFloat() < affliction * 0.025) {
-                float dmg;
-                int afflictionReduction = inColdEnv(entity) ? -5 : -7;
-                DamageSource source;
-
-                if (entity.isOnFire() || entity.isInLava()) {
-                    entity.extinguishFire();
-                    dmg = Math.max(affliction + trigger, 4);
-                    source = VWDamageTypes.thermalBurn(level);
-                } else {
-                    dmg = Math.clamp(random.nextInt(affliction), 2, 6) + trigger;
-                    source = VWDamageTypes.winterShock(level);
+                    } else {
+                        float damage = getDMGValue(victim, Math.clamp(random.nextInt(affliction), 2, 6) + trigger);
+                        float size = 1.3f + random.nextFloat();
+                        victim.hurtServer(level, VWDamageTypes.winterShock(level), damage);
+                        TextPopup.showBold(wolf, victim, "Wintershock! " + Mth.floor(damage), VWColors.ARCTIC_WINDS, size);
+                        setAffliction(victim, afflictionReduction);
+                        sendParticles(VWParticles.EXT_SNOWFLAKE, level, victim.blockPosition(), 2, 1.5);
+                    }
                 }
-
-                entity.hurtServer(level, source, getDMGValue(entity, dmg));
-                setAffliction(entity, afflictionReduction);
             }
         }
+        setFlashFreeze(wolf, -trigger);
+    }
+    public static void applyThermalBurn(ServerLevel level, Wolf wolf, LivingEntity entity, float initial) {
+        float damage =  getDMGValue(entity, initial);
+        entity.hurtServer(level, VWDamageTypes.thermalBurn(level), damage);
+        setAffliction(entity, -2);
+        int scorched = entity.getAttachedOrElse(VWAttachment.SCORCHING_HEAT, 0);
+        if (scorched >= 3) {
+            entity.setAttached(VWAttachment.SCORCHING_HEAT, scorched - 3);
+        }
+
+        if (damage < 10) {
+            TextPopup.show(wolf, entity, "Thermal Burn! " + Mth.floor(damage), VWColors.IGNITION);
+        } else {
+            TextPopup.showBold(wolf, entity, "Thermal Burn! " + Mth.floor(damage), VWColors.IGNITION, 1.3f + random.nextFloat());
+        }
+
+        sendParticles(ParticleTypes.LAVA, level, entity.blockPosition(), 9, 0.5);
+        playSound(entity, SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, false);
+
     }
     private static float getDMGValue(LivingEntity entity, float initial) {
         int affliction = afflictionStack(entity);
@@ -177,6 +139,68 @@ public class ArcticWindsEffect {
         }
         return initial;
     }
+
+    public static void removeResidualStacks(Wolf wolf) {
+        if (!isInBiome(wolf, BiomeTags.SPAWNS_COLD_VARIANT_FARM_ANIMALS)) {
+            setFlashFreeze(wolf, -1);
+        }
+    }
+    private static void applyEnvironmentEffects(Wolf wolf, ServerLevel level) {
+        int extra = VWEnchantments.getArcticWinds(wolf);
+        List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class,
+                scanArea(wolf, 8),
+                test -> VWEnchantments.getArcticWinds(test) > 0);
+        sendParticles(ParticleTypes.SNOWFLAKE, level, wolf.blockPosition(), Math.clamp(25 - (wolves.size() * 2L), 4, 24) + extra, 8.0 + extra, -5.0f);
+    }
+
+    public static boolean negateFireDamageForOwner(Player owner, ServerLevel level, DamageSource source, float dmg) {
+        boolean isHurtFromFire = owner.isOnFire() && !owner.isInvulnerableTo(level, source);
+
+        if (isHurtFromFire) {
+            List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class,
+                    scanArea(owner, 8),
+                    wolf -> VWEnchantments.getArcticWinds(wolf) >= 3
+                            && flashFreezeStack(wolf) > 10
+                            && wolf.getOwner() == owner);
+
+            if (!wolves.isEmpty()) {
+                Wolf wolf = wolves.getFirst();
+                if (level.getRandom().nextFloat() < 0.7f) {
+                    setFlashFreeze(wolf, - Math.clamp(Mth.ceil(dmg), 1, 3));
+                    playSound(owner, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, false);
+                }
+                owner.extinguishFire();
+                return true;
+            }
+        }
+        return false;
+    }
+    public static boolean negateFreezingOrFireDMG(Wolf wolf, DamageSource source) {
+        var enchants = WolfEnchantmentRecord.of(wolf);
+        if (source.is(DamageTypeTags.IS_FREEZING)) {
+            return enchants.hasArcticWinds() || enchants.getIgnition() >= 3;
+
+        } else {
+            if (wolf.isOnFire() && !wolf.isInLava()) {
+                return enchants.getArcticWinds() >= 3 || enchants.hasIgnition();
+
+            } else if (wolf.isInLava()) {
+                if (flashFreezeStack(wolf) > 0) {
+                    if (random.nextFloat() < 0.7f) setFlashFreeze(wolf, -1);
+                    wolf.extinguishFire();
+                    playSound(wolf, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, false);
+                    return true;
+
+                } else {
+                    return enchants.getIgnition() >= 3 && random.nextFloat() < 0.8f;
+                }
+            }
+        }
+        return false;
+    }
+
+
+
 
     public static boolean inColdEnv(LivingEntity entity) {
         return isInBiome(entity, BiomeTags.SPAWNS_COLD_VARIANT_FARM_ANIMALS) || isDimension(entity, VWDimensions.END);
@@ -207,7 +231,8 @@ public class ArcticWindsEffect {
     public static int afflictionStack(LivingEntity entity) {
         return entity.getAttachedOrElse(VWAttachment.ARCTIC_AFFLICTION, 0);
     }
-    public static int frostBoundStack(LivingEntity entity) {
+    public static int frostBoundStack(Entity entity) {
+        if (!(entity instanceof LivingEntity)) return 0;
         return entity.getAttachedOrElse(VWAttachment.FROST_BOUND_TIMER, 0);
     }
 }

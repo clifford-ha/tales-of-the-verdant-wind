@@ -31,7 +31,6 @@ public class VWLootTables {
 
     public static final ResourceKey<LootTable> VERDANT_CAMP_VALUABLES = createFromPath("chests/verdant_camp_valuables");
     public static final ResourceKey<LootTable> VERIXIUM_PILLAR = createFromPath("chests/verixium_pillar");
-    public static final ResourceKey<LootTable> VERDANT_VILLAGE_WEAPONSMITH = createFromPath("chests/village/verdant/weaponsmith");
 
     private static void modifyLootTables(ResourceKey<LootTable> key, FabricLootTableBuilder builder, LootTableSource source, HolderLookup.Provider provider) {
         if (BuiltInLootTables.ANCIENT_CITY.equals(key) || BuiltInLootTables.BURIED_TREASURE.equals(key)) {
@@ -93,16 +92,22 @@ public class VWLootTables {
 
 
         if (VERIXIUM_PILLAR.equals(key)) {
-            LootPool.Builder soulRunestoneFragment1 = addItemChance(VWItems.SOUL_RUNESTONE_FRAGMENT_1,1, 0.33f);
-            LootPool.Builder soulRunestoneFragment3 = addItemChance(VWItems.SOUL_RUNESTONE_FRAGMENT_3,1, 0.33f);
+            LootPool.Builder soulRunestoneFragment1 = addItemChance(VWItems.SOUL_RUNESTONE_FRAGMENT_1,1, 0.15f);
+            LootPool.Builder soulRunestoneFragment3 = addItemChance(VWItems.SOUL_RUNESTONE_FRAGMENT_3,1, 0.15f);
+            LootPool.Builder soulProjection = addItemChance(VWItems.Pages.SP_ID_1008,1, 0.07f);
 
-            builder.pool(soulRunestoneFragment1.build()).pool(soulRunestoneFragment3.build());
+            builder.pool(soulRunestoneFragment1.build()).pool(soulRunestoneFragment3.build()).pool(soulProjection.build());
         }
-        if (VERDANT_VILLAGE_WEAPONSMITH.equals(key)) {
-            LootPool.Builder soulRunestoneFragment2 = addItemChance(VWItems.SOUL_RUNESTONE_FRAGMENT_2,1, 0.33f);
-            LootPool.Builder soulRunestoneFragment4 = addItemChance(VWItems.SOUL_RUNESTONE_FRAGMENT_4,1, 0.33f);
+        if (BuiltInLootTables.VILLAGE_WEAPONSMITH.equals(key)) {
+            LootPool.Builder soulRunestoneFragment2 = addItemChance(VWItems.SOUL_RUNESTONE_FRAGMENT_2,1, 0.15f);
+            LootPool.Builder soulRunestoneFragment4 = addItemChance(VWItems.SOUL_RUNESTONE_FRAGMENT_4,1, 0.15f);
 
             builder.pool(soulRunestoneFragment2.build()).pool(soulRunestoneFragment4.build());
+        }
+        if (BuiltInLootTables.VILLAGE_TEMPLE.equals(key)) {
+            LootPool.Builder anecdote = addItemChance(VWItems.Pages.SP_ID_1007,1, 0.07f);
+
+            builder.pool(anecdote.build());
         }
         if (VERDANT_CAMP_VALUABLES.equals(key)) {
             LootPool.Builder page1006 = addItemChance(VWItems.Pages.SP_ID_1006,1, 0.07f);

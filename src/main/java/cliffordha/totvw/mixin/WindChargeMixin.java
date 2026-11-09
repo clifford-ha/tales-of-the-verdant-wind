@@ -1,6 +1,6 @@
 package cliffordha.totvw.mixin;
 
-import cliffordha.totvw.entity.skills.ArcticWindsEffect;
+import cliffordha.totvw.enchantment.ArcticWindsEffect;
 import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.util.ExtUtil;
 import net.minecraft.core.particles.ParticleTypes;
@@ -52,16 +52,15 @@ public class WindChargeMixin {
                 List<LivingEntity> entities = level.getEntitiesOfClass(
                         LivingEntity.class,
                         ExtUtil.scanArea(entity, 3),
-                        test -> ArcticWindsEffect.afflictionStack(test) > 5 || ArcticWindsEffect.frostBoundStack(test) > 0
+                        test -> ArcticWindsEffect.afflictionStack(test) > 0 || ArcticWindsEffect.frostBoundStack(test) > 0
                 );
                 if (entities.isEmpty()) return;
 
                 for (LivingEntity livingEntity : entities) {
                     int current = livingEntity.getAttachedOrElse(VWAttachment.ARCTIC_AFFLICTION, 0);
                     livingEntity.setAttached(VWAttachment.ARCTIC_AFFLICTION, current + 2);
-                    ExtUtil.sendParticles(ParticleTypes.SNOWFLAKE, level, entity.blockPosition(), 2, 4f, -10f);
+                    ExtUtil.sendParticles(ParticleTypes.SNOWFLAKE, level, entity.blockPosition(), 12, 2, -10f);
                 }
-                ExtUtil.sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, entity.blockPosition(), 1, 4f);
             }
         }
     }

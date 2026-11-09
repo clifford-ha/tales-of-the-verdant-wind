@@ -36,7 +36,7 @@ public class WolfPageScreen extends Screen {
     private final String pageTitle;
     private List<String> pages;
     private final List<FormattedCharSequence> allLines = new ArrayList<>();
-    private final @Nullable Supplier<String[]> liveSupplier;
+    private final @Nullable Supplier<String> liveSupplier;
     private @Nullable Wolf wolf;
     private int textAreaWidth;
     private int refreshTimer = 0;
@@ -60,9 +60,8 @@ public class WolfPageScreen extends Screen {
 
     //other stat
     private boolean record;
-
-    public WolfPageScreen(String pageTitle, Supplier<String[]> liveSupplier, Supplier<Wolf> wolfSupplier) {
-        super(Component.literal(pageTitle));
+    public WolfPageScreen(String pageTitle, Supplier<String> liveSupplier, Supplier<Wolf> wolfSupplier) {
+        super(Component.literal(pageTitle).withColor(VWColors.WITHERING));
         this.pageTitle = pageTitle;
         this.pages = Arrays.asList(liveSupplier.get());
         this.liveSupplier = liveSupplier;
@@ -87,9 +86,9 @@ public class WolfPageScreen extends Screen {
                         .build()
         );
 
-        Runestone runestoneType = wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY);
+        Runestone type = wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY);
         boolean returnMethod = wolf.getAttachedOrElse(WolfAttachment.BENEDICTION, 0) > 0 && ReturnPointData.forCurrent(wolf).isValid();
-        boolean runestone = !runestoneType.equals(Runestone.EMPTY);
+        boolean runestone = !type.equals(Runestone.EMPTY);
 
         exitButtonX -= 97;
         if (returnMethod) {
@@ -110,6 +109,8 @@ public class WolfPageScreen extends Screen {
                             .build()
             );
         }
+        boolean isTether = type == Runestone.TETHER;
+        String tether = "Click to open " + type.getName().replace("Runestone", "Manager screen");
         if (runestone) {
             this.addRenderableWidget(
                     Button.builder(Component.literal("Runestone"), b -> {
@@ -118,10 +119,10 @@ public class WolfPageScreen extends Screen {
                             this.onClose();
 
                         } else {
-                            Minecraft.getInstance().setScreenAndShow(new TetherScreen(wolf.getId(), TetherData.of(wolf), this));
+                            if (isTether) Minecraft.getInstance().setScreenAndShow(new TetherScreen(wolf.getId(), TetherData.of(wolf), this));
                         }
                     }).tooltip(Tooltip.create(
-                            text(cText(FTextColor.GRAY, "Click to open " + runestoneType.getName().replace("Runestone", " Manager screen") + "\n\n" + cText(FTextColor.GRAY, "Hold shift to drop item")))
+                            text(cText(FTextColor.GRAY, (isTether ? tether  + "\n\n" : "") + cText(FTextColor.GRAY, "Hold shift to drop " + type.getName())))
                             )).bounds(exitButtonX - (returnMethod ? 97 : 0), yposBTN, 95, xySize).build()
             );
         }

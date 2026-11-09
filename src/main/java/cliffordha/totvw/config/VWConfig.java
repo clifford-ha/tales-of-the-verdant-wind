@@ -22,6 +22,8 @@ public class VWConfig {
 
     public boolean SYNCED_ENABLE_NOTIFIERS = true;
     public boolean SYNCED_SHOW_ATROCITY_COUNTER = false;
+    public boolean SYNCED_SHOW_WOLF_EFFECT_INDICATORS = true;
+
     public int SYNCED_BENEDICTION_HEALTH_THRESHOLD = 30;
     public boolean SYNCED_ALWAYS_TRIGGER_BLESSING = false;
     public boolean SYNCED_WOLF_SHARES_BENEDICTION_STACK = true;
@@ -32,6 +34,7 @@ public class VWConfig {
 
     public boolean SERVER_WOLF_DMG_DISTRIBUTION = true;
     public boolean SERVER_WOLF_BEHAVIOUR_EXTENSIONS = true;
+    public boolean SERVER_SHOW_EFFECT_INDICATORS = true;
 
     public boolean SERVER_SKILL_COOLDOWNS = true;
     public boolean SERVER_ITEM_COOLDOWNS = true;

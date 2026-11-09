@@ -8,8 +8,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.OutgoingChatMessage;
-import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -188,19 +186,31 @@ public class ExtUtil {
     }
 
     public static void addEffect(LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {
-        entity.addEffect(new MobEffectInstance(effect, TimeUtil.tickSeconds(sec), amp));
+        entity.addEffect(new MobEffectInstance(effect, sec > 0 ? TimeUtil.tickSeconds(sec) : sec, amp));
     }
-    public static void rewriteEffect(LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {
+    public static void restartEffect(LivingEntity entity, Holder<MobEffect> effect, int sec, int amp) {
         entity.removeEffect(effect);
         addEffect(entity, effect, sec, amp);
     }
-    public static void replaceEffect(LivingEntity entity, Holder<MobEffect> effect, int sec) {
-        int remaining = entity.hasEffect(effect) ? entity.getEffect(effect).getDuration() : 0;
-        if (remaining <= sec) {
+    public static void replaceEffect(LivingEntity entity, Holder<MobEffect> effect, Holder<MobEffect> replace) {
+        MobEffectInstance existing = entity.getEffect(effect);
+        if (existing != null) {
+            int currentAmp = existing.getAmplifier();
+            int currentSec = Mth.ceil(existing.getDuration() / 20.0f);
+            addEffect(entity, replace, currentSec, currentAmp);
             entity.removeEffect(effect);
-        } else {
-            entity.removeEffect(effect);
-            addEffect(entity, effect, sec, 0);
+        }
+    }
+    public static void rewriteEffect(LivingEntity entity, Holder<MobEffect> effect, int sec) {
+        MobEffectInstance existing = entity.getEffect(effect);
+        if (existing != null) {
+            int remaining = Mth.ceil(existing.getDuration() / 20.0f);
+            if (remaining <= sec) {
+                entity.removeEffect(effect);
+            } else {
+                entity.removeEffect(effect);
+                addEffect(entity, effect, sec, 0);
+            }
         }
     }
     public static void addOrStackEffect(LivingEntity entity, Holder<MobEffect> effect, int sec, int maxSec, int amp, boolean durationOnly) {
@@ -218,13 +228,13 @@ public class ExtUtil {
             int durationStack;
             if (durationOnly) {
                 durationStack = Math.min(currentSec + sec, maxSec);
-                rewriteEffect(entity, effect, durationStack, currentAmp);
+                restartEffect(entity, effect, durationStack, currentAmp);
             } else if (amp < currentAmp) {
                 durationStack = Math.min(currentSec + sec, maxSec);
-                rewriteEffect(entity, effect, durationStack, Math.min(currentAmp, maxAmp));
+                restartEffect(entity, effect, durationStack, Math.min(currentAmp, maxAmp));
             } else {
                 durationStack = Math.min(currentSec + Mth.ceil(sec * 0.5f), maxSec);
-                rewriteEffect(entity, effect, durationStack, Math.min(currentAmp + 1, maxAmp));
+                restartEffect(entity, effect, durationStack, Math.min(currentAmp + 1, maxAmp));
             }
         } else {
             addEffect(entity, effect, sec, amp);
@@ -240,10 +250,12 @@ public class ExtUtil {
         if (entity.hasEffect(effect)) return;
         entity.addEffect(new MobEffectInstance(effect, TimeUtil.tickSeconds(sec), amp, false, false));
     }
-    public static void removeEffect(LivingEntity entity, Holder<MobEffect> effect) {
+    public static boolean removeEffect(LivingEntity entity, Holder<MobEffect> effect) {
         if (entity.hasEffect(effect)) {
             entity.removeEffect(effect);
+            return true;
         }
+        return false;
     }
 
     public static AABB scanArea(Entity entity, int range) {

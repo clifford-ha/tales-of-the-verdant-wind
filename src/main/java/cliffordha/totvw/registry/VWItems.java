@@ -186,18 +186,10 @@ public class VWItems {
 
 
     //VERIXIUM ITEMS
-    public static final Item VERIXIUM_CHUNK = registerItem("verixium_chunk",
-            properties -> new Item(properties
-                    .fireResistant()
-            ));
-    public static final Item CONDENSED_VERIXIUM = registerItem("condensed_verixium",
-            properties -> new Item(properties
-                    .fireResistant()
-            ));
-    public static final Item VERIXIUM_SHARD = registerItem("verixium_shard",
-            properties -> new Item(properties
-                    .fireResistant()
-            ));
+    public static final Item VERIXIUM_CHUNK = registerItem("verixium_chunk", Item::new);
+    public static final Item VERIXIUM_SEDIMENT = registerItem("verixium_sediment", Item::new);
+    public static final Item CONDENSED_VERIXIUM = registerItem("condensed_verixium", Item::new);
+    public static final Item VERIXIUM_SHARD = registerItem("verixium_shard", Item::new);
     public static final Item VERIXIUM_POWDER = registerItem("verixium_powder",
             properties -> new Item(properties
                     .fireResistant()
@@ -206,10 +198,7 @@ public class VWItems {
             properties -> new Item(properties
                     .fireResistant()
             ));
-    public static final Item VERIXIUM_PAPER = registerItem("verixium_paper",
-            properties -> new Item(properties
-                    .fireResistant())
-            );
+    public static final Item VERIXIUM_PAPER = registerItem("verixium_paper", Item::new);
     public static final Item VERIXIUM_ARMOR_UPGRADE_TEMPLATE = registerItem("verixium_armor_upgrade_template",
             properties -> new Item(properties
                     .rarity(Rarity.EPIC)
@@ -341,6 +330,7 @@ public class VWItems {
         public static final Item SP_ID_1006 = createPage1000(1006);
 
         public static final Item SP_ID_1007 = createPage1000(1007);
+
         public static final Item SP_ID_1008 = createPage1000(1008);
         public static final Item SP_ID_1009 = createPage1000(1009);
 

@@ -1,7 +1,8 @@
 package cliffordha.totvw.registry.attachments;
 
-import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import com.mojang.serialization.Codec;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 
 public enum HavocType {
@@ -9,6 +10,7 @@ public enum HavocType {
     ANNIHILATION("Annihilation"),
     EXPULSION("Expulsion"),
     VOID("Void"),
+    RETRIBUTION("Retribution"),
     ;
 
     private final String name;
@@ -23,21 +25,23 @@ public enum HavocType {
     }
 
     public static boolean isAnnihilation(Player player) {
-        return player.getAttachedOrElse(PlayerAttachment.HAVOC_TYPE, NONE) == HavocType.ANNIHILATION;
+        return getType(player) == HavocType.ANNIHILATION;
     }
     public static boolean isExpulsion(Player player) {
-        return player.getAttachedOrElse(PlayerAttachment.HAVOC_TYPE, NONE) == HavocType.EXPULSION;
+        return getType(player) == HavocType.EXPULSION;
     }
     public static boolean isVoid(Player player) {
-        return player.getAttachedOrElse(PlayerAttachment.HAVOC_TYPE, NONE) == HavocType.VOID;
+        return getType(player) == HavocType.VOID;
     }
     public static boolean isNone(Player player) {
-        return player.getAttachedOrElse(PlayerAttachment.HAVOC_TYPE, NONE) == NONE;
+        return getType(player) == NONE;
     }
-    public static HavocType getType(Player player) {
-        return player.getAttachedOrElse(PlayerAttachment.HAVOC_TYPE, NONE);
+
+    public static boolean isRetribution(Wolf wolf) {
+        return getType(wolf) == RETRIBUTION;
     }
-    public static int getUsage(Player player) {
-        return player.getAttachedOrElse(PlayerAttachment.HAVOC_USAGE_COUNT, 0);
+
+    private static HavocType getType(LivingEntity entity) {
+        return HavocData.getData(entity).type();
     }
 }

@@ -3,9 +3,12 @@ package cliffordha.totvw.util;
 import cliffordha.totvw.item.pages.FTextColor;
 import cliffordha.totvw.item.pages.FTextStyle;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +16,10 @@ import static cliffordha.totvw.item.pages.FTextColor.*;
 import static cliffordha.totvw.item.pages.FTextStyle.*;
 
 public class TextUtil {
+    public static String nameWrap(LivingEntity entity) {
+        return "[" + entity.getPlainTextName() + "]";
+    }
+
     // TEXT FORMATTING UTIL
     public static String cooldownText(float value, float max) {
         return getComparedValueOf(value, max, false);
@@ -97,7 +104,7 @@ public class TextUtil {
     }
 
     /** a set of predefined text **/
-    public static String pText(int p) {
+    public static String pText(int p, boolean nextParagraph) {
         String predefinedText;
         switch (p) {
             case 1 -> predefinedText = "Some contents are intentionally omitted";
@@ -106,7 +113,17 @@ public class TextUtil {
             case 4 -> predefinedText = "Some contents have faded";
             default -> predefinedText = "Error: Invalid Predefined Text or Null";
         }
-        return cText(DARK_GRAY, "[" + predefinedText + "]") + nextParagraph;
+        return pText(predefinedText, nextParagraph);
+    }
+    public static String pText(int p) {
+        return pText(p, true);
+    }
+    public static String pText(String text) {
+        return cText(GRAY, "[" + text + "]") + nextParagraph;
+    }
+    public static String pText(String text, boolean nextParagraph) {
+        if (nextParagraph) return pText(text);
+        return cText(GRAY, "[" + text + "]");
     }
     public static String nText(String text) {
         return cText(DARK_GRAY, fText(ITALIC, "[" + text + "]"));
@@ -124,7 +141,7 @@ public class TextUtil {
     }
 
     /** purely made for separating *pages visually, rip brain **/
-    public static String[] addPage(String text) {
+    public static String addPage(String text) {
         final int lengthBound = 700;
         int charCount = text.length();
         List<String> pages = new ArrayList<>();
@@ -157,7 +174,7 @@ public class TextUtil {
             start = end;
         }
 
-        return pages.toArray(new String[0]);
+        return String.join("", pages);
     }
     public static String iterateList(List<String> list, boolean vertical) {
         if (list.isEmpty()) return "";

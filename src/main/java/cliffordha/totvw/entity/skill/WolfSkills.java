@@ -23,4 +23,11 @@ public class WolfSkills {
                     WolfAttachment.NOTIFY_MIGHT_SKILL_RUPTURE,
                     "Rupture"
             );
+
+    public static final SkillDefinition SUMMON_FRAGMENTED_WOLF =
+            new SkillDefinition(
+                    WolfAttachment.CD_WOLF_FRAGMENT_SUMMON,
+                    WolfAttachment.NOTIFY_WOLF_FRAGMENT_SUMMON,
+                    "Fragmented Wolf Summon"
+            );
 }

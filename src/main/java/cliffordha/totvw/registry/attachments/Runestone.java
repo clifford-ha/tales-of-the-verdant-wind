@@ -102,6 +102,9 @@ public enum Runestone {
     private static boolean hasRunestone(LivingEntity entity, Runestone type) {
         return entity.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY) == type;
     }
+    public static Runestone getType(Wolf wolf) {
+        return wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY);
+    }
     public static void dropRunestone(Wolf wolf) {
         Runestone type = wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY);
         if (type.equals(Runestone.EMPTY)) return;

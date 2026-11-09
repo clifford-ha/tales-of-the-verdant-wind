@@ -108,14 +108,14 @@ public class TetherScreen extends Screen {
     @Override
     protected void init() {
         listLeft = Mth.ceil(this.width * 0.05);
-        listTop = Mth.ceil(this.height * 0.25);;
+        listTop = Mth.ceil(this.height * 0.25);
         listBottom = this.height - 20;
         int btnY = Mth.ceil(this.height * 0.15);
 
         int searchX = Mth.ceil(this.width * 0.2);
         search = new EditBox(this.font, Mth.ceil(this.width * 0.05), btnY + 1, searchX, 18, text("Search"));
         search.setHint(text("Name..."));
-        search.setResponder(s -> { scroll = 0; refresh(); });
+        search.setResponder(_ -> { scroll = 0; refresh(); });
         this.addRenderableWidget(search);
         this.setInitialFocus(search);
 

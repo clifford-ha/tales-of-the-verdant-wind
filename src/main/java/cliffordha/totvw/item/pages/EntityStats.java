@@ -1,8 +1,8 @@
 package cliffordha.totvw.item.pages;
 
 import cliffordha.totvw.entity.status.PlayerStats;
-import cliffordha.totvw.entity.skill.SkillCooldowns;
-import cliffordha.totvw.entity.wolf.WolfEnchantments;
+import cliffordha.totvw.entity.skill.SkillCD;
+import cliffordha.totvw.entity.wolf.WolfEnchantmentRecord;
 import cliffordha.totvw.entity.status.WolfStats;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWItems;
@@ -19,7 +19,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,25 +36,93 @@ import static cliffordha.totvw.util.TextUtil.nextLine;
 public class EntityStats {
     private static final String SKILL_BLESSING = "Blessing of the Verdant Wind";
     private static final String SKILL_READY = cText(GREEN, "READY");
+    private static final String SKILL_READY_WITHERED = cText(DARK_PURPLE, "READY");
     private static boolean shiftKeyDown() {
         return Minecraft.getInstance().hasShiftDown();
     }
-
-    public static String[] wolfStats(Wolf wolf, WolfStats s) {
+    public static String witherwolfStats(Wolf wolf, WolfStats s) {
         if (wolf == null || s == null) return ScatteredPageItem.invalidEntity;
-        var e = WolfEnchantments.of(wolf);
-
-        double attackDMG = wolf.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
-        double additionalATK = wolf.getAttributeValue(Attributes.ATTACK_DAMAGE) - wolf.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
-
-        int blessingCD = wolf.getAttachedOrElse(WolfAttachment.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-        int blessingCDLimit = ExtUtil.cooldownFromBase(wolf.level(), SkillCooldowns.BASE_BLESSING);
+        var e = WolfEnchantmentRecord.of(wolf);
 
         int paralyzeCD = wolf.getAttachedOrElse(WolfAttachment.CD_BLOODLUST_SKILL_PARALYZE, 0);
-        int paralyzeCDLimit = ExtUtil.cooldownFromBase(wolf.level(), SkillCooldowns.BASE_PARALYZE);
+        int paralyzeCDLimit = ExtUtil.cooldownFromBase(wolf.level(), SkillCD.BASE_PARALYZE);
+
+        int ignoreHighDamageCD = wolf.getAttachedOrElse(WolfAttachment.CD_IGNORE_HIGH_DAMAGE, 0);
+
+        int flashFreezeStack = wolf.getAttachedOrElse(WolfAttachment.FLASH_FREEZE_STACK, 0);
+        List<String> tetheredEntities = wolf.getAttachedOrElse(WolfAttachment.TETHER_DATA, TetherData.EMPTY).tetheredEntities();
+
+        boolean hasRunestone = Runestone.hasRunestone(wolf);
+
+        List<String> enchants = new ArrayList<>();
+        ArmorData armorS2C = wolf.getAttachedOrElse(WolfAttachment.ARMOR_DATA, ArmorData.NONE);
+        ItemStack armor = wolf.isWearingBodyArmor() ? wolf.getBodyArmorItem() : null;
+        double addedATK = armorS2C.getAddedATK();
+
+        if (armor != null) {
+            for (Object2IntMap.Entry<Holder<Enchantment>> entry : wolf.getBodyArmorItem().getEnchantments().entrySet()) {
+                enchants.add(
+                        Enchantment.getFullname(entry.getKey(), entry.getIntValue()).getString()
+                );
+            }
+        }
+
+
+        return addPage(
+                "The wolf looks at you, confused on what you're trying to do... Confused as it may be, it remains loyal to the duty they are called upon even when their end draws near."
+                        + nextParagraph
+
+                        + fText(BOLD, "## ???") + nextLine
+                        + "Remaining Time: " + cText(DARK_PURPLE, "" + WolfFragmentData.getLifespan(wolf)) + nextLine
+                        + "Remaining Hits: " + cText(DARK_PURPLE, "" + WolfFragmentData.getHits(wolf)) + nextLine
+                        + nextParagraph
+
+                        + fText(BOLD, "## STATS") + nextLine
+                        + "Attack Damage: " + armorS2C.baseATK() + (addedATK > 0 ? " + " + cText(DARK_PURPLE, "" + addedATK) : "") + nextLine
+                        + "Attack Cycle: " + s.attackCycle() + nextLine
+
+                        + tText(e.hasBenediction() || e.hasMight() || e.hasBloodLust(), nextParagraph
+                        + fText(BOLD, "## SKILLS & EFFECTS"), true)
+
+                        + tText(e.hasBenediction(), ignoreHighDamageCD > 0,
+                        "Ignore High Damage CD: " + cooldownText(ignoreHighDamageCD, 15),
+                        "Ignore High Damage: " + SKILL_READY_WITHERED,
+                        true)
+                        + tText(e.hasMight(), "Rupture: " + req("Might Level 3+"), true)
+                        + tText(e.hasBloodLust(), paralyzeCD > 0,
+                        "Paralyze CD: " + cooldownText(paralyzeCD, paralyzeCDLimit),
+                        "Paralyze: " + SKILL_READY_WITHERED,
+                        true)
+
+                        + tText(e.hasArcticWinds() || s.trySavePoints() > 0 || hasRunestone, nextParagraph
+                        + fText(BOLD, "## OTHER STATS"), true)
+
+                        + tText(e.hasArcticWinds(), "Flash Freeze Stacks: " + flashFreezeStack, true)
+
+                        + tText(hasRunestone, "Runestone Type: " + s.runestoneType().getName().replace(" Runestone", ""), true)
+                        + tText(Runestone.hasTether(wolf), "Tethered Entities: " + (!tetheredEntities.isEmpty() ? getTetherEntities(tetheredEntities) : "None"), true)
+                        + nextParagraph
+
+                        + tText(!getActiveEffects(wolf).isEmpty(), "Active Effects: " + nextLine + iterateDecoratedList(getActiveEffects(wolf)) + nextParagraph, true)
+                        + tText(!enchants.isEmpty(), "Active Enchantments: " + nextLine + iterateDecoratedList(enchants))
+
+        );
+    }
+    public static String wolfStats(Wolf wolf, WolfStats s) {
+        if (wolf == null || s == null) return ScatteredPageItem.invalidEntity;
+        var e = WolfEnchantmentRecord.of(wolf);
+
+        int blessingCD = wolf.getAttachedOrElse(WolfAttachment.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
+        int blessingCDLimit = ExtUtil.cooldownFromBase(wolf.level(), SkillCD.BASE_BLESSING);
+
+        int paralyzeCD = wolf.getAttachedOrElse(WolfAttachment.CD_BLOODLUST_SKILL_PARALYZE, 0);
+        int paralyzeCDLimit = ExtUtil.cooldownFromBase(wolf.level(), SkillCD.BASE_PARALYZE);
 
         int ruptureCD = wolf.getAttachedOrElse(WolfAttachment.CD_MIGHT_SKILL_RUPTURE, 0);
-        int ruptureCDLimit = ExtUtil.cooldownFromBase(wolf.level(), SkillCooldowns.BASE_RUPTURE);
+        int ruptureCDLimit = ExtUtil.cooldownFromBase(wolf.level(), SkillCD.BASE_RUPTURE);
+
+        int witherwolfSummonCD = wolf.getAttachedOrElse(WolfAttachment.CD_WOLF_FRAGMENT_SUMMON, 0);
+        int witherwolfCDLimit = SkillCD.BASE_FRAGMENTED_WOLF_SUMMON;
 
         int ignoreHighDamageCD = wolf.getAttachedOrElse(WolfAttachment.CD_IGNORE_HIGH_DAMAGE, 0);
 
@@ -75,6 +142,7 @@ public class EntityStats {
         List<String> enchants = new ArrayList<>();
         ArmorData armorS2C = wolf.getAttachedOrElse(WolfAttachment.ARMOR_DATA, ArmorData.NONE);
         ItemStack armor = wolf.isWearingBodyArmor() ? wolf.getBodyArmorItem() : null;
+        double addedATK = armorS2C.getAddedATK();
 
         String durability;
         if (armor != null) {
@@ -94,7 +162,7 @@ public class EntityStats {
         return addPage(
                 fText(BOLD, "## MAIN STATS") + nextLine
                         + "Health: " + percentText(wolf.getHealth(), wolf.getMaxHealth(), true) + nextLine
-                        + "Attack Damage: " + attackDMG + (additionalATK > 0 ? " + " + cText(AQUA, "" + additionalATK) : "") + nextLine
+                        + "Attack Damage: " + armorS2C.baseATK() + (addedATK > 0 ? " + " + cText(AQUA, "" + addedATK) : "") + nextLine
                         + durability + nextLine
                         + tText(shiftKeyDown(),
                         "UUID: " + s.UUID() + nextLine
@@ -126,11 +194,15 @@ public class EntityStats {
                         true)
                         + tText(e.hasMight(), ruptureCD > 0,
                         "Rupture CD: " + cooldownText(ruptureCD, ruptureCDLimit),
-                        "Rupture: " + SKILL_READY,
+                        "Rupture: " + (e.getMight() >= 3 ? SKILL_READY : req("Might Level 3+")),
                         true)
                         + tText(e.hasBloodLust(), paralyzeCD > 0,
                         "Paralyze CD: " + cooldownText(paralyzeCD, paralyzeCDLimit),
                         "Paralyze: " + SKILL_READY,
+                        true)
+                        + tText(e.hasWithering(), witherwolfSummonCD > 0,
+                        "Witherwolf Summon CD: " + cooldownText(witherwolfSummonCD, witherwolfCDLimit),
+                        "Witherwolf [Summon]: " + SKILL_READY,
                         true)
 
                         + tText(e.hasArcticWinds() || s.trySavePoints() > 0 || hasRunestone, nextParagraph
@@ -152,14 +224,22 @@ public class EntityStats {
 
         );
     }
+    private static String req(int value) {
+        return cText(GRAY, "Required Level: " + value + "+");
+    }
+    private static String req(String value) {
+        return cText(GRAY, "Requires " + value);
+    }
     private static List<String> getActiveEffects(Wolf wolf) {
         Collection<MobEffectInstance> effects = wolf.getAttachedOrElse(VWAttachment.MOB_EFFECTS, List.of());
         List<String> constructed = new ArrayList<>();
 
         if (!effects.isEmpty()) {
             for (MobEffectInstance effect : effects) {
-                String amp = effect.getAmplifier() > 0 ? " " + effect.getAmplifier() : "";
-                int duration = effect.getDuration() > 20 ? effect.getDuration() / 20 : 0;
+                int getAMP = effect.getAmplifier() + 1;
+                String amp = getAMP > 0 ? " " + getAMP : "";
+                String duration = effect.getDuration() > 20 ? "" + (effect.getDuration() / 20) : "0";
+                duration = effect.getDuration() <= -1 ? "Infinite" : duration;
                 String constructor = effect.getEffect().value().getDisplayName().getString() + amp + " [" + duration + "]";
 
                 constructed.add(constructor);
@@ -167,13 +247,12 @@ public class EntityStats {
         }
         return constructed;
     }
-    public static String[] playerStats(Player player) {
+    public static String playerStats(Player player) {
         var stat = PlayerStats.valueOf(player);
-
         int acquiredGenesis = stat.genesisRunestoneAcquisitionCount();
 
         int blessingCD = player.getAttachedOrElse(PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-        int blessingCDLimit = ExtUtil.cooldownFromBase(player.level(), SkillCooldowns.BASE_BLESSING);
+        int blessingCDLimit = ExtUtil.cooldownFromBase(player.level(), SkillCD.BASE_BLESSING);
         int havocCD = player.getAttachedOrElse(PlayerAttachment.CD_HAVOC, 0);
         List<Wolf> wolves = player.level().getEntitiesOfClass(
                 Wolf.class,
@@ -191,10 +270,13 @@ public class EntityStats {
         if (stat.receivedFeaturesHandbook()) receivedHandbooks.add("Features");
         if (stat.receivedEffectsHandbook()) receivedHandbooks.add("Effects");
 
+        ArmorData data = PlayerAttachment.getArmorData(player);
+
         return addPage(
                 fText(BOLD, "## MAIN STATS") + nextLine
                         + "Health: " + percentText(player.getHealth(), player.getMaxHealth(), true) + nextLine
                         + "Hunger: " + percentText(player.getFoodData().getFoodLevel(), 20, true) + nextLine
+                        + "Attack Damage: " + data.totalATK() + nextLine
                         + tText(shiftKeyDown(),
                         "UUID: " + stat.UUID(), true)
                         + tText(stat.wolfSouls() > 0, "Wolf Souls: " + stat.wolfSouls() + nextLine)
@@ -212,8 +294,8 @@ public class EntityStats {
 
                         + tText(acquiredGenesis > 0, "Genesis Runestone Acquisition Count: ", true)
                         + tText(verdantBloom > 0, "Verdant Bloom Stack: " + verdantBloom, true)
-                        + tText(havocReady, "Havoc Type: " + stat.havocType().getName(), true)
-                        + tText(havocReady, "Havoc Usage Count: " + stat.havocUsageCount(), true)
+                        + tText(havocReady, "Havoc Type: " + stat.havocData().type().getName(), true)
+                        + tText(havocReady, "Havoc Usage Count: " + stat.havocData().usageCount(), true)
 
                         + tText(VWEnchantments.getBenediction(player) || havocReady, nextParagraph
 
@@ -223,7 +305,7 @@ public class EntityStats {
                         SKILL_BLESSING + " CD: " + cooldownText(blessingCD, blessingCDLimit),
                         SKILL_BLESSING + ": " + SKILL_READY,
                         true)
-                        + tText(havocReady, havocCD > 0,
+                        + tText(havocCD > 0 || havocReady, havocCD > 0,
                         "Havoc CD: " + cooldownText(havocCD, 75),
                         "Havoc: " + SKILL_READY,
                         true)

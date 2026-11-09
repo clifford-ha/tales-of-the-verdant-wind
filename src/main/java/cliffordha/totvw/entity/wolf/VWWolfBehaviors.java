@@ -3,6 +3,7 @@ package cliffordha.totvw.entity.wolf;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.entity.TickCondition;
 import cliffordha.totvw.entity.skill.WolfSkills;
+import cliffordha.totvw.entity.skills.RevivalByProxy;
 import cliffordha.totvw.entity.skills.RunestoneEffects;
 import cliffordha.totvw.entity.skills.VerdantWindBlessing;
 import cliffordha.totvw.networking.VWNetworking;
@@ -10,7 +11,6 @@ import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.TetherData;
-import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.tag.VWBiomeTags;
@@ -50,23 +50,24 @@ public class VWWolfBehaviors {
         registerWildRules();
         registerSharedRules();
 
-        wolfOnDamageEvent();
-        wolfOnTickEvent();
+        wolfEvents();
     }
 
     private static void registerTamedRules() {
         TICK_RULES.add(WolfBehaviorRule.forTamed(TickCondition.tick(), ((wolf, level) -> {
             LivingEntity owner = wolf.getOwner();
 
-            if (WolfAttachment.tetherChunkTicks(wolf)) {
-                level.getChunkSource().addTicketAndLoadWithRadius(
-                        TicketType.FORCED,
-                        wolf.chunkPosition(),
-                        1
-                );
-            }
-            VWNetworking.syncWolfEffects(wolf);
-            VWNetworking.syncWolfArmor(wolf);
+
+            int tick = 0;
+            if (WolfAttachment.tetherChunkTicks(wolf)) tick = 1;
+            level.getChunkSource().addTicketAndLoadWithRadius(
+                    TicketType.FORCED,
+                    wolf.chunkPosition(),
+                    tick
+            );
+
+            if (!wolf.getActiveEffects().isEmpty()) VWNetworking.syncWolfEffects(wolf);
+            if (wolf.isWearingBodyArmor()) VWNetworking.syncWolfArmor(wolf);
 
 
             if (!VWConfig.get().SERVER_WOLF_BEHAVIOUR_EXTENSIONS) return;
@@ -136,10 +137,10 @@ public class VWWolfBehaviors {
                 TickCondition.alwaysTrue(),
                 (wolf, level) -> {
                     if (wolf.isWearingBodyArmor()) {
-                        WolfEffects.onPostAttack(wolf, level, null, true, null);
+                        WolfEffects.onPostAttack(wolf, level, null, true);
                     }
                     if (Runestone.hasRunestone(wolf)) {
-                        processRunestones(wolf, level);
+                        onAttackRunestoneEffects(wolf, level);
                     }
                 }
         ));
@@ -162,9 +163,7 @@ public class VWWolfBehaviors {
                                 && wolf.distanceTo(wolf.getTarget()) < 6;
 
                         if (shouldBiteOffLeash) {
-                            wolf.unRide();
-                            wolf.dropLeash();
-                            wolf.setOrderedToSit(false);
+                            RevivalByProxy.untetherWolf(wolf);
                         }
 
                         boolean tryToTeleport = wolf.isInWater() && wolf.distanceToSqr(owner) > 6;
@@ -217,7 +216,8 @@ public class VWWolfBehaviors {
                 depleteCooldown(wolf, WolfAttachment.CD_BLOODLUST_SKILL_PARALYZE);
                 depleteCooldown(wolf, WolfAttachment.CD_MIGHT_SKILL_RUPTURE);
                 depleteCooldown(wolf, WolfAttachment.CD_IGNORE_HIGH_DAMAGE);
-            } else setWolfConfiguration(wolf);
+                depleteCooldown(wolf, WolfAttachment.CD_WOLF_FRAGMENT_SUMMON);
+            } else resetWolfCooldowns(wolf);
 
             processCDNotify(wolf, WolfSkills.VERDANT_BLESSING);
             processCDNotify(wolf, WolfSkills.PARALYZER);
@@ -245,14 +245,12 @@ public class VWWolfBehaviors {
         VerdantWindBlessing.verdantBlessingAfterEffects(level, wolf);
     }
     // manually set victim for each runestone
-    public static void processRunestones(Wolf wolf, ServerLevel level) {
+    public static void onAttackRunestoneEffects(Wolf wolf, ServerLevel level) {
         var victim = VWWolfBehaviors.CURRENT_VICTIM.get();
 
         if (Runestone.hasTether(wolf)) {
             RunestoneEffects.processLinkStatus(wolf, victim, level);
 
-        } else if (Runestone.hasHavoc(wolf)) {
-            RunestoneEffects.processHavocStatus(wolf, victim, level);
         }
     }
     private static void runNaturalHealOnTick(Wolf wolf, ServerLevel level) {
@@ -267,15 +265,12 @@ public class VWWolfBehaviors {
     }
 
     public static final ThreadLocal<LivingEntity> CURRENT_VICTIM = new ThreadLocal<>();
-    public static void wolfOnDamageEvent() {
+    public static void wolfEvents() {
         ServerLivingEntityEvents.AFTER_DAMAGE.register(
                 (victim, damageSource, _, _, _) -> getWolfVictimThread(victim,  damageSource)
         );
-        ServerLivingEntityEvents.AFTER_DEATH.register(
-                VWWolfBehaviors::getWolfVictimThread
-        );
-    }
-    private static void wolfOnTickEvent() {
+        ServerLivingEntityEvents.AFTER_DEATH.register(VWWolfBehaviors::getWolfVictimThread);
+
         if (TICK_RULES.isEmpty()) return;
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {

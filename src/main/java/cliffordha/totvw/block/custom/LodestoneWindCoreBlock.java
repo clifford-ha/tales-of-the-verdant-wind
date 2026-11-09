@@ -2,7 +2,8 @@ package cliffordha.totvw.block.custom;
 
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.datagen.VWDamageTypes;
-import cliffordha.totvw.entity.skills.ArcticWindsEffect;
+import cliffordha.totvw.util.TextPopup;
+import cliffordha.totvw.enchantment.ArcticWindsEffect;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
@@ -524,7 +525,7 @@ public class LodestoneWindCoreBlock extends Block {
         int finalPressure = hardMode ? (int) (getPressureDiff * 0.75f) : getPressureDiff;
 
         float baseChance = random.nextFloat();
-        float tryChance = (float) ((currentPressure * 0.01) - 1.0f);
+        float tryChance = (float) ((currentPressure * 0.01) - 0.5f);
         float healthToDMG = hardMode ? monster.getHealth() : monster.getMaxHealth();
         float baseDMG = hardMode ? 10f : 20f;
 
@@ -533,8 +534,10 @@ public class LodestoneWindCoreBlock extends Block {
         sendToLogger(LOG_RECORD, name + " implosion chance: " + tryChance);
 
         if (baseChance < tryChance) {
-            monster.hurtServer(level, VWDamageTypes.lodestoneWindCorePulse(level), baseDMG + healthToDMG * 0.3f);
+            float finalDMG = baseDMG + healthToDMG * 0.3f;
+            monster.hurtServer(level, VWDamageTypes.lodestoneWindCorePulse(level), finalDMG);
             monster.forceAddEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 2), null);
+            TextPopup.showBold(monster, "IMPLODED! " + Mth.floor(finalDMG), VWColors.VERDANT_WIND, 2 + tryChance);
 
             monster.setAttached(ATTACHMENT_IMPLODE, true);
             monster.setAttached(ATTACHMENT_PRESSURE, 0);

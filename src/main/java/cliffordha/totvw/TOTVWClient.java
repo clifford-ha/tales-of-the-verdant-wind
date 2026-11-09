@@ -9,6 +9,7 @@ import cliffordha.totvw.particle.*;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.client.VWModelLayerProvider;
 import cliffordha.totvw.client.EffectOverlay;
+import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ColorizeText;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -105,16 +106,22 @@ public class TOTVWClient implements ClientModInitializer {
 
             if (VWKeymap.isWolfConfigKeyDown()) {
                 ConfigScreen.create();
-            } else if (VWKeymap.isStatusScreenKeyDown()) {
+                return;
+            }
+            if (VWKeymap.isStatusScreenKeyDown()) {
                 if (client.crosshairPickEntity == null) {
                     ScatteredPageItem.openStatScreen(client.player);
-                } else {
-                    if (client.crosshairPickEntity instanceof Wolf wolf && wolf.getOwner() == client.player) {
-                        ScatteredPageItem.showLiveWolfStats(wolf);
+                    return;
+                }
+                if (client.crosshairPickEntity instanceof Wolf wolf && wolf.getOwner() == client.player) {
+                    if (wolf.hasAttached(WolfAttachment.FRAGMENT_DATA)) {
+                        ScatteredPageItem.showLiveWolfStats(wolf, true);
                         return;
                     }
-                    ScatteredPageItem.openStatScreen(client.player);
+                    ScatteredPageItem.showLiveWolfStats(wolf, false);
+                    return;
                 }
+                ScatteredPageItem.openStatScreen(client.player);
             }
         });
     }

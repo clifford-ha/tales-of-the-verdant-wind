@@ -112,6 +112,7 @@ public class VWModelProvider extends FabricModelProvider {
     public void generateItemModels(ItemModelGenerators item) {
         add(item, ModelTemplates.FLAT_ITEM,
                 VWItems.VERIXIUM_CHUNK,
+                VWItems.VERIXIUM_SEDIMENT,
                 VWItems.CONDENSED_VERIXIUM,
                 VWItems.VERIXIUM_SHARD,
                 VWItems.VERIXIUM_POWDER,

@@ -85,7 +85,7 @@ public class VWFeaturesHandbook {
     }
 
 
-    public static String[] FEATURES_HANDBOOK_CONTENTS() {
+    public static String FEATURES_HANDBOOK_CONTENTS() {
         return addPage(
                 fText(BOLD, "INTRODUCTION") + nextLine
                         + "A list of new features and mechanics that aren't introduced in other handbooks."

@@ -5,7 +5,7 @@ import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.effect.HavocEffect;
 import cliffordha.totvw.entity.player.VWPlayerBehaviors;
 import cliffordha.totvw.entity.skill.PlayerSkills;
-import cliffordha.totvw.entity.skill.SkillCooldowns;
+import cliffordha.totvw.entity.skill.SkillCD;
 import cliffordha.totvw.entity.skill.SkillManager;
 import cliffordha.totvw.entity.wolf.VWWolfBehaviors;
 import cliffordha.totvw.entity.skill.WolfSkills;
@@ -19,6 +19,7 @@ import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.tag.VWBiomeTags;
 import cliffordha.totvw.util.ExtUtil;
+import cliffordha.totvw.util.TextPopup;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.Holder;
@@ -86,7 +87,12 @@ public class VerdantWindBlessing {
                         armor.hurtAndBreak(12, wolf, EquipmentSlot.BODY);
                     }
                     wolf.setAttached(IGNORE_DMG_CD, 15);
-                    sendToChat(wolf, false, wolf.getPlainTextName() + " ignored " + (double) damage + " damage");
+                    if (wolf.getOwner() instanceof Player player) {
+                        if (wolf.distanceTo(player) > 12) {
+                            sendToChat(player, VWColors.GRAY, false, wolf.getPlainTextName() + " ignored " + Mth.floor(damage) + " damage");
+
+                        } else TextPopup.show(wolf, "Ignored " + Mth.floor(damage), 1.2f);
+                    }
                     return false;
                 }
             }
@@ -211,11 +217,10 @@ public class VerdantWindBlessing {
         return triggerHeal;
     }
     public static void verdantBlessingAfterEffects(LevelAccessor level, LivingEntity entity) {
-        int amp = entity.getHealth() >= entity.getMaxHealth() * 0.5f ? 0 : 1;
-        addHiddenEffect(entity, MobEffects.WEAKNESS, 60, amp);
+        addEffect(entity, MobEffects.WEAKNESS, 10, 0);
 
         if (!VWConfig.get().SERVER_SKILL_COOLDOWNS) return;
-        int cooldown = cooldownFromBase(level, SkillCooldowns.BASE_BLESSING);
+        int cooldown = cooldownFromBase(level, SkillCD.BASE_BLESSING);
 
         String name = "[" + entity.getName().getString() + "] ";
         String constructor = name + "Verdant Wind's Blessing is now on cooldown for " + cooldown + " seconds.";

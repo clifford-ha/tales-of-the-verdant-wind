@@ -2,20 +2,21 @@ package cliffordha.totvw.entity.wolf;
 
 import cliffordha.totvw.datagen.VWDamageTypes;
 import cliffordha.totvw.effect.HavocEffect;
-import cliffordha.totvw.entity.MobEnchantments;
-import cliffordha.totvw.entity.skill.SkillCooldowns;
-import cliffordha.totvw.entity.skill.SkillManager;
-import cliffordha.totvw.entity.skill.WolfSkills;
-import cliffordha.totvw.entity.skills.ArcticWindsEffect;
+import cliffordha.totvw.enchantment.WitheringEffect;
+import cliffordha.totvw.entity.MobEnchantmentRecord;
+import cliffordha.totvw.entity.skill.*;
+import cliffordha.totvw.enchantment.ArcticWindsEffect;
+import cliffordha.totvw.enchantment.IgnitionEffect;
 import cliffordha.totvw.entity.skills.RunestoneEffects;
 import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEffects;
 import cliffordha.totvw.registry.VWSounds;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.VWAttachment;
+import cliffordha.totvw.registry.attachments.WolfFragmentData;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
-import cliffordha.totvw.util.DamageZip;
 import cliffordha.totvw.util.ExtUtil;
+import cliffordha.totvw.util.TextPopup;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
@@ -28,13 +29,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityTypes;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -43,8 +45,8 @@ import static cliffordha.totvw.util.ExtUtil.*;
 import static cliffordha.totvw.util.ExtUtil.removeEffect;
 
 public class WolfEffects {
-    public static void onPostAttack(Wolf wolf, ServerLevel level, @Nullable LivingEntity linkVictim, boolean enchantmentExclusive, DamageSource override) {
-        var victim = enchantmentExclusive ? VWWolfBehaviors.CURRENT_VICTIM.get() : linkVictim;
+    public static void onPostAttack(Wolf wolf, ServerLevel level, @Nullable LivingEntity linkVictim, boolean exclusive) {
+        var victim = exclusive ? VWWolfBehaviors.CURRENT_VICTIM.get() : linkVictim;
         if (victim == null) return;
         LivingEntity player = wolf.getOwner();
         RandomSource random = wolf.getRandom();
@@ -52,22 +54,17 @@ public class WolfEffects {
         float victimHealth = victim.getHealth();
         float victimMaxHealth = victim.getMaxHealth();
 
-        var enchantment = WolfEnchantments.of(wolf);
+        var enchantment = WolfEnchantmentRecord.of(wolf);
 
-        DamageSource DMG_SOURCE_BLEEDING = VWDamageTypes.bleeding(level);
+        float BLEEDING_DMG = 0;
 
-        float BLEEDING_CONSOLIDATED_DMG = 0;
-        float SCORCHING_CONSOLIDATED_DMG = 0;
+        List<Wolf> babyWolves = level.getEntitiesOfClass(Wolf.class, scanArea(wolf, 12), t -> WolfAttachment.isFamilyRelated(wolf, t) && t.isBaby());
 
-        List<Wolf> babyWolves = level.getEntitiesOfClass(
-                Wolf.class,
-                scanArea(wolf, 12),
-                test -> WolfAttachment.isFamilyRelated(wolf, test) && test.isBaby());
-
-        if (enchantment.hasMending() && enchantmentExclusive) {
+        if (enchantment.hasMending() && exclusive) {
             float conversion = enchantment.hasBenediction() ? 0.25f : 0.1f;
-            int dmg = wolf.getAttribute(Attributes.ATTACK_DAMAGE) != null ? Mth.ceil(wolf.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * conversion) + 2 : Mth.ceil(2 * conversion) + 2;
+            int dmg = Mth.ceil(wolf.getAttributeValue(Attributes.ATTACK_DAMAGE) * conversion) + 2;
             ItemStack itemStack = wolf.getBodyArmorItem();
+
             if (itemStack.isDamaged()) {
                 int toRepairFromXpAmount = EnchantmentHelper.modifyDurabilityToRepairFromXp(level, itemStack, dmg);
                 int repair = Math.min(toRepairFromXpAmount, itemStack.getDamageValue());
@@ -80,34 +77,27 @@ public class WolfEffects {
         }
 
         boolean HAS_ANY_DEFENSE = enchantment.hasBlastProtection() || enchantment.hasFireProtection() || enchantment.hasProjectileProtection() && enchantment.hasProtection();
-        if (enchantmentExclusive && HAS_ANY_DEFENSE) {
+        if (exclusive && HAS_ANY_DEFENSE) {
             //CASE 4
             buffForBabyWolves(wolf, babyWolves, enchantment, 4);
         }
 
-        if (enchantment.hasArcticWinds()) {
-            ArcticWindsEffect.applyEffectsOnHit(wolf, victim, level, enchantment.getArcticWinds(), enchantmentExclusive);
+        if (wolf.hasAttached(WolfAttachment.FRAGMENT_DATA) && WolfFragmentData.getExtension(wolf) < 6) {
+            WolfFragmentData.addLifespan(wolf, 15);
+            WolfFragmentData.addExtension(wolf, 1);
         }
 
+        // ordered
         if (enchantment.hasIgnition()) {
-            int ACTIVE_IGNITION = enchantment.getIgnition();
-            int burnTime = ACTIVE_IGNITION * 3;
-            boolean isWithinHotBiomes = isInBiome(wolf, BiomeTags.IS_NETHER) || level.getBiome(wolf.blockPosition()).value().getBaseTemperature() > 1.8f;
-            int computedTime = isWithinHotBiomes ? (burnTime * 2) : burnTime;
-            int bonus = Runestone.hasHavoc(wolf) ? 3 : 0;
-            if (ACTIVE_IGNITION >= 3) {
-                removeEffect(victim, MobEffects.FIRE_RESISTANCE);
-            }
+            IgnitionEffect.onAttack(level, wolf, victim, exclusive);
 
-            if (victim.fireImmune()) {
-                float finalDMG = isWithinHotBiomes ? (computedTime + bonus) * 3 : ACTIVE_IGNITION * 2;
-                SCORCHING_CONSOLIDATED_DMG += finalDMG;
-            } else {
-                victim.igniteForSeconds(computedTime + bonus);
-            }
-        }
+        } else if (enchantment.hasArcticWinds()) {
+            ArcticWindsEffect.applyEffectsOnHit(wolf, victim, level, enchantment.getArcticWinds(), exclusive);
 
-        if (enchantment.hasPoisoning()) {
+        } else if (enchantment.hasWithering()) {
+            WitheringEffect.onAttack(level, wolf, player, victim, exclusive);
+
+        } else if (enchantment.hasPoisoning()) {
             int ACTIVE_POISONING = enchantment.getPoisoning();
             if (ACTIVE_POISONING >= 3) {
                 removeEffect(victim, MobEffects.REGENERATION);
@@ -115,53 +105,8 @@ public class WolfEffects {
             addOrStackEffect(victim, MobEffects.POISON, (ACTIVE_POISONING * 2), Math.min(ACTIVE_POISONING - 1, 2), true);
         }
 
-        if (enchantment.hasWithering()) {
-            int ACTIVE_WITHERING = enchantment.getWithering();
-            if (ACTIVE_WITHERING >= 3) {
-                removeEffect(victim, MobEffects.REGENERATION);
-            }
-            rewriteEffect(victim, MobEffects.WITHER, ACTIVE_WITHERING * 2, ACTIVE_WITHERING);
-            if (victim.isInvulnerableTo(level, level.damageSources().wither())) {
-                BLEEDING_CONSOLIDATED_DMG += victimHealth * 0.5f;
-            }
-        }
-
-        if (enchantment.hasLifting()) {
-            int ACTIVE_LIFTING = enchantment.getLifting();
-            if (victim.hasEffect(MobEffects.LEVITATION)) {
-                double str = level.getRandom().nextDouble();
-                victim.knockback(str, ACTIVE_LIFTING, str, level.damageSources().flyIntoWall(), ACTIVE_LIFTING);
-            } else {
-                addHiddenEffect(victim, MobEffects.LEVITATION, 10, ACTIVE_LIFTING * 3);
-            }
-        }
-
-        if (enchantment.hasBloodLust() && enchantmentExclusive) {
-            int ACTIVE_BLOODLUST = enchantment.getBloodlust();
-            int paralyzeTime = 3 + (ACTIVE_BLOODLUST * 3);
-
-            addEffect(wolf, VWEffects.BLOODLUST, 6, ACTIVE_BLOODLUST - 1);
-
-            if (wolf.hasEffect(VWEffects.BLOODLUST)) {
-                addOrStackEffect(victim, MobEffects.SLOWNESS, 2, 0, true);
-                if (ACTIVE_BLOODLUST >= 3) {
-                    removeEffect(victim, MobEffects.SPEED);
-                }
-            }
-            addOrStackEffect(victim, MobEffects.WEAKNESS, 2, 0, true);
-            boolean checkVictim = victim.is(EntityTypes.PLAYER) || victim.getMaxHealth() > 20.0;
-            boolean isNotParalyzed = !victim.hasEffect(VWEffects.PARALYZE) && victim.getAttachedOrElse(VWAttachment.FROST_BOUND_TIMER, 0) <= 0;
-            if (checkVictim && !SkillManager.isOnCooldown(wolf, WolfSkills.PARALYZER) && isNotParalyzed) {
-                addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
-
-                SkillManager.startCooldown(wolf, WolfSkills.PARALYZER, cooldownFromBase(level, SkillCooldowns.BASE_PARALYZE));
-
-                sendToChat(wolf, VWColors.MIGHT, victim.getPlainTextName() + " has been paralyzed for " + (paralyzeTime) + " seconds by " + wolfName(wolf) + "!");
-                ExtUtil.playSound(victim, VWSounds.WOLF_SKILL_PARALYZE, SoundSource.HOSTILE, 0.1f, 0.55f + level.getRandom().nextFloat(), false);
-            }
-        }
-
-        if (enchantment.hasOozing() && enchantmentExclusive) {
+        // ordered
+        if (enchantment.hasOozing() && exclusive) {
             int defaultTime;
             if (enchantment.getBloodlust() > 0) {
                 defaultTime = (int) ((enchantment.getBloodlust() * 1.50) * 60);
@@ -171,17 +116,60 @@ public class WolfEffects {
                 defaultTime = 60;
             }
             addOrStackEffect(victim, MobEffects.OOZING, defaultTime, 1, false);
+
+        } else if (enchantment.hasLifting()) {
+            int ACTIVE_LIFTING = enchantment.getLifting();
+            if (victim.hasEffect(MobEffects.LEVITATION)) {
+                double str = level.getRandom().nextDouble();
+                victim.knockback(str, ACTIVE_LIFTING, str, level.damageSources().flyIntoWall(), ACTIVE_LIFTING);
+            } else {
+                boolean strong = victim.getY() > 196 || isDimension(victim, Level.END);
+                int amp = strong ? ACTIVE_LIFTING * 10 : ACTIVE_LIFTING * 4;
+                victim.addEffect(new MobEffectInstance(MobEffects.LEVITATION, strong ? 15 : 10, amp, true, false, false));
+                victim.setAttached(VWAttachment.LIFT_DURATION, strong ? 40 : 30);
+                for (int i = 0; i < ACTIVE_LIFTING; i++) {
+                    TextPopup.show(wolf, victim, "^", 3.0f);
+                }
+            }
         }
 
+        if (enchantment.hasBloodLust() && exclusive) {
+            int ACTIVE_BLOODLUST = enchantment.getBloodlust();
+
+            if (!wolf.hasEffect(VWEffects.BLOODLUST)) {
+                addEffect(wolf, VWEffects.BLOODLUST, 6, ACTIVE_BLOODLUST - 1);
+
+            } else {
+                if (ACTIVE_BLOODLUST >= 3) {
+                    replaceEffect(victim, MobEffects.SPEED, MobEffects.SLOWNESS);
+                }
+
+                SkillDefinition skill = WolfSkills.PARALYZER;
+                boolean checkVictim = victim.is(EntityTypes.PLAYER) || victim.getMaxHealth() > 20.0;
+                boolean isNotParalyzed = !victim.hasEffect(VWEffects.PARALYZE) && ArcticWindsEffect.frostBoundStack(victim) <= 0;
+                if (checkVictim && !SkillManager.isOnCooldown(wolf, skill) && isNotParalyzed) {
+                    int paralyzeTime = 3 + (ACTIVE_BLOODLUST * 3);
+                    addHiddenEffect(victim, VWEffects.PARALYZE, paralyzeTime, 0);
+
+                    TextPopup.showBold(wolf, victim, "PARALYZED!", 1.7f + random.nextFloat());
+                    SkillManager.startCooldown(wolf, skill, cooldownFromBase(level, SkillCD.BASE_PARALYZE));
+
+                    ExtUtil.playSound(victim, VWSounds.WOLF_SKILL_PARALYZE, SoundSource.HOSTILE, 0.1f, 0.55f + level.getRandom().nextFloat(), false);
+                }
+            }
+        }
         if (enchantment.hasMight()) {
             int ACTIVE_MIGHT = enchantment.getMight();
-            boolean isHigh = random.nextFloat() < ACTIVE_MIGHT * 0.15f;
-            int amp = victimHealth > wolf.getHealth() * 0.5f && isHigh ? 2 : 0;
-            addEffect(wolf, MobEffects.ABSORPTION, Math.clamp(Mth.ceil(victimHealth * 0.10f), 2, 30), amp);
+            addOrStackEffect(wolf, MobEffects.ABSORPTION, 3, 30, 0, false);
+
             if (ACTIVE_MIGHT >= 3) {
-                removeEffect(victim, MobEffects.RESISTANCE);
                 boolean checkHealth = victimHealth > 3 && victimHealth <= victimMaxHealth * 0.6f;
                 if (checkHealth && !SkillManager.isOnCooldown(wolf, WolfSkills.RUPTURE)) {
+                    if (victim.hasEffect(MobEffects.STRENGTH)) {
+                        replaceEffect(victim, MobEffects.STRENGTH, MobEffects.WEAKNESS);
+                    } else {
+                        addEffect(victim, MobEffects.WEAKNESS, 10, 0);
+                    }
                     float finalDMG;
                     if (player != null) {
                         if (wolf.distanceTo(player) < 4) {
@@ -193,23 +181,27 @@ public class WolfEffects {
                         finalDMG = wolf.getMaxHealth() * 1.8f;
                     }
                     float decreaseTime = enchantment.hasBenediction() ? 0.75f: 1.0f;
-                    int finalCD = cooldownFromBase(level, SkillCooldowns.BASE_RUPTURE, decreaseTime);
-                    BLEEDING_CONSOLIDATED_DMG += finalDMG;
+                    int finalCD = cooldownFromBase(level, SkillCD.BASE_RUPTURE, decreaseTime);
+                    BLEEDING_DMG += finalDMG;
                     sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, victim.blockPosition().below(), 1, 0);
                     playSound(victim, SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, true);
+
+                    TextPopup.showBold(wolf, victim, "RUPTURED! " + Mth.floor(finalDMG), VWColors.MIGHT, 1.7f + random.nextFloat());
+
                     SkillManager.startCooldown(wolf, WolfSkills.RUPTURE, finalCD);
                 }
             }
-            if (ACTIVE_MIGHT >= 4) {
-                removeEffect(victim, MobEffects.ABSORPTION);
+            if (ACTIVE_MIGHT >= 4 && removeEffect(victim, MobEffects.ABSORPTION)) {
+                addEffect(victim, MobEffects.ABSORPTION, 12, (ACTIVE_MIGHT - 1));
+
             }
             if (ACTIVE_MIGHT >= 5) {
-                removeEffect(victim, MobEffects.STRENGTH);
-                BLEEDING_CONSOLIDATED_DMG += wolf.getMaxHealth() * 0.10f;
+                removeEffect(victim, MobEffects.RESISTANCE);
+                BLEEDING_DMG += wolf.getMaxHealth() * 0.10f;
             }
         }
 
-        if (enchantment.hasGnawing() && enchantmentExclusive) {
+        if (enchantment.hasGnawing() && exclusive) {
             float heal = enchantment.getGnawing() == 1 ? wolf.getMaxHealth() * 0.15f : wolf.getMaxHealth() * 0.30f;
             wolf.heal(heal);
 
@@ -217,16 +209,14 @@ public class WolfEffects {
             buffForBabyWolves(wolf, babyWolves, enchantment, 3);
 
             if (player != null && player.getHealth() < player.getMaxHealth()) {
-                MobEnchantments mobEnchantments = MobEnchantments.of(player);
-
-                float healStrength = getHealStrength(mobEnchantments);
+                float healStrength = getHealStrength(MobEnchantmentRecord.of(player));
                 float baseCap = enchantment.getGnawing() > 1 ? player.getMaxHealth() * 0.4f : player.getMaxHealth() * 0.2f;
                 player.heal(Math.min(baseCap, healStrength));
-
+                TextPopup.show(wolf, player, "+" + (double) Math.min(baseCap, healStrength), VWColors.GNAWING, 1 + random.nextFloat());
             }
         }
-        applyFinalDamage(level, wolf, new DamageZip(DMG_SOURCE_BLEEDING, BLEEDING_CONSOLIDATED_DMG, victim), enchantmentExclusive);
-        applyFinalDamage(level, wolf, new DamageZip(VWDamageTypes.scorchingHeat(level), SCORCHING_CONSOLIDATED_DMG, victim), enchantmentExclusive);
+
+        applyFinalDamage(level, wolf, victim, VWDamageTypes.bleeding(level), BLEEDING_DMG, exclusive);
     }
 
     public static void onTick(Wolf wolf, ServerLevel level) {
@@ -234,8 +224,8 @@ public class WolfEffects {
         if (armor) {
             armorTick(wolf, level);
         }
-        Runestone type = wolf.getAttachedOrElse(RunestoneEffects.RUNESTONE_TYPE, Runestone.EMPTY);
-        RunestoneEffects.processRunestones(wolf, level, type);
+        Runestone type = Runestone.getType(wolf);
+        RunestoneEffects.onTickRunestoneEffect(wolf, level, type);
         if (type != Runestone.EMPTY) {
             ParticleOptions t;
             int n;
@@ -256,11 +246,34 @@ public class WolfEffects {
                 sendParticles(t, level, wolf.blockPosition(), n, 0.5);
             }
         }
+        LivingEntity owner = wolf.getOwner();
+        if (wolf.hasAttached(WolfAttachment.FRAGMENT_DATA)) {
+            if (owner == null || !wolf.isTame()) WitheringEffect.unloadFragmentedWolf(level, wolf);
+
+            wolf.unRide();
+            wolf.dropLeash();
+
+            int lifespan = WolfFragmentData.getLifespan(wolf);
+            if (lifespan > 0) {
+                WolfFragmentData.decrementLifespan(wolf);
+
+            } else {
+
+                if (owner != null) {
+                    boolean fallback = wolf.distanceTo(owner) > 3 && wolf.getTarget() == null;
+                    if (fallback) {
+                        wolf.getNavigation().moveTo(owner.getX(), owner.getY(), owner.getZ(), 1, 1.33);
+                    } else {
+                        WitheringEffect.unloadFragmentedWolf(level, wolf);
+                    }
+                } else WitheringEffect.unloadFragmentedWolf(level, wolf);
+            }
+        }
     }
     private static void armorTick(Wolf wolf, ServerLevel level) {
         LivingEntity player = wolf.getOwner();
 
-        var enchantment = WolfEnchantments.of(wolf);
+        var enchantment = WolfEnchantmentRecord.of(wolf);
 
         boolean ACTIVE_BENEDICTION = enchantment.hasBenediction();
         int ACTIVE_IGNITION = enchantment.getIgnition();
@@ -287,38 +300,32 @@ public class WolfEffects {
             buffForBabyWolves(wolf, babyWolves, enchantment, 2);
         }
         if (ACTIVE_MIGHT > 0 && wolf.getTarget() != null) {
-            if (!wolf.hasEffect(VWEffects.BLOODLUST)) addEffect(wolf, MobEffects.SPEED, 1, Math.min(ACTIVE_MIGHT - 1, 3));
-            addEffect(wolf, VWEffects.AMPLIFIED_MIGHT, ACTIVE_MIGHT * 3, Math.min(ACTIVE_MIGHT - 1, 2));
+            if (!wolf.hasEffect(VWEffects.BLOODLUST)) {
+                addEffect(wolf, MobEffects.SPEED, 1, Math.min(ACTIVE_MIGHT - 1, 3));
+            }
+            addEffect(wolf, VWEffects.AMPLIFIED_MIGHT, ACTIVE_MIGHT * 3, ACTIVE_MIGHT - 1);
 
             // CASE 1
             buffForBabyWolves(wolf, babyWolves, enchantment, 1);
         }
-        if (ACTIVE_IGNITION > 0 || ACTIVE_MIGHT >= 5) {
+        if (!enchantment.hasIgnition() && ACTIVE_MIGHT >= 3) {
             if (wolf.isOnFire() && !wolf.isInLava()) {
                 wolf.extinguishFire();
             }
         }
     }
-    public static void applyFinalDamage(ServerLevel level, Wolf wolf, LivingEntity target, DamageSource source, float amount, boolean isFromEnchantment) {
+
+    public static void applyFinalDamage(ServerLevel level, Wolf wolf, LivingEntity target, DamageSource source, float damage, boolean isFromEnchantment) {
+        if (damage <= 0) return;
         if (target == null) return;
         if (!isFromEnchantment) {
-            double damage = wolf.getAttributeValue(Attributes.ATTACK_DAMAGE);
-            target.hurtServer(level, source, (float) damage);
+            target.hurtServer(level, source, Mth.ceil(wolf.getAttributeValue(Attributes.ATTACK_DAMAGE)));
+
         } else {
-            if (amount <= 0) return;
-            target.hurtServer(level, source, amount);
+            target.hurtServer(level, source, damage);
         }
     }
-    public static void applyFinalDamage(ServerLevel level, Wolf wolf, DamageZip zip, boolean isFromEnchantment) {
-        if (zip.target() == null) return;
-        if (!isFromEnchantment) {
-            double damage = wolf.getAttributeValue(Attributes.ATTACK_DAMAGE);
-            DamageZip.apply(zip, level, (float) damage);
-        } else {
-            DamageZip.apply(zip, level);
-        }
-    }
-    private static void buffForBabyWolves(Wolf parent, List<Wolf> babyWolves, WolfEnchantments enchants, int stat) {
+    private static void buffForBabyWolves(Wolf parent, List<Wolf> babyWolves, WolfEnchantmentRecord enchants, int stat) {
         if (babyWolves.isEmpty()) return;
         for (Wolf wolf : babyWolves) {
             switch (stat) {
@@ -356,7 +363,7 @@ public class WolfEffects {
         }
     }
 
-    private static float getHealStrength(MobEnchantments enchants) {
+    private static float getHealStrength(MobEnchantmentRecord enchants) {
         float healStrength;
         if (enchants.blastProtection() > 0) {
             healStrength = enchants.blastProtection() * 1.6f;
@@ -373,8 +380,5 @@ public class WolfEffects {
 
         if (enchants.hasBenediction()) healStrength *= 1.20f;
         return healStrength;
-    }
-    private static String wolfName(Wolf wolf) {
-        return VWWolfBehaviors.wolfName(wolf);
     }
 }

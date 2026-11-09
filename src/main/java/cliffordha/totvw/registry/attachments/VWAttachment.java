@@ -12,22 +12,25 @@ import java.util.List;
 import static cliffordha.totvw.registry.attachments.AttachmentUtil.*;
 
 public class VWAttachment {
-    public static final AttachmentType<Boolean> HAS_VERDANT_OMEN = registerBool("has_verdant_omen", false);
+    public static final AttachmentType<Boolean> HAS_VERDANT_OMEN = registerBool("has_verdant_omen");
 
-    public static final AttachmentType<Integer> PRESSURE_DIFFERENCE = registerInt("pressure_difference", false);
-    public static final AttachmentType<Boolean> HAS_IMPLODED = registerBool("has_imploded", false);
+    public static final AttachmentType<Integer> PRESSURE_DIFFERENCE = registerInt("pressure_difference");
+    public static final AttachmentType<Boolean> HAS_IMPLODED = registerBool("has_imploded");
 
-    public static final AttachmentType<Integer> VERDANT_BLOOM_STACK = registerInt("verdant_bloom_stack", false);
+    public static final AttachmentType<Integer> VERDANT_BLOOM_STACK = registerInt("verdant_bloom_stack");
+    public static final AttachmentType<Integer> SCORCHING_HEAT = registerInt("scorching_heat");
 
     public static final AttachmentType<BlockPos> LAST_OVERWORLD_POS = registerBlockPos("last_overworld_pos", true);
     public static final AttachmentType<BlockPos> LAST_NOLAYAN_POS = registerBlockPos("last_nolayan_pos", true);
     public static final AttachmentType<Boolean> HAS_ENTERED_NOLAYAN = registerBool("has_entered_nolayan", true);
 
-    public static final AttachmentType<Integer> ARCTIC_AFFLICTION = registerInt("arctic_affliction", false);
-    public static final AttachmentType<Integer> FROST_BOUND_TIMER = registerInt("frost_bound_timer", false);
-    public static final AttachmentType<BlockPos> FROST_BOUND_POS = registerBlockPos("frost_bound_pos", false);
+    public static final AttachmentType<Integer> ARCTIC_AFFLICTION = registerInt("arctic_affliction");
+    public static final AttachmentType<Integer> FROST_BOUND_TIMER = registerInt("frost_bound_timer");
+    public static final AttachmentType<BlockPos> FROST_BOUND_POS = registerBlockPos("frost_bound_pos");
 
     public static final AttachmentType<Collection<MobEffectInstance>> MOB_EFFECTS = registerEffectsCollection("mob_effects");
+    public static final AttachmentType<HavocData> HAVOC_DATA = registerHavocData("havoc_data");
+    public static final AttachmentType<Integer> LIFT_DURATION = registerUnsyncedInt("list_duration");
 
 
 
@@ -55,11 +58,11 @@ public class VWAttachment {
             WolfAttachment.RUNESTONE_TYPE,
             WolfAttachment.TETHER_DATA,
             WolfAttachment.ATTACK_CYCLE,
-            WolfAttachment.FLASH_FREEZE_STACK
+            WolfAttachment.FLASH_FREEZE_STACK,
+            WolfAttachment.FRAGMENT_DATA,
+            WolfAttachment.CD_WOLF_FRAGMENT_SUMMON
     );
     public static final List<AttachmentType<?>> PLAYER_ATTACHMENTS = List.of(
-            PlayerAttachment.IS_DEV_MODE,
-
             PlayerAttachment.RECEIVED_ENCHANTMENTS_HANDBOOK,
             PlayerAttachment.RECEIVED_EFFECTS_HANDBOOK,
             PlayerAttachment.RECEIVED_ITEMS_HANDBOOK,
@@ -71,10 +74,9 @@ public class VWAttachment {
             PlayerAttachment.WOLF_ATROCITY_COUNT,
             PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND,
             PlayerAttachment.CD_HAVOC,
-            PlayerAttachment.HAVOC_TYPE,
-            PlayerAttachment.HAVOC_USAGE_COUNT,
             PlayerAttachment.NOTIFY_BLESSING_OF_THE_VERDANT_WIND,
             PlayerAttachment.TRUSTED_PLAYERS,
+            PlayerAttachment.ARMOR_DATA,
             PlayerAttachment.EQUIPMENTS
     );
     public static final List<AttachmentType<?>> VILLAGER_ATTACHMENTS = List.of(
@@ -90,17 +92,21 @@ public class VWAttachment {
             PRESSURE_DIFFERENCE,
             HAS_IMPLODED,
             VERDANT_BLOOM_STACK,
+            SCORCHING_HEAT,
             LAST_OVERWORLD_POS,
             LAST_NOLAYAN_POS,
             HAS_ENTERED_NOLAYAN,
             ARCTIC_AFFLICTION,
             FROST_BOUND_TIMER,
             FROST_BOUND_POS,
-            MOB_EFFECTS
+            MOB_EFFECTS,
+            HAVOC_DATA,
+            LIFT_DURATION
     );
     public static final List<AttachmentType<?>> PLAYER_PREFS = List.of(
             PlayerPrefs.SHOW_ATROCITY_COUNTER,
             PlayerPrefs.ENABLE_NOTIFIERS,
+            PlayerPrefs.SHOW_WOLF_EFFECT_INDICATORS,
 
             PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD,
             PlayerPrefs.BENEDICTION_SHARE_STACK,
@@ -108,8 +114,7 @@ public class VWAttachment {
             PlayerPrefs.BENEDICTION_TELEPORT_AFTER_SAVE,
             PlayerPrefs.BENEDICTION_WOLF_TP_METHOD,
             PlayerPrefs.BENEDICTION_PLAYER_TP_METHOD,
-            PlayerPrefs.BENEDICTION_WOLF_TP_ALL,
-            PlayerPrefs.BENEDICTION_FORCE_TP
+            PlayerPrefs.BENEDICTION_WOLF_TP_ALL
     );
     public static final int TOTAL = WOLF_ATTACHMENTS.size() + PLAYER_ATTACHMENTS.size() + VILLAGER_ATTACHMENTS.size() + MISC_ATTACHMENTS.size() + PLAYER_PREFS.size();
 

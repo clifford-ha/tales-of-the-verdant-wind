@@ -30,10 +30,12 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
 
-import static cliffordha.totvw.util.ExtUtil.sendToChat;
+import static cliffordha.totvw.util.ExtUtil.*;
 
 public class VWCommands {
     public static void register() {
@@ -272,6 +274,7 @@ public class VWCommands {
                         }
 
                         ServerLevel level = player.level();
+
                         List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
                                 player.getBoundingBox().inflate(32),
                                 wolf -> wolf.isTame() && !wolf.getUUID().equals(player.getUUID()));

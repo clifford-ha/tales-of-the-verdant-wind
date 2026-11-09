@@ -1,6 +1,6 @@
 package cliffordha.totvw.entity.status;
 
-import cliffordha.totvw.registry.attachments.HavocType;
+import cliffordha.totvw.registry.attachments.HavocData;
 import cliffordha.totvw.registry.attachments.NameHolder;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import net.minecraft.nbt.CompoundTag;
@@ -43,8 +43,7 @@ public record PlayerStats(
 
         int genesisRunestoneAcquisitionCount,
 
-        HavocType havocType,
-        int havocUsageCount,
+        HavocData havocData,
 
         List<NameHolder> trustedPlayers,
 
@@ -61,12 +60,12 @@ public record PlayerStats(
         boolean featureHandbook = player.getAttachedOrElse(PlayerAttachment.RECEIVED_FEATURES_HANDBOOK, 0) > 0;
         boolean effectHandbook = player.getAttachedOrElse(PlayerAttachment.RECEIVED_EFFECTS_HANDBOOK, 0) > 0;
 
-        ItemStack helmet = getArmorFor(player, EquipmentSlot.HEAD);
-        ItemStack chestplate = getArmorFor(player, EquipmentSlot.CHEST);
-        ItemStack leggings = getArmorFor(player, EquipmentSlot.LEGS);
-        ItemStack boots = getArmorFor(player, EquipmentSlot.FEET);
-        ItemStack mainhand = getArmorFor(player, EquipmentSlot.MAINHAND);
-        ItemStack shield = getArmorFor(player, EquipmentSlot.OFFHAND);
+        ItemStack helmet = getEquipments(player, EquipmentSlot.HEAD);
+        ItemStack chestplate = getEquipments(player, EquipmentSlot.CHEST);
+        ItemStack leggings = getEquipments(player, EquipmentSlot.LEGS);
+        ItemStack boots = getEquipments(player, EquipmentSlot.FEET);
+        ItemStack mainhand = getEquipments(player, EquipmentSlot.MAINHAND);
+        ItemStack shield = getEquipments(player, EquipmentSlot.OFFHAND);
 
         boolean hasHelmet = helmet != null;
         boolean hasChestplate = chestplate != null;
@@ -120,8 +119,7 @@ public record PlayerStats(
 
                 player.getAttachedOrElse(PlayerAttachment.GENESIS_RUNESTONE_ACQUISITION_COUNT, 0),
 
-                HavocType.getType(player),
-                HavocType.getUsage(player),
+                HavocData.getData(player),
 
                 PlayerAttachment.getTrustedPlayers(player),
 

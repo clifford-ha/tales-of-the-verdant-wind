@@ -70,6 +70,7 @@ public class VWEngLangProvider extends FabricLanguageProvider {
 
 
         text.add(VWItems.VERIXIUM_CHUNK, "Verixium Chunk");
+        text.add(VWItems.VERIXIUM_SEDIMENT, "Verixium Sediment");
         text.add(VWItems.CONDENSED_VERIXIUM, "Condensed Verixium");
         text.add(VWItems.VERIXIUM_SHARD, "Verixium Shard");
         text.add(VWItems.VERIXIUM_POWDER, "Verixium Powder");
@@ -125,6 +126,9 @@ public class VWEngLangProvider extends FabricLanguageProvider {
         text.add(Pages.SP_ID_1005, SP_1005.getTitle());
 
         text.add(Pages.SP_ID_1006, SP_1006.getTitle());
+
+        text.add(Pages.SP_ID_1007, SP_1007.getTitle());
+        text.add(Pages.SP_ID_1008, SP_1008.getTitle());
 
         text.add(Pages.SP_ID_3000, SP_3000.getTitle());
         text.add(Pages.SP_ID_3001, SP_3001.getTitle());

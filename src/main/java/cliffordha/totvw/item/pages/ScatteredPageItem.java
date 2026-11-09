@@ -1,6 +1,8 @@
 package cliffordha.totvw.item.pages;
 
+import cliffordha.totvw.client.screen.EnchantmentHandbookScreen;
 import cliffordha.totvw.client.screen.PageScreen;
+import cliffordha.totvw.client.screen.WolfFragmentScreen;
 import cliffordha.totvw.client.screen.WolfPageScreen;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.entity.status.WolfStats;
@@ -48,16 +50,16 @@ public class ScatteredPageItem extends Item {
         this.pageID = pageID;
     }
 
-    public static final String[] invalidRef = addPage(
+    public static final String invalidRef = addPage(
             cText(RED, "Oopsies! The reference no. appears to be invalid. :]"));
 
-    public static final String[] invalidPlayer = addPage(
+    public static final String invalidPlayer = addPage(
             cText(RED, "Oopsies! The player who called this action is missing or null :]"));
 
-    public static final String[] invalidEntity = addPage(
+    public static final String invalidEntity = addPage(
             cText(RED, "Oopsies! The entity this page is looking for is missing or null :]"));
 
-    public static final String[] invalidInSurvival = addPage(
+    public static final String invalidInSurvival = addPage(
             "Oops! The contents of this page are not available in creative mode :]"
                     + nextLine
                     + fText(UNDERLINED, cText(GRAY,"You can disable this feature (Allow Lore Spoilers) in the config file.")));
@@ -72,7 +74,7 @@ public class ScatteredPageItem extends Item {
     }
 
 
-    private static String[] getPages(Player player, int contents) {
+    private static String getPages(Player player, int contents) {
         if (player == null) return invalidPlayer;
 
         if (contents == -2) {
@@ -91,9 +93,9 @@ public class ScatteredPageItem extends Item {
         return invalidRef;
     }
 
-    public static void showSpecifiedContent(LivingEntity caller, String title, String[] pages) {
+    public static void showSpecifiedContent(LivingEntity caller, String title, String pages) {
         if (caller.level().isClientSide()) {
-            setScreen(title, pages);
+            setScreen(title, () -> pages);
         }
     }
 
@@ -103,7 +105,8 @@ public class ScatteredPageItem extends Item {
             switch (this.pageID) {
                 case -2 -> openStatScreen(player);
 
-                case 2006 -> openScreen(ENCHANTMENTS_HANDBOOK_TITLE, VWEnchantmentsHandbook.ENCHANTMENTS_HANDBOOK_CONTENTS(player));
+                //case 2006 -> openScreen(ENCHANTMENTS_HANDBOOK_TITLE, VWEnchantmentsHandbook.ENCHANTMENTS_HANDBOOK_CONTENTS(player));
+                case 2006 -> EnchantmentHandbookScreen.create();
                 case 2007 -> openScreen(EFFECTS_HANDBOOK_TITLE, VWEffectsHandbook.EFFECTS_HANDBOOK_CONTENTS());
                 case 2008 -> openScreen(ITEMS_HANDBOOK_TITLE, VWItemsHandbook.ITEMS_HANDBOOK_CONTENTS());
                 case 2009 -> openScreen(FEATURES_HANDBOOK_TITLE, VWFeaturesHandbook.FEATURES_HANDBOOK_CONTENTS());
@@ -116,25 +119,37 @@ public class ScatteredPageItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
-    private void openScreen(String title, String[] pages) {
+    private void openScreen(String title, String pages) {
         switch (title) {
-            case ENCHANTMENTS_HANDBOOK_TITLE -> setScreen(ENCHANTMENTS_HANDBOOK_TITLE, pages);
-            case EFFECTS_HANDBOOK_TITLE -> setScreen(EFFECTS_HANDBOOK_TITLE, pages);
-            case ITEMS_HANDBOOK_TITLE -> setScreen(ITEMS_HANDBOOK_TITLE, pages);
-            case FEATURES_HANDBOOK_TITLE -> setScreen(FEATURES_HANDBOOK_TITLE, pages);
-            default -> setScreen(title, pages);
+            case ENCHANTMENTS_HANDBOOK_TITLE -> setScreen(ENCHANTMENTS_HANDBOOK_TITLE, () -> pages);
+            case EFFECTS_HANDBOOK_TITLE -> setScreen(EFFECTS_HANDBOOK_TITLE, () -> pages);
+            case ITEMS_HANDBOOK_TITLE -> setScreen(ITEMS_HANDBOOK_TITLE, () -> pages);
+            case FEATURES_HANDBOOK_TITLE -> setScreen(FEATURES_HANDBOOK_TITLE, () -> pages);
+            default -> setScreen(title, () -> pages);
         }
     }
 
     public static void openStatScreen(Player player) {
-        setScreen(player.getPlainTextName() + "'s Stats", () -> getPages(player, -2));
+        setScreen(player.getPlainTextName(), () -> getPages(player, -2));
     }
 
     @Environment(EnvType.CLIENT)
-    public static void showLiveWolfStats(Wolf wolf) {
-        //if (!wolf.level().isClientSide()) return;
+    public static void showLiveWolfStats(Wolf wolf, boolean isWither) {
         int id = wolf.getId();
         WolfStats stats = WolfStats.valueOf(wolf);
+
+        if (isWither) {
+            Minecraft.getInstance().setScreenAndShow(new WolfFragmentScreen(
+                    () -> {
+                        Minecraft mc = Minecraft.getInstance();
+                        return mc.level != null && mc.level.getEntity(id) instanceof Wolf
+                                ? EntityStats.witherwolfStats(wolf, stats)
+                                : invalidRef;
+                    },
+                    () -> wolf
+            ));
+            return;
+        }
         Minecraft.getInstance().setScreenAndShow(new WolfPageScreen(
                 fText(BOLD, stats.name() + "'s Stats"),
                 () -> {
@@ -148,11 +163,7 @@ public class ScatteredPageItem extends Item {
     }
 
     @Environment(EnvType.CLIENT)
-    private static void setScreen(String title, String[] pages) {
-        Minecraft.getInstance().setScreenAndShow(new PageScreen(title, pages));
-    }
-    @Environment(EnvType.CLIENT)
-    private static void setScreen(String title, Supplier<String[]> pages) {
+    private static void setScreen(String title, Supplier<String> pages) {
         Minecraft.getInstance().setScreenAndShow(new PageScreen(title, pages));
     }
 

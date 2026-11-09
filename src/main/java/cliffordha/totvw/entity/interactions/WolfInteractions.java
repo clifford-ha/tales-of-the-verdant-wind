@@ -30,6 +30,8 @@ import static cliffordha.totvw.util.ExtUtil.*;
 
 public class WolfInteractions {
     public static InteractionResult handleInteraction(ServerLevel level, Player player, Wolf wolf, ItemStack stack) {
+        if (wolf.hasAttached(WolfAttachment.FRAGMENT_DATA)) return InteractionResult.PASS;
+
         if (wolf.getOwner() == player) {
             return tamedInteraction(level, player, wolf, stack);
         } else {
@@ -54,6 +56,38 @@ public class WolfInteractions {
     }
     private static InteractionResult tamedInteraction(ServerLevel level, Player player, Wolf wolf, ItemStack stack) {
         String name = wolf.getPlainTextName();
+
+        /*
+        if (wolf.hasAttached(WolfAttachment.WITHERWOLF_DATA)) {
+            if (stack.is(Items.WITHER_ROSE)) {
+                int current = WitherwolfData.getExtension(wolf);
+                if (current < 3) {
+                    WitherwolfData.addExtension(wolf, 1);
+                    WitherwolfData.addLifespan(wolf, 60);
+                    playStaticSound(wolf, SoundEvents.SOUL_SAND_BREAK, SoundSource.NEUTRAL, false);
+                    sendParticles(ParticleTypes.SOUL_FIRE_FLAME, level, wolf.blockPosition(), 12, 0.5);
+                    consumeItem(player, stack);
+                    return InteractionResult.SUCCESS;
+
+                } else {
+                    sendToChat(player, VWColors.WITHERING, true, name + " has reached the maximum extension");
+                    return InteractionResult.FAIL;
+                }
+            } else if (stack.is(VWItems.GENESIS_RUNESTONE_PLATE)) {
+                wolf.removeAttached(WolfAttachment.WITHERWOLF_DATA);
+                wolf.setVariant(level.registryAccess().lookupOrThrow(Registries.WOLF_VARIANT).getOrThrow(WolfVariants.WOODS));
+                wolf.setCustomNameVisible(false);
+                ExtUtil.addEffect(player, VWEffects.PARALYZE, 3, 0);
+                playStaticSound(wolf, SoundEvents.BEACON_ACTIVATE, SoundSource.NEUTRAL, false);
+                sendParticles(ParticleTypes.EXPLOSION_EMITTER, level, wolf.blockPosition(), 9, 3.5);
+                sendToChat(player, false, name + " has been released from the Witherwolf's grasp.");
+                consumeItem(player, stack);
+                return InteractionResult.SUCCESS;
+            }
+            return InteractionResult.PASS;
+        }
+
+         */
         
         if (stack.is(ItemTags.BEDS) && player instanceof ServerPlayer serverPlayer) {
             ServerPlayer.RespawnConfig config = serverPlayer.getRespawnConfig();

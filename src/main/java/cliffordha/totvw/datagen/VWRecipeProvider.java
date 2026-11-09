@@ -93,6 +93,16 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
                         .save(output);
 
+                shaped(RecipeCategory.MISC, VWItems.VERIXIUM_CHUNK, 2)
+                        .pattern("XXX")
+                        .pattern("XVX")
+                        .pattern("XXX")
+                        .define('X', Items.WIND_CHARGE)
+                        .define('V', VWItems.VERIXIUM_SEDIMENT)
+                        .group("verixium_raw_materials")
+                        .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
+                        .save(output);
+
                 stonecutting(Ingredient.of(VWItems.CONDENSED_VERIXIUM), RecipeCategory.MISC, VWItems.VERIXIUM_SHARD, 1)
                         .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
                         .group("verixium_raw_materials")
@@ -111,7 +121,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         List.of(VWItems.VERIXIUM_FLUID_BUCKET),
                         RecipeCategory.MISC,
                         CookingBookCategory.MISC,
-                        VWItems.VERIXIUM_CHUNK,
+                        VWItems.VERIXIUM_SEDIMENT,
                         900.0F,
                         TimeUtil.tickDuration(3, 45),
                         "verixium_raw_materials"

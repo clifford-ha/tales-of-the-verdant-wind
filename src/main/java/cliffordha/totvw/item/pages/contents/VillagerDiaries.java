@@ -11,22 +11,22 @@ public class VillagerDiaries {
         player = resolver;
     }
 
-    public static String[] get(int id) {
+    public static String get(int id) {
         if (player == null) return ScatteredPageItem.invalidPlayer;
         return ScatteredPageItem.invalidRef;
     }
 
-    private static String[] get3000() {
+    private static String get3000() {
         return addPage(
                 ""
         );
     }
-    private static String[] get3001() {
+    private static String get3001() {
         return addPage(
                 ""
         );
     }
-    private static String[] get3002() {
+    private static String get3002() {
         return addPage(
                 ""
         );

@@ -8,22 +8,36 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public record ArmorData(Component component, Identifier id, int maxDurability, int durability, EquipmentSlot slot) {
+public record ArmorData(
+        Component component,
+        Identifier id,
+        int maxDurability,
+        int durability,
+        EquipmentSlot slot,
+        double baseATK,
+        double totalATK
+) {
     private static final Identifier NULL_ID = TOTVW.registerID("null");
     public static final Codec<Component> COMPONENT_CODEC = Codec.STRING.xmap(Component::literal, Component::getString);
     public static final Codec<ArmorData> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     COMPONENT_CODEC.fieldOf("component").forGetter(ArmorData::component),
                     Identifier.CODEC.fieldOf("id").forGetter(ArmorData::id),
-                    Codec.INT.fieldOf("maxDurability").forGetter(ArmorData::maxDurability),
+                    Codec.INT.fieldOf("max_durability").forGetter(ArmorData::maxDurability),
                     Codec.INT.fieldOf("durability").forGetter(ArmorData::durability),
-                    EquipmentSlot.CODEC.fieldOf("slot").forGetter(ArmorData::slot)
+                    EquipmentSlot.CODEC.fieldOf("slot").forGetter(ArmorData::slot),
+                    Codec.DOUBLE.fieldOf("base_attack").forGetter(ArmorData::baseATK),
+                    Codec.DOUBLE.fieldOf("total_attack").forGetter(ArmorData::totalATK)
             ).apply(instance, ArmorData::new)
     );
-    public static final ArmorData NONE = new ArmorData(Component.literal(""), NULL_ID, 0, 0, EquipmentSlot.MAINHAND);
+    public static final ArmorData NONE = new ArmorData(Component.literal(""), NULL_ID, 0, 0, EquipmentSlot.MAINHAND, 0, 0);
 
     public String getName() {
         return component.getString();
@@ -35,6 +49,30 @@ public record ArmorData(Component component, Identifier id, int maxDurability, i
             return BuiltInRegistries.ITEM.getValue(get).getDefaultInstance();
         }
         return VWItems.EMPTY.getDefaultInstance();
+    }
+    public double getAddedATK() {
+        return this.totalATK - this.baseATK;
+    }
+    public static ArmorData of(Player player) {
+        ItemStack stack = player.getMainHandItem();
+        AttributeMap map = player.getAttributes();
+        return new ArmorData(
+                stack.getItemName(),
+                ArmorData.getID(stack),
+                stack.getMaxDamage(), stack.getDamageValue(),
+                EquipmentSlot.MAINHAND,
+                map.getBaseValue(Attributes.ATTACK_DAMAGE), map.getValue(Attributes.ATTACK_DAMAGE)
+                );
+    }
+    public static ArmorData of(Wolf wolf) {
+        ItemStack armor = wolf.getBodyArmorItem();
+        AttributeMap map = wolf.getAttributes();
+        return new ArmorData(
+                armor.getItemName(), ArmorData.getID(armor),
+                armor.getMaxDamage(), armor.getDamageValue(),
+                EquipmentSlot.BODY,
+                map.getBaseValue(Attributes.ATTACK_DAMAGE),
+                map.getValue(Attributes.ATTACK_DAMAGE));
     }
 
     public ItemStack getItemStack() {

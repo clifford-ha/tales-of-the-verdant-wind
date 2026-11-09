@@ -60,9 +60,10 @@ public class VWCreativeTabs {
                 output.accept(VWItems.VERIXIUM_SHARD);
                 output.accept(VWItems.VERIXIUM_POWDER);
                 output.accept(VWItems.VERIXIUM_INGOT);
-                output.accept(VWItems.VERIXIUM_FLUID_BUCKET);
+                output.accept(VWItems.VERIXIUM_SEDIMENT);
                 output.accept(VWItems.VERIXIUM_PAPER);
                 output.accept(VWItems.VERIXIUM_ARMOR_UPGRADE_TEMPLATE);
+                output.accept(VWItems.VERIXIUM_FLUID_BUCKET);
 
                 output.accept(VWItems.GENESIS_RUNESTONE_PLATE);
                 output.accept(VWItems.EFFLORESCENCE_RUNESTONE_PLATE);
@@ -118,6 +119,8 @@ public class VWCreativeTabs {
                 output.accept(Pages.SP_ID_1004);
                 output.accept(Pages.SP_ID_1005);
                 output.accept(Pages.SP_ID_1006);
+                output.accept(Pages.SP_ID_1007);
+                output.accept(Pages.SP_ID_1008);
 
                 output.accept(Pages.LODESTONE_WIND_CORE_MANUAL);
 

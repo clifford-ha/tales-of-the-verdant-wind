@@ -6,7 +6,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import static cliffordha.totvw.registry.VWEnchantments.entityEnchantmentLVL;
 
-public record MobEnchantments(
+public record MobEnchantmentRecord(
         boolean hasBenediction,
 
         //from vanilla
@@ -15,8 +15,8 @@ public record MobEnchantments(
         int projectileProtection,
         int blastProtection
 ) {
-    public static MobEnchantments of(LivingEntity entity) {
-        return new MobEnchantments(
+    public static MobEnchantmentRecord of(LivingEntity entity) {
+        return new MobEnchantmentRecord(
                 VWEnchantments.getBenediction(entity),
 
                 entityEnchantmentLVL(entity, Enchantments.PROTECTION),

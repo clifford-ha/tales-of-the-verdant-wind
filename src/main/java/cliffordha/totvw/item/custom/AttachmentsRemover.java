@@ -18,10 +18,14 @@ public class AttachmentsRemover extends Item {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        List<AttachmentType<?>> PLAYER_ATTACHMENTS = VWAttachment.PLAYER_ATTACHMENTS;
-
         int count = 0;
-        for (AttachmentType<?> attachment : PLAYER_ATTACHMENTS) {
+        for (AttachmentType<?> attachment : VWAttachment.PLAYER_ATTACHMENTS) {
+            if (player.hasAttached(attachment)) {
+                player.removeAttached(attachment);
+                count++;
+            }
+        }
+        for (AttachmentType<?> attachment : VWAttachment.MISC_ATTACHMENTS) {
             if (player.hasAttached(attachment)) {
                 player.removeAttached(attachment);
                 count++;

@@ -28,14 +28,15 @@ public class ClientboundPackets {
                 else wolf.setAttached(WolfAttachment.ARMOR_DATA, payload.armorData());
             }
         });
-        ClientPlayNetworking.registerGlobalReceiver(PlayerArmorDataPayload.TYPE, (payload, context) -> {
-            context.player().setAttached(PlayerAttachment.EQUIPMENTS, new ArrayList<>(payload.armorData()));
+        ClientPlayNetworking.registerGlobalReceiver(PlayerDataPayload.TYPE, (payload, context) -> {
+            context.player().setAttached(PlayerAttachment.EQUIPMENTS, new ArrayList<>(payload.equipments()));
         });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
                 sender.sendPacket(new ClientPrefsPayload(
                         VWConfig.get().SYNCED_SHOW_ATROCITY_COUNTER,
                         VWConfig.get().SYNCED_ENABLE_NOTIFIERS,
+                        VWConfig.get().SYNCED_SHOW_WOLF_EFFECT_INDICATORS,
 
                         VWConfig.get().SYNCED_BENEDICTION_HEALTH_THRESHOLD,
                         VWConfig.get().SYNCED_WOLF_SHARES_BENEDICTION_STACK,

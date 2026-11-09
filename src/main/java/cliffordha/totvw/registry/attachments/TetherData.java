@@ -10,14 +10,19 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 
 import java.util.List;
 
-public record TetherData(List<String> tetheredEntities, List<String> blacklistedEntities, boolean autoAttackTethered, boolean tetherChunkTicks) {
+public record TetherData(
+        List<String> tetheredEntities,
+        List<String> blacklistedEntities,
+        boolean autoAttackTethered,
+        boolean tetherChunkTicks
+) {
     public static final TetherData EMPTY = new TetherData(List.of(), List.of(), false, false);
     public static final Codec<TetherData> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    Codec.STRING.listOf().fieldOf("tetheredEntities").forGetter(TetherData::tetheredEntities),
-                    Codec.STRING.listOf().fieldOf("blacklistEntities").forGetter(TetherData::blacklistedEntities),
-                    Codec.BOOL.fieldOf("autoAttackTethered").forGetter(TetherData::autoAttackTethered),
-                    Codec.BOOL.fieldOf("tetherChunkTicks").forGetter(TetherData::tetherChunkTicks)
+                    Codec.STRING.listOf().fieldOf("tethered_entities").forGetter(TetherData::tetheredEntities),
+                    Codec.STRING.listOf().fieldOf("blacklist_entities").forGetter(TetherData::blacklistedEntities),
+                    Codec.BOOL.fieldOf("auto_attack_tethered").forGetter(TetherData::autoAttackTethered),
+                    Codec.BOOL.fieldOf("tether_chunk_ticks").forGetter(TetherData::tetherChunkTicks)
             ).apply(instance, TetherData::new)
     );
 

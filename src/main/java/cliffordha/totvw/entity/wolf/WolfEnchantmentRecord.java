@@ -4,7 +4,7 @@ import cliffordha.totvw.registry.VWEnchantments;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 
 //Yes, I know I'm lazy af :)
-public record WolfEnchantments(
+public record WolfEnchantmentRecord(
         boolean hasBenediction,
         boolean hasEnhancementKit,
 
@@ -25,8 +25,8 @@ public record WolfEnchantments(
         int getBlastProtection,
         int getMending
 ) {
-    public static WolfEnchantments of(Wolf wolf) {
-        return new WolfEnchantments(
+    public static WolfEnchantmentRecord of(Wolf wolf) {
+        return new WolfEnchantmentRecord(
                 VWEnchantments.getBenediction(wolf),
                 VWEnchantments.getEnhancementKit(wolf),
 

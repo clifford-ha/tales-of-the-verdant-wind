@@ -82,15 +82,11 @@ public class SkillManager {
         if (COUNTER_WOLF_ATROCITY > 0) player.removeAttached(PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND);
     }
 
-    public static void setWolfConfiguration(Wolf wolf) {
-        int CD_VERDANT_BLESSING = wolf.getAttachedOrElse(WolfAttachment.CD_BLESSING_OF_THE_VERDANT_WIND, 0);
-        int CD_BLOODLUST_SKILL_PARALYZE = wolf.getAttachedOrElse(WolfAttachment.CD_BLOODLUST_SKILL_PARALYZE, 0);
-        int CD_MIGHT_RUPTURE = wolf.getAttachedOrElse(WolfAttachment.CD_MIGHT_SKILL_RUPTURE, 0);
-        int CD_IGNORE_DMG = wolf.getAttachedOrElse(WolfAttachment.CD_IGNORE_HIGH_DAMAGE, 0);
-
-        if (CD_VERDANT_BLESSING > 0) wolf.removeAttached(WolfAttachment.CD_BLESSING_OF_THE_VERDANT_WIND);
-        if (CD_BLOODLUST_SKILL_PARALYZE > 0) wolf.removeAttached(WolfAttachment.CD_BLOODLUST_SKILL_PARALYZE);
-        if (CD_MIGHT_RUPTURE > 0) wolf.removeAttached(WolfAttachment.CD_MIGHT_SKILL_RUPTURE);
-        if (CD_IGNORE_DMG > 0) wolf.removeAttached(WolfAttachment.CD_IGNORE_HIGH_DAMAGE);
+    public static void resetWolfCooldowns(Wolf wolf) {
+        wolf.removeAttached(WolfAttachment.CD_BLESSING_OF_THE_VERDANT_WIND);
+        wolf.removeAttached(WolfAttachment.CD_BLOODLUST_SKILL_PARALYZE);
+        wolf.removeAttached(WolfAttachment.CD_MIGHT_SKILL_RUPTURE);
+        wolf.removeAttached(WolfAttachment.CD_IGNORE_HIGH_DAMAGE);
+        wolf.removeAttached(WolfAttachment.CD_WOLF_FRAGMENT_SUMMON);
     }
 }

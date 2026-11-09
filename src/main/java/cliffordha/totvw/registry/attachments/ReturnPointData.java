@@ -16,9 +16,9 @@ import org.jspecify.annotations.Nullable;
 public record ReturnPointData(ResourceKey<Level> levelKey, BlockPos pos, Boolean recordAfter) {
     public static final Codec<ReturnPointData> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    Level.RESOURCE_KEY_CODEC.fieldOf("levelKey").forGetter(ReturnPointData::levelKey),
+                    Level.RESOURCE_KEY_CODEC.fieldOf("level_key").forGetter(ReturnPointData::levelKey),
                     BlockPos.CODEC.fieldOf("pos").forGetter(ReturnPointData::pos),
-                    Codec.BOOL.optionalFieldOf("recordAfter", false).forGetter(ReturnPointData::recordAfter)
+                    Codec.BOOL.optionalFieldOf("record_after", false).forGetter(ReturnPointData::recordAfter)
             ).apply(instance, ReturnPointData::new)
     );
     public static final ReturnPointData DEFAULT = new ReturnPointData(VWDimensions.NONE, BlockPos.ZERO, true);

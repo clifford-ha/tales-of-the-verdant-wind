@@ -7,6 +7,7 @@
     "CropsBlockMixin",
     "IronGolemEntityMixin",
     "ItemsMixin",
+    "LivingEntityMixin",
     "PlayerEntityMixin",
     "PowderSnowBlockMixin",
     "TamableAnimalMixin",
@@ -22,6 +23,7 @@
   },
   "client": [
     "LivingEntityRendererMixin",
+    "LivingEntityRenderStateMixin",
     "misc.ArrowNameColorMixin",
     "misc.EffectNameColorMixin",
     "misc.EnchantmentNameColorMixin"

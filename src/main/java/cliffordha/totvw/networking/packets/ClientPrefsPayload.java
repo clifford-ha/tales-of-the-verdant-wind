@@ -10,6 +10,7 @@ import net.minecraft.resources.Identifier;
 public record ClientPrefsPayload(
         boolean showAtrocityCounter,
         boolean enableNotifiers,
+        boolean wolfEffectIndicators,
 
         int benedictionLowHealthThreshold,
         boolean benedictionShareStack,
@@ -27,6 +28,7 @@ public record ClientPrefsPayload(
             StreamCodec.composite(
                     ByteBufCodecs.BOOL, ClientPrefsPayload::showAtrocityCounter,
                     ByteBufCodecs.BOOL, ClientPrefsPayload::enableNotifiers,
+                    ByteBufCodecs.BOOL, ClientPrefsPayload::wolfEffectIndicators,
 
                     ByteBufCodecs.INT, ClientPrefsPayload::benedictionLowHealthThreshold,
                     ByteBufCodecs.BOOL, ClientPrefsPayload::benedictionShareStack,

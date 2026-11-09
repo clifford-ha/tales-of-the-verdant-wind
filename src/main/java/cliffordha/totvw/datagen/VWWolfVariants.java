@@ -17,10 +17,19 @@ import net.minecraft.world.level.biome.Biome;
 public class VWWolfVariants {
     public static final ResourceKey<WolfVariant> VERDANT_SNOWY = create("verdant_snowy");
     public static final ResourceKey<WolfVariant> VERDANT_BLACK = create("verdant_black");
+    public static final ResourceKey<WolfVariant> FRAGMENTED = create("fragmented");
 
     public static void bootstrap(BootstrapContext<WolfVariant> context) {
         register(context, VERDANT_SNOWY, "verdant_snowy", VWBiomeTags.IS_VERDANT_MOUNTAINS);
         register(context, VERDANT_BLACK, "verdant_black", VWBiomeTags.IS_VERDANT_FOREST);
+
+        Identifier fragmented = TOTVW.registerID("entity/wolf/wolf_soul_fragment");
+        WolfVariant.AssetInfo fragmentedAsset = new WolfVariant.AssetInfo(new ClientAsset.ResourceTexture(fragmented), new ClientAsset.ResourceTexture(fragmented), new ClientAsset.ResourceTexture(fragmented));
+        context.register(FRAGMENTED, new WolfVariant(
+                fragmentedAsset,
+                fragmentedAsset,
+                SpawnPrioritySelectors.EMPTY
+        ));
     }
 
     private static ResourceKey<WolfVariant> create(String name) {
@@ -36,12 +45,12 @@ public class VWWolfVariants {
     }
 
     private static void register(final BootstrapContext<WolfVariant> context, final ResourceKey<WolfVariant> name, final String fileName, final SpawnPrioritySelectors selectors) {
-        Identifier wildTexture = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "entity/wolf/wolf_" + fileName);
-        Identifier tameTexture = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "entity/wolf/wolf_" + fileName + "_tame");
-        Identifier angryTexture = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID,"entity/wolf/wolf_" + fileName + "_angry");
-        Identifier babyTexture = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID,"entity/wolf/wolf_" + fileName + "_baby");
-        Identifier tameBabyTexture = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID, "entity/wolf/wolf_" + fileName + "_tame_baby");
-        Identifier angryBabyTexture = Identifier.fromNamespaceAndPath(TOTVW.MOD_ID,"entity/wolf/wolf_" + fileName + "_angry_baby");
+        Identifier wildTexture = TOTVW.registerID("entity/wolf/wolf_" + fileName);
+        Identifier tameTexture = TOTVW.registerID("entity/wolf/wolf_" + fileName + "_tame");
+        Identifier angryTexture = TOTVW.registerID("entity/wolf/wolf_" + fileName + "_angry");
+        Identifier babyTexture = TOTVW.registerID("entity/wolf/wolf_" + fileName + "_baby");
+        Identifier tameBabyTexture = TOTVW.registerID("entity/wolf/wolf_" + fileName + "_tame_baby");
+        Identifier angryBabyTexture = TOTVW.registerID("entity/wolf/wolf_" + fileName + "_angry_baby");
         context.register(name, new WolfVariant(new WolfVariant.AssetInfo(new ClientAsset.ResourceTexture(wildTexture), new ClientAsset.ResourceTexture(tameTexture), new ClientAsset.ResourceTexture(angryTexture)), new WolfVariant.AssetInfo(new ClientAsset.ResourceTexture(babyTexture), new ClientAsset.ResourceTexture(tameBabyTexture), new ClientAsset.ResourceTexture(angryBabyTexture)), selectors));
     }
 }

@@ -65,7 +65,7 @@ public class VWEffectsHandbook {
     }
 
 
-    public static String[] EFFECTS_HANDBOOK_CONTENTS() {
+    public static String EFFECTS_HANDBOOK_CONTENTS() {
         return addPage(fText(BOLD, "INTRODUCTION") + nextLine
                 + "TOTVW: Wolf Additions introduces several custom effects that are mostly utilized by the Wolf ATK Effects enchantment."
                 + nextParagraph

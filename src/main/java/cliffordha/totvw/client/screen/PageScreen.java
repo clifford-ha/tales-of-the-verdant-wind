@@ -1,5 +1,6 @@
 package cliffordha.totvw.client.screen;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -20,13 +22,14 @@ public class PageScreen extends Screen {
     public static final int COLOR_TEXT = 0xFFFFFFFF;
     public static final int COLOR_SCROLLBAR_TRACK = 0x33FFFFFF;
     public static final int COLOR_SCROLLBAR_THUMB = 0xAAFFFFFF;
-    private static final float PADDING_RATIO = 0.05F;
-    private static final int PADDING = 10;
+    public static final float PADDING_RATIO = 0.05F;
+    public static final int PADDING = 10;
+    public static final int XY_SIZE = 20;
 
     private final String pageTitle;
     private List<String> pages;
     private final List<FormattedCharSequence> allLines = new ArrayList<>();
-    private final @Nullable Supplier<String[]> liveSupplier;
+    private final @Nullable Supplier<String> liveSupplier;
     private int textAreaWidth;
     private int refreshTimer = 0;
 
@@ -47,17 +50,21 @@ public class PageScreen extends Screen {
     private static final int scrollbarWidth = 6;
     private int scrollbarHeight;
 
-    public PageScreen(String pageTitle, String... pages) {
+    private static Screen parent;
+
+    public PageScreen(String pageTitle, Supplier<String> liveSupplier) {
         super(Component.literal(pageTitle));
         this.pageTitle = pageTitle;
-        this.pages = Arrays.asList(pages);
-        this.liveSupplier = null;
-    }
-    public PageScreen(String pageTitle, Supplier<String[]> liveSupplier) {
-        super(Component.literal(pageTitle));
-        this.pageTitle = pageTitle;
-        this.pages = Arrays.asList(liveSupplier.get());
+        this.pages = Collections.singletonList(liveSupplier.get());
         this.liveSupplier = liveSupplier;
+        parent = null;
+    }
+    public PageScreen(Screen callback, String pageTitle, Supplier<String> liveSupplier) {
+        super(Component.literal(pageTitle));
+        this.pageTitle = pageTitle;
+        this.pages = Collections.singletonList(liveSupplier.get());
+        this.liveSupplier = null;
+        parent = callback;
     }
 
     @Override
@@ -67,14 +74,17 @@ public class PageScreen extends Screen {
         this.leftPos = Mth.floor(this.width * PADDING_RATIO);
         this.topPos = Mth.floor(this.height * PADDING_RATIO);
 
-        int xySize = 20;
-        int xposBTN = this.leftPos + this.panelWidth - xySize - 3;
+        int xposBTN = this.leftPos + this.panelWidth - XY_SIZE - 3;
         int yposBTN = this.topPos + 3;
 
         this.addRenderableWidget(
-                Button.builder(Component.literal("✖"), b -> this.onClose())
-                        .bounds(xposBTN, yposBTN, xySize, xySize)
-                        .build()
+                Button.builder(Component.literal("✖"), b -> {
+                    if (parent != null) {
+                        Minecraft.getInstance().setScreenAndShow(parent);
+                        return;
+                    }
+                    this.onClose();
+                }).bounds(xposBTN, yposBTN, XY_SIZE, XY_SIZE).build()
         );
 
         this.textAreaWidth = this.panelWidth - (PADDING * 2) - scrollbarWidth - 6;
@@ -98,16 +108,8 @@ public class PageScreen extends Screen {
         int x = this.leftPos;
         int y = this.topPos;
 
-        if (liveSupplier != null) {
-            graphics.fill(0, 0, this.width, this.height, COLOR_SHADE);
-            graphics.fillGradient(0, 0, this.width, this.height, COLOR_BG, COLOR_SHADE);
-
-        } else {
-            int fillX = x + this.panelWidth;
-            int fillY = y + this.panelHeight;
-            graphics.fill(0, 0, this.width, this.height, COLOR_SHADE);
-            graphics.fill(x, y, fillX, fillY, COLOR_SHADE);
-        }
+        graphics.fill(0, 0, this.width, this.height, COLOR_SHADE);
+        graphics.fillGradient(0, 0, this.width, this.height, COLOR_BG, COLOR_SHADE);
 
         // title separator
         graphics.fill(x + PADDING, y + 26, x + this.panelWidth - PADDING, y + 27, COLOR_LINE);
@@ -152,7 +154,7 @@ public class PageScreen extends Screen {
         if (++this.refreshTimer < 5) return;
         this.refreshTimer = 0;
 
-        List<String> next = Arrays.asList(this.liveSupplier.get());
+        List<String> next = Collections.singletonList(this.liveSupplier.get());
         if (next.equals(this.pages)) return;
 
         int keepScroll = this.scrollOffset;
