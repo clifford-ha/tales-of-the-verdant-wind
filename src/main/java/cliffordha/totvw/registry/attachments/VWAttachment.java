@@ -63,6 +63,9 @@ public class VWAttachment {
             WolfAttachment.CD_WOLF_FRAGMENT_SUMMON
     );
     public static final List<AttachmentType<?>> PLAYER_ATTACHMENTS = List.of(
+            PlayerAttachment.RANDOM_INT_10,
+            PlayerAttachment.CD_ALLIANCE_REQUEST,
+
             PlayerAttachment.RECEIVED_ENCHANTMENTS_HANDBOOK,
             PlayerAttachment.RECEIVED_EFFECTS_HANDBOOK,
             PlayerAttachment.RECEIVED_ITEMS_HANDBOOK,

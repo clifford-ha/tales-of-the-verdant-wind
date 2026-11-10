@@ -39,7 +39,9 @@ public record ClientPrefsPayload(
                     ByteBufCodecs.BOOL, ClientPrefsPayload::benedictionWolfTPAll,
                     ClientPrefsPayload::new
             );
-    @Override public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

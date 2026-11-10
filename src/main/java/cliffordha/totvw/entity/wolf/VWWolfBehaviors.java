@@ -14,6 +14,7 @@ import cliffordha.totvw.registry.attachments.TetherData;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.tag.VWBiomeTags;
+import cliffordha.totvw.util.TextUtil;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -133,46 +134,40 @@ public class VWWolfBehaviors {
         }));
     }
     private static void registerSharedRules() {
-        ON_DAMAGE_RULES.add(WolfBehaviorRule.forAny(
-                TickCondition.alwaysTrue(),
-                (wolf, level) -> {
-                    if (wolf.isWearingBodyArmor()) {
-                        WolfEffects.onPostAttack(wolf, level, null, true);
-                    }
-                    if (Runestone.hasRunestone(wolf)) {
-                        onAttackRunestoneEffects(wolf, level);
-                    }
+        ON_DAMAGE_RULES.add(WolfBehaviorRule.forAny(TickCondition.alwaysTrue(), (wolf, level) -> {
+            if (wolf.isWearingBodyArmor()) {
+                WolfEffects.onPostAttack(wolf, level, null, true);
+            }
+            if (Runestone.hasRunestone(wolf)) {
+                onAttackRunestoneEffects(wolf, level);
+            }
+        }));
+        TICK_RULES.add(WolfBehaviorRule.forTamed(TickCondition.tick(0, 3), (wolf, level) ->  {
+            LivingEntity owner = wolf.getOwner();
+            if (owner == null) return;
+
+            float HEALTH_THRESHOLD = owner.getAttachedOrElse(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD,
+                    VWConfig.get().SYNCED_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;
+
+            if (wolf.getHealth() <= wolf.getMaxHealth() * HEALTH_THRESHOLD) {
+                VerdantWindBlessing.triggerBenedictionFromTick(wolf);
+            }
+
+            if (VWConfig.get().SERVER_WOLF_BEHAVIOUR_EXTENSIONS) {
+                boolean shouldBiteOffLeash = wolf.isAngry()
+                        && wolf.getTarget() != null
+                        && wolf.distanceTo(wolf.getTarget()) < 6;
+
+                if (shouldBiteOffLeash) {
+                    RevivalByProxy.untetherWolf(wolf);
                 }
-        ));
-        TICK_RULES.add(WolfBehaviorRule.forTamed(
-                TickCondition.tick(0, 3),
-                (wolf, level) ->  {
-                    LivingEntity owner = wolf.getOwner();
-                    if (owner == null) return;
 
-                    float HEALTH_THRESHOLD = owner.getAttachedOrElse(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD,
-                            VWConfig.get().SYNCED_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;
-
-                    if (wolf.getHealth() <= wolf.getMaxHealth() * HEALTH_THRESHOLD) {
-                        VerdantWindBlessing.triggerBenedictionFromTick(wolf);
-                    }
-
-                    if (VWConfig.get().SERVER_WOLF_BEHAVIOUR_EXTENSIONS) {
-                        boolean shouldBiteOffLeash = wolf.isAngry()
-                                && wolf.getTarget() != null
-                                && wolf.distanceTo(wolf.getTarget()) < 6;
-
-                        if (shouldBiteOffLeash) {
-                            RevivalByProxy.untetherWolf(wolf);
-                        }
-
-                        boolean tryToTeleport = wolf.isInWater() && wolf.distanceToSqr(owner) > 6;
-                        if (tryToTeleport) {
-                            wolf.tryToTeleportToOwner();
-                        }
-                    }
+                boolean tryToTeleport = wolf.isInWater() && wolf.distanceToSqr(owner) > 6;
+                if (tryToTeleport) {
+                    wolf.tryToTeleportToOwner();
                 }
-        ));
+            }
+        }));
         TICK_RULES.add(WolfBehaviorRule.forAny(TickCondition.tick(0, 30), (wolf, level) -> {
             if (!isInBiome(wolf, VWBiomeTags.FOREST_WHERE_WOLVES_HOWL)) return;
             if (wolf.isAngry()) return;
@@ -184,14 +179,11 @@ public class VWWolfBehaviors {
             }
         }
         ));
-        TICK_RULES.add(WolfBehaviorRule.forAny(
-                TickCondition.tick(1, 0),
-                (player, level) -> {
-                    if (player.getHealth() <= player.getMaxHealth() * 0.8) {
-                        runNaturalHealOnTick(player, level);
-                    }
-                }
-        ));
+        TICK_RULES.add(WolfBehaviorRule.forAny(TickCondition.tick(1, 0), (player, level) -> {
+            if (player.getHealth() <= player.getMaxHealth() * 0.8) {
+                runNaturalHealOnTick(player, level);
+            }
+        }));
         TICK_RULES.add(WolfBehaviorRule.forAny(TickCondition.tick(), (wolf, level) -> {
             WolfEffects.onTick(wolf, level);
 
@@ -228,7 +220,7 @@ public class VWWolfBehaviors {
     private static void warnOwner(Wolf wolf, ServerLevel level) {
         if (wolf.getAirSupply() <= wolf.getMaxAirSupply() * 0.5 && wolf.getAirSupply() > 0.0f) {
             wolf.makeSound(new SoundEvent(Identifier.withDefaultNamespace("entity.wolf.whine"), Optional.of(16.0f)));
-            sendToChat(wolf, VWColors.MIGHT_MUTED, "[" + wolfName(wolf) + "] My air supply is about to run out...");
+            sendToChat(wolf, VWColors.MIGHT_MUTED, TextUtil.nameWrap(wolf) + " My air supply is about to run out...");
             playNotification(wolf);
         }
 
@@ -239,7 +231,7 @@ public class VWWolfBehaviors {
         VerdantWindBlessing.applyBenedictionEffects(player, false);
 
         player.heal(VerdantWindBlessing.triggerHeal(wolf, player));
-        ExtUtil.sendToChat(wolf, VWColors.VERDANT_WIND, true, wolfName(wolf) + " has granted you the §nVerdant Wind's Blessing§r");
+        ExtUtil.sendToChat(wolf, VWColors.VERDANT_WIND, true, wolf.getPlainTextName() + " has granted you the §nVerdant Wind's Blessing§r");
 
         sendParticles(VWParticles.BENEDICTION_TRIGGER, level, player.blockPosition(), 6, 0.5);
         VerdantWindBlessing.verdantBlessingAfterEffects(level, wolf);
@@ -258,10 +250,6 @@ public class VWWolfBehaviors {
         float healNatural = (inVerdantBiomes ? 2.0f : 1.0f) + Math.max(level.getRandom().nextInt(), 2);
         float healAdditional = wolf.getOwner() != null ? 1.0f : 0.0f;
         wolf.heal(healNatural + healAdditional);
-    }
-
-    public static String wolfName(Wolf wolf) {
-        return "§d" + wolf.getPlainTextName() + "§r";
     }
 
     public static final ThreadLocal<LivingEntity> CURRENT_VICTIM = new ThreadLocal<>();

@@ -107,6 +107,7 @@ public class VWPlayerBehaviors {
             if (VWConfig.get().SERVER_SKILL_COOLDOWNS) {
                 depleteCooldown(player, PlayerAttachment.CD_BLESSING_OF_THE_VERDANT_WIND);
                 depleteCooldown(player, PlayerAttachment.CD_HAVOC);
+                depleteCooldown(player, PlayerAttachment.CD_ALLIANCE_REQUEST);
             } else {
                 setPlayerConfiguration(player);
             }

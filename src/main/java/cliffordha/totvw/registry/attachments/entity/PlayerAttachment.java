@@ -16,6 +16,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 import static cliffordha.totvw.registry.attachments.AttachmentUtil.*;
 
@@ -23,6 +24,7 @@ public class PlayerAttachment {
     private static final String P = "player_";
 
     public static final AttachmentType<Integer> RANDOM_INT_10 = registerUnsyncedInt("random_int_10");
+    public static final AttachmentType<Integer> CD_ALLIANCE_REQUEST = registerUnsyncedInt("cd_alliance_request");
 
     public static final AttachmentType<Integer> RECEIVED_ENCHANTMENTS_HANDBOOK = registerInt(P + "received_enchantments_handbook", false);
     public static final AttachmentType<Integer> RECEIVED_EFFECTS_HANDBOOK = registerInt(P + "received_effects_handbook", false);
@@ -122,5 +124,21 @@ public class PlayerAttachment {
         boolean checkB = getTrustedPlayers(other).stream().anyMatch(data -> data.uuid().equals(player.getUUID()));
 
         return checkA && checkB;
+    }
+    public static void removeTrustedPlayer(Player player, Player other) {
+        List<NameHolder> newData = new ArrayList<>(getTrustedPlayers(player));
+        newData.removeIf(data -> data.uuid().equals(other.getUUID()));
+        player.setAttached(TRUSTED_PLAYERS, List.copyOf(newData));
+    }
+    public static void removeTrustedPlayer(Player player, UUID other) {
+        List<NameHolder> newData = new ArrayList<>(getTrustedPlayers(player));
+        newData.removeIf(data -> data.uuid().equals(other));
+        player.setAttached(TRUSTED_PLAYERS, List.copyOf(newData));
+    }
+    public static void addTrustedPlayer(Player player, Player other) {
+        if (isTrusted(player, other)) return;
+        List<NameHolder> newData = new ArrayList<>(getTrustedPlayers(player));
+        newData.add(NameHolder.of(other));
+        player.setAttached(TRUSTED_PLAYERS, List.copyOf(newData));
     }
 }

@@ -8,7 +8,6 @@ import cliffordha.totvw.registry.VWColors;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
-import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.worldgen.dimension.VWDimensions;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -116,7 +115,9 @@ public class ArcticWindsEffect {
     public static void applyThermalBurn(ServerLevel level, Wolf wolf, LivingEntity entity, float initial) {
         float damage =  getDMGValue(entity, initial);
         entity.hurtServer(level, VWDamageTypes.thermalBurn(level), damage);
-        setAffliction(entity, -2);
+        if (afflictionStack(entity) > 5) {
+            setAffliction(entity, -5);
+        }
         int scorched = entity.getAttachedOrElse(VWAttachment.SCORCHING_HEAT, 0);
         if (scorched >= 3) {
             entity.setAttached(VWAttachment.SCORCHING_HEAT, scorched - 3);

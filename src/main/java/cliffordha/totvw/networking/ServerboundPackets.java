@@ -16,7 +16,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,27 @@ public class ServerboundPackets {
             if (WolfBenedictionHelper.loadWolfFiles(player, level)) {
                 WolfBenedictionHelper.deleteLoadedWolfFiles(player, level);
             }
+        });
+        ServerPlayNetworking.registerGlobalReceiver(ProcessAlliancePayload.TYPE, (payload, context) -> {
+            ServerPlayer player = context.player();
+            player.level().getServer().execute(() -> {
+                Entity entity = player.level().getEntity(payload.uuid());
+
+                if (payload.remove()) {
+                    PlayerAttachment.removeTrustedPlayer(player, payload.uuid());
+                    if (entity instanceof Player other) {
+                        PlayerAttachment.removeTrustedPlayer(other, player);
+                    }
+                    return;
+                }
+                if (!(entity instanceof Player other)) {
+                    sendToChat(player, VWColors.DEFAULT, false, "Player not found");
+                    return;
+                }
+                PlayerAttachment.addTrustedPlayer(player, other);
+                sendToChat(player,false, "You now trust " + other.getPlainTextName());
+                sendToChat(other, false, "You now trust " + player.getPlainTextName());
+            });
         });
         ServerPlayNetworking.registerGlobalReceiver(WolfEventsPayload.TYPE, (payload, context) -> {
             ServerPlayer player = context.player();

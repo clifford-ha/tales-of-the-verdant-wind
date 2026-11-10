@@ -47,15 +47,13 @@ public class ConfigScreen extends Screen {
     private record Header(String label) implements ConfigScreen.Entry {
         public String description() { return ""; }
     }
-
     private record DescEntry(String label, String description) implements ConfigScreen.Entry {}
     private record BoolEntry(String label, String description, BooleanSupplier get, Consumer<Boolean> set) implements ConfigScreen.Entry {}
     private record IntEntry(String label, String description, IntSupplier get, IntConsumer set, int min, int max, int step) implements ConfigScreen.Entry {}
 
     // TEXTURE RELATED
-    private static int ROW_W = 250;
     private static final int ROW_H = 20;
-    private static final int VALUE_W = 80;
+    private static final int VALUE_W = 90;
     private static final int COLOR_HOVER = 0x33FFFFFF;
 
     private static final Identifier ICON = TOTVW.registerID("textures/gui/totvw_translucent.png");
@@ -76,7 +74,18 @@ public class ConfigScreen extends Screen {
     private boolean isFromDebug = false;
 
     private int scroll = 0;
-    private int listLeft, listTop, listBottom;
+    private int listTop, listBottom;
+
+    private static final int BTN_H = 20;
+    private static final int GAP = 8;
+
+    private int contentLeft, contentRight, contentTop, contentBottom;
+    private int optionsLeft, optionsRight;
+    private int scrollSlotLeft, scrollSlotRight, scrollbarX;
+    private int descLeft, descRight;
+    private int bannerX, bannerY, bannerW, bannerH;
+    private int buttonY;
+
     private final Screen parent;
 
     public static void create() {
@@ -99,15 +108,11 @@ public class ConfigScreen extends Screen {
 
     @Override
     protected void init() {
-        ROW_W = Mth.ceil(this.width * 0.6f);
-        listLeft = (int) ((((double) this.width / 2) - (double) ROW_W / 2) * 0.3);
-        listTop = Mth.ceil(this.height * 0.2f);
-        listBottom = this.height - Mth.ceil(this.height * 0.15f);
-        scroll = Mth.clamp(scroll, 0, maxScroll());
+        layout();
 
         this.addRenderableWidget(
                 Button.builder(text("Re-sync"), b -> this.onClose())
-                        .bounds(listLeft, Mth.ceil(this.height * 0.85f), 75, 20)
+                        .bounds(optionsLeft, buttonY, 75, BTN_H)
                         .build()
         );
         this.addRenderableWidget(
@@ -126,28 +131,22 @@ public class ConfigScreen extends Screen {
                             b.setMessage(text(nextLabel()));
                             b.setTooltip(Tooltip.create(text(nextTooltip())));
                             buildEntries();
+                            layout();
                         })
                         .tooltip(Tooltip.create(text(nextTooltip())))
-                        .bounds(listLeft + 80, Mth.ceil(this.height * 0.85f), 75, 20)
+                        .bounds(optionsLeft + 80, buttonY, 75, BTN_H)
                         .build()
         );
         this.addRenderableWidget(
                 Button.builder(Component.literal("?").withStyle(ChatFormatting.BOLD), b -> {
-                    listShown = ListShown.INFO;
-                    buildEntries();
-                })
+                            listShown = ListShown.INFO;
+                            buildEntries();
+                            layout();
+                        })
                         .tooltip(Tooltip.create(text("Check info")))
-                        .bounds(listLeft + 160, Mth.ceil(this.height * 0.85f), 20, 20)
+                        .bounds(optionsLeft + 160, buttonY, 20, BTN_H)
                         .build()
         );
-    }
-
-    private String nextLabel() {
-        if (isFromDebug) return lastListShown.getLabel();
-        return (listShown == ListShown.CLIENT ? ListShown.SERVER : ListShown.CLIENT).getLabel();
-    }
-    private String nextTooltip() {
-        return isFromDebug ? "Click to switch to default" : "Hold shift to switch to debug mode instead";
     }
 
     @Override
@@ -158,72 +157,34 @@ public class ConfigScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        int TITLE_COLOR = ARGB.color(1.0f, VWColors.RUNESTONE_TETHER);
         int COLOR_SHADE = ARGB.color(0.4f, 0x001822);
         int COLOR_BG = ARGB.color(0.7f, 0x001822);
         graphics.fillGradient(0, 0, this.width, this.height, COLOR_BG, COLOR_SHADE);
 
-        int halfH = Mth.ceil(this.height * 0.5f);
-        int halfX = Mth.ceil(this.width * 0.5f);
-        graphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                ICON,
-                (this.width / 2) - halfH / 2, (this.height / 2) - halfH / 2,
-                0.0F, 0.0F,
-                halfH, halfH, // drawn size
-                ICON_TEX_W, ICON_TEX_H, // full texture size
-                ICON_TEX_W, ICON_TEX_H // full texture size
-        );
+        int iconSize = Mth.ceil(this.height * 0.5f);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, ICON,
+                (this.width - iconSize) / 2, (this.height - iconSize) / 2,
+                0.0F, 0.0F, iconSize, iconSize,
+                ICON_TEX_W, ICON_TEX_H, ICON_TEX_W, ICON_TEX_H);
+
         graphics.fill(0, 0, this.width, this.height, COLOR_BG);
 
-        int margin = 10;
-        int maxW = this.width - margin * 2;
-        int maxH = this.height / 4;
-
-        float scale = Math.min((float) maxW / BANNER_TEX_W, (float) maxH / BANNER_TEX_H);
-        float rescale = listShown == ListShown.INFO ? scale * 1.3f : scale * 0.7f;
-
-        int w = Math.max(1, (int) (BANNER_TEX_W * rescale));
-        int h = Math.max(1, (int) (BANNER_TEX_H * rescale));
-        int bannerXPos;
-        int bannerYPos;
-        if (listShown == ListShown.INFO) {
-            if (this.width <= 1080) {
-                rescale *= 0.8f;
-                w = Math.max(1, (int) (BANNER_TEX_W * rescale));
-                h = Math.max(1, (int) (BANNER_TEX_H * rescale));
-            }
-            bannerXPos = (this.width / 2) - w / 2;
-            bannerYPos = Mth.ceil(this.height * 0.15f);
-        } else {
-            bannerXPos = this.listLeft - 11;
-            bannerYPos = Mth.ceil(this.height * 0.1f) - margin;
-        }
-        graphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                BANNER,
-                bannerXPos, bannerYPos,
-                0.0F, 0.0F,
-                w, h, // drawn size
-                BANNER_TEX_W, BANNER_TEX_H, // full texture size
-                BANNER_TEX_W, BANNER_TEX_H // full texture size
-        );
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BANNER,
+                bannerX, bannerY, 0.0F, 0.0F, bannerW, bannerH,
+                BANNER_TEX_W, BANNER_TEX_H, BANNER_TEX_W, BANNER_TEX_H);
 
         int end = Math.min(entries.size(), scroll + visibleRows());
 
         if (listShown == ListShown.INFO) {
-            int spacing = 0;
+            int centerX = (contentLeft + contentRight) / 2;
+            int y = listTop;
             for (int i = scroll; i < end; i++) {
                 ConfigScreen.Entry e = entries.get(i);
-
-                if (e instanceof ConfigScreen.Header header) {
-                    //graphics.text(this.font, e.label(), listLeft, textY, 0xFF000000 | VWColors.VERDANT_WIND, false);
-                } else {
-                    graphics.text(this.font, e.label(), halfX - (font.width(e.label())) / 2, Mth.ceil(this.height * 0.4) + spacing, 0xFFFFFFFF, false);
+                if (!(e instanceof ConfigScreen.Header)) {
+                    graphics.text(this.font, e.label(), centerX - font.width(e.label()) / 2, y, 0xFFFFFFFF, false);
                 }
-                spacing += 12;
+                y += 12;
             }
-
             super.extractRenderState(graphics, mouseX, mouseY, a);
             return;
         }
@@ -234,12 +195,11 @@ public class ConfigScreen extends Screen {
             ConfigScreen.Entry e = entries.get(i);
             int textY = y + (ROW_H - this.font.lineHeight) / 2;
 
-            if (e instanceof ConfigScreen.Header header) {
-                graphics.text(this.font, e.label(), listLeft, textY, 0xFF000000 | VWColors.VERDANT_WIND, false);
-
+            if (e instanceof ConfigScreen.Header) {
+                graphics.text(this.font, e.label(), optionsLeft, textY, 0xFF000000 | VWColors.VERDANT_WIND, false);
             } else {
-                if (i == hovered) graphics.fill(listLeft, y, ROW_W, y + ROW_H, COLOR_HOVER);
-                graphics.text(this.font, e.label(), listLeft + 4, textY, 0xFFFFFFFF, false);
+                if (i == hovered) graphics.fill(optionsLeft, y, optionsRight, y + ROW_H, COLOR_HOVER);
+                graphics.text(this.font, e.label(), optionsLeft + 8, textY, 0xFFFFFFFF, false);
 
                 String value;
                 int color;
@@ -252,70 +212,48 @@ public class ConfigScreen extends Screen {
                     value = "<  " + n.get().getAsInt() + "  >";
                     color = 0xFFFFFFFF;
                 }
-                int valueX = listLeft + ROW_W - VALUE_W + (60 - this.font.width(value)) / 2;
-                graphics.text(this.font, value, valueX, textY, color, false);
+                int valueLeft = optionsRight - VALUE_W;
+                graphics.text(this.font, value, valueLeft + (VALUE_W - this.font.width(value)) / 2, textY, color, false);
             }
             y += ROW_H;
         }
 
         // scrollbar
         if (maxScroll() > 0) {
-            int x = scrollbarX();
-            graphics.fill(x, listTop, x + SCROLLBAR_W, listBottom, 0x33FFFFFF);
+            graphics.fill(scrollbarX, listTop, scrollbarX + SCROLLBAR_W, listBottom, 0x33FFFFFF);
             int ty = thumbY();
-            graphics.fill(x, ty, x + SCROLLBAR_W, ty + thumbHeight(),
+            graphics.fill(scrollbarX, ty, scrollbarX + SCROLLBAR_W, ty + thumbHeight(),
                     draggingScrollbar ? 0xFFFFFFFF : 0xAAFFFFFF);
         }
 
-        int maxX = (int) (this.width * 0.25f);
+        // description panel
+        int descW = Math.max(20, descRight - descLeft);
         String note;
-        if (hovered >= 0) {
-            String desc = entries.get(hovered).description();
-            note = !desc.isEmpty() ? "DESCRIPTION" : "";
-            if (!desc.isEmpty()) {
-                List<FormattedText> wrapped = this.font.getSplitter()
-                        .splitLines(Component.translatable(desc), maxX, Style.EMPTY);
-
-                descriptionText(graphics, wrapped);
-            }
+        List<FormattedText> wrapped;
+        if (hovered >= 0 && !entries.get(hovered).description().isEmpty()) {
+            note = "DESCRIPTION";
+            wrapped = this.font.getSplitter().splitLines(Component.translatable(entries.get(hovered).description()), descW, Style.EMPTY);
+        } else if (hovered >= 0) {
+            note = "";
+            wrapped = List.of();
         } else {
             note = "NOTE :3";
-            List<FormattedText> wrapped = this.font.getSplitter()
-                    .splitLines(text(
-                            switch (listShown) {
-                                case CLIENT -> "These options are automatically synced to the server.";
-                                case SERVER -> "For server-side only. Changes to these options will only apply if you are the host or when in singleplayer mode";
-                                case DEBUG -> "For debugging purposes only (server-side)";
-                                case INFO -> "Mod Info";
-                            }
-                    ), maxX, Style.EMPTY);
-
-            descriptionText(graphics, wrapped);
+            wrapped = this.font.getSplitter().splitLines(text(
+                    switch (listShown) {
+                        case CLIENT -> "These options are automatically synced to the server.";
+                        case SERVER -> "For server-side only. Changes to these options will only apply if you are the host or when in singleplayer mode";
+                        case DEBUG -> "For debugging purposes only (server-side)";
+                        case INFO -> "Mod Info";
+                    }), descW, Style.EMPTY);
         }
-        graphics.text(
-                this.font, note,
-                Mth.ceil(this.width * 0.675f), Mth.ceil(this.height * 0.2f),
-                0xffffffff,
-                false
-        );
+        graphics.text(this.font, note, descLeft, listTop, 0xFFFFFFFF, false);
+        int dy = listTop + 16;
+        for (FormattedText line : wrapped) {
+            graphics.text(this.font, line.getString(), descLeft, dy, 0xFFFFFFFF, false);
+            dy += 10;
+        }
 
         super.extractRenderState(graphics, mouseX, mouseY, a);
-    }
-
-    private void descriptionText(GuiGraphicsExtractor graphics, List<FormattedText> wrapped) {
-        int leftStart = Mth.ceil(this.width * 0.675f);
-        int ySpacing = 16;
-        for (FormattedText line : wrapped) {
-
-            graphics.text(
-                    this.font, line.getString(),
-                    leftStart, Mth.ceil(this.height * 0.2f) + ySpacing,
-                    0xffffffff,
-                    false
-            );
-
-            ySpacing += 10;
-        }
     }
 
     private void buildEntries() {
@@ -462,6 +400,57 @@ public class ConfigScreen extends Screen {
         }
         scroll = Mth.clamp(scroll, 0, maxScroll());
     }
+    private void layout() {
+        int marginX = Mth.floor(this.width * 0.07f);
+        int marginY = Mth.floor(this.height * 0.07f);
+
+        contentLeft = marginX;
+        contentRight = this.width - marginX;
+        contentTop = marginY;
+        contentBottom = this.height - marginY;
+        int contentW = contentRight - contentLeft;
+
+        int optionsW = Mth.floor(contentW * 0.65f);
+        int scrollW = Mth.floor(contentW * 0.05f);
+
+        optionsLeft = contentLeft;
+        optionsRight = optionsLeft + optionsW;
+
+        scrollSlotLeft = optionsRight;
+        scrollSlotRight = optionsRight + scrollW;
+        scrollbarX = scrollSlotLeft + (scrollW - SCROLLBAR_W) / 2;
+
+        descLeft = scrollSlotRight;
+        descRight = contentRight;
+
+        // banner
+        if (listShown == ListShown.INFO) {
+            float scale = Math.min(contentW * 0.8f / BANNER_TEX_W, this.height * 0.3f / BANNER_TEX_H);
+            bannerW = Math.max(1, (int) (BANNER_TEX_W * scale));
+            bannerH = Math.max(1, (int) (BANNER_TEX_H * scale));
+            bannerX = contentLeft + (contentW - bannerW) / 2;
+        } else {
+            float scale = Math.min((float) optionsW / BANNER_TEX_W, this.height * 0.2f / BANNER_TEX_H);
+            bannerW = Math.max(1, (int) (BANNER_TEX_W * scale));
+            bannerH = Math.max(1, (int) (BANNER_TEX_H * scale));
+            bannerX = Mth.ceil(this.width * 0.05);
+        }
+        bannerY = contentTop;
+
+        buttonY = contentBottom - BTN_H;
+        listTop = bannerY + Mth.ceil(bannerH * 0.75) + GAP;
+        int rows = Math.max(1, (buttonY - GAP - listTop) / ROW_H);
+        listBottom = listTop + rows * ROW_H;
+
+        scroll = Mth.clamp(scroll, 0, maxScroll());
+    }
+    private String nextLabel() {
+        if (isFromDebug) return lastListShown.getLabel();
+        return (listShown == ListShown.CLIENT ? ListShown.SERVER : ListShown.CLIENT).getLabel();
+    }
+    private String nextTooltip() {
+        return isFromDebug ? "Click to switch to default" : "Hold shift to switch to debug mode instead";
+    }
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
@@ -483,7 +472,7 @@ public class ConfigScreen extends Screen {
             return true;
         }
         if (e instanceof ConfigScreen.IntEntry n) {
-            double localX = mx - (listLeft + ROW_W - VALUE_W);
+            double localX = mx - (optionsRight - VALUE_W);
             if (localX < 0 || localX >= VALUE_W) return false;
             int delta = localX < VALUE_W / 2.0 ? -n.step() : n.step();
             n.set().accept(Mth.clamp(n.get().getAsInt() + delta, n.min(), n.max()));
@@ -524,20 +513,15 @@ public class ConfigScreen extends Screen {
         return Math.max(0, entries.size() - visibleRows());
     }
     private int rowAt(double mx, double my) {
-        if (mx < listLeft || mx >= ROW_W || my < listTop || my >= listBottom) return -1;
+        if (mx < optionsLeft || mx >= optionsRight || my < listTop || my >= listBottom) return -1;
         int index = scroll + (int) ((my - listTop) / ROW_H);
         return index >= 0 && index < entries.size() ? index : -1;
     }
-    private int scrollbarX() {
-        return Mth.ceil(listLeft * 0.35f) + ROW_W;
-    }
     private int thumbHeight() {
-        int trackH = listBottom - listTop;
-        return Math.max(12, (int) ((float) visibleRows() / entries.size() * trackH));
+        return Math.max(12, (int) ((float) visibleRows() / Math.max(1, entries.size()) * (listBottom - listTop)));
     }
     private int thumbY() {
-        int trackH = listBottom - listTop;
-        int travel = trackH - thumbHeight();
+        int travel = (listBottom - listTop) - thumbHeight();
         int max = maxScroll();
         return listTop + (max == 0 ? 0 : (int) ((float) scroll / max * travel));
     }
@@ -548,8 +532,7 @@ public class ConfigScreen extends Screen {
         scroll = Mth.clamp(Math.round(t * maxScroll()), 0, maxScroll());
     }
     private boolean isOverScrollbar(double mx, double my) {
-        int x = scrollbarX();
-        return maxScroll() > 0 && mx >= x && mx < x + SCROLLBAR_W && my >= listTop && my < listBottom;
+        return maxScroll() > 0 && mx >= scrollSlotLeft && mx < scrollSlotRight && my >= listTop && my < listBottom;
     }
 
     @Override

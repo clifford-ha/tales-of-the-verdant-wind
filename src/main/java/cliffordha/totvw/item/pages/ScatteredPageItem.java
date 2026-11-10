@@ -1,17 +1,10 @@
 package cliffordha.totvw.item.pages;
 
-import cliffordha.totvw.client.screen.EnchantmentHandbookScreen;
-import cliffordha.totvw.client.screen.PageScreen;
-import cliffordha.totvw.client.screen.WolfFragmentScreen;
-import cliffordha.totvw.client.screen.WolfPageScreen;
+import cliffordha.totvw.client.screen.*;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.entity.status.WolfStats;
 import cliffordha.totvw.item.pages.contents.FirstBookSet;
 import cliffordha.totvw.item.pages.contents.MiscBookSet;
-import cliffordha.totvw.item.pages.handbooks.VWEffectsHandbook;
-import cliffordha.totvw.item.pages.handbooks.VWEnchantmentsHandbook;
-import cliffordha.totvw.item.pages.handbooks.VWFeaturesHandbook;
-import cliffordha.totvw.item.pages.handbooks.VWItemsHandbook;
 import cliffordha.totvw.registry.VWColors;
 
 import net.fabricmc.api.EnvType;
@@ -105,11 +98,10 @@ public class ScatteredPageItem extends Item {
             switch (this.pageID) {
                 case -2 -> openStatScreen(player);
 
-                //case 2006 -> openScreen(ENCHANTMENTS_HANDBOOK_TITLE, VWEnchantmentsHandbook.ENCHANTMENTS_HANDBOOK_CONTENTS(player));
-                case 2006 -> EnchantmentHandbookScreen.create();
-                case 2007 -> openScreen(EFFECTS_HANDBOOK_TITLE, VWEffectsHandbook.EFFECTS_HANDBOOK_CONTENTS());
-                case 2008 -> openScreen(ITEMS_HANDBOOK_TITLE, VWItemsHandbook.ITEMS_HANDBOOK_CONTENTS());
-                case 2009 -> openScreen(FEATURES_HANDBOOK_TITLE, VWFeaturesHandbook.FEATURES_HANDBOOK_CONTENTS());
+                case 2006 -> HandbookScreen.create(0);
+                case 2007 -> HandbookScreen.create(1);
+                case 2008 -> HandbookScreen.create(2);
+                case 2009 -> HandbookScreen.create(3);
                 default -> openScreen(getTitle(player, pageID), getPages(player, pageID));
             }
         }
@@ -129,8 +121,9 @@ public class ScatteredPageItem extends Item {
         }
     }
 
+    @Environment(EnvType.CLIENT)
     public static void openStatScreen(Player player) {
-        setScreen(player.getPlainTextName(), () -> getPages(player, -2));
+        Minecraft.getInstance().setScreenAndShow(new PlayerPageScreen(player, player.getPlainTextName(), () -> getPages(player, -2)));
     }
 
     @Environment(EnvType.CLIENT)

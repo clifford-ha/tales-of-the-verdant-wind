@@ -86,6 +86,13 @@ public class TextUtil {
         return test ? isTrue : "";
     }
 
+    public static String bold(String value) {
+        return fText(BOLD, value);
+    }
+    public static String italic(String value) {
+        return fText(ITALIC, value);
+    }
+
     /** like a docx, format text **/
     public static String fText(FTextStyle formatter, String text) {
         return formatter.getMarker() + text + "§r";

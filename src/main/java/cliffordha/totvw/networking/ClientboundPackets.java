@@ -1,5 +1,6 @@
 package cliffordha.totvw.networking;
 
+import cliffordha.totvw.client.screen.AllianceConfirmationScreen;
 import cliffordha.totvw.client.screen.TetherScreen;
 import cliffordha.totvw.config.VWConfig;
 import cliffordha.totvw.networking.packets.*;
@@ -8,7 +9,9 @@ import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 
@@ -20,6 +23,11 @@ public class ClientboundPackets {
         ClientPlayNetworking.registerGlobalReceiver(MobEffectInstancePayload.TYPE, (payload, context) -> {
             if (context.client().level != null && context.client().level.getEntity(payload.entityId()) instanceof Wolf wolf) {
                 wolf.setAttached(VWAttachment.MOB_EFFECTS, new ArrayList<>(payload.instance()));
+            }
+        });
+        ClientPlayNetworking.registerGlobalReceiver(ConfirmAlliance.TYPE, (payload, context) -> {
+            if (context.client().level != null && context.client().level.getEntity(payload.uuid()) instanceof Player other) {
+                context.client().setScreenAndShow(new AllianceConfirmationScreen(Component.literal(other.getPlainTextName()), other.getUUID(), false));
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(WolfDataPayload.TYPE, (payload, context) -> {

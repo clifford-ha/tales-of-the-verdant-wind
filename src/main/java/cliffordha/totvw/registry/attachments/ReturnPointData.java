@@ -38,7 +38,7 @@ public record ReturnPointData(ResourceKey<Level> levelKey, BlockPos pos, Boolean
     public static ReturnPointData removeReturnPoint(ReturnPointData oldData) {
         return new ReturnPointData(VWDimensions.NONE, BlockPos.ZERO, oldData.recordAfter());
     }
-    public static ReturnPointData forCurrent(LivingEntity entity) {
+    public static ReturnPointData of(LivingEntity entity) {
         return entity.getAttachedOrElse(WolfAttachment.RETURN_POINT, DEFAULT);
     }
     public static boolean isValid(ReturnPointData data) {

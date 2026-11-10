@@ -25,12 +25,14 @@ public class VWNetworking {
         registry.register(MobEffectInstancePayload.TYPE, MobEffectInstancePayload.STREAM_CODEC);
         registry.register(WolfDataPayload.TYPE, WolfDataPayload.STREAM_CODEC);
         registry.register(PlayerDataPayload.TYPE, PlayerDataPayload.STREAM_CODEC);
+        registry.register(ConfirmAlliance.TYPE, ConfirmAlliance.STREAM_CODEC);
 
     }
     public static void registerServerboundPackets(PayloadTypeRegistry<RegistryFriendlyByteBuf> registry) {
         registry.register(ClientPrefsPayload.TYPE, ClientPrefsPayload.STREAM_CODEC);
         registry.register(TetherDataPayload.TYPE, TetherDataPayload.STREAM_CODEC);
         registry.register(WolfEventsPayload.TYPE, WolfEventsPayload.STREAM_CODEC);
+        registry.register(ProcessAlliancePayload.TYPE, ProcessAlliancePayload.STREAM_CODEC);
 
     }
 

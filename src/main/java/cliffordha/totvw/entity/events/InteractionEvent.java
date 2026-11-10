@@ -3,15 +3,18 @@ package cliffordha.totvw.entity.events;
 import cliffordha.totvw.entity.interactions.VillagerInteractions;
 import cliffordha.totvw.entity.interactions.WolfInteractions;
 import cliffordha.totvw.item.events.VWItemBlessings;
+import cliffordha.totvw.networking.VWNetworking;
+import cliffordha.totvw.networking.packets.ConfirmAlliance;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWItems;
-import cliffordha.totvw.registry.VWSounds;
 import cliffordha.totvw.registry.attachments.NameHolder;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.tag.VWItemTags;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -70,9 +73,14 @@ public class InteractionEvent {
         return InteractionResult.PASS;
     }
 
-    private static InteractionResult processTrust(Player player, Player other, ItemStack stack) {
+    public static InteractionResult processTrust(Player player, Player other, ItemStack stack) {
         if (player == other) return InteractionResult.PASS;
-        if (!(stack.is(VWItems.VERIXIUM_PAPER) || stack.is(Items.PAPER))) return InteractionResult.PASS;
+        if (!stack.is(VWItems.VERIXIUM_PAPER) || !stack.is(Items.PAPER)) return InteractionResult.PASS;
+
+        if (player.hasAttached(PlayerAttachment.CD_ALLIANCE_REQUEST)) {
+            sendToChat(player, true, "Alliance request on cooldown");
+            return InteractionResult.FAIL;
+        }
 
         AttachmentType<List<NameHolder>> T_LIST = PlayerAttachment.TRUSTED_PLAYERS;
         List<NameHolder> oldPlayerData = player.getAttachedOrElse(T_LIST, List.of());
@@ -81,36 +89,33 @@ public class InteractionEvent {
         NameHolder mobData = NameHolder.of(other);
 
         boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.sameUUID(mobData));
-        if (oldPlayerData.size() >= 4 && !hasPriorData) {
-            sendToChat(player, true, "You can only add 4 trusted players at a time.");
-            return InteractionResult.FAIL;
-        }
-        if (hasPriorData) {
-            var index = oldPlayerData.stream().findFirst().filter(data -> data.sameUUID(mobData)).map(oldPlayerData::indexOf).orElse(null);
-            if (index == null) return InteractionResult.PASS;
-
-            NameHolder data = oldPlayerData.get(index);
-
-            if (!data.sameName(mobData) && data.sameUUID(mobData)) {
-                NameHolder update = new NameHolder(mobData.name(), mobData.uuid());
-
-                newPlayerData.set(newPlayerData.indexOf(data), update);
-                player.setAttached(T_LIST, List.copyOf(newPlayerData));
-                sendToChat(player, true, "Updated name for " + data.name() + " to " + update.name() + ".");
-                return InteractionResult.SUCCESS;
-
-            } else {
-                sendToChat(player, true, "You already trust " + mobData.name());
+        if (!hasPriorData) {
+            if (oldPlayerData.size() >= 4) {
+                sendToChat(player, true, "You can only add 4 trusted players at a time.");
                 return InteractionResult.FAIL;
             }
-            
-        } else {
-            newPlayerData.add(mobData);
-            player.setAttached(PlayerAttachment.TRUSTED_PLAYERS, List.copyOf(newPlayerData));
-
-            sendToChat(player, false, other.getPlainTextName() + " is now a trusted player!");
-            player.playSound(VWSounds.NOTIFY);
-            return InteractionResult.SUCCESS;
+            if (other instanceof ServerPlayer serverOther) {
+                VWNetworking.sendToPlayer(serverOther, new ConfirmAlliance(player.getUUID()));
+                player.setAttached(PlayerAttachment.CD_ALLIANCE_REQUEST, 15);
+                sendToChat(player, false, "Request sent");
+                return InteractionResult.SUCCESS;
+            }
         }
+
+        var index = oldPlayerData.stream().findFirst().filter(data -> data.sameUUID(mobData)).map(oldPlayerData::indexOf).orElse(null);
+        if (index == null) return InteractionResult.PASS;
+
+        NameHolder data = oldPlayerData.get(index);
+        if (!data.sameName(mobData) && data.sameUUID(mobData)) {
+            NameHolder update = new NameHolder(mobData.name(), mobData.uuid());
+
+            newPlayerData.set(newPlayerData.indexOf(data), update);
+            player.setAttached(T_LIST, List.copyOf(newPlayerData));
+            sendToChat(player, true, "Updated name for " + data.name() + " to " + update.name() + ".");
+        }
+        return InteractionResult.SUCCESS;
+    }
+    private static void setCooldown(Player player, ItemStack stack) {
+        player.getCooldowns().addCooldown(stack, 20);
     }
 }
