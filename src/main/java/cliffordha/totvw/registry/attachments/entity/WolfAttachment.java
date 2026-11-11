@@ -121,8 +121,11 @@ public class WolfAttachment {
         wolf.setAttached(TRUSTED_PLAYERS, List.copyOf(newData));
     }
     public static void syncTrustedPlayers(Wolf wolf) {
-        if (!(wolf.getOwner() instanceof Player player)) return;
+        if (!(wolf.getOwner() instanceof Player player && wolf.distanceTo(player) <= 16)) return;
         wolf.setAttached(TRUSTED_PLAYERS, PlayerAttachment.getTrustedPlayers(player));
+        List<NameHolder> aggressors = new ArrayList<>(getAggressors(wolf));
+        aggressors.removeIf(getTrustedPlayers(wolf)::contains);
+        wolf.setAttached(AGGRESSOR_LIST, List.copyOf(aggressors));
     }
     public static List<NameHolder> getAggressors(Wolf wolf) {
         return wolf.getAttachedOrElse(AGGRESSOR_LIST, List.of());

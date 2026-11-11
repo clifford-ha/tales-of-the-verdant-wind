@@ -1,24 +1,31 @@
 package cliffordha.totvw.client.screen;
 
 import cliffordha.totvw.item.pages.FTextStyle;
+import cliffordha.totvw.networking.packets.ProcessAlliancePayload;
 import cliffordha.totvw.registry.VWColors;
+import cliffordha.totvw.registry.attachments.AttachmentUtil;
 import cliffordha.totvw.registry.attachments.NameHolder;
+import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.util.TextUtil;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class TrustedPlayerScreen extends Screen {
     public record Entry(String name, UUID uuid) {}
@@ -29,28 +36,24 @@ public class TrustedPlayerScreen extends Screen {
 
     private final List<Entry> entries = new ArrayList<>();
     private List<Entry> filtered = new ArrayList<>();
+    private Player player;
     private final Screen parentScreen;
 
     private EditBox search;
     private int scroll = 0;
     private int listLeft, listTop, listBottom;
+    private boolean blockRequests;
 
-    public TrustedPlayerScreen(List<NameHolder> players, Screen parent) {
+    public TrustedPlayerScreen(Supplier<Player> caller, List<NameHolder> players, Screen parent) {
         super(text("Trusted Players"));
+        this.player = caller.get();
         this.parentScreen = parent;
+        this.blockRequests = player.getAttachedOrElse(PlayerAttachment.BLOCK_ALLIANCE_REQUEST, false);
 
         for (NameHolder holder : players) {
             entries.add(new Entry(holder.name(), holder.uuid()));
         }
         entries.sort((a, b) -> String.CASE_INSENSITIVE_ORDER.compare(a.name(), b.name()));
-    }
-
-    private void refresh() {
-        String query = search == null ? "" : search.getValue().toLowerCase(Locale.ROOT).trim();
-        filtered = entries.stream()
-                .filter(e -> (e.name() + " " + e.uuid()).toLowerCase(Locale.ROOT).contains(query))
-                .toList();
-        scroll = Mth.clamp(scroll, 0, maxScroll());
     }
 
     private int visibleRows() {
@@ -75,9 +78,21 @@ public class TrustedPlayerScreen extends Screen {
         this.addRenderableWidget(search);
         this.setInitialFocus(search);
 
+        int exitXpos = Mth.ceil(this.width * 0.91);
+
         this.addRenderableWidget(
                 Button.builder(text("✖"), button -> this.onClose())
-                        .bounds(Mth.ceil(this.width * 0.91), btnY, 20, 20).build()
+                        .bounds(exitXpos, btnY, 20, 20).build()
+        );
+        this.addRenderableWidget(
+                Button.builder(blockRequests ? VWScreen.mute("Requests") : text("Requests"), button -> {
+                    blockRequests = !blockRequests;
+                    button.setMessage(blockRequests ? VWScreen.mute("Requests") : text("Requests"));
+                    ClientPlayNetworking.send(new ProcessAlliancePayload(AttachmentUtil.EMPTY_UUID, false, blockRequests));
+
+                })
+                        .tooltip(Tooltip.create(text("Allow/Block alliance requests from players")))
+                        .bounds(exitXpos - 95, btnY, 90, 20).build()
         );
         refresh();
     }
@@ -123,6 +138,14 @@ public class TrustedPlayerScreen extends Screen {
         super.extractRenderState(graphics, mouseX, mouseY, a);
     }
 
+    private void refresh() {
+        String query = search == null ? "" : search.getValue().toLowerCase(Locale.ROOT).trim();
+        filtered = entries.stream()
+                .filter(e -> (e.name() + " " + e.uuid()).toLowerCase(Locale.ROOT).contains(query))
+                .toList();
+        scroll = Mth.clamp(scroll, 0, maxScroll());
+    }
+
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (super.mouseClicked(event, doubleClick)) return true;
@@ -134,7 +157,7 @@ public class TrustedPlayerScreen extends Screen {
         if (index < 0 || index >= filtered.size()) return false;
 
         Entry e = filtered.get(index);
-        Minecraft.getInstance().setScreenAndShow(new AllianceConfirmationScreen(Component.literal(e.name()), e.uuid(), true));
+        Minecraft.getInstance().setScreenAndShow(new AllianceConfirmationScreen(this, Component.literal(e.name()), e.uuid(), true));
         return true;
     }
 

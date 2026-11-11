@@ -123,6 +123,7 @@ public class RevivalByProxy {
             List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, scanArea(player, distance), other -> other.getOwner() == player);
 
             if (isSameDimension(player, wolf) && player.canTeleport(player.level(), wolf.level())) {
+                untetherWolf(wolf);
                 tryTeleport(player, wolf);
                 performTeleportAll(level, wolf, wolves, player, true);
                 performTeleportAll(level, wolf, wolves1, player, true);
@@ -134,15 +135,14 @@ public class RevivalByProxy {
             for (ServerLevel otherLevel : level.getServer().getAllLevels()) {
                 if (otherLevel == level) continue;
                 if (otherLevel == wolf.level()) continue;
-                otherLevel.getAllEntities().forEach(entity -> {
-                    if (entity instanceof Wolf otherWolf && otherWolf.getOwner() == player) {
-                        if (player.getAttachedOrElse(PlayerPrefs.BENEDICTION_PLAYER_TP_METHOD, VWConfig.get().SYNCED_PLAYER_TP_METHOD) < 1) return;
-                        otherWolf.teleport(teleporter(otherLevel, player));
-                        addEffect(otherWolf, VWEffects.WIND_VEIL, 3, 0);
-                        untetherWolf(otherWolf);
-                        otherWolf.teleportToAroundBlockPos(player.blockPosition());
-                    }
-                });
+                for (Entity entity : otherLevel.getAllEntities()) {
+                    if (!(entity instanceof Wolf otherWolf && otherWolf.getOwner() == player)) continue;
+                    if (player.getAttachedOrElse(PlayerPrefs.BENEDICTION_PLAYER_TP_METHOD, VWConfig.get().SYNCED_PLAYER_TP_METHOD) < 1) return;
+                    otherWolf.teleport(teleporter(otherLevel, player));
+                    addEffect(otherWolf, VWEffects.WIND_VEIL, 3, 0);
+                    untetherWolf(otherWolf);
+                    otherWolf.teleportToAroundBlockPos(player.blockPosition());
+                }
             }
             return;
         }
@@ -211,7 +211,6 @@ public class RevivalByProxy {
     private static void tryTeleport(Player player, Wolf wolf) {
         BlockPos playerPos = player.blockPosition();
         BlockPos wolfPos = wolf.blockPosition();
-        RevivalByProxy.untetherWolf(wolf);
         if (player.getAttachedOrElse(PlayerPrefs.BENEDICTION_PLAYER_TP_METHOD, VWConfig.get().SYNCED_PLAYER_TP_METHOD) < 1) {
             player.teleportTo(wolfPos.getX(), wolfPos.getY(), wolfPos.getZ());
             addEffect(player, VWEffects.WIND_VEIL, 3, 0);

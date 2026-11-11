@@ -32,6 +32,8 @@ import java.util.*;
 
 import static cliffordha.totvw.client.screen.ConfigScreen.getCenter;
 import static cliffordha.totvw.client.screen.ConfigScreen.rescale;
+import static cliffordha.totvw.client.screen.VWScreen.mute;
+import static cliffordha.totvw.client.screen.VWScreen.text;
 
 public class TetherScreen extends Screen {
     private record Entry(String id, String name, String search) {}
@@ -271,11 +273,5 @@ public class TetherScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
-    }
-    private static Component text(String s) {
-        return Component.literal(s);
-    }
-    private static Component mute(String s) {
-        return Component.literal(s).withColor(VWColors.GRAY).withStyle(ChatFormatting.STRIKETHROUGH);
     }
 }

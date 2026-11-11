@@ -76,11 +76,8 @@ public class VWPlayerBehaviors {
             }
         }));
         TICK_RULES.add(PlayerBehaviorRule.register(TickCondition.tick(0, 3), (player, level) -> {
-            if (!PlayerAttachment.getTrustedPlayers(player).isEmpty()) {
-                List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, scanArea(player, 16), wolf -> wolf.getOwner() == player);
-                for (Wolf wolf : wolves) {
-                    WolfAttachment.syncTrustedPlayers(wolf);
-                }
+            if (player.getLastAttacker() instanceof Player other && PlayerAttachment.isTrusted(player, other)) {
+                player.setLastHurtByPlayer(other, 0);
             }
 
             AttachmentType<Integer> BLOOM_STACKS = VWAttachment.VERDANT_BLOOM_STACK;

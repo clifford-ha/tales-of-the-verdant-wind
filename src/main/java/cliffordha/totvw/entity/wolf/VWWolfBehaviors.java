@@ -11,6 +11,7 @@ import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.TetherData;
+import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.tag.VWBiomeTags;
@@ -58,14 +59,15 @@ public class VWWolfBehaviors {
         TICK_RULES.add(WolfBehaviorRule.forTamed(TickCondition.tick(), ((wolf, level) -> {
             LivingEntity owner = wolf.getOwner();
 
-
-            int tick = 0;
-            if (WolfAttachment.tetherChunkTicks(wolf)) tick = 1;
-            level.getChunkSource().addTicketAndLoadWithRadius(
-                    TicketType.FORCED,
-                    wolf.chunkPosition(),
-                    tick
-            );
+            if (owner != null) {
+                int tick = 0;
+                if (WolfAttachment.tetherChunkTicks(wolf)) tick = 1;
+                level.getChunkSource().addTicketAndLoadWithRadius(
+                        TicketType.FORCED,
+                        wolf.chunkPosition(),
+                        tick
+                );
+            }
 
             if (!wolf.getActiveEffects().isEmpty()) VWNetworking.syncWolfEffects(wolf);
             if (wolf.isWearingBodyArmor()) VWNetworking.syncWolfArmor(wolf);
@@ -145,6 +147,8 @@ public class VWWolfBehaviors {
         TICK_RULES.add(WolfBehaviorRule.forTamed(TickCondition.tick(0, 3), (wolf, level) ->  {
             LivingEntity owner = wolf.getOwner();
             if (owner == null) return;
+
+            WolfAttachment.syncTrustedPlayers(wolf);
 
             float HEALTH_THRESHOLD = owner.getAttachedOrElse(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD,
                     VWConfig.get().SYNCED_BENEDICTION_HEALTH_THRESHOLD) * 0.01f;

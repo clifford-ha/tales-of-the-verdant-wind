@@ -1,5 +1,7 @@
 package cliffordha.totvw.client.screen;
 
+import cliffordha.totvw.registry.VWColors;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -170,5 +172,11 @@ public abstract class VWScreen extends Screen {
 
     protected static Minecraft mc() {
         return Minecraft.getInstance();
+    }
+    public static Component text(String s) {
+        return Component.literal(s);
+    }
+    public static Component mute(String s) {
+        return Component.literal(s).withColor(VWColors.GRAY).withStyle(ChatFormatting.STRIKETHROUGH);
     }
 }

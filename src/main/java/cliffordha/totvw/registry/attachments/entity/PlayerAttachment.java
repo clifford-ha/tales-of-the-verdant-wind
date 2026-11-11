@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -25,6 +26,7 @@ public class PlayerAttachment {
 
     public static final AttachmentType<Integer> RANDOM_INT_10 = registerUnsyncedInt("random_int_10");
     public static final AttachmentType<Integer> CD_ALLIANCE_REQUEST = registerUnsyncedInt("cd_alliance_request");
+    public static final AttachmentType<Boolean> BLOCK_ALLIANCE_REQUEST = registerBool("block_alliance_request");
 
     public static final AttachmentType<Integer> RECEIVED_ENCHANTMENTS_HANDBOOK = registerInt(P + "received_enchantments_handbook", false);
     public static final AttachmentType<Integer> RECEIVED_EFFECTS_HANDBOOK = registerInt(P + "received_effects_handbook", false);
@@ -116,7 +118,7 @@ public class PlayerAttachment {
     public static int getVillagerAtrocityCount(Player player) {
         return player.getAttachedOrElse(VILLAGER_ATROCITY_COUNT, 0);
     }
-    public static List<NameHolder> getTrustedPlayers(Player player) {
+    public static List<NameHolder> getTrustedPlayers(LivingEntity player) {
         return player.getAttachedOrElse(TRUSTED_PLAYERS, List.of());
     }
     public static boolean isTrusted(Player player, Player other) {
@@ -136,8 +138,9 @@ public class PlayerAttachment {
         player.setAttached(TRUSTED_PLAYERS, List.copyOf(newData));
     }
     public static void addTrustedPlayer(Player player, Player other) {
-        if (isTrusted(player, other)) return;
-        List<NameHolder> newData = new ArrayList<>(getTrustedPlayers(player));
+        List<NameHolder> current = getTrustedPlayers(player);
+        if (current.stream().anyMatch(d -> d.uuid().equals(other.getUUID()))) return;
+        List<NameHolder> newData = new ArrayList<>(current);
         newData.add(NameHolder.of(other));
         player.setAttached(TRUSTED_PLAYERS, List.copyOf(newData));
     }

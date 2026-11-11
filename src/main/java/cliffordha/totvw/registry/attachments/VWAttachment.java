@@ -65,6 +65,7 @@ public class VWAttachment {
     public static final List<AttachmentType<?>> PLAYER_ATTACHMENTS = List.of(
             PlayerAttachment.RANDOM_INT_10,
             PlayerAttachment.CD_ALLIANCE_REQUEST,
+            PlayerAttachment.BLOCK_ALLIANCE_REQUEST,
 
             PlayerAttachment.RECEIVED_ENCHANTMENTS_HANDBOOK,
             PlayerAttachment.RECEIVED_EFFECTS_HANDBOOK,

@@ -26,8 +26,10 @@ public class ClientboundPackets {
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(ConfirmAlliance.TYPE, (payload, context) -> {
-            if (context.client().level != null && context.client().level.getEntity(payload.uuid()) instanceof Player other) {
-                context.client().setScreenAndShow(new AllianceConfirmationScreen(Component.literal(other.getPlainTextName()), other.getUUID(), false));
+            if (context.client().level == null) return;
+            Player other = context.client().level.getPlayerByUUID(payload.uuid());
+            if (other != null) {
+                context.client().setScreenAndShow(new AllianceConfirmationScreen(null, Component.literal(other.getPlainTextName()), other.getUUID(), false));
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(WolfDataPayload.TYPE, (payload, context) -> {

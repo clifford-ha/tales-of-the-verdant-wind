@@ -11,7 +11,8 @@ import java.util.UUID;
 
 public record ProcessAlliancePayload(
         UUID uuid,
-        boolean remove
+        boolean remove,
+        boolean disableRequests
 ) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ProcessAlliancePayload> TYPE =
             new CustomPacketPayload.Type<>(TOTVW.registerID("process_alliance"));
@@ -20,6 +21,7 @@ public record ProcessAlliancePayload(
             StreamCodec.composite(
                     UUIDUtil.STREAM_CODEC, ProcessAlliancePayload::uuid,
                     ByteBufCodecs.BOOL, ProcessAlliancePayload::remove,
+                    ByteBufCodecs.BOOL, ProcessAlliancePayload::disableRequests,
                     ProcessAlliancePayload::new
             );
 

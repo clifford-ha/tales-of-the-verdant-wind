@@ -121,9 +121,8 @@ public class ScatteredPageItem extends Item {
         }
     }
 
-    @Environment(EnvType.CLIENT)
     public static void openStatScreen(Player player) {
-        Minecraft.getInstance().setScreenAndShow(new PlayerPageScreen(player, player.getPlainTextName(), () -> getPages(player, -2)));
+        setScreen(player, player.getPlainTextName(), () -> EntityStats.playerStats(player));
     }
 
     @Environment(EnvType.CLIENT)
@@ -158,6 +157,10 @@ public class ScatteredPageItem extends Item {
     @Environment(EnvType.CLIENT)
     private static void setScreen(String title, Supplier<String> pages) {
         Minecraft.getInstance().setScreenAndShow(new PageScreen(title, pages));
+    }
+    @Environment(EnvType.CLIENT)
+    private static void setScreen(Player player, String title, Supplier<String> pages) {
+        Minecraft.getInstance().setScreenAndShow(new PlayerPageScreen(player, title, pages));
     }
 
     @Override

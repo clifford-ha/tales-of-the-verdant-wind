@@ -31,8 +31,6 @@ public class AtrocityManager {
 
         if (victim instanceof Wolf wolf) {
             AttachmentType<Integer> WOLF_COUNTER = PlayerAttachment.WOLF_ATROCITY_COUNT;
-            boolean maybeForgive = wolf.getOwner() != null && wolf.getOwner().is(player) && level.getRandom().nextBoolean();
-            if (maybeForgive) return;
 
             int current = player.getAttachedOrElse(WOLF_COUNTER, 0);
             player.setAttached(WOLF_COUNTER, current + finalDeduction);

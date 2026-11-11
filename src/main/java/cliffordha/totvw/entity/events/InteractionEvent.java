@@ -12,7 +12,6 @@ import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.tag.VWItemTags;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -20,6 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static cliffordha.totvw.util.ExtUtil.scanArea;
 import static cliffordha.totvw.util.ExtUtil.sendToChat;
 
 public class InteractionEvent {
@@ -37,11 +38,11 @@ public class InteractionEvent {
         if (!(player.level() instanceof ServerLevel level)) return InteractionResult.PASS;
         if (!(entity instanceof LivingEntity livingEntity)) return InteractionResult.PASS;
 
-        ItemStack stack = player.getMainHandItem();
+        ItemStack stack = player.getItemInHand(hand);
 
         switch (livingEntity) {
             case Player otherPlayer -> {
-                return processTrust(player, otherPlayer, stack);
+                return processTrust(player, otherPlayer, stack, hand);
             }
             case Wolf wolf -> {
                 return WolfInteractions.handleInteraction(level, player, wolf, stack);
@@ -73,45 +74,69 @@ public class InteractionEvent {
         return InteractionResult.PASS;
     }
 
-    public static InteractionResult processTrust(Player player, Player other, ItemStack stack) {
+    public static InteractionResult processTrust(Player player, Player other, ItemStack stack, InteractionHand hand) {
+        if (other.getAttachedOrElse(PlayerAttachment.BLOCK_ALLIANCE_REQUEST, false)) return InteractionResult.PASS;
+        if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
         if (player == other) return InteractionResult.PASS;
-        if (!stack.is(VWItems.VERIXIUM_PAPER) || !stack.is(Items.PAPER)) return InteractionResult.PASS;
-
-        if (player.hasAttached(PlayerAttachment.CD_ALLIANCE_REQUEST)) {
-            sendToChat(player, true, "Alliance request on cooldown");
-            return InteractionResult.FAIL;
-        }
+        if (!stack.is(VWItems.VERIXIUM_PAPER) && !stack.is(Items.PAPER)) return InteractionResult.PASS;
 
         AttachmentType<List<NameHolder>> T_LIST = PlayerAttachment.TRUSTED_PLAYERS;
         List<NameHolder> oldPlayerData = player.getAttachedOrElse(T_LIST, List.of());
-        List<NameHolder> newPlayerData = new ArrayList<>(oldPlayerData);
-
         NameHolder mobData = NameHolder.of(other);
 
-        boolean hasPriorData = oldPlayerData.stream().anyMatch(data -> data.sameUUID(mobData));
-        if (!hasPriorData) {
-            if (oldPlayerData.size() >= 4) {
-                sendToChat(player, true, "You can only add 4 trusted players at a time.");
-                return InteractionResult.FAIL;
-            }
-            if (other instanceof ServerPlayer serverOther) {
-                VWNetworking.sendToPlayer(serverOther, new ConfirmAlliance(player.getUUID()));
-                player.setAttached(PlayerAttachment.CD_ALLIANCE_REQUEST, 15);
-                sendToChat(player, false, "Request sent");
-                return InteractionResult.SUCCESS;
+        int index = -1;
+        for (int i = 0; i < oldPlayerData.size(); i++) {
+            if (oldPlayerData.get(i).sameUUID(mobData)) {
+                index = i;
+                break;
             }
         }
 
-        var index = oldPlayerData.stream().findFirst().filter(data -> data.sameUUID(mobData)).map(oldPlayerData::indexOf).orElse(null);
-        if (index == null) return InteractionResult.PASS;
+        if (index < 0) {
+            if (player.getAttachedOrElse(PlayerAttachment.CD_ALLIANCE_REQUEST, 0) > 0) {
+                sendToChat(player, true, "Alliance request on cooldown");
+                return InteractionResult.FAIL;
+            }
+            if (oldPlayerData.size() >= 8) {
+                sendToChat(player, true, "You can only add 8 trusted players at a time");
+                return InteractionResult.FAIL;
+            }
+
+            List<Monster> monsters = player.level().getEntitiesOfClass(Monster.class, scanArea(player, 12));
+            String invalid = "Cannot request alliance; " + other.getPlainTextName();
+
+            if (!other.onGround()) {
+                sendToChat(player, true, invalid + " is not on stable ground");
+                return InteractionResult.FAIL;
+            }
+            if (other.isSleeping() || other.isSpectator() || other.isPassenger() || other.isInLava()) {
+                sendToChat(player, true, invalid + " cannot interact with their current state");
+                return InteractionResult.FAIL;
+            }
+
+            if (!monsters.isEmpty() && !(player.isCreative() && other.isCreative())) {
+                sendToChat(player, true, "Request was aborted; there are monsters nearby");
+                return InteractionResult.FAIL;
+            }
+
+            if (other instanceof ServerPlayer serverOther) {
+                VWNetworking.sendToPlayer(serverOther, new ConfirmAlliance(player.getUUID()));
+                player.setAttached(PlayerAttachment.CD_ALLIANCE_REQUEST, 30);
+                sendToChat(player, false, "Request sent");
+                return InteractionResult.SUCCESS;
+            }
+            return InteractionResult.PASS;
+        }
 
         NameHolder data = oldPlayerData.get(index);
-        if (!data.sameName(mobData) && data.sameUUID(mobData)) {
+        if (!data.sameName(mobData)) {
+            List<NameHolder> newPlayerData = new ArrayList<>(oldPlayerData);
             NameHolder update = new NameHolder(mobData.name(), mobData.uuid());
-
-            newPlayerData.set(newPlayerData.indexOf(data), update);
+            newPlayerData.set(index, update);
             player.setAttached(T_LIST, List.copyOf(newPlayerData));
-            sendToChat(player, true, "Updated name for " + data.name() + " to " + update.name() + ".");
+            sendToChat(player, true, "Updated name for " + data.name() + " to " + update.name());
+        } else {
+            sendToChat(player, true, "You already trust " + data.name());
         }
         return InteractionResult.SUCCESS;
     }

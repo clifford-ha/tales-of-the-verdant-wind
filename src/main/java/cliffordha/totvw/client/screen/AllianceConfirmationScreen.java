@@ -3,6 +3,7 @@ package cliffordha.totvw.client.screen;
 import cliffordha.totvw.networking.packets.ProcessAlliancePayload;
 import cliffordha.totvw.registry.VWColors;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -18,9 +19,11 @@ import static cliffordha.totvw.client.screen.VWScreen.XY_SIZE;
 public class AllianceConfirmationScreen extends Screen {
     private final UUID playerUUID;
     private final boolean remove;
+    private final Screen parent;
     protected int leftPos, topPos, panelWidth, panelHeight;
-    public AllianceConfirmationScreen(Component title, UUID id, boolean remove) {
+    public AllianceConfirmationScreen(Screen caller, Component title, UUID id, boolean remove) {
         super(title);
+        this.parent = caller;
         this.playerUUID = id;
         this.remove = remove;
     }
@@ -37,13 +40,16 @@ public class AllianceConfirmationScreen extends Screen {
         int centerY = this.topPos + (this.panelHeight / 2);
 
         this.addRenderableWidget(
-                Button.builder(NO, b -> this.onClose())
-                        .bounds(centerX - 115, centerY, 100, XY_SIZE)
-                        .build()
+                Button.builder(NO, b -> {
+                    if (!remove && parent != null) {
+                        Minecraft.getInstance().setScreenAndShow(parent);
+                    } else this.onClose();
+
+                }).bounds(centerX - 115, centerY, 100, XY_SIZE).build()
         );
         this.addRenderableWidget(
                 Button.builder(YES, b -> {
-                    ClientPlayNetworking.send(new ProcessAlliancePayload(playerUUID, remove));
+                    ClientPlayNetworking.send(new ProcessAlliancePayload(playerUUID, remove, false));
                     this.onClose();
 
                 }).bounds(centerX + 15, centerY, 100, XY_SIZE).build()
@@ -54,7 +60,7 @@ public class AllianceConfirmationScreen extends Screen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         int shade = ARGB.color(0.4f, VWColors.GRAY_MUTED);
-        int bg = ARGB.color(1.0f, VWColors.GRAY);
+        int bg = ARGB.color(1.0f, VWColors.GRAY_MUTED);
         graphics.fill(0, 0, this.width, this.height, shade);
         graphics.fillGradient(0, 0, this.width, this.height, bg, shade);
 

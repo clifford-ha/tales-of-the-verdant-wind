@@ -43,7 +43,7 @@ public class GenesisRunestonePlate extends Item {
 
     @Override
     public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
-        ACTIVE = owner instanceof Player player && ExtUtil.isInBiome(player, VWBiomeTags.IS_VERDANT_BIOMES);
+        ACTIVE = owner instanceof Player player && (ExtUtil.isInBiome(player, VWBiomeTags.IS_VERDANT_BIOMES) || ExtUtil.isDimension(player, VWDimensions.NOLAYAN_LEVEL_KEY));
         super.inventoryTick(itemStack, level, owner, slot);
     }
 

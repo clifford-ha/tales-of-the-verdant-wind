@@ -310,6 +310,8 @@ public class EntityStats {
                         "Havoc: " + SKILL_READY,
                         true)
 
+                        + tText(!stat.trustedPlayers().isEmpty() || !receivedHandbooks.isEmpty(), nextParagraph)
+
                         + tText(!stat.trustedPlayers().isEmpty() || !receivedHandbooks.isEmpty(),
                         fText(BOLD, "## OTHER STATS"), true)
 

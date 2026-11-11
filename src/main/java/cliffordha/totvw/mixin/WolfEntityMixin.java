@@ -211,17 +211,15 @@ public abstract class WolfEntityMixin extends LivingEntity {
         Wolf wolf = (Wolf) (Object) this;
         if (WolfAttachment.isVerdant(wolf) && target instanceof Wolf other && WolfAttachment.isVerdant(other)) {
             wolf.stopBeingAngry();
-            wolf.setTarget(null);
             cir.setReturnValue(false);
 
         }
         if (WolfAttachment.isTrusted(wolf, target)) {
             wolf.stopBeingAngry();
-            wolf.setTarget(null);
             cir.setReturnValue(false);
 
         } else if (target instanceof Skeleton skeleton && skeleton.getVehicle() instanceof LivingEntity vehicle) {
-            wolf.setTarget(null);
+            wolf.stopBeingAngry();
             wolf.setTarget(vehicle);
             cir.setReturnValue(true);
 

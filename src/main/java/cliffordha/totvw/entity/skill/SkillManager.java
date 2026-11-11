@@ -33,7 +33,10 @@ public class SkillManager {
 
     public static void depleteCooldown(LivingEntity entity, AttachmentType<Integer> skillCD) {
         int current = entity.getAttachedOrElse(skillCD, 0);
-        if (current <= 0) return;
+        if (current <= 0) {
+            entity.removeAttached(skillCD);
+            return;
+        }
         entity.setAttached(skillCD, current - 1);
     }
 

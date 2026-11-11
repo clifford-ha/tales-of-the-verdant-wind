@@ -4,10 +4,7 @@ import cliffordha.totvw.TOTVW;
 import cliffordha.totvw.entity.WolfBenedictionHelper;
 import cliffordha.totvw.networking.packets.*;
 import cliffordha.totvw.registry.VWColors;
-import cliffordha.totvw.registry.attachments.PlayerPrefs;
-import cliffordha.totvw.registry.attachments.ReturnPointData;
-import cliffordha.totvw.registry.attachments.Runestone;
-import cliffordha.totvw.registry.attachments.TetherData;
+import cliffordha.totvw.registry.attachments.*;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -16,9 +13,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,21 +57,31 @@ public class ServerboundPackets {
         ServerPlayNetworking.registerGlobalReceiver(ProcessAlliancePayload.TYPE, (payload, context) -> {
             ServerPlayer player = context.player();
             player.level().getServer().execute(() -> {
-                Entity entity = player.level().getEntity(payload.uuid());
+                if (payload.uuid().equals(AttachmentUtil.EMPTY_UUID)) {
+                    player.setAttached(PlayerAttachment.BLOCK_ALLIANCE_REQUEST, payload.disableRequests());
+                    return;
+                }
+
+                ServerPlayer other = null;
+                for (Level level : player.level().getServer().getAllLevels()) {
+                    other = level.getServer().getPlayerList().getPlayer(payload.uuid());
+                    break;
+                }
 
                 if (payload.remove()) {
                     PlayerAttachment.removeTrustedPlayer(player, payload.uuid());
-                    if (entity instanceof Player other) {
+                    if (other != null) {
                         PlayerAttachment.removeTrustedPlayer(other, player);
                     }
                     return;
                 }
-                if (!(entity instanceof Player other)) {
+                if (other == null) {
                     sendToChat(player, VWColors.DEFAULT, false, "Player not found");
                     return;
                 }
                 PlayerAttachment.addTrustedPlayer(player, other);
-                sendToChat(player,false, "You now trust " + other.getPlainTextName());
+                PlayerAttachment.addTrustedPlayer(other, player);
+                sendToChat(player, false, "You now trust " + other.getPlainTextName());
                 sendToChat(other, false, "You now trust " + player.getPlainTextName());
             });
         });
