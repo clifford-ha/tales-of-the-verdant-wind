@@ -4,7 +4,6 @@ import cliffordha.totvw.registry.VWItems;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ExtUtil;
 import com.mojang.serialization.Codec;
-import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -108,7 +107,7 @@ public enum Runestone {
     public static void dropRunestone(Wolf wolf) {
         Runestone type = wolf.getAttachedOrElse(WolfAttachment.RUNESTONE_TYPE, Runestone.EMPTY);
         if (type.equals(Runestone.EMPTY)) return;
-        wolf.drop(Runestone.getStack(type), false, Prediction.SERVER_ONLY);
+        wolf.drop(Runestone.getStack(type), false, false);
         wolf.removeAttached(WolfAttachment.RUNESTONE_TYPE);
     }
     public static void dropRunestone(Wolf wolf, Player receiver) {
@@ -133,7 +132,7 @@ public enum Runestone {
             sendToChat(player, true, name + " already uses this runestone type.");
             return InteractionResult.FAIL;
         } else {
-            wolf.drop(Runestone.getStack(current), false, Prediction.SERVER_ONLY);
+            wolf.drop(Runestone.getStack(current), false, false);
             wolf.setAttached(WolfAttachment.RUNESTONE_TYPE, type);
             consumeItem(player, stack);
             sendToChat(player, true, name + "'s Runestone buff has been changed to " + type.getBuff() + ".");

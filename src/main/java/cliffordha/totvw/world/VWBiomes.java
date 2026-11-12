@@ -16,7 +16,7 @@ public class VWBiomes {
     }
 
     public static void bootstrap(BootstrapContext<Biome> context) {
-        var carvers = context.lookup(Registries.CARVER);
+        var carvers = context.lookup(Registries.CONFIGURED_CARVER);
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
 
         register(context, VERDANT_MOUNTAINS, VWOverworldBiomes.verdantMountains(placedFeatures, carvers));

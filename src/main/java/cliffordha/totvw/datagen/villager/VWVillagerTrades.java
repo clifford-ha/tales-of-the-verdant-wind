@@ -5,34 +5,19 @@ import cliffordha.totvw.registry.VWBlocks;
 import cliffordha.totvw.registry.VWEnchantments;
 import cliffordha.totvw.registry.VWItems;
 
-import net.minecraft.advancements.predicates.EnchantmentPredicate;
-import net.minecraft.advancements.predicates.ItemPredicate;
-import net.minecraft.advancements.predicates.MinMaxBounds;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.predicates.DataComponentPredicates;
-import net.minecraft.core.component.predicates.EnchantmentsPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.trading.TradeCost;
 import net.minecraft.world.item.trading.VillagerTrade;
-import net.minecraft.world.item.trading.VillagerTrades;
-import net.minecraft.world.level.storage.loot.functions.EnchantRandomlyFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProvider;
-import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import java.util.List;
 import java.util.Optional;
 
+import static net.minecraft.world.item.trading.VillagerTrades.enchantedBook;
 
 public class VWVillagerTrades {
     public static final ResourceKey<VillagerTrade> WEAPONSMITH_2_WOLF_ATK_ENCHANTMENTS = createKey("weaponsmith/2/wolf_atk_enchantments");
@@ -63,12 +48,11 @@ public class VWVillagerTrades {
                 new ItemStackTemplate(VWItems.SOUL_RUNESTONE_FRAGMENT_3),
                 exact(1),
                 exact(30),
-                zeroFloat(),
+                0.0f,
                 Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
-                )
-        );
+                List.of(),
+                HolderSet.empty()
+        ));
         context.register(WEAPONSMITH_2_WOLF_ATK_ENCHANTMENTS, new VillagerTrade(
                 new TradeCost(Items.EMERALD, 24),
                 Optional.of(new TradeCost(Items.FIRE_CHARGE, 16)),
@@ -77,11 +61,9 @@ public class VWVillagerTrades {
                 exact(50),
                 defaultFloat(),
                 Optional.empty(),
-                Optional.of(
-                        enchantedBook(items,
-                                HolderSet.direct(enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_IGNITION)))
-                ),
-                Optional.empty()
+                enchantedBook(items,
+                        HolderSet.direct(enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_IGNITION))),
+                HolderSet.empty()
         ));
         context.register(WEAPONSMITH_3_LODESTONE_WIND_CORE, new VillagerTrade(
                 new TradeCost(Items.EMERALD, 50),
@@ -89,10 +71,11 @@ public class VWVillagerTrades {
                 new ItemStackTemplate(VWBlocks.LODESTONE_WIND_CORE.asItem()),
                 exact(1),
                 exact(200),
-                zeroFloat(),
+                0.0f,
                 Optional.empty(),
-                Optional.empty(),
-                Optional.empty()));
+                List.of(),
+                HolderSet.empty()
+        ));
 
 
         context.register(LIBRARIAN_2_WOLF_ATK_ENCHANTMENTS, new VillagerTrade(
@@ -103,15 +86,12 @@ public class VWVillagerTrades {
                 exact(20),
                 defaultFloat(),
                 Optional.empty(),
-                Optional.of(
-                        enchantedBook(items,
-                                HolderSet.direct(
-                                        enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_LIFTING),
-                                        enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_MIGHT),
-                                        enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_OOZING)
-                                ))
-                ),
-                Optional.empty()
+                enchantedBook(items, HolderSet.direct(
+                        enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_LIFTING),
+                        enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_MIGHT),
+                        enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_OOZING)
+                )),
+                HolderSet.empty()
         ));
         context.register(LIBRARIAN_2_VERIXIUM_PAPER, new VillagerTrade(
                 new TradeCost(Items.EMERALD, 1),
@@ -121,8 +101,8 @@ public class VWVillagerTrades {
                 exact(5),
                 defaultFloat(),
                 Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
+                List.of(),
+                HolderSet.empty()
         ));
 
 
@@ -132,10 +112,10 @@ public class VWVillagerTrades {
                 new ItemStackTemplate(VWItems.VERIXIUM_POWDER, 3),
                 exact(256),
                 exact(20),
-                zeroFloat(),
+                0.0f,
                 Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
+                List.of(),
+                HolderSet.empty()
         ));
         context.register(CLERIC_2_EMERALD, new VillagerTrade(
                 new TradeCost(VWItems.VERIXIUM_POWDER, 4),
@@ -145,8 +125,8 @@ public class VWVillagerTrades {
                 exact(20),
                 defaultFloat(),
                 Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
+                List.of(),
+                HolderSet.empty()
         ));
 
 
@@ -158,13 +138,10 @@ public class VWVillagerTrades {
                 exact(15),
                 defaultFloat(),
                 Optional.empty(),
-                Optional.of(
-                        enchantedBook(items,
-                                HolderSet.direct(
-                                        enchantments.getOrThrow(VWEnchantments.WOLF_ARMOR_ENHANCEMENT_KIT)
-                                ))
-                ),
-                Optional.empty()
+                enchantedBook(items, HolderSet.direct(
+                        enchantments.getOrThrow(VWEnchantments.WOLF_ARMOR_ENHANCEMENT_KIT)
+                )),
+                HolderSet.empty()
         ));
         context.register(ARMORER_4_VERIXIUM_WOLF_ARMOR, new VillagerTrade(
                 new TradeCost(Items.EMERALD, 30),
@@ -174,8 +151,8 @@ public class VWVillagerTrades {
                 exact(20),
                 defaultFloat(),
                 Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
+                List.of(),
+                HolderSet.empty()
         ));
         context.register(ARMORER_5_VERIXIUM_ARMOR_UPGRADE_TEMPLATE, new VillagerTrade(
                 new TradeCost(Items.EMERALD, 48),
@@ -185,8 +162,8 @@ public class VWVillagerTrades {
                 exact(30),
                 defaultFloat(),
                 Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
+                List.of(),
+                HolderSet.empty()
         ));
 
 
@@ -198,8 +175,8 @@ public class VWVillagerTrades {
                 exact(20),
                 defaultFloat(),
                 Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
+                List.of(),
+                HolderSet.empty()
         ));
         context.register(WANDERING_FAR_AWAY_ENCHANTMENTS, new VillagerTrade(
                 new TradeCost(Items.EMERALD, 10),
@@ -209,14 +186,11 @@ public class VWVillagerTrades {
                 exact(50),
                 defaultFloat(),
                 Optional.empty(),
-                Optional.of(
-                        enchantedBook(items,
-                                HolderSet.direct(
-                                        enchantments.getOrThrow(VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS),
-                                        enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_OOZING)
-                                ))
-                ),
-                Optional.empty()
+                enchantedBook(items, HolderSet.direct(
+                        enchantments.getOrThrow(VWEnchantments.BENEDICTION_OF_THE_VERDANT_MOUNTAINS),
+                        enchantments.getOrThrow(VWEnchantments.WOLF_EFFECT_OOZING)
+                )),
+                HolderSet.empty()
         ));
     }
 
@@ -224,24 +198,13 @@ public class VWVillagerTrades {
     private static ResourceKey<VillagerTrade> createKey(String name) {
         return ResourceKey.create(Registries.VILLAGER_TRADE, TOTVW.registerID(name));
     }
-    private static Holder<ContextIntProvider> exact(int value) {
-        return ContextIntProviders.exactly(value);
+    private static int exact(int value) {
+        return Math.min(value, 64);
     }
-    private static Holder<ContextFloatProvider> exact(float value) {
-        return ContextFloatProviders.exactly(value);
+    private static float exact(float value) {
+        return Math.min(value, 1.0f);
     }
-    private static Holder<ContextFloatProvider> zeroFloat() {
-        return ContextFloatProviders.exactly(0.0f);
-    }
-    private static Holder<ContextFloatProvider> defaultFloat() {
-        return ContextFloatProviders.exactly(0.05f);
-    }
-
-    public static Holder<LootItemFunction> enchantedBook(final HolderGetter<Item> items, final HolderSet<Enchantment> options) {
-        ItemPredicate.Builder bookWithAnyEnchants = (new ItemPredicate.Builder()).of(items, Items.ENCHANTED_BOOK).withComponents(net.minecraft.advancements.predicates.DataComponentMatchers.Builder.components().partial(DataComponentPredicates.STORED_ENCHANTMENTS, EnchantmentsPredicate.storedEnchantments(List.of(new EnchantmentPredicate(Optional.empty(), MinMaxBounds.Ints.ANY)))).build());
-        return discardItemIfItsNot((new EnchantRandomlyFunction.Builder()).withOptions(options).allowingIncompatibleEnchantments().includeAdditionalCostComponent(), bookWithAnyEnchants);
-    }
-    public static Holder<LootItemFunction> discardItemIfItsNot(final LootItemFunction.Builder function, final ItemPredicate.Builder preserveCondition) {
-        return VillagerTrades.discardItemIfItsNot(preserveCondition);
+    private static float defaultFloat() {
+        return 0.05f;
     }
 }

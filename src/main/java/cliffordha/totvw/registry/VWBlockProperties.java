@@ -1,7 +1,7 @@
 package cliffordha.totvw.registry;
 
-import net.fabricmc.fabric.api.item.v1.BlockTransformerHelper;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.minecraft.world.level.block.Block;
 
 public class VWBlockProperties {
@@ -43,6 +43,6 @@ public class VWBlockProperties {
     }
 
     private static void strippable(Block baseBlock, Block strippedBlock){
-        BlockTransformerHelper.registerStripping(baseBlock, strippedBlock);
+        StrippableBlockRegistry.register(baseBlock, strippedBlock);
     }
 }

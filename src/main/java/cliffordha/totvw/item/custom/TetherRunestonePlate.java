@@ -76,7 +76,7 @@ public class TetherRunestonePlate extends Item {
                             wolf.dropLeash();
                             ExtUtil.addEffect(wolf, VWEffects.WIND_VEIL, 3, 0);
 
-                            wolf.teleportToPortalDestination(serverLevel,
+                            wolf.teleport(
                                     new TeleportTransition(
                                             (ServerLevel) player.level(),
                                             new Vec3(player.getX(), player.getY(), player.getZ()),

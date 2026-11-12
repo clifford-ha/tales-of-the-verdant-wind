@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -75,7 +74,7 @@ public abstract class CropsBlockMixin {
         CropBlock crop = (CropBlock) (Object) this;
 
         for (int i = 0; i < crop.getMaxAge(); i++) {
-            crop.performBonemeal(level, random, pos, state, BonemealSource.MOB);
+            crop.performBonemeal(level, random, pos, state);
         }
 
         if (random.nextBoolean()) {
@@ -109,7 +108,7 @@ public abstract class CropsBlockMixin {
     private static void applyBonemeal(CropBlock block, ServerLevel level, BlockPos pos) {
         if (block == null) return;
         if (block.getAge(level.getBlockState(pos)) >= block.getMaxAge()) return;
-        block.performBonemeal(level, level.getRandom(), pos, block.defaultBlockState(), BonemealSource.MOB);
+        block.performBonemeal(level, level.getRandom(), pos, block.defaultBlockState());
         particle(level, pos);
     }
     @Unique

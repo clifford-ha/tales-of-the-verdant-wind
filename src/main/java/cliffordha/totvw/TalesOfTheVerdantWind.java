@@ -8,7 +8,6 @@ import cliffordha.totvw.loot.VWLootTables;
 import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.world.*;
-import cliffordha.totvw.world.tree.VWRootPlacerTypes;
 
 import net.fabricmc.api.ModInitializer;
 import terrablender.api.TerraBlenderApi;
@@ -37,7 +36,6 @@ public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 		VWParticles.register();
 		VWSounds.register();
 
-		VWRootPlacerTypes.register();
 		VWBiomeModifications.register();
 
 		TextPopup.register();
