@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:ore",
+  "discard_chance_on_air_exposure": 0.65,
+  "size": 12,
+  "targets": [
+    {
+      "state": "minecraft:diamond_ore",
+      "target": {
+        "block": "minecraft:stone",
+        "predicate_type": "minecraft:block_match"
+      }
+    },
+    {
+      "state": "minecraft:deepslate_diamond_ore",
+      "target": {
+        "block": "minecraft:deepslate",
+        "predicate_type": "minecraft:block_match"
+      }
+    }
+  ]
+}

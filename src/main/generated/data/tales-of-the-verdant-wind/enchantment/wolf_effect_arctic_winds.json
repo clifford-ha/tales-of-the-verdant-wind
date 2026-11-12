@@ -1,0 +1,35 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.tales-of-the-verdant-wind.wolf_effect_arctic_winds"
+  },
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": -0.2,
+          "per_level_above_first": -0.05
+        },
+        "attribute": "minecraft:burning_time",
+        "id": "tales-of-the-verdant-wind:wolf_effect_arctic_dominance",
+        "operation": "add_value"
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 64,
+    "per_level_above_first": 7
+  },
+  "max_level": 5,
+  "min_cost": {
+    "base": 33,
+    "per_level_above_first": 0
+  },
+  "primary_items": "#tales-of-the-verdant-wind:wolf_armor_enchantable",
+  "slots": [
+    "body"
+  ],
+  "supported_items": "#tales-of-the-verdant-wind:wolf_armor_enchantable",
+  "weight": 4
+}

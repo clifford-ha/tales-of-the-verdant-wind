@@ -1,0 +1,30 @@
+{
+  "additional_wants": {
+    "count": 10,
+    "id": "minecraft:iron_ingot"
+  },
+  "given_item_modifier": {
+    "type": "minecraft:filtered",
+    "item_filter": {
+      "items": "minecraft:enchanted_book",
+      "predicates": {
+        "minecraft:stored_enchantments": [
+          {}
+        ]
+      }
+    },
+    "on_fail": {
+      "type": "minecraft:discard"
+    }
+  },
+  "gives": {
+    "id": "minecraft:enchanted_book"
+  },
+  "max_uses": 2,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 16,
+    "id": "minecraft:emerald"
+  },
+  "xp": 15
+}

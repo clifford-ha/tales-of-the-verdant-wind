@@ -1,0 +1,21 @@
+{
+  "assets": {
+    "angry": "tales-of-the-verdant-wind:entity/wolf/wolf_verdant_black_angry",
+    "tame": "tales-of-the-verdant-wind:entity/wolf/wolf_verdant_black_tame",
+    "wild": "tales-of-the-verdant-wind:entity/wolf/wolf_verdant_black"
+  },
+  "baby_assets": {
+    "angry": "tales-of-the-verdant-wind:entity/wolf/wolf_verdant_black_angry_baby",
+    "tame": "tales-of-the-verdant-wind:entity/wolf/wolf_verdant_black_tame_baby",
+    "wild": "tales-of-the-verdant-wind:entity/wolf/wolf_verdant_black_baby"
+  },
+  "spawn_conditions": [
+    {
+      "condition": {
+        "type": "minecraft:biome",
+        "biomes": "#tales-of-the-verdant-wind:is_verdant_forest"
+      },
+      "priority": 1
+    }
+  ]
+}

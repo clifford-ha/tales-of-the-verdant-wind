@@ -24,6 +24,7 @@ public class VWEnchantmentTags extends FabricTagsProvider<Enchantment> {
         getOrCreateRawBuilder(WOLF_ENCHANTMENTS)
                 .add(enchantment(BENEDICTION_OF_THE_VERDANT_MOUNTAINS))
                 .add(enchantment(WOLF_ARMOR_ENHANCEMENT_KIT))
+                .add(enchantment(WOLF_EFFECT_ARCTIC_WINDS))
                 .add(enchantment(WOLF_EFFECT_IGNITION))
                 .add(enchantment(WOLF_EFFECT_POISONING))
                 .add(enchantment(WOLF_EFFECT_WITHERING))

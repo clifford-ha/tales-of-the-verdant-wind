@@ -1,0 +1,6 @@
+{
+  "effects": "burning",
+  "exhaustion": 2.0,
+  "message_id": "thermal_burn",
+  "scaling": "when_caused_by_living_non_player"
+}

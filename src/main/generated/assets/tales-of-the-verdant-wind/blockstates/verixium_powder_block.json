@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "tales-of-the-verdant-wind:block/verixium_powder_block"
+      },
+      {
+        "model": "tales-of-the-verdant-wind:block/verixium_powder_block",
+        "y": 90
+      },
+      {
+        "model": "tales-of-the-verdant-wind:block/verixium_powder_block",
+        "y": 180
+      },
+      {
+        "model": "tales-of-the-verdant-wind:block/verixium_powder_block",
+        "y": 270
+      }
+    ]
+  }
+}

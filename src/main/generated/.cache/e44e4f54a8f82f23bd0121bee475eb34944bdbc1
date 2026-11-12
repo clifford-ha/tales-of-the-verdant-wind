@@ -1,0 +1,7 @@
+// 26.3	-999999999-01-01T00:00:00	Wolf Additions: TOTVW/Tags for minecraft:enchantment
+e77cf29cc4dac846cf88952c655f7cb417b30ed5 data/minecraft/tags/enchantment/in_enchanting_table.json
+ca6f9ebf3e1fb87dcd91384d39e0a4e730724f8b data/minecraft/tags/enchantment/on_random_loot.json
+a6ecec2e8a4c9d0cd94ab89760f1eac840f1f565 data/minecraft/tags/enchantment/treasure.json
+a8522624459e86b385bf32a3c8383d6b446994bd data/tales-of-the-verdant-wind/tags/enchantment/continuous_damage.json
+d10f025de2dc91e07d41552015d7c274f9abf85c data/tales-of-the-verdant-wind/tags/enchantment/impairing_damage.json
+cc976ed15120c5595ad38d7a51d7da79db620e25 data/tales-of-the-verdant-wind/tags/enchantment/wolf_enchantments.json

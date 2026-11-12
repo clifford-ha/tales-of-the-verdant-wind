@@ -1,0 +1,13 @@
+{
+  "assets": {
+    "angry": "tales-of-the-verdant-wind:entity/wolf/wolf_soul_fragment",
+    "tame": "tales-of-the-verdant-wind:entity/wolf/wolf_soul_fragment",
+    "wild": "tales-of-the-verdant-wind:entity/wolf/wolf_soul_fragment"
+  },
+  "baby_assets": {
+    "angry": "tales-of-the-verdant-wind:entity/wolf/wolf_soul_fragment",
+    "tame": "tales-of-the-verdant-wind:entity/wolf/wolf_soul_fragment",
+    "wild": "tales-of-the-verdant-wind:entity/wolf/wolf_soul_fragment"
+  },
+  "spawn_conditions": []
+}
