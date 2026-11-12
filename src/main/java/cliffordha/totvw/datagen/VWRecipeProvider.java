@@ -93,7 +93,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         .unlockedBy(getHasName(Items.CRAFTING_TABLE), has(Items.CRAFTING_TABLE))
                         .save(output);
 
-                shaped(RecipeCategory.MISC, VWItems.VERIXIUM_CHUNK, 2)
+                shaped(RecipeCategory.MISC, VWItems.VERIXIUM_CHUNK, 3)
                         .pattern("XXX")
                         .pattern("XVX")
                         .pattern("XXX")
@@ -113,7 +113,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         RecipeCategory.MISC,
                         CookingBookCategory.MISC,
                         VWItems.VERIXIUM_POWDER,
-                        650.0F,
+                        50.0F,
                         20 * 90,
                         "verixium_raw_materials"
                 );
@@ -123,7 +123,7 @@ public class VWRecipeProvider extends FabricRecipeProvider {
                         CookingBookCategory.MISC,
                         VWItems.VERIXIUM_SEDIMENT,
                         900.0F,
-                        TimeUtil.tickDuration(3, 45),
+                        ((20 * 60) * 3) + (20 * 30),
                         "verixium_raw_materials"
                 );
                 shaped(RecipeCategory.COMBAT, VWItems.VERIXIUM_SPEAR, 1)

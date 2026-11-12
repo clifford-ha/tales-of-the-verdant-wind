@@ -30,7 +30,7 @@ public class EnchantmentHandbook {
         String HEALTH_THRESHOLD = (player.getAttachedOrElse(PlayerPrefs.BENEDICTION_HEALTH_THRESHOLD, VWConfig.get().SYNCED_BENEDICTION_HEALTH_THRESHOLD)) + "%";
 
         return
-                "This is the core enchantment that will provide access to features that are related to the Verdant Mountains, as well as the key to unlocking the full potential of other enchantments. This enchantment also gives " + cText(DARK_AQUA, "+3 ") + descAttackDMG + "."
+                "The core enchantment addition that will provide access to features that are related to the Verdant Mountains, as well as the key to unlocking the full potential of other enchantments. This enchantment also gives " + cText(DARK_AQUA, "+3 ") + descAttackDMG + "."
                 + nextParagraph
 
                 + bold("Core Features:") + nextLine
@@ -51,11 +51,11 @@ public class EnchantmentHandbook {
     }
     public static String enhancementKitInfo() {
         return
-                "This enchantment slightly boosts your companion's base attributes: Max Health, Water Movement Speed, and Knockback Resistance. Additionally, reduces all damage taken by 20%.";
+                "Your wolf companion gets 20% damage reduction and boosts the following base attributes: Max Health, Water Movement Speed, and Knockback Resistance.";
     }
     public static String mightEnchantmentInfo() {
         return
-                "Grants Amplified Might effect when wolf has a target. On attack: Grant Absorption effect for a short period of time that stacks its duration each hit, scalable by enchantment level. This also boosts " + descAttackDMG + " and lessens Fall Damage. Additionally, if wolf has a baby wolf nearby, base effects will be shared to them."
+                "Grants Amplified Might effect to wolf when they have target which boosts their " + descAttackDMG + " and lessens Fall Damage. On attack: Grant Absorption effect for a short period of time that can stack its amplifier and duration (max at 30 sec) each hit, on all enchantment level. Additionally, if wolf has a baby wolf nearby, base effects will be shared to them."
                 + nextParagraph
 
                 + bold("At level 3 or higher:") + nextLine
@@ -109,7 +109,7 @@ public class EnchantmentHandbook {
     }
     public static String liftingEnchantmentInfo() {
         return
-                "On attack: Lift target from ground by inflicting Levitation effect and nullify their attack damages for a short period of time. If said effect is already present, knock back the target instead. Additionally, if wolf is in the End Dimension, the lift force becomes stronger.";
+                "On attack: Lift target from ground by inflicting Levitation effect and nullify their attack damages for a short period of time. If said effect is already present, knock back the target instead. Additionally, if wolf is in the End Dimension, the lift force becomes stronger and slightly extends the attack nullifier.";
     }
     public static String gnawingEnchantmentInfo() {
         return
@@ -147,10 +147,10 @@ public class EnchantmentHandbook {
                 + nextParagraph
 
                 + bold("[Summon] Fragmented Wolf: ")
-                + "On attack: wolf will summon a soul projection of a wolf near them. These projections will stay on the field for 60 seconds and will return to the fragmented world once the timer runs out. If they are hit by another mob for a certain amount of times, they are forced to return early as they become less and less stable after each hit. They are, however, immune to any other forms of attack."
+                + "On attack: wolf will summon a soul projection of a wolf near them. These projections will stay on the field for 60 seconds and will return to the fragmented world once the timer runs out. If they are hit by another mob for a certain amount of times, they are forced to return early as they become less and less stable after each hit. They are, however, immune to any other forms of attack or damage."
                 + nextParagraph
 
-                + "After one is summoned, the soul projection will copy the summoner's equipments, including the enchantments they have on them (limited to base level). If there are other wolves nearby that has armor with enchantments, the soul projection will randomly copy the equipment from one of them instead. These soul projections cannot be carried by other mobs nor interacted with as they are but a memory from the fragmented world."
+                + "After one is summoned, the soul projection will copy the summoner's equipments, including the enchantments they have on them (limited to base level). If there are other wolves nearby that has armor with enchantments, the soul projection will randomly copy the equipment from one of them instead. These soul projections cannot be carried by other mobs nor interacted with as they are but an unstable fading memory."
                 + nextParagraph
 
                 + "Additionally, after they successfully attack a target, their timer gets an additional 15 seconds and can be triggered 6 times max.";

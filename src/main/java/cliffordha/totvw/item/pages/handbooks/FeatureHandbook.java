@@ -9,17 +9,17 @@ public class FeatureHandbook {
     public static final String titleVerdantTypeVillagers = cText(AQUA, "Verdant-type Villagers");
     public static final String titleBenedictionReturnPosition = cText(AQUA, "Benediction Return Point");
     public static final String titleRevivalByProxy = cText(AQUA, "Revival by Proxy");
-    public static final String titleTrustSystem = cText(GOLD, "Trust System");
+    public static final String titleTrustSystem = cText(GOLD, "Alliance [Trust System]");
 
     public static String revivalByProxy() {
         return
-                "A mechanic allows a player to be revived by their wolf companion when they get incapacitated and have no Totem of Undying in their mainhand or offhand slot (enabled by default in the settings). This can be triggered in the following ways:"
+                "Allows a player to be revived by their wolf companion when they get incapacitated and have no Totem of Undying in their mainhand or offhand slot (enabled by default in the settings). This can be triggered in the following ways:"
                 + nextParagraph
 
-                + "• Primary Trigger: Player gets incapacitated and their wolf companion is within the scan radius with more than one Benediction Stack. The scan radius is based on Max Chunk Scan in the settings (server)."
+                + "• Player gets incapacitated and their wolf companion has more than one Benediction Stack and is in a loaded chunk."
                 + nextParagraph
 
-                + "• If the Primary Trigger fails for any reason, if the player has the Soul Runestone Plate and has a wolf souls that meet the criteria mentioned above, the player will be revived by their wolf companion. Check the Soul Runestone Plate entry in the Items Handbook for additional information.";
+                + "• If the above trigger fails for any reason, if the player has the Soul Runestone Plate and has wolf souls that meet the criteria mentioned above, the player will be revived by their wolf companion. Check the Soul Runestone Plate entry in the Items Handbook for additional information.";
     }
     public static String verdantTypeWolves() {
         return
@@ -68,13 +68,16 @@ public class FeatureHandbook {
     }
     public static String trustSystemInfo() {
         return
-                "Reintroduced from earlier versions of the mod. To utilize this feature, a player can use a Paper or Verixium Paper towards a fellow player by right clicking them. A text prompt should notify you upon succeeding. This Trust System is currently being used for Wolf-Player interaction."
+                "Reintroduced from earlier versions of the mod. To utilize this feature, you can use a Paper or Verixium Paper towards a fellow player by right clicking them. A request will be sent to them and you will get notified once the they accept the request. This Trust System provides damage protection for both parties and is also used for Wolf-Player interaction."
                 + nextParagraph
 
                 + "For wolves: Wolf will ignore damage from players that you trust provided that they also listed you as trustee. Your list of trusted players is auto synced to wolf every 3 seconds."
                 + nextParagraph
 
-                + "For players: Trusted players that also list you as trustee won't be affected by your attacks. This also applies to them.";
+                + "For players: Trusted players that also list you as trustee won't be affected by your attacks. This also applies to them."
+                + nextParagraph
+
+                + "Unsynced Status: Removing a trusted player gets automatically removed from the other player's list if available. In cases where it fails to auto-sync, the data becomes unsynced and the one without data must manually request again to fix the problem. While in this state, the damage protection will not work.";
     }
 
 

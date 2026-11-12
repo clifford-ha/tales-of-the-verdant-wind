@@ -59,10 +59,10 @@ public class AllianceConfirmationScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        int shade = ARGB.color(0.4f, VWColors.GRAY_MUTED);
+        int shade = ARGB.color(0.4f, VWScreen.BACKDROP_RGB);
         int bg = ARGB.color(1.0f, VWColors.GRAY_MUTED);
         graphics.fill(0, 0, this.width, this.height, shade);
-        graphics.fillGradient(0, 0, this.width, this.height, bg, shade);
+        graphics.fillGradient(0, 0, this.width, this.height, shade, bg);
 
         String confirm;
         if (remove) {

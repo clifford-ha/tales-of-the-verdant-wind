@@ -189,6 +189,8 @@ public class GlobalEntityEvents {
         if (victim instanceof Player player) {
             if (attacker instanceof Player attackerPlayer) {
                 updateNearbyWolvesOnDamage(player, attackerPlayer, false);
+                PlayerAttachment.removeTrustedPlayer(player, attackerPlayer);
+                PlayerAttachment.removeTrustedPlayer(attackerPlayer, player);
             }
         }
         if (victim instanceof Wolf wolf && attacker instanceof Player player) {

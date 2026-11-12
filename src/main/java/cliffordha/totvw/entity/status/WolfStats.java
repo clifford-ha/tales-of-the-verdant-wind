@@ -41,7 +41,7 @@ public record WolfStats(
         String BENEDICTION_STACK = wolf.getAttachedOrElse(WolfAttachment.BENEDICTION, 0) + "";
         String ATTACK_CYCLE = wolf.getAttachedOrElse(WolfAttachment.ATTACK_CYCLE, 0) + "";
         ReturnPointData returnPoint = wolf.getAttachedOrElse(WolfAttachment.RETURN_POINT, ReturnPointData.DEFAULT);
-        boolean hasReturnPoint = returnPoint.levelKey() != VWDimensions.NONE && returnPoint.pos() != BlockPos.ZERO;
+        boolean hasReturnPoint = returnPoint.levelKey() != VWDimensions.NONE && !returnPoint.pos().equals(BlockPos.ZERO);
         String RETURN_POINT = hasReturnPoint ? returnPoint.pos().getX() + ", " + returnPoint.pos().getY() + ", " + returnPoint.pos().getZ() : "None";
         return new WolfStats(
                 wolf.getPlainTextName(),

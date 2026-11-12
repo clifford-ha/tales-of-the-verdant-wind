@@ -166,10 +166,7 @@ public class FirstBookSet {
 
                 + "An anonymous individual from ▌▌▌▌▌▌ helped and lead the chanting process, allowing us two extract the memories more efficiently. After such, we utilized the the Lodestone ▌▌▌▌ ▌▌▌▌ as it has an unintended effect of being able to also record the wolves that helped in eliminating the threat of the creatures from beyond. More importantly, the " + pText(1)
 
-                + "The last and crucial step is to anchor the memories onto the projected soul before it naturally fades away. To do so, a volunteer must be close to the core to constantly stabilize it while the extracted memories are being written into the soul. We have also found out that ▌▌▌▌▌▌ roses are efficient at nullifying the..."
-                + nextParagraph
-
-                + pText(1)
+                + "The last and crucial step is to anchor the memories onto the projected soul before it naturally fades away. To do so, a volunteer must be close to the core to constantly stabilize it while the extracted memories are being written into the soul. We have also found out that ▌▌▌▌▌▌ roses are efficient at nullifying the " + pText(1)
         );
     }
 }

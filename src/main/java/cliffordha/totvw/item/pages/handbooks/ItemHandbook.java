@@ -9,6 +9,7 @@ public class ItemHandbook {
     private static final String descWindCoreEnergySources = "Verixium Powder, Verixium Powder Block, and Wind Charge.";
 
     public static final String titleVerixiumResources = "Verixium Resources";
+    public static final String titleVerixiumChunkSynthesis = "Verixium Chunk Synthesis";
     public static final String titleLodestoneWindCore = "Lodestone Wind Core";
     public static final String titleScatteredPages = "Scattered Pages";
     public static final String titleIridescentGlass =  "Iridescent Glass";
@@ -28,6 +29,10 @@ public class ItemHandbook {
 
                 + "Additional Info:" + nextLine
                 + "Smelting the shards into its powder form gives you a substantial amount of experience points. The Verixium Powder can be used to obtain the Verixium Fluid Bucket, and when you have the " + descBenediction + " enchantment, you may be able to use it and obtain a certain effect.";
+    }
+    public static String verixiumChunkSynthesisInfo() {
+        return
+                "Another source of Verixium Chunks are from its impure and de-charged sediment form, otherwise known as Verixium Sediment. These sediments can be acquired by letting a Bucked of Verixium Fluid sit in a Blast Furnace for a fairly long amount of time (grants substantial amount of xp). After this process, the sediment can then be recharged using Wind Charges to synthesize the product.";
     }
     public static String lodestoneWindCoreInfo() {
         return

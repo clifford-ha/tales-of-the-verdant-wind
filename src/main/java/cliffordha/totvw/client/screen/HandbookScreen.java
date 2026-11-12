@@ -40,6 +40,7 @@ public class HandbookScreen extends VWScreen {
     );
     private static final List<Entry> ITEM_ENTRIES = List.of(
             new Entry(ItemHandbook.titleVerixiumResources, ItemHandbook::verixiumResourcesInfo),
+            new Entry(ItemHandbook.titleVerixiumChunkSynthesis, ItemHandbook::verixiumChunkSynthesisInfo),
             new Entry(ItemHandbook.titleLodestoneWindCore, ItemHandbook::lodestoneWindCoreInfo),
             new Entry(ItemHandbook.titleScatteredPages, ItemHandbook::scatteredPagesInfo),
             new Entry(ItemHandbook.titleIridescentGlass, ItemHandbook::iridescentGlassInfo),

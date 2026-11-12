@@ -11,7 +11,6 @@ import cliffordha.totvw.registry.*;
 import cliffordha.totvw.registry.attachments.Runestone;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.TetherData;
-import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
 import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.util.ExtUtil;
 import cliffordha.totvw.tag.VWBiomeTags;
@@ -33,6 +32,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,13 +60,18 @@ public class VWWolfBehaviors {
             LivingEntity owner = wolf.getOwner();
 
             if (owner != null) {
-                int tick = 0;
-                if (WolfAttachment.tetherChunkTicks(wolf)) tick = 1;
-                level.getChunkSource().addTicketAndLoadWithRadius(
-                        TicketType.FORCED,
-                        wolf.chunkPosition(),
-                        tick
-                );
+                ChunkPos pos = wolf.chunkPosition();
+                boolean tethered = WolfAttachment.tetherChunkTicks(wolf);
+                int radius = level.getServer().getPlayerList().getSimulationDistance() * 16;
+                boolean farFromOwner = wolf.distanceTo(owner) > Math.max(radius - 16, 16);
+
+                if (tethered || farFromOwner) {
+                    level.getChunkSource().addTicketAndLoadWithRadius(
+                            TicketType.PORTAL,
+                            pos,
+                            tethered ? 1 : 0
+                    );
+                }
             }
 
             if (!wolf.getActiveEffects().isEmpty()) VWNetworking.syncWolfEffects(wolf);

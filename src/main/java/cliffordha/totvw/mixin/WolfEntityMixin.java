@@ -213,8 +213,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
             wolf.stopBeingAngry();
             cir.setReturnValue(false);
 
-        }
-        if (WolfAttachment.isTrusted(wolf, target)) {
+        } else if (WolfAttachment.isTrusted(wolf, target)) {
             wolf.stopBeingAngry();
             cir.setReturnValue(false);
 

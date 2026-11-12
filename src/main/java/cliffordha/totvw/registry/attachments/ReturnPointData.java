@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;
@@ -23,9 +24,6 @@ public record ReturnPointData(ResourceKey<Level> levelKey, BlockPos pos, Boolean
     );
     public static final ReturnPointData DEFAULT = new ReturnPointData(VWDimensions.NONE, BlockPos.ZERO, true);
 
-    public boolean isValid() {
-        return this.levelKey() != VWDimensions.NONE && this.levelKey() != null && this.pos() != BlockPos.ZERO && this.pos != null;
-    }
     public @Nullable ServerLevel getDimensionLevel(ServerLevel level) {
         return level.getServer().getLevel(this.levelKey());
     }
@@ -41,47 +39,41 @@ public record ReturnPointData(ResourceKey<Level> levelKey, BlockPos pos, Boolean
     public static ReturnPointData of(LivingEntity entity) {
         return entity.getAttachedOrElse(WolfAttachment.RETURN_POINT, DEFAULT);
     }
+    public boolean isValid() {
+        return this.levelKey() != null && this.levelKey() != VWDimensions.NONE
+                && this.pos() != null && !this.pos().equals(BlockPos.ZERO);
+    }
+
     public static boolean isValid(ReturnPointData data) {
-        if (data.levelKey() == null || data.pos() == null) return false;
-        return !data.pos().equals(BlockPos.ZERO);
+        return data.isValid();
     }
-    public static boolean returnToTargetOrDefault(LivingEntity entity, ReturnPointData data, boolean playSound) {
-        ResourceKey<Level> levelKey = data.levelKey();
-        ResourceKey<Level> currentLevelKey = entity.level().dimension();
+
+    public static @Nullable Entity returnToTargetOrDefault(LivingEntity entity, ReturnPointData data, boolean playSound) {
+        if (!(entity.level() instanceof ServerLevel currentLevel)) return null;
+
         if (data.isValid()) {
-            if (levelKey.equals(currentLevelKey)) {
-                entity.teleportTo(data.pos().getX(), data.pos().getY(), data.pos().getZ());
-
-            } else {
-                ServerLevel newLevel = entity.level().getServer().getLevel(levelKey);
-                if (newLevel == null) return false;
-
-                return teleportTo(entity, levelKey, playSound);
+            if (data.levelKey().equals(currentLevel.dimension())) {
+                entity.teleportTo(data.pos().getX() + 0.5, data.pos().getY(), data.pos().getZ() + 0.5);
+                return entity;
             }
-        } else {
-            return teleportTo(entity, currentLevelKey, playSound);
+            ServerLevel newLevel = currentLevel.getServer().getLevel(data.levelKey());
+            if (newLevel == null) return null;
+            return teleportTo(entity, newLevel, data.pos(), playSound);
         }
-        return false;
+        return teleportTo(entity, currentLevel, currentLevel.getRespawnData().pos(), playSound);
     }
-    private static boolean teleportTo(LivingEntity from, ResourceKey<Level> level, boolean playSound) {
-        ServerLevel newLevel = from.level().getServer().getLevel(level);
-        if (newLevel == null) return false;
 
-        BlockPos newPos = newLevel.getRespawnData().pos();
-        TeleportTransition.PostTeleportTransition transition = TeleportTransition.PLACE_PORTAL_TICKET;
-        if (playSound) {
-            transition.then(TeleportTransition.PLAY_PORTAL_SOUND);
-        }
-        from.teleport(
-                new TeleportTransition(
-                        newLevel,
-                        new Vec3(newPos.getX(), newPos.getY(), newPos.getZ()),
-                        Vec3.ZERO,
-                        newLevel.getRespawnData().yaw(),
-                        newLevel.getRespawnData().pitch(),
-                        transition
-                )
-        );
-        return true;
+    private static @Nullable Entity teleportTo(LivingEntity from, ServerLevel newLevel, BlockPos pos, boolean playSound) {
+        TeleportTransition.PostTeleportTransition post = playSound
+                ? TeleportTransition.PLAY_PORTAL_SOUND.then(TeleportTransition.PLACE_PORTAL_TICKET)
+                : TeleportTransition.PLACE_PORTAL_TICKET;
+        return from.teleport(new TeleportTransition(
+                newLevel,
+                Vec3.atBottomCenterOf(pos),
+                Vec3.ZERO,
+                newLevel.getRespawnData().yaw(),
+                newLevel.getRespawnData().pitch(),
+                post
+        ));
     }
 }

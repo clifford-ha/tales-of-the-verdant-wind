@@ -16,7 +16,7 @@ import terrablender.api.TerraBlenderApi;
 public class TalesOfTheVerdantWind implements ModInitializer, TerraBlenderApi {
 	public TalesOfTheVerdantWind() {}
 
-	public static final boolean IN_DEVELOPMENT = true;
+	public static final boolean IN_DEVELOPMENT = false;
 	@Override
 	public void onInitialize() {
 		TOTVW.sendStat(TOTVW.MOD_NAME_LONG + " (or TOTVW for short) started initializing...");
