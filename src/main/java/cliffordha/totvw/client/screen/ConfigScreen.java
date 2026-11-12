@@ -563,7 +563,7 @@ public class ConfigScreen extends Screen {
 
     @Override
     public boolean isPauseScreen() {
-        return !Minecraft.getInstance().isMultiplayerServer() && Minecraft.getInstance().isLocalServer();
+        return super.isPauseScreen();
     }
 
     protected static Component text(String s) {

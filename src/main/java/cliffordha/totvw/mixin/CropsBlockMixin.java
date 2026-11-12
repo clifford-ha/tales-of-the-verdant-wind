@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -46,7 +46,7 @@ public abstract class CropsBlockMixin {
         ).stream().limit(1).toList();
 
         List<Player> players = level.getEntities(
-                EntityTypes.PLAYER,
+                EntityType.PLAYER,
                 scan,
                 test -> test.getAttachedOrElse(VWAttachment.VERDANT_BLOOM_STACK, 0) > 0
         ).stream().limit(1).toList();

@@ -32,7 +32,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
@@ -168,7 +168,7 @@ public class VerdantWindBlessing {
     }
     private static List<Wolf> getWolvesInRange(ServerLevel level, Player player, double range) {
         List<Wolf> get = level.getEntities(
-                EntityTypes.WOLF,
+                EntityType.WOLF,
                 player.getBoundingBox().inflate(range),
                 wolf -> wolf.getOwner() == player
                         && VWEnchantments.getBenediction(wolf)

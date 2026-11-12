@@ -159,7 +159,7 @@ public class GlobalEntityEvents {
         }
 
         if (attacker instanceof Player player) {
-            if (entity.is(EntityTypes.WOLF) || entity.is(EntityTypes.VILLAGER) || entity.is(EntityTypes.WANDERING_TRADER)) {
+            if (entity.is(EntityType.WOLF) || entity.is(EntityType.VILLAGER) || entity.is(EntityType.WANDERING_TRADER)) {
                 AtrocityManager.processAtrocity(player, entity, true);
             }
         }
@@ -182,7 +182,7 @@ public class GlobalEntityEvents {
         Entity attacker = damageSource.getEntity();
 
         if (attacker instanceof Player player) {
-            if (victim.is(EntityTypes.WOLF) || victim.is(EntityTypes.VILLAGER) || victim.is(EntityTypes.WANDERING_TRADER)) {
+            if (victim.is(EntityType.WOLF) || victim.is(EntityType.VILLAGER) || victim.is(EntityType.WANDERING_TRADER)) {
                 AtrocityManager.processAtrocity(player, victim, false);
             }
         }
@@ -288,7 +288,7 @@ public class GlobalEntityEvents {
         if (entity instanceof Monster) return true;
 
         if (damageSource.getEntity() instanceof LivingEntity attacker
-                && !attacker.is(EntityTypes.WOLF)
+                && !attacker.is(EntityType.WOLF)
                 && (entity instanceof Player || entity instanceof Wolf)) {
             RandomSource random = level.getRandom();
             DamageSource dmg = level.damageSources().magic();
@@ -298,7 +298,7 @@ public class GlobalEntityEvents {
                 if (attacker instanceof Player player && !player.getMainHandItem().isEmpty()) {
                     player.getCooldowns().addCooldown(player.getMainHandItem(), 60);
                 }
-                attacker.knockback(Math.max(1, attacker.getMaxHealth() * 0.05f), -attacker.getYHeadRot(), -entity.getYHeadRot(), dmg, 0);
+                attacker.knockback(Math.max(1, attacker.getMaxHealth() * 0.05f), -attacker.getYHeadRot(), -entity.getYHeadRot());
                 level.playSound(null, entity.blockPosition(), SoundEvents.THORNS_HIT, SoundSource.PLAYERS);
                 for (int i = 0; i < random.nextIntBetweenInclusive(1, 5); i++) {
                     level.sendParticles(ParticleTypes.ENCHANT, entity.getX(), entity.getY(), entity.getZ(), 3, 0, 0, 0, 0);
@@ -314,13 +314,13 @@ public class GlobalEntityEvents {
     }
     private static void retaliate(LivingEntity victim, DamageSource source) {
         if (!(victim.level() instanceof ServerLevel level)) return;
-        if (!(source.getEntity() instanceof LivingEntity attacker) || attacker.is(EntityTypes.WOLF)) return;
+        if (!(source.getEntity() instanceof LivingEntity attacker) || attacker.is(EntityType.WOLF)) return;
 
         if (victim instanceof Wolf wolf) {
             wolf.setTarget(attacker);
 
         } else if (victim instanceof Player player) {
-            for (Wolf wolf : level.getEntities(EntityTypes.WOLF, scanArea(player, 16), w -> w.getOwner() == player)) {
+            for (Wolf wolf : level.getEntities(EntityType.WOLF, scanArea(player, 16), w -> w.getOwner() == player)) {
                 wolf.setTarget(attacker);
             }
         }

@@ -21,7 +21,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Inventory;
@@ -173,7 +173,7 @@ public class RevivalByProxy {
         Wolf best = null;
         double bestDist = Double.MAX_VALUE;
         for (ServerLevel l : level.getServer().getAllLevels()) {
-            for (Wolf w : l.getEntities(EntityTypes.WOLF, t -> WolfAttachment.benedictionStack(t) > 0 && t.getOwner() == player)) {
+            for (Wolf w : l.getEntities(EntityType.WOLF, t -> WolfAttachment.benedictionStack(t) > 0 && t.getOwner() == player)) {
                 double dist = l == level ? w.distanceToSqr(player) : Double.MAX_VALUE / 2; // same dimension first, then nearest
                 if (best == null || dist < bestDist) {
                     best = w;

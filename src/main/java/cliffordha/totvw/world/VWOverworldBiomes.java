@@ -6,9 +6,8 @@ import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.Carvers;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.attribute.*;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
@@ -23,15 +22,13 @@ public class VWOverworldBiomes {
         MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
         BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-        spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityTypes.WOLF, 1, 2));
-        spawner.addSpawn(MobCategory.CREATURE, 1, new MobSpawnSettings.SpawnerData(EntityTypes.SNIFFER, 1, 1));
-        spawner.addSpawn(MobCategory.CREATURE, 4, new MobSpawnSettings.SpawnerData(EntityTypes.CHICKEN, 2, 4));
-        spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityTypes.GOAT, 4, 4));
+        spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2));
+        spawner.addSpawn(MobCategory.CREATURE, 1, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 1));
+        spawner.addSpawn(MobCategory.CREATURE, 4, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 2, 4));
+        spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 4, 4));
 
-        spawner.addSpawn(MobCategory.MONSTER, 10, new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 2, 2));
-        spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 2, 2));
-
-        spawner.addSpawn(MobCategory.WATER_AMBIENT, 1, new MobSpawnSettings.SpawnerData(EntityTypes.TROPICAL_FISH, 1, 1));
+        spawner.addSpawn(MobCategory.MONSTER, 10, new MobSpawnSettings.SpawnerData(EntityType.ZOMBIE, 2, 2));
+        spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 2, 2));
 
         spawner.build();
 
@@ -65,16 +62,13 @@ public class VWOverworldBiomes {
         MobSpawnSettings.Builder spawner = new MobSpawnSettings.Builder();
         BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(placedFeatureGetter, carverGetter);
 
-        spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityTypes.WOLF, 3, 4));
-        spawner.addSpawn(MobCategory.CREATURE, 1, new MobSpawnSettings.SpawnerData(EntityTypes.SNIFFER, 1, 1));
-        spawner.addSpawn(MobCategory.CREATURE, 8, new MobSpawnSettings.SpawnerData(EntityTypes.CHICKEN, 2, 4));
-        spawner.addSpawn(MobCategory.CREATURE, 6, new MobSpawnSettings.SpawnerData(EntityTypes.GOAT, 2, 2));
+        spawner.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 3, 4));
+        spawner.addSpawn(MobCategory.CREATURE, 1, new MobSpawnSettings.SpawnerData(EntityType.SNIFFER, 1, 1));
+        spawner.addSpawn(MobCategory.CREATURE, 8, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 2, 4));
+        spawner.addSpawn(MobCategory.CREATURE, 6, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 2, 2));
 
-        spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, 2, 2));
-        spawner.addSpawn(MobCategory.MONSTER, 10, new MobSpawnSettings.SpawnerData(EntityTypes.SKELETON, 2, 2));
-
-        spawner.addSpawn(MobCategory.WATER_AMBIENT, 1, new MobSpawnSettings.SpawnerData(EntityTypes.TROPICAL_FISH, 1, 1));
-        spawner.addSpawn(MobCategory.UNDERGROUND_WATER_CREATURE, 1, new MobSpawnSettings.SpawnerData(EntityTypes.NAUTILUS, 1, 1));
+        spawner.addSpawn(MobCategory.MONSTER, 30, new MobSpawnSettings.SpawnerData(EntityType.ZOMBIE, 2, 2));
+        spawner.addSpawn(MobCategory.MONSTER, 10, new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 2, 2));
 
         spawner.build();
 

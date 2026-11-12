@@ -103,7 +103,7 @@ public class VWWolfBehaviors {
     private static void registerWildRules() {
         TICK_RULES.add(WolfBehaviorRule.forWild(TickCondition.tick(0, 3), (wolf, level) -> {
             if (WolfAttachment.isVerdant(wolf)) {
-                List<Monster> monsters = level.getEntitiesOfClass(Monster.class, wolf.getBoundingBox().inflate(12), z -> wolf.getTarget() == null && z.getTarget() != null && z.getTarget().is(EntityTypes.VILLAGER));
+                List<Monster> monsters = level.getEntitiesOfClass(Monster.class, wolf.getBoundingBox().inflate(12), z -> wolf.getTarget() == null && z.getTarget() != null && z.getTarget().is(EntityType.VILLAGER));
                 if (monsters.isEmpty()) {
                     if (!(wolf.getAttachedOrElse(WolfAttachment.TRY_SAVE_STATUS, 0) > 0 && !wolf.isAngry())) return;
                     if (!level.getRandom().nextBoolean()) return;
@@ -272,7 +272,7 @@ public class VWWolfBehaviors {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
                 serverLevel.getEntities(
-                        EntityTypes.WOLF,
+                        EntityType.WOLF,
                         _ -> true
                 ).forEach(wolf -> {
                     for (WolfBehaviorRule rule : TICK_RULES) {

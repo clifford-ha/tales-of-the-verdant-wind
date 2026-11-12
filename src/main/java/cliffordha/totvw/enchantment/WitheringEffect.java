@@ -57,7 +57,7 @@ public class WitheringEffect {
             CompoundTag tag = new CompoundTag();
             tag.putString("id", "minecraft:wolf");
             TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, wolf.registryAccess(), tag);
-            Optional<Entity> created = EntityType.create(input, level, new EntitySpawnRequest(EntitySpawnReason.LOAD, false));
+            Optional<Entity> created = EntityType.create(input, level, EntitySpawnReason.LOAD);
 
             if (created.isPresent() && created.get() instanceof Wolf fragment) {
                 int additional = wolves.stream().filter(VWEnchantments::getBenediction).toList().size();
@@ -110,7 +110,7 @@ public class WitheringEffect {
         wolf.remove(Entity.RemovalReason.UNLOADED_TO_CHUNK);
     }
     public static void unloadPreviouslySummoned(ServerLevel level) {
-        level.getEntities(EntityTypes.WOLF, test -> test.hasAttached(WolfAttachment.FRAGMENT_DATA)).forEach(
+        level.getEntities(EntityType.WOLF, test -> test.hasAttached(WolfAttachment.FRAGMENT_DATA)).forEach(
                 entity -> entity.remove(Entity.RemovalReason.UNLOADED_TO_CHUNK)
         );
     }

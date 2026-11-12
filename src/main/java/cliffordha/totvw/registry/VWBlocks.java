@@ -280,8 +280,6 @@ public class VWBlocks {
 
 
     public static final BlockFamily VERDANT_SPRUCE_FAMILY = BlockFamilies.familyBuilder(VERDANT_SPRUCE_PLANKS)
-            .log(VERDANT_SPRUCE_LOG)
-            .strippedLog(STRIPPED_VERDANT_SPRUCE_LOG)
             .stairs(VERDANT_SPRUCE_STAIRS)
             .slab(VERDANT_SPRUCE_SLAB)
             .fence(VERDANT_SPRUCE_FENCE)
@@ -289,7 +287,6 @@ public class VWBlocks {
             .button(VERDANT_SPRUCE_BUTTON)
             .pressurePlate(VERDANT_SPRUCE_PRESSURE_PLATE)
             .sign(VERDANT_SPRUCE_SIGN, VERDANT_SPRUCE_WALL_SIGN)
-            .hangingSign(VERDANT_SPRUCE_HANGING_SIGN, VERDANT_SPRUCE_WALL_HANGING_SIGN)
             .door(VERDANT_SPRUCE_DOOR)
             .trapdoor(VERDANT_SPRUCE_TRAPDOOR)
             .recipeGroupPrefix("wooden")

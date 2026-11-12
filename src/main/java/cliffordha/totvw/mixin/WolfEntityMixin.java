@@ -85,7 +85,7 @@ public abstract class WolfEntityMixin extends LivingEntity {
 
     @Inject(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/wolf/Wolf;", at = @At("RETURN"), cancellable = true)
     private void inheritStat(ServerLevel level, AgeableMob partner, CallbackInfoReturnable<Wolf> cir) {
-        Wolf baby = EntityTypes.WOLF.create(level, EntitySpawnReason.BREEDING);
+        Wolf baby = EntityType.WOLF.create(level, EntitySpawnReason.BREEDING);
         Wolf wolf = (Wolf) (Object) this;
 
         if (baby != null && partner instanceof Wolf wolfPartner) {

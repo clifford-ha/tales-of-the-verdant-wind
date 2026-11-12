@@ -52,14 +52,14 @@ public class TetherRunestonePlate extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (player.getCooldowns().isOnCooldown(new ItemStack(this))) return InteractionResult.FAIL;
         if (level instanceof ServerLevel serverLevel && player.isCrouching()) {
-            List<Wolf> recall = new ArrayList<>(serverLevel.getEntities(EntityTypes.WOLF,
+            List<Wolf> recall = new ArrayList<>(serverLevel.getEntities(EntityType.WOLF,
                     t -> t.getOwner() == player
             ));
 
             List<Wolf> multiLevelRecall = new ArrayList<>();
             for (ServerLevel multiLevel : serverLevel.getServer().getAllLevels()) {
                 multiLevelRecall.addAll(multiLevel.getEntities(
-                        EntityTypes.WOLF,
+                        EntityType.WOLF,
                         t -> t.getOwner() == player && t.level().dimensionType() != player.level().dimensionType()
                 ));
             }

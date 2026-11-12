@@ -11,7 +11,6 @@ import cliffordha.totvw.registry.attachments.HavocType;
 import cliffordha.totvw.registry.attachments.PlayerPrefs;
 import cliffordha.totvw.registry.attachments.VWAttachment;
 import cliffordha.totvw.registry.attachments.entity.PlayerAttachment;
-import cliffordha.totvw.registry.attachments.entity.WolfAttachment;
 import cliffordha.totvw.tag.VWBiomeTags;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -185,7 +184,7 @@ public class VWPlayerBehaviors {
 
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             for (var serverLevel : server.getAllLevels()) {
-                serverLevel.getEntities(EntityTypes.PLAYER, _ -> true).forEach(player -> {
+                serverLevel.getEntities(EntityType.PLAYER, _ -> true).forEach(player -> {
                     for (PlayerBehaviorRule rule : TICK_RULES) {
                         rule.evaluate(player, serverLevel);
                     }

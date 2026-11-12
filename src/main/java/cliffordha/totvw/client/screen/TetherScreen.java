@@ -9,7 +9,6 @@ import cliffordha.totvw.registry.attachments.TetherData;
 import cliffordha.totvw.util.TextUtil;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -19,12 +18,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 
@@ -69,8 +66,8 @@ public class TetherScreen extends Screen {
 
         for (var e : BuiltInRegistries.ENTITY_TYPE.entrySet()) {
             EntityType<?> type = e.getValue();
-            if (type == EntityTypes.WOLF) continue;
-            if (type == EntityTypes.ARMOR_STAND) continue;
+            if (type == EntityType.WOLF) continue;
+            if (type == EntityType.ARMOR_STAND) continue;
             if (!DefaultAttributes.hasSupplier(type)) continue;
 
             String id = e.getKey().identifier().toString();

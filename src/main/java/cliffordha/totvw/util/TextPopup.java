@@ -43,7 +43,7 @@ public class TextPopup {
         ServerLevelEvents.UNLOAD.register((server, level) -> unloadPrevious(null, level));
         if (!VWConfig.get().SERVER_SHOW_EFFECT_INDICATORS) return;
         ServerTickEvents.END_SERVER_TICK.register(server -> server.getAllLevels().forEach(
-                level -> level.getEntities(EntityTypes.TEXT_DISPLAY, test -> test.hasAttached(TEXT_DISPLAY)).forEach(
+                level -> level.getEntities(EntityType.TEXT_DISPLAY, test -> test.hasAttached(TEXT_DISPLAY)).forEach(
                         entity -> {
                             int lifetime = entity.getAttachedOrElse(LIFETIME, 0);
                             if (lifetime <= 0) {
@@ -59,12 +59,12 @@ public class TextPopup {
     }
     private static void unloadPrevious(@Nullable MinecraftServer server, ServerLevel serverLevel) {
         if (serverLevel != null) {
-            serverLevel.getEntities(EntityTypes.TEXT_DISPLAY, test -> test.hasAttached(TEXT_DISPLAY)).forEach(
+            serverLevel.getEntities(EntityType.TEXT_DISPLAY, test -> test.hasAttached(TEXT_DISPLAY)).forEach(
                     entity -> entity.remove(Entity.RemovalReason.UNLOADED_TO_CHUNK)
             );
         }
         if (server != null) {
-            server.getAllLevels().forEach(level -> level.getEntities(EntityTypes.TEXT_DISPLAY, test -> test.hasAttached(TEXT_DISPLAY)).forEach(
+            server.getAllLevels().forEach(level -> level.getEntities(EntityType.TEXT_DISPLAY, test -> test.hasAttached(TEXT_DISPLAY)).forEach(
                     entity -> entity.remove(Entity.RemovalReason.UNLOADED_TO_CHUNK)
             ));
         }
@@ -139,7 +139,7 @@ public class TextPopup {
         if (!(target.level() instanceof ServerLevel level)) return;
 
         TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), template());
-        Optional<Entity> created = EntityType.create(input, level, new EntitySpawnRequest(EntitySpawnReason.LOAD, false));
+        Optional<Entity> created = EntityType.create(input, level, EntitySpawnReason.LOAD);
 
         created.ifPresent(e -> {
             if (!(e instanceof Display.TextDisplay text)) return;

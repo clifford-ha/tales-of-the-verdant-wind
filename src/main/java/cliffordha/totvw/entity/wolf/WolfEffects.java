@@ -121,7 +121,7 @@ public class WolfEffects {
             int ACTIVE_LIFTING = enchantment.getLifting();
             if (victim.hasEffect(MobEffects.LEVITATION)) {
                 double str = level.getRandom().nextDouble();
-                victim.knockback(str, ACTIVE_LIFTING, str, level.damageSources().flyIntoWall(), ACTIVE_LIFTING);
+                victim.knockback(str, ACTIVE_LIFTING, str);
             } else {
                 boolean strong = victim.getY() > 196 || isDimension(victim, Level.END);
                 int amp = strong ? ACTIVE_LIFTING * 10 : ACTIVE_LIFTING * 4;
@@ -145,7 +145,7 @@ public class WolfEffects {
                 }
 
                 SkillDefinition skill = WolfSkills.PARALYZER;
-                boolean checkVictim = victim.is(EntityTypes.PLAYER) || victim.getMaxHealth() > 20.0;
+                boolean checkVictim = victim.is(EntityType.PLAYER) || victim.getMaxHealth() > 20.0;
                 boolean isNotParalyzed = !victim.hasEffect(VWEffects.PARALYZE) && ArcticWindsEffect.frostBoundStack(victim) <= 0;
                 if (checkVictim && !SkillManager.isOnCooldown(wolf, skill) && isNotParalyzed) {
                     int paralyzeTime = 3 + (ACTIVE_BLOODLUST * 3);

@@ -136,7 +136,7 @@ public class VWCommands {
 
                         ServerLevel level = player.level();
                         List<Wolf> wolves = level.getEntities(
-                                EntityTypes.WOLF,
+                                EntityType.WOLF,
                                 player.getBoundingBox().inflate(16),
                                 t -> t.getOwner() == player);
 
@@ -275,7 +275,7 @@ public class VWCommands {
 
                         ServerLevel level = player.level();
 
-                        List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
+                        List<Wolf> wolves = level.getEntities(EntityType.WOLF,
                                 player.getBoundingBox().inflate(32),
                                 wolf -> wolf.isTame() && !wolf.getUUID().equals(player.getUUID()));
 
@@ -301,7 +301,7 @@ public class VWCommands {
                                 }
 
                                 ServerLevel level = player.level();
-                                List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
+                                List<Wolf> wolves = level.getEntities(EntityType.WOLF,
                                         player.getBoundingBox().inflate(32),
                                         wolf -> wolf.isTame() && !wolf.getUUID().equals(player.getUUID()));
 
@@ -327,7 +327,7 @@ public class VWCommands {
                         }
 
                         ServerLevel level = player.level();
-                        List<Wolf> wolves = level.getEntities(EntityTypes.WOLF,
+                        List<Wolf> wolves = level.getEntities(EntityType.WOLF,
                                 player.getBoundingBox().inflate(32),
                                 wolf -> wolf.isTame() && !wolf.getUUID().equals(player.getUUID()));
 

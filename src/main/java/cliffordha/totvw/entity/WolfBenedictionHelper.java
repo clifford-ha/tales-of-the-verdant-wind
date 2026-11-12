@@ -120,7 +120,7 @@ public class WolfBenedictionHelper {
         if (allDimensions) {
             MinecraftServer server = owner.level().getServer();
             for (ServerLevel other : server.getAllLevels()) {
-                if (scanned.add(other)) targets.addAll(other.getEntities(EntityTypes.WOLF, valid));
+                if (scanned.add(other)) targets.addAll(other.getEntities(EntityType.WOLF, valid));
             }
         }
         return targets;
@@ -214,7 +214,7 @@ public class WolfBenedictionHelper {
         wolfTag.put("Pos", setPosition);
 
         TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), wolfTag);
-        Optional<Entity> wolfEntity = EntityType.create(input, level, new EntitySpawnRequest(EntitySpawnReason.LOAD, false));
+        Optional<Entity> wolfEntity = EntityType.create(input, level, EntitySpawnReason.LOAD);
 
         if (wolfEntity.isPresent()) {
             Entity wolfE = wolfEntity.get();

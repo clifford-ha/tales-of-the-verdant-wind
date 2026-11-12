@@ -136,7 +136,7 @@ public class SoulRunestonePlate extends Item {
         wolfTag.put("Pos", setPosition);
 
         TagValueInput input = (TagValueInput) TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), wolfTag);
-        Optional<Entity> wolfEntity = EntityType.create(input, level, new EntitySpawnRequest(EntitySpawnReason.LOAD, false));
+        Optional<Entity> wolfEntity = EntityType.create(input, level, EntitySpawnReason.LOAD);
 
         if (wolfEntity.isPresent()) {
             Entity wolfE = wolfEntity.get();
